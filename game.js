@@ -9,6 +9,7 @@
     home: document.querySelector('#home-screen'), end: document.querySelector('#end-screen'), upgrades: document.querySelector('#upgrades-screen'), about: document.querySelector('#about-screen'),
     score: document.querySelector('#end-score'), endHeading: document.querySelector('#end-heading'), endless: document.querySelector('#endless-button'), arcade: document.querySelector('#arcade-button'), challenge: document.querySelector('#challenge-button'),
     restart: document.querySelector('#restart-button'), choices: document.querySelectorAll('.choice'),
+    sceneGirl: document.querySelector('.scene-girl'), sceneBoy: document.querySelector('.scene-boy'),
     openUpgrades: document.querySelector('#open-upgrades-button'), closeUpgrades: document.querySelector('#close-upgrades-button'),
     endHome: document.querySelector('#end-home-button'), endUpgrades: document.querySelector('#end-upgrades-button'),
     wallet: document.querySelector('#wallet-count'), upgradeMessage: document.querySelector('#upgrade-message'),
@@ -24,6 +25,9 @@
   playerSprites.girl.fall.src = 'assets/player-girl-fall-pixel-v1.png';
   playerSprites.boy.jump.src = 'assets/player-boy-pixel-v1.png';
   playerSprites.boy.fall.src = 'assets/player-boy-fall-pixel-v3.png';
+  const netLandingSprites = { girl: new Image(), boy: new Image() };
+  netLandingSprites.girl.src = 'assets/player-girl-net-pixel-v2.png';
+  netLandingSprites.boy.src = 'assets/player-boy-net-pixel-v2.png';
   const platformSprite = new Image();
   platformSprite.src = 'assets/platform-grass-pixel-v1.png';
   const springPlatformSprite = new Image();
@@ -68,7 +72,7 @@
     state = {
       running: true, mode, score: 0, heightScore: 0, parshad: 0, tokens: 0, cameraY: 0,
       background: Math.floor(Math.random() * palette.length), nextY: 610, ending: false, falconUsed: false, boostMultiplier: 1, boostTimer: 0, invincibleTimer: 0, finishGate: null, challengePlaced: 0, challengePlatformCount: 0,
-      player: { x: W / 2, y: 650, vx: 0, vy: -config.baseJumpVelocity * (1 + profile.powerJump * .1), w: 31, h: 48, character: selectedCharacter },
+      player: { x: W / 2, y: 650, vx: 0, vy: -config.baseJumpVelocity * (1 + profile.powerJump * .1), w: 31, h: 48, character: selectedCharacter, facing: 1 },
       platforms: [{ x: 170, y: 700, w: 115, type: 'normal' }], lastPlatform: { x: 170, y: 700, w: 115 }, collectibles: [], enemies: [], powerups: [],
       message: mode === 'challenge' ? `Challenge · collect all ${config.challengeParshadTarget} parshad` : mode === 'arcade' ? `Arcade · reach ${config.arcadeTargetScore}` : 'Endless Run · Keep climbing', messageTimer: 3,
     };
@@ -132,7 +136,7 @@
     if (state.ending) return;
     state.ending = true; state.running = false; state.completed = completed; state.endReason = reason; state.winStarted = lastTime;
     profile.tokens += state.tokens; saveProfile(); updateUpgradeUI();
-    setTimeout(() => { ui.endHeading.textContent = completed ? (state.mode === 'challenge' ? 'Challenge complete!' : 'Arcade complete!') : (state.mode === 'challenge' && reason === 'finish' ? 'Challenge incomplete' : 'Run complete'); ui.score.textContent = `Score ${Math.floor(state.score)} · ${state.parshad} parshad · ${state.tokens} Khanda tokens earned`; ui.end.classList.remove('hidden'); }, 520);
+    setTimeout(() => { ui.endHeading.textContent = completed ? (state.mode === 'challenge' ? 'Challenge complete!' : 'Arcade complete!') : (state.mode === 'challenge' && reason === 'finish' ? 'Challenge incomplete' : 'Run complete'); ui.score.textContent = `Score ${Math.floor(state.score)} · ${state.parshad} parshad · ${state.tokens} Khanda tokens earned`; ui.end.classList.remove('hidden'); }, 760);
   }
   function update(dt) {
     if (!state.running) return;
@@ -140,8 +144,16 @@
     if (state.boostTimer > 0) { state.boostTimer = Math.max(0, state.boostTimer - dt); if (state.boostTimer === 0) state.boostMultiplier = 1; }
     if (state.invincibleTimer > 0) state.invincibleTimer = Math.max(0, state.invincibleTimer - dt);
     const keyboard = (keys.has('ArrowRight') ? 1 : 0) - (keys.has('ArrowLeft') ? 1 : 0);
-    if (pointerX !== null) p.vx += (pointerX - p.x) * 8 * dt; else p.vx += keyboard * 1100 * dt;
-    p.vx *= Math.pow(.0007, dt); p.vx = Math.max(-config.maxHorizontalSpeed, Math.min(config.maxHorizontalSpeed, p.vx)); p.x += p.vx * dt;
+    if (pointerX !== null) {
+      const desiredVelocity = Math.max(-config.maxHorizontalSpeed, Math.min(config.maxHorizontalSpeed, (pointerX - p.x) * config.pointerSteeringGain));
+      p.vx += (desiredVelocity - p.vx) * Math.min(1, config.pointerSteeringResponse * dt);
+    } else {
+      p.vx += keyboard * config.keyboardAcceleration * dt;
+      p.vx *= Math.pow(.0007, dt);
+    }
+    p.vx = Math.max(-config.maxHorizontalSpeed, Math.min(config.maxHorizontalSpeed, p.vx));
+    if (Math.abs(p.vx) > 22) p.facing = Math.sign(p.vx);
+    p.x += p.vx * dt;
     p.x = Math.max(p.w / 2, Math.min(W - p.w / 2, p.x)); p.vy += config.gravity * dt; p.y += p.vy * dt;
     for (const plat of state.platforms) {
       if (plat.type === 'moving') { plat.x += plat.dir * plat.speed * dt; if (plat.x < 6 || plat.x + plat.w > W - 6) plat.dir *= -1; }
@@ -228,11 +240,17 @@
     for (const b of state.enemies) { const y = worldToScreen(b.y); if (birdSprite.complete && birdSprite.naturalWidth) { ctx.save(); ctx.translate(b.x, y); if (b.vx < 0) ctx.scale(-1, 1); ctx.drawImage(birdSprite, -35, -26, 70, 47); ctx.restore(); } else { ctx.fillStyle = '#42546c'; ctx.beginPath(); ctx.ellipse(b.x, y, 19, 11, 0, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = '#1f344a'; ctx.beginPath(); ctx.moveTo(b.x - 4, y); ctx.lineTo(b.x - 31, y - 15); ctx.lineTo(b.x - 19, y + 9); ctx.fill(); ctx.fillStyle = '#f2ba4a'; ctx.beginPath(); ctx.moveTo(b.x + 18, y); ctx.lineTo(b.x + 30, y + 3); ctx.lineTo(b.x + 18, y + 6); ctx.fill(); } }
     drawCatchNet();
     const p = state.player, py = worldToScreen(p.y);
+    const isNetLanding = state.ending && !state.completed && state.endReason === 'loss';
+    if (isNetLanding) {
+      const landingSprite = netLandingSprites[p.character];
+      if (landingSprite.complete && landingSprite.naturalWidth) ctx.drawImage(landingSprite, W / 2 - 74, H - 177, 148, 148);
+      else { ctx.fillStyle = '#24483f'; ctx.font = 'bold 18px "Trebuchet MS"'; ctx.textAlign = 'center'; ctx.fillText('Oh man!', W / 2, H - 98); }
+    } else {
     const isFalling = p.vy > 30 || state.ending;
     const playerSprite = playerSprites[p.character][isFalling ? 'fall' : 'jump'];
     const tilt = isFalling ? Math.max(-.12, Math.min(.12, p.vx / 1300)) : Math.max(-.055, Math.min(.055, p.vx / 4200));
     const bob = isFalling ? 0 : Math.sin(lastTime / 85) * 1.25;
-    ctx.save(); ctx.translate(p.x, py + bob); ctx.rotate(tilt);
+    ctx.save(); ctx.translate(p.x, py + bob); ctx.rotate(tilt); ctx.scale(p.facing, 1);
     if (playerSprite.complete && playerSprite.naturalWidth) {
       // The source has transparent padding; these bounds align its visible feet
       // with the collision body while preserving a crisp, readable silhouette.
@@ -242,11 +260,23 @@
     }
     if (profile.shield > 0 && dhalShieldSprite.complete && dhalShieldSprite.naturalWidth) ctx.drawImage(dhalShieldSprite, 5, -18, 52, 52);
     ctx.restore();
+    }
     ctx.fillStyle = '#24483f'; ctx.font = 'bold 18px "Trebuchet MS"'; ctx.textAlign = 'left'; ctx.fillText(`Score ${Math.floor(state.score)}`, 18, 31); ctx.font = 'bold 13px "Trebuchet MS"'; ctx.fillText(`Parshad ${state.parshad}  ·  Khanda ${state.tokens}`, 18, 52); ctx.textAlign = 'right'; ctx.fillText(state.mode === 'arcade' ? `Arcade ${Math.floor(state.score)} / ${config.arcadeTargetScore}` : state.mode === 'challenge' ? `Challenge ${state.parshad} / ${config.challengeParshadTarget}` : `Endless · Tier ${levelForScore(state.score)}/5`, W - 18, 31);
+    const modeName = state.mode === 'arcade' ? 'ARCADE MODE' : state.mode === 'challenge' ? 'CHALLENGE MODE' : 'ENDLESS RUN';
+    const modeDetail = state.mode === 'arcade' ? `${Math.floor(state.score)} / ${config.arcadeTargetScore}` : state.mode === 'challenge' ? `${state.parshad} / ${config.challengeParshadTarget} BOWLS` : `TIER ${levelForScore(state.score)} / 5`;
+    ctx.fillStyle = '#fff8e9e8'; ctx.fillRect(W - 178, 12, 160, 44);
+    ctx.strokeStyle = state.mode === 'challenge' ? '#b56b2e' : state.mode === 'arcade' ? '#d56d39' : '#527165'; ctx.lineWidth = 2; ctx.strokeRect(W - 178, 12, 160, 44);
+    ctx.textAlign = 'center'; ctx.fillStyle = '#24483f'; ctx.font = 'bold 12px "Trebuchet MS"'; ctx.fillText(modeName, W - 98, 29); ctx.font = 'bold 11px "Trebuchet MS"'; ctx.fillText(modeDetail, W - 98, 45);
     if (state.messageTimer > 0) { ctx.textAlign = 'center'; ctx.fillStyle = '#24483f'; ctx.font = 'bold 15px "Trebuchet MS"'; ctx.fillText(state.message, W / 2, 82); }
   }
   function loop(time) { const dt = Math.min(.04, (time - lastTime) / 1000 || 0); lastTime = time; update(dt); draw(); requestAnimationFrame(loop); }
-  ui.choices.forEach(button => button.addEventListener('click', () => { selectedCharacter = button.dataset.character; ui.choices.forEach(b => b.classList.toggle('selected', b === button)); }));
+  function setSelectedCharacter(character) {
+    selectedCharacter = character;
+    ui.choices.forEach(button => button.classList.toggle('selected', button.dataset.character === character));
+    ui.sceneGirl.classList.toggle('selected', character === 'girl');
+    ui.sceneBoy.classList.toggle('selected', character === 'boy');
+  }
+  ui.choices.forEach(button => button.addEventListener('click', () => setSelectedCharacter(button.dataset.character)));
   function start(mode) { reset(mode); ui.home.classList.add('hidden'); ui.end.classList.add('hidden'); ui.upgrades.classList.add('hidden'); ui.about.classList.add('hidden'); }
   function showHome() { pointerX = null; if (state) state.running = false; ui.home.classList.remove('hidden'); ui.end.classList.add('hidden'); ui.upgrades.classList.add('hidden'); ui.about.classList.add('hidden'); }
   function showUpgrades() { pointerX = null; if (state) state.running = false; updateUpgradeUI(); ui.home.classList.add('hidden'); ui.end.classList.add('hidden'); ui.upgrades.classList.remove('hidden'); ui.about.classList.add('hidden'); }

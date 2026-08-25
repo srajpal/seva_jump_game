@@ -2,7 +2,12 @@ const SEVA_CONFIG = {
   gravity: 1500,
   baseJumpVelocity: 620,
   springJumpVelocity: 820,
-  maxHorizontalSpeed: 300,
+  // Responsive enough for a phone drag, while still leaving time to line up
+  // on the narrower late-game platforms.
+  maxHorizontalSpeed: 440,
+  pointerSteeringGain: 9,
+  pointerSteeringResponse: 18,
+  keyboardAcceleration: 1500,
   // Target pacing in the soak test: roughly 10s, 25s, 45s, and 70s.
   tierThresholds: [100, 250, 450, 700],
   horizontalShifts: [72, 94, 116, 136],
