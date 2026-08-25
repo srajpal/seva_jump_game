@@ -1,0 +1,40 @@
+Khalsa Jump is a free mobile game that is a doodle jump clone.
+
+Or maybe call it Seva Jump?
+
+Game Play
+
+A character jumps on platforms and travels vertically higher and higher. If the character misses a jump and falls below the screen the game ends. Game also ends if the character hits an enemy.
+
+In Khalsa Jump, our character (a boy or a girl) has to jump up on platforms to collect the Parsad that birds have stolen. They can also collect Khanda tokens to buy upgrades like an auto save (where they are saved from falling and dying once). As the game progresses the challenge changes. The platforms start moving, there are different size platforms, some break after 1 jump, there are enemies (birds flying around),...
+
+There will be a net in the bottom of the screen to catch the kids.
+
+Characters
+
+You can choose between a young Sikhi boy or young Sikhi girl.
+
+Levels
+
+There are 5 levels in the game. Each level (after level 1) unlocks new features.
+
+Level 1 (default): This level spawns NormalPlatform and SpringBoard platforms. When created, any platform has a 20% chance of being a moving platform.
+
+Level 2 (score >= 20): Adds BrokenPlatform that can only be jumped on once.
+
+Level 3 (score >= 40): Unlocks the Kara power up. This special power up lasts for 5 seconds and increases characters jumping ability by 2.5x normal velocity. 
+
+Level 4 (score >=80): Unlocks the Nishan Sahib power up. This special power up, represented by a rocket ship, makes the kid invincible. It also increases characters jumping ability by 3.5x normal velocity.
+
+Level 5 (score >= 100): Unlocks Enemies. If character collides with an enemy, it's an automatic game over.
+
+Upgrades
+
+Collect Khanda tokens to buy upgrades:
+
+Falcon save: once per game you will be saved from falling and failing by a white falcon (sent by Guru Gobind Singh Ji). consumable so needs to be repurchased after use.
+
+Dhal Shield: protects against one hit from an enemy. Needs to be repurchased after use.
+
+Power jump: permanent increase of jump height (5 levels?) each upgrade adds a multiplier to the jump so one upgrade is 1.1x, 2 is 1.2x and so on.
+

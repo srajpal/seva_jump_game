@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#bce7ef" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Seva Jump" />
+    <title>Seva Jump — Prototype</title>
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="game-shell">
+      <header><span>SEVA JUMP</span><small>Prototype</small></header>
+      <section class="game-frame" aria-label="Seva Jump game">
+        <canvas id="game" width="450" height="800" aria-label="Seva Jump canvas"></canvas>
+        <div id="home-screen" class="overlay home-screen">
+          <div class="home-content">
+            <p class="eyebrow">A skyward seva adventure</p>
+            <h1><span>Seva</span> Jump</h1>
+            <div class="story-card">
+              <span class="story-icon" aria-hidden="true">✦</span>
+              <p><strong>Help!</strong> The birds have stolen all the parshad. You have to help get it back.</p>
+            </div>
+            <div class="home-scene" aria-hidden="true">
+              <img class="scene-bowl" src="assets/parshad-bowl-pixel-v1.png" alt="" />
+              <img class="scene-girl" src="assets/player-girl-pixel-v1.png" alt="" />
+              <img class="scene-boy" src="assets/player-boy-pixel-v1.png" alt="" />
+              <img class="scene-bird" src="assets/bird-pigeon-pixel-v1.png" alt="" />
+            </div>
+          </div>
+          <div class="character-choice" role="group" aria-label="Choose your character">
+            <button class="choice selected" data-character="girl">Young Sikh girl</button>
+            <button class="choice" data-character="boy">Young Sikh boy</button>
+          </div>
+          <div class="mode-actions" aria-label="Choose game mode">
+            <button id="endless-button" class="primary"><span>Endless Run</span><small>Climb as far as you can</small></button>
+            <button id="arcade-button" class="mode-button"><span>Arcade Mode</span><small>Reach 1,000 to complete the run</small></button>
+            <button id="challenge-button" class="challenge-button"><span>Challenge Mode</span><small>Collect all 50 parshad bowls</small></button>
+          </div>
+          <div class="home-links"><button id="open-upgrades-button" class="secondary">Upgrades</button><button id="open-about-button" class="secondary">About</button></div>
+          <p class="help">Drag across the game to move. Arrow keys and the buttons below also work.</p>
+        </div>
+        <div id="end-screen" class="overlay hidden">
+          <p class="eyebrow">Nice climb!</p>
+          <h2 id="end-heading">Run complete</h2>
+          <p id="end-score"></p>
+          <div class="menu-actions">
+            <button id="restart-button" class="primary">Jump again</button>
+            <button id="end-home-button" class="secondary">Main screen</button>
+            <button id="end-upgrades-button" class="secondary">Upgrades</button>
+          </div>
+        </div>
+        <div id="upgrades-screen" class="overlay hidden">
+          <p class="eyebrow">Khanda tokens: <span id="wallet-count">0</span></p>
+          <h2>Upgrades</h2>
+          <p class="upgrade-intro">Use tokens earned during runs. Power Jump is permanent; the other upgrades are used once.</p>
+          <div class="upgrade-list">
+            <article class="upgrade-card"><h3>Falcon Save</h3><p>Catch one fall during a run.</p><button id="buy-falcon" class="secondary">Buy · 8</button><small id="falcon-owned">Owned: 0</small></article>
+            <article class="upgrade-card"><h3>Dhal Shield</h3><p>Block one bird collision.</p><button id="buy-shield" class="secondary">Buy · 10</button><small id="shield-owned">Owned: 0</small></article>
+            <article class="upgrade-card"><h3>Power Jump</h3><p>Increase jump height by 10%.</p><button id="buy-power" class="secondary">Buy · 15</button><small id="power-owned">Level: 0 / 5</small></article>
+          </div>
+          <p id="upgrade-message" class="help" aria-live="polite"></p>
+          <button id="close-upgrades-button" class="primary">Back to main screen</button>
+        </div>
+        <div id="about-screen" class="overlay about-screen hidden">
+          <p class="eyebrow">About Seva Jump</p>
+          <h2>Game guide</h2>
+          <p class="about-intro">Seva Jump is a playful game inspired by Sikh community values. These short notes introduce the terms used in the game.</p>
+          <h3 class="about-subhead">Items and challenges</h3>
+          <ul class="item-guide">
+            <li><strong>Parshad bowl:</strong> adds to your score.</li>
+            <li><strong>Khanda token:</strong> currency for the upgrade shop.</li>
+            <li><strong>Platforms:</strong> grass, spring, moving, and one-use wooden planks.</li>
+            <li><strong>Kara boost:</strong> 2.5× jump power for 5 seconds.</li>
+            <li><strong>Nishan boost:</strong> 3.5× jump power and bird protection for 5 seconds.</li>
+            <li><strong>Falcon Save / Dhal Shield:</strong> protect one fall / one bird hit.</li>
+            <li><strong>Birds:</strong> avoid them unless you are protected.</li>
+          </ul>
+          <h3 class="about-subhead">Sikh terms</h3>
+          <dl class="glossary">
+            <div><dt>Seva</dt><dd>Selfless service and helping others.</dd></div>
+            <div><dt>Parshad</dt><dd>A blessed sweet food shared with the congregation.</dd></div>
+            <div><dt>Gurdwara</dt><dd>A Sikh place of worship and community gathering.</dd></div>
+            <div><dt>Kara</dt><dd>A steel bracelet, one of the Sikh articles of faith.</dd></div>
+            <div><dt>Nishan Sahib</dt><dd>The Sikh flag, seen outside gurdwaras.</dd></div>
+            <div><dt>Khanda</dt><dd>A widely recognized Sikh emblem.</dd></div>
+            <div><dt>Dhal</dt><dd>A shield; in the game, it blocks one bird collision.</dd></div>
+          </dl>
+          <button id="close-about-button" class="primary">Back to main screen</button>
+        </div>
+      </section>
+      <section class="controls" aria-label="Movement controls">
+        <button id="left-button" aria-label="Move left">←</button>
+        <p>Drag to move</p>
+        <button id="right-button" aria-label="Move right">→</button>
+      </section>
+      <section class="settings">
+        <label><input id="music-toggle" type="checkbox" checked /> Music</label>
+        <label><input id="sound-toggle" type="checkbox" checked /> Sound effects</label>
+      </section>
+    </main>
+    <script src="game-config.js"></script>
+    <script src="game-rules.js"></script>
+    <script src="game.js"></script>
+  </body>
+</html>

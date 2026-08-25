@@ -1,0 +1,10 @@
+{
+  "name": "Seva Jump",
+  "short_name": "Seva Jump",
+  "description": "A skyward seva adventure.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#bce7ef",
+  "theme_color": "#bce7ef",
+  "orientation": "portrait"
+}
