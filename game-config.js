@@ -2,6 +2,8 @@ const SEVA_CONFIG = {
   gravity: 1500,
   baseJumpVelocity: 620,
   springJumpVelocity: 820,
+  karaJumpMultiplier: 1.4,
+  nishanJumpMultiplier: 1.6,
   // Responsive enough for a phone drag, while still leaving time to line up
   // on the narrower late-game platforms.
   maxHorizontalSpeed: 440,
@@ -16,6 +18,8 @@ const SEVA_CONFIG = {
   challengeParshadTarget: 50,
   arcadeBirdStartScore: 500,
   finishBannerLeadScore: 28,
+  finishRunwayGap: 108,
+  finishRunwaySteps: 4,
   arcadeHorizontalMultiplier: 1.16,
   arcadeGapBonus: 6,
   movingPlatformSpeedRange: [44, 72],

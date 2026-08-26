@@ -16,6 +16,7 @@
     falconOwned: document.querySelector('#falcon-owned'), shieldOwned: document.querySelector('#shield-owned'), powerOwned: document.querySelector('#power-owned'),
     buyFalcon: document.querySelector('#buy-falcon'), buyShield: document.querySelector('#buy-shield'), buyPower: document.querySelector('#buy-power'),
     openAbout: document.querySelector('#open-about-button'), closeAbout: document.querySelector('#close-about-button'),
+    musicToggle: document.querySelector('#music-toggle'), soundToggle: document.querySelector('#sound-toggle'),
   };
   const palette = ['#bce7ef', '#f8d9a7', '#c9e5c0', '#e5c4d6'];
   const backgroundImage = new Image();
@@ -57,6 +58,49 @@
   function saveProfile() { localStorage.setItem('seva-jump-profile', JSON.stringify(profile)); }
   let profile = loadProfile();
   let state, selectedCharacter = 'girl', pointerX = null, keys = new Set(), lastTime = 0;
+  let audioContext, musicTimer = null;
+
+  function getAudio() {
+    if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioContext.state === 'suspended') audioContext.resume();
+    return audioContext;
+  }
+  function tone(frequency, duration, options = {}) {
+    if (!ui.soundToggle.checked || !audioContext) return;
+    const audio = audioContext, now = audio.currentTime, oscillator = audio.createOscillator(), gain = audio.createGain();
+    oscillator.type = options.wave || 'triangle'; oscillator.frequency.setValueAtTime(frequency, now);
+    if (options.slide) oscillator.frequency.exponentialRampToValueAtTime(Math.max(30, options.slide), now + duration);
+    gain.gain.setValueAtTime(options.volume ?? .055, now); gain.gain.exponentialRampToValueAtTime(.001, now + duration);
+    oscillator.connect(gain).connect(audio.destination); oscillator.start(now); oscillator.stop(now + duration + .03);
+  }
+  function sound(type) {
+    if (type === 'jump') tone(430, .09, { slide: 610, volume: .045 });
+    else if (type === 'collect') { tone(720, .07, { volume: .05 }); setTimeout(() => tone(960, .09, { volume: .04 }), 55); }
+    else if (type === 'token') { tone(620, .09, { slide: 980, volume: .055 }); setTimeout(() => tone(1240, .12, { volume: .045 }), 70); }
+    else if (type === 'boost') { tone(310, .18, { slide: 880, wave: 'sine', volume: .07 }); setTimeout(() => tone(1050, .16, { volume: .045 }), 95); }
+    else if (type === 'shield') tone(230, .2, { slide: 110, wave: 'square', volume: .065 });
+    else if (type === 'break') tone(170, .13, { slide: 90, wave: 'sawtooth', volume: .045 });
+    else if (type === 'save') { tone(470, .13, { slide: 790, volume: .065 }); setTimeout(() => tone(980, .18, { volume: .05 }), 90); }
+    else if (type === 'win') { [523, 659, 784, 1047].forEach((note, i) => setTimeout(() => tone(note, .18, { volume: .06 }), i * 105)); }
+    else if (type === 'loss') tone(260, .34, { slide: 105, wave: 'sine', volume: .06 });
+  }
+  function playMusicPhrase() {
+    if (!audioContext || !ui.musicToggle.checked) return;
+    const audio = audioContext, now = audio.currentTime, beat = .42;
+    const melody = [392, 440, 523, 440, 349, 392, 440, 523];
+    melody.forEach((note, i) => {
+      const oscillator = audio.createOscillator(), gain = audio.createGain(), start = now + i * beat;
+      oscillator.type = 'sine'; oscillator.frequency.value = note; gain.gain.setValueAtTime(.018, start); gain.gain.exponentialRampToValueAtTime(.001, start + beat * .9);
+      oscillator.connect(gain).connect(audio.destination); oscillator.start(start); oscillator.stop(start + beat);
+    });
+  }
+  function setMusic() {
+    clearInterval(musicTimer); musicTimer = null;
+    if (!ui.musicToggle.checked || !audioContext) return;
+    playMusicPhrase(); musicTimer = setInterval(playMusicPhrase, 8 * .42 * 1000);
+  }
+  function stopMusic() { clearInterval(musicTimer); musicTimer = null; }
+  function startAudio() { getAudio(); setMusic(); }
 
   function updateUpgradeUI(message = '') {
     ui.wallet.textContent = profile.tokens;
@@ -71,7 +115,7 @@
   function reset(mode = 'endless') {
     state = {
       running: true, mode, score: 0, heightScore: 0, parshad: 0, tokens: 0, cameraY: 0,
-      background: Math.floor(Math.random() * palette.length), nextY: 610, ending: false, falconUsed: false, boostMultiplier: 1, boostTimer: 0, invincibleTimer: 0, finishGate: null, challengePlaced: 0, challengePlatformCount: 0,
+      background: Math.floor(Math.random() * palette.length), nextY: 610, ending: false, falconUsed: false, invincibleTimer: 0, finishGate: null, challengePlaced: 0, challengePlatformCount: 0,
       player: { x: W / 2, y: 650, vx: 0, vy: -config.baseJumpVelocity * (1 + profile.powerJump * .1), w: 31, h: 48, character: selectedCharacter, facing: 1 },
       platforms: [{ x: 170, y: 700, w: 115, type: 'normal' }], lastPlatform: { x: 170, y: 700, w: 115 }, collectibles: [], enemies: [], powerups: [],
       message: mode === 'challenge' ? `Challenge · collect all ${config.challengeParshadTarget} parshad` : mode === 'arcade' ? `Arcade · reach ${config.arcadeTargetScore}` : 'Endless Run · Keep climbing', messageTimer: 3,
@@ -128,6 +172,16 @@
     const verticalGap = minGap + Math.random() * (maxGap - minGap) + (arcade ? config.arcadeGapBonus : 0);
     state.nextY -= verticalGap;
   }
+  function addFinishRunway() {
+    // The last score band is a fixed, generous staircase. This guarantees a
+    // route to the banner instead of leaving the final climb to random rolls.
+    const p = state.player;
+    let center = p.x;
+    for (let step = 1; step <= config.finishRunwaySteps; step++) {
+      center = Math.max(74, Math.min(W - 74, center + (step % 2 ? 28 : -20)));
+      state.platforms.push({ x: center - 62, y: p.y - config.finishRunwayGap * step, w: 124, type: 'normal', speed: 0, dir: 1, broken: false, finishRunway: true });
+    }
+  }
   // Longer score bands let a full run breathe before new hazards appear.
   function levelForScore(score) { const [two, three, four, five] = config.tierThresholds; return score >= five ? 5 : score >= four ? 4 : score >= three ? 3 : score >= two ? 2 : 1; }
   function worldToScreen(y) { return y - state.cameraY; }
@@ -135,13 +189,14 @@
   function finish(completed = false, reason = 'loss') {
     if (state.ending) return;
     state.ending = true; state.running = false; state.completed = completed; state.endReason = reason; state.winStarted = lastTime;
+    stopMusic();
+    sound(completed ? 'win' : 'loss');
     profile.tokens += state.tokens; saveProfile(); updateUpgradeUI();
     setTimeout(() => { ui.endHeading.textContent = completed ? (state.mode === 'challenge' ? 'Challenge complete!' : 'Arcade complete!') : (state.mode === 'challenge' && reason === 'finish' ? 'Challenge incomplete' : 'Run complete'); ui.score.textContent = `Score ${Math.floor(state.score)} · ${state.parshad} parshad · ${state.tokens} Khanda tokens earned`; ui.end.classList.remove('hidden'); }, 760);
   }
   function update(dt) {
     if (!state.running) return;
     const p = state.player;
-    if (state.boostTimer > 0) { state.boostTimer = Math.max(0, state.boostTimer - dt); if (state.boostTimer === 0) state.boostMultiplier = 1; }
     if (state.invincibleTimer > 0) state.invincibleTimer = Math.max(0, state.invincibleTimer - dt);
     const keyboard = (keys.has('ArrowRight') ? 1 : 0) - (keys.has('ArrowLeft') ? 1 : 0);
     if (pointerX !== null) {
@@ -159,8 +214,9 @@
       if (plat.type === 'moving') { plat.x += plat.dir * plat.speed * dt; if (plat.x < 6 || plat.x + plat.w > W - 6) plat.dir *= -1; }
       const top = plat.y;
       if (!plat.broken && p.vy > 0 && p.y + p.h / 2 >= top && p.y + p.h / 2 <= top + 25 && p.x + p.w / 2 > plat.x && p.x - p.w / 2 < plat.x + plat.w) {
-        const jumpMultiplier = (1 + profile.powerJump * .1) * state.boostMultiplier;
+        const jumpMultiplier = 1 + profile.powerJump * .1;
         p.y = top - p.h / 2; p.vy = -(plat.type === 'spring' ? config.springJumpVelocity : config.baseJumpVelocity) * jumpMultiplier;
+        sound(plat.type === 'break' ? 'break' : 'jump');
         if (plat.type === 'break') plat.broken = true;
       }
     }
@@ -171,6 +227,7 @@
     if (rules.isArcadeLike(state.mode)) {
       if (!state.finishGate && state.score >= config.arcadeTargetScore - config.finishBannerLeadScore) {
         state.finishGate = { y: p.y - config.finishBannerLeadScore * 18, broken: false };
+        addFinishRunway();
         state.message = 'The finish banner is ahead!'; state.messageTimer = 2;
       }
       if (state.finishGate && p.y <= state.finishGate.y) {
@@ -181,16 +238,16 @@
     }
     while (state.nextY > state.cameraY - 900) addPlatform();
     state.platforms = state.platforms.filter(o => o.y < state.cameraY + H + 100 && !o.broken);
-    for (const c of state.collectibles) if (!c.taken && collide(p, c, 27)) { c.taken = true; if (c.type === 'token') state.tokens++; else { state.parshad++; state.score += 3; } }
+    for (const c of state.collectibles) if (!c.taken && collide(p, c, 27)) { c.taken = true; if (c.type === 'token') { state.tokens++; sound('token'); } else { state.parshad++; state.score += 3; sound('collect'); } }
     state.collectibles = state.collectibles.filter(c => !c.taken && c.y < state.cameraY + H + 100);
-    for (const power of state.powerups) if (!power.taken && collide(p, power, 30)) { power.taken = true; state.boostMultiplier = power.type === 'kara' ? 2.5 : 3.5; state.boostTimer = 5; if (power.type === 'nishan') state.invincibleTimer = 5; p.vy = -config.baseJumpVelocity * state.boostMultiplier; state.message = power.type === 'kara' ? 'Kara boost · 5 seconds!' : 'Nishan boost · invincible!'; state.messageTimer = 2; }
+    for (const power of state.powerups) if (!power.taken && collide(p, power, 30)) { power.taken = true; sound('boost'); const boost = power.type === 'kara' ? config.karaJumpMultiplier : config.nishanJumpMultiplier; if (power.type === 'nishan') state.invincibleTimer = 5; p.vy = -config.baseJumpVelocity * boost * (1 + profile.powerJump * .1); state.message = power.type === 'kara' ? 'Kara boost · one higher jump!' : 'Nishan boost · one jump + protection!'; state.messageTimer = 2; }
     state.powerups = state.powerups.filter(o => !o.taken && o.y < state.cameraY + H + 100);
-    for (const bird of state.enemies) { bird.x += bird.vx * dt; if (bird.x < 20 || bird.x > W - 20) bird.vx *= -1; if (collide(p, bird, 28)) { if (state.invincibleTimer > 0) { bird.hit = true; state.message = 'Nishan boost protected you!'; state.messageTimer = 2; } else if (profile.shield > 0) { profile.shield--; bird.hit = true; saveProfile(); updateUpgradeUI(); state.message = 'Dhal Shield protected you!'; state.messageTimer = 2; } else finish(); } }
+    for (const bird of state.enemies) { bird.x += bird.vx * dt; if (bird.x < 20 || bird.x > W - 20) bird.vx *= -1; if (collide(p, bird, 28)) { if (state.invincibleTimer > 0) { sound('shield'); bird.hit = true; state.message = 'Nishan boost protected you!'; state.messageTimer = 2; } else if (profile.shield > 0) { sound('shield'); profile.shield--; bird.hit = true; saveProfile(); updateUpgradeUI(); state.message = 'Dhal Shield protected you!'; state.messageTimer = 2; } else finish(); } }
     state.enemies = state.enemies.filter(o => o.y < state.cameraY + H + 100 && !o.hit);
     // End the run as the character reaches the visible net, rather than after
     // they have already disappeared below the frame.
     if (p.y > state.cameraY + H - 52) {
-      if (profile.falcon > 0 && !state.falconUsed) { profile.falcon--; state.falconUsed = true; saveProfile(); updateUpgradeUI(); p.y = state.cameraY + H - 185; p.vy = -(config.springJumpVelocity + 40) * (1 + profile.powerJump * .1); state.message = 'Falcon Save!'; state.messageTimer = 2; }
+      if (profile.falcon > 0 && !state.falconUsed) { sound('save'); profile.falcon--; state.falconUsed = true; saveProfile(); updateUpgradeUI(); p.y = state.cameraY + H - 185; p.vy = -(config.springJumpVelocity + 40) * (1 + profile.powerJump * .1); state.message = 'Falcon Save!'; state.messageTimer = 2; }
       else finish();
     }
     state.messageTimer -= dt;
@@ -277,7 +334,7 @@
     ui.sceneBoy.classList.toggle('selected', character === 'boy');
   }
   ui.choices.forEach(button => button.addEventListener('click', () => setSelectedCharacter(button.dataset.character)));
-  function start(mode) { reset(mode); ui.home.classList.add('hidden'); ui.end.classList.add('hidden'); ui.upgrades.classList.add('hidden'); ui.about.classList.add('hidden'); }
+  function start(mode) { startAudio(); reset(mode); ui.home.classList.add('hidden'); ui.end.classList.add('hidden'); ui.upgrades.classList.add('hidden'); ui.about.classList.add('hidden'); }
   function showHome() { pointerX = null; if (state) state.running = false; ui.home.classList.remove('hidden'); ui.end.classList.add('hidden'); ui.upgrades.classList.add('hidden'); ui.about.classList.add('hidden'); }
   function showUpgrades() { pointerX = null; if (state) state.running = false; updateUpgradeUI(); ui.home.classList.add('hidden'); ui.end.classList.add('hidden'); ui.upgrades.classList.remove('hidden'); ui.about.classList.add('hidden'); }
   function showAbout() { pointerX = null; if (state) state.running = false; ui.home.classList.add('hidden'); ui.end.classList.add('hidden'); ui.upgrades.classList.add('hidden'); ui.about.classList.remove('hidden'); }
@@ -291,6 +348,7 @@
   ui.endless.addEventListener('click', () => start('endless')); ui.arcade.addEventListener('click', () => start('arcade')); ui.challenge.addEventListener('click', () => start('challenge')); ui.restart.addEventListener('click', () => start(state?.mode || 'endless'));
   ui.openUpgrades.addEventListener('click', showUpgrades); ui.endUpgrades.addEventListener('click', showUpgrades); ui.endHome.addEventListener('click', showHome); ui.closeUpgrades.addEventListener('click', showHome); ui.openAbout.addEventListener('click', showAbout); ui.closeAbout.addEventListener('click', showHome);
   ui.buyFalcon.addEventListener('click', () => buyUpgrade('falcon')); ui.buyShield.addEventListener('click', () => buyUpgrade('shield')); ui.buyPower.addEventListener('click', () => buyUpgrade('powerJump'));
+  ui.musicToggle.addEventListener('change', () => { if (ui.musicToggle.checked) startAudio(); else setMusic(); });
   canvas.addEventListener('pointerdown', e => { pointerX = (e.offsetX / canvas.clientWidth) * W; canvas.setPointerCapture?.(e.pointerId); });
   canvas.addEventListener('pointermove', e => { if (e.buttons) pointerX = (e.offsetX / canvas.clientWidth) * W; });
   canvas.addEventListener('pointerup', () => { pointerX = null; });

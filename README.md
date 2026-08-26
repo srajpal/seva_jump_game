@@ -24,8 +24,8 @@ The game is self-contained: no login, ads, purchases, or network connection are 
 
 - **Parshad bowls** add to your score. In Challenge Mode, every bowl counts.
 - **Khanda tokens** are used for the upgrade shop.
-- **Kara boost** gives higher jumps for a short time.
-- **Nishan boost** gives a powerful jump and brief protection from birds.
+- **Kara boost** gives one higher jump.
+- **Nishan boost** gives one stronger jump and brief protection from birds.
 - **Dhal Shield** blocks one bird hit when owned.
 - **Falcon Save** gives a second chance after falling.
 - **Grass, spring, moving, and wooden breakable platforms** each change how you plan your next jump.

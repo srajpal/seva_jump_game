@@ -25,5 +25,7 @@ for (let platform = 1; platform <= 220; platform++) {
 assert.equal(placed, config.challengeParshadTarget, 'Challenge must contain exactly the requested number of bowls.');
 assert.equal(config.challengeParshadTarget * 3, 150, 'All Challenge bowls should appear before the finish section.');
 assert(config.arcadeMovingPlatformSpeedRange[1] <= 110, 'Arcade platform speed cap should remain manageable.');
+assert(config.finishRunwayGap < config.baseJumpVelocity ** 2 / (2 * config.gravity), 'Each finish-runway platform must be within a normal jump apex.');
+assert(config.finishRunwaySteps * config.finishRunwayGap >= config.finishBannerLeadScore * 18 - config.baseJumpVelocity ** 2 / (2 * config.gravity), 'The finish runway must reach the banner approach.');
 
 console.log(`Rule checks passed. Challenge contains exactly ${placed} parshad bowls across its first 150 platforms.`);
