@@ -2,6 +2,8 @@
 
 **A skyward seva adventure.**
 
+Current playtest build: **v0.7.0**.
+
 The birds have flown away with the parshad. Choose a young Sikh boy or girl, leap from platform to platform, and bring it back in this cheerful browser game prototype.
 
 Seva Jump is designed for ages 8–15, with touch-first controls, a calm gurdwara-inspired setting, and a respectful introduction to a few Sikh terms used in the game.
@@ -44,6 +46,7 @@ No build step or package installation is required. With Node.js available, run:
 node tests\rule-checks.js
 node tests\soak-test.js
 node tests\full-run-checks.js
+node tests\endless-bird-checks.js
 ```
 
 These checks verify core rules, full-mode outcomes, Challenge Mode’s 50-bowl placement, power-up/Falcon behavior, procedural platform reachability, and platform pacing.
