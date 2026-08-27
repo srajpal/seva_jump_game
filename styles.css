@@ -46,6 +46,24 @@ h2 { font-size: 2.3rem; }.eyebrow { margin: 0 0 7px; color: #a85e30; font-weight
   .game-frame { width: 100%; height: 100%; border: 0; border-radius: 0; box-shadow: none; }
   canvas { width: 100%; height: 100%; }
   .game-tools { top: max(64px, env(safe-area-inset-top)); right: max(12px, env(safe-area-inset-right)); }
+  /* Menus can be taller than a phone viewport. Let them scroll instead of
+     shrinking their cards, artwork, and touch targets into each other. */
+  .overlay { justify-content: flex-start; gap: 9px; padding: max(18px, env(safe-area-inset-top)) 18px max(22px, env(safe-area-inset-bottom)); overflow-x: hidden; overflow-y: auto; -webkit-overflow-scrolling: touch; touch-action: pan-y; }
+  .overlay > * { flex: 0 0 auto; }
+  .overlay button { touch-action: manipulation; }
+  .home-screen { justify-content: flex-start; gap: 10px; padding-top: max(22px, env(safe-area-inset-top)); }
+  .home-content { gap: 7px; }
+  .home-scene { min-height: 158px; flex-shrink: 0; }
+  .home-scene .scene-character { height: 151px !important; }
+  .home-scene .scene-character img { width: auto !important; height: 100% !important; max-width: none !important; }
+  .home-links { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); width: min(100%, 360px); gap: 7px; }
+  .home-screen .home-links .secondary { min-height: 45px; padding: 6px 5px; border-radius: 13px; font-size: .66rem; line-height: 1.08; white-space: normal; }
+  .mode-actions { width: min(100%, 360px); }
+  #upgrades-screen { justify-content: flex-start; }
+  .upgrade-list { width: min(100%, 360px); }
+  .upgrade-card { min-height: 84px; }
+  .upgrade-icon { flex: 0 0 28px; width: 28px !important; height: 28px !important; max-width: 28px !important; max-height: 28px !important; }
+  .guide-card img { width: 36px !important; height: 36px !important; max-width: 36px !important; max-height: 36px !important; }
 }
 
 @media (max-width: 420px) and (hover: hover) { .game-shell { padding: 7px; } .game-frame { border-width: 3px; border-radius: 18px; } }

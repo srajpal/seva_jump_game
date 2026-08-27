@@ -290,7 +290,7 @@
   }
   function burst(x, y, color, count = 6) {
     if (profile.reducedMotion) return;
-    for (let i = 0; i < count; i++) state.particles.push({ x, y, vx: (Math.random() * 2 - 1) * 125, vy: -35 - Math.random() * 135, color, life: .42 + Math.random() * .28, maxLife: .7, size: 3 + Math.floor(Math.random() * 4) });
+    for (let i = 0; i < count; i++) state.particles.push({ x, y, vx: (Math.random() * 2 - 1) * 145, vy: -45 - Math.random() * 155, color, life: .5 + Math.random() * .3, maxLife: .8, size: 4 + Math.floor(Math.random() * 5) });
   }
   function addFinishRunway() {
     // The last score band is a fixed, generous staircase. This guarantees a
@@ -365,8 +365,8 @@
         profile.stats.jumps++;
         sound(plat.type === 'break' ? 'break' : plat.type === 'spring' ? 'spring' : 'land');
         const landingColor = plat.type === 'spring' ? '#d5a5ff' : plat.type === 'break' ? '#c49464' : '#f7efd7';
-        burst(p.x, top, landingColor, plat.type === 'spring' ? 20 : plat.type === 'break' ? 16 : 12);
-        burst(p.x, top, '#fff9e8', plat.type === 'spring' ? 7 : 4);
+        burst(p.x, top, landingColor, plat.type === 'spring' ? 26 : plat.type === 'break' ? 20 : 16);
+        burst(p.x, top, '#fff9e8', plat.type === 'spring' ? 9 : 6);
         if (plat.type === 'break') plat.broken = true;
       }
     }
@@ -551,7 +551,7 @@
   function openSettings(from) { settingsReturn = from; if (from === 'pause') ui.pause.classList.add('hidden'); else ui.home.classList.add('hidden'); ui.settings.classList.remove('hidden'); }
   function closeSettings() { ui.settings.classList.add('hidden'); if (settingsReturn === 'pause' && state?.paused) ui.pause.classList.remove('hidden'); else ui.home.classList.remove('hidden'); }
   function start(mode) { reset(mode); startAudio(); ui.home.classList.add('hidden'); ui.end.classList.add('hidden'); ui.end.classList.remove('visible'); ui.upgrades.classList.add('hidden'); ui.about.classList.add('hidden'); ui.badges.classList.add('hidden'); ui.stats.classList.add('hidden'); ui.settings.classList.add('hidden'); ui.pause.classList.add('hidden'); ui.gameTools.classList.remove('hidden'); }
-  function showHome() { pointerX = null; keys.clear(); if (state) state.running = false; stopMusic(); ui.home.classList.remove('hidden'); ui.end.classList.add('hidden'); ui.end.classList.remove('visible'); ui.upgrades.classList.add('hidden'); ui.about.classList.add('hidden'); ui.badges.classList.add('hidden'); ui.stats.classList.add('hidden'); ui.settings.classList.add('hidden'); ui.pause.classList.add('hidden'); ui.gameTools.classList.add('hidden'); }
+  function showHome() { pointerX = null; keys.clear(); if (state) state.running = false; stopMusic(); updateRecordsUI(); ui.home.classList.remove('hidden'); ui.end.classList.add('hidden'); ui.end.classList.remove('visible'); ui.upgrades.classList.add('hidden'); ui.about.classList.add('hidden'); ui.badges.classList.add('hidden'); ui.stats.classList.add('hidden'); ui.settings.classList.add('hidden'); ui.pause.classList.add('hidden'); ui.gameTools.classList.add('hidden'); }
   function showUpgrades() { pointerX = null; keys.clear(); if (state) state.running = false; stopMusic(); updateUpgradeUI(); ui.home.classList.add('hidden'); ui.end.classList.add('hidden'); ui.upgrades.classList.remove('hidden'); ui.about.classList.add('hidden'); ui.badges.classList.add('hidden'); ui.stats.classList.add('hidden'); ui.settings.classList.add('hidden'); ui.pause.classList.add('hidden'); ui.gameTools.classList.add('hidden'); }
   function showAbout() { pointerX = null; keys.clear(); if (state) state.running = false; stopMusic(); ui.home.classList.add('hidden'); ui.end.classList.add('hidden'); ui.upgrades.classList.add('hidden'); ui.about.classList.remove('hidden'); ui.badges.classList.add('hidden'); ui.stats.classList.add('hidden'); ui.settings.classList.add('hidden'); ui.pause.classList.add('hidden'); ui.gameTools.classList.add('hidden'); }
   function showBadges() { renderBadges(); ui.home.classList.add('hidden'); ui.badges.classList.remove('hidden'); ui.stats.classList.add('hidden'); }
