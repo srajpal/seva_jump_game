@@ -16,6 +16,14 @@ assert.equal(rules.didWin('arcade', 0), true);
 assert.equal(rules.isArcadeLike('arcade'), true);
 assert.equal(rules.isArcadeLike('challenge'), true);
 assert.equal(rules.isArcadeLike('endless'), false);
+assert.equal(rules.endlessDifficulty(0), 0, 'Endless difficulty should begin gently.');
+assert(rules.endlessDifficulty(750) > 0 && rules.endlessDifficulty(750) < 1, 'Endless difficulty should ramp continuously.');
+assert.equal(rules.endlessDifficulty(config.endlessDifficultyScore), 1, 'Endless difficulty should reach its capped late-game intensity.');
+assert.equal(rules.endlessDifficulty(100000), 1, 'Endless difficulty should remain capped at extreme scores.');
+assert(rules.maxDefaultPlatformGap() < config.baseJumpVelocity ** 2 / (2 * config.gravity), 'Every generated platform gap must remain below the default jump apex.');
+assert.equal(rules.maxDefaultPlatformGap(), config.safeDefaultPlatformGap, 'The generator must respect its conservative default-jump safety cap.');
+assert.equal(rules.canHaveDoublePlatform('moving'), false, 'Moving platforms must never share a row.');
+assert.equal(rules.canHaveDoublePlatform('normal'), true, 'A normal platform may have a companion route.');
 
 // Challenge placement: one bowl every third generated platform, then no more.
 let placed = 0;
@@ -27,5 +35,13 @@ assert.equal(config.challengeParshadTarget * 3, 150, 'All Challenge bowls should
 assert(config.arcadeMovingPlatformSpeedRange[1] <= 110, 'Arcade platform speed cap should remain manageable.');
 assert(config.finishRunwayGap < config.baseJumpVelocity ** 2 / (2 * config.gravity), 'Each finish-runway platform must be within a normal jump apex.');
 assert(config.finishRunwaySteps * config.finishRunwayGap >= config.finishBannerLeadScore * 18 - config.baseJumpVelocity ** 2 / (2 * config.gravity), 'The finish runway must reach the banner approach.');
+assert.equal(rules.finishRunwayIsReachable(), true, 'The finish runway must remain reachable as a complete path.');
+assert(rules.boostVelocity('kara') < -config.baseJumpVelocity, 'Kara must provide a higher immediate jump.');
+assert(Math.abs(rules.boostVelocity('kara')) <= config.baseJumpVelocity * 1.5, 'Kara must remain below its one-jump safety cap.');
+assert(rules.boostVelocity('nishan') < rules.boostVelocity('kara'), 'Nishan should be stronger than Kara.');
+assert(Math.abs(rules.boostVelocity('nishan')) <= config.baseJumpVelocity * 1.75, 'Nishan must remain below its one-jump safety cap.');
+assert.equal(rules.canUseFalconSave(1, false), true, 'An owned unused Falcon Save should activate.');
+assert.equal(rules.canUseFalconSave(0, false), false, 'Falcon Save should not activate when none are owned.');
+assert.equal(rules.canUseFalconSave(1, true), false, 'Only one Falcon Save can activate in a run.');
 
 console.log(`Rule checks passed. Challenge contains exactly ${placed} parshad bowls across its first 150 platforms.`);

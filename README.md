@@ -10,7 +10,7 @@ Seva Jump is designed for ages 8–15, with touch-first controls, a calm gurdwar
 
 Open **`index.html`** in a modern browser. On a phone or tablet, drag anywhere across the game to steer left and right. On a desktop, you can also use the arrow keys or on-screen controls.
 
-The game is self-contained: no login, ads, purchases, or network connection are needed to play locally.
+The game is self-contained: no login, ads, purchases, or network connection are needed to play locally. When opened from the published site, it also caches the game after the first successful visit so it remains playable offline.
 
 ## Game modes
 
@@ -43,9 +43,10 @@ No build step or package installation is required. With Node.js available, run:
 ```powershell
 node tests\rule-checks.js
 node tests\soak-test.js
+node tests\full-run-checks.js
 ```
 
-These checks verify the mode rules, Challenge Mode’s 50-bowl placement, procedural platform reachability, and platform pacing.
+These checks verify core rules, full-mode outcomes, Challenge Mode’s 50-bowl placement, power-up/Falcon behavior, procedural platform reachability, and platform pacing.
 
 ## Project structure
 

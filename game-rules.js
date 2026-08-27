@@ -2,6 +2,16 @@ const RULE_CONFIG = typeof module !== 'undefined' ? require('./game-config.js') 
 
 const SEVA_RULES = {
   isArcadeLike(mode) { return mode === 'arcade' || mode === 'challenge'; },
+  endlessDifficulty(score) {
+    return Math.max(0, Math.min(1, score / RULE_CONFIG.endlessDifficultyScore));
+  },
+  maxDefaultPlatformGap() {
+    const normalApex = RULE_CONFIG.baseJumpVelocity ** 2 / (2 * RULE_CONFIG.gravity);
+    return Math.min(RULE_CONFIG.safeDefaultPlatformGap, normalApex * .8);
+  },
+  canHaveDoublePlatform(type) {
+    return type !== 'moving';
+  },
   shouldComplete(mode, score, parshad) {
     if (mode === 'arcade') return score >= RULE_CONFIG.arcadeTargetScore;
     if (mode === 'challenge') return score >= RULE_CONFIG.arcadeTargetScore;
@@ -9,6 +19,18 @@ const SEVA_RULES = {
   },
   didWin(mode, parshad) {
     return mode !== 'challenge' || parshad >= RULE_CONFIG.challengeParshadTarget;
+  },
+  boostVelocity(type, powerJump = 0) {
+    const multiplier = type === 'kara' ? RULE_CONFIG.karaJumpMultiplier : RULE_CONFIG.nishanJumpMultiplier;
+    return -RULE_CONFIG.baseJumpVelocity * multiplier * (1 + powerJump * .1);
+  },
+  canUseFalconSave(owned, alreadyUsed) {
+    return owned > 0 && !alreadyUsed;
+  },
+  finishRunwayIsReachable() {
+    const jumpApex = RULE_CONFIG.baseJumpVelocity ** 2 / (2 * RULE_CONFIG.gravity);
+    const neededAfterLastPlatform = RULE_CONFIG.finishBannerLeadScore * 18 - RULE_CONFIG.finishRunwaySteps * RULE_CONFIG.finishRunwayGap;
+    return RULE_CONFIG.finishRunwayGap < jumpApex && neededAfterLastPlatform < jumpApex;
   },
 };
 
