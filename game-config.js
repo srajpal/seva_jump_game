@@ -20,7 +20,9 @@ const SEVA_CONFIG = {
   doublePlatformChance: .24,
   endlessDifficultyScore: 1500,
   endlessHorizontalShiftRange: [72, 136],
-  endlessBirdStartScore: 180,
+  endlessBirdStartScore: 160,
+  endlessBirdWarmupScore: 120,
+  endlessBirdIntroChance: .025,
   endlessBirdChanceRange: [.08, .26],
   // Birds should be hazards to steer around, never sit directly above the
   // platform a player is trying to land on.
@@ -35,6 +37,7 @@ const SEVA_CONFIG = {
   arcadeGapBonus: 6,
   movingPlatformSpeedRange: [44, 72],
   arcadeMovingPlatformSpeedRange: [54, 104],
+  powerJumpCosts: [10, 15, 25, 35, 45],
 };
 
 globalThis.SEVA_CONFIG = SEVA_CONFIG;

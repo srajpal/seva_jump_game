@@ -12,9 +12,17 @@ const SEVA_RULES = {
   canHaveDoublePlatform(type) {
     return type !== 'moving';
   },
+  endlessBirdChance(score) {
+    if (score < RULE_CONFIG.endlessBirdStartScore) return 0;
+    const difficulty = this.endlessDifficulty(score);
+    const [low, high] = RULE_CONFIG.endlessBirdChanceRange;
+    const targetChance = low + (high - low) * difficulty;
+    const warmup = Math.min(1, (score - RULE_CONFIG.endlessBirdStartScore) / RULE_CONFIG.endlessBirdWarmupScore);
+    return RULE_CONFIG.endlessBirdIntroChance + (targetChance - RULE_CONFIG.endlessBirdIntroChance) * warmup;
+  },
   shouldComplete(mode, score, parshad) {
     if (mode === 'arcade') return score >= RULE_CONFIG.arcadeTargetScore;
-    if (mode === 'challenge') return score >= RULE_CONFIG.arcadeTargetScore;
+    if (mode === 'challenge') return score >= RULE_CONFIG.arcadeTargetScore && parshad >= RULE_CONFIG.challengeParshadTarget;
     return false;
   },
   didWin(mode, parshad) {

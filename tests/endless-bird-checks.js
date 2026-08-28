@@ -18,9 +18,7 @@ for (let run = 0; run < RUNS; run++) {
   let score = 0;
   for (let step = 0; step < STEPS; step++) {
     const difficulty = rules.endlessDifficulty(score);
-    const chance = score >= config.endlessBirdStartScore
-      ? config.endlessBirdChanceRange[0] + (config.endlessBirdChanceRange[1] - config.endlessBirdChanceRange[0]) * difficulty
-      : 0;
+    const chance = rules.endlessBirdChance(score);
     const platformCenter = 70 + Math.random() * (WIDTH - 140);
     if (Math.random() < chance) {
       const clearance = config.birdPlatformClearance;

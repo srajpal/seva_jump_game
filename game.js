@@ -156,7 +156,7 @@
     ui.falconOwned.textContent = `Owned: ${profile.falcon}`;
     ui.shieldOwned.textContent = `Owned: ${profile.shield}`;
     ui.powerOwned.textContent = `Level: ${profile.powerJump} / 5`;
-    ui.buyPower.textContent = profile.powerJump >= 5 ? 'Max level' : `Buy · ${15 + profile.powerJump * 10}`;
+    ui.buyPower.textContent = profile.powerJump >= 5 ? 'Max level' : `Buy · ${config.powerJumpCosts[profile.powerJump]}`;
     ui.buyPower.disabled = profile.powerJump >= 5;
     ui.upgradeMessage.textContent = message;
   }
@@ -224,8 +224,8 @@
     } else {
       // Endless has no tiers: its platform mix gradually becomes more varied.
       if (r < .10 + endlessDifficulty * .03) type = 'spring';
-      else if (r < .18 + endlessDifficulty * .18) type = 'break';
-      else if (r < .38 + endlessDifficulty * .23) type = 'moving';
+      else if (r < .18 + endlessDifficulty * .14) type = 'break';
+      else if (r < .38 + endlessDifficulty * .18) type = 'moving';
     }
     const w = type === 'break' ? 70 : 96 + Math.random() * 44;
     // Keep each new platform inside the normal jump arc of the preceding one.
@@ -272,7 +272,7 @@
     } else if (Math.random() < .53) state.collectibles.push({ x: x + w / 2, y: platform.y - 37, type: Math.random() < .16 ? 'token' : 'parshad' });
     if (level >= 3 && Math.random() < .055) state.powerups.push({ x: x + w / 2, y: platform.y - 60, type: 'kara' });
     if (level >= 4 && Math.random() < .04) state.powerups.push({ x: x + w / 2, y: platform.y - 60, type: 'nishan' });
-    const birdChance = arcade ? (state.score >= config.arcadeBirdStartScore ? .18 : 0) : (state.score >= config.endlessBirdStartScore ? config.endlessBirdChanceRange[0] + (config.endlessBirdChanceRange[1] - config.endlessBirdChanceRange[0]) * endlessDifficulty : 0);
+    const birdChance = arcade ? (state.score >= config.arcadeBirdStartScore ? .18 : 0) : rules.endlessBirdChance(state.score);
     if (Math.random() < birdChance) {
       const types = ['pigeon', 'sparrow', 'swift'], platformCenter = x + w / 2, clearance = config.birdPlatformClearance;
       const leftLimit = Math.max(25, platformCenter - clearance), rightLimit = Math.min(W - 25, platformCenter + clearance);
@@ -321,7 +321,7 @@
     else {
       profile.stats.deaths++;
       if (reason === 'bird') profile.stats.birdDeaths++;
-      else if (state.mode === 'challenge' && reason === 'finish') profile.stats.challengeMisses++;
+      else if (state.mode === 'challenge' && (reason === 'finish' || reason === 'challenge-incomplete')) profile.stats.challengeMisses++;
       else profile.stats.fallDeaths++;
     }
     awardBadge('first-run');
@@ -331,11 +331,12 @@
     const resultDelay = completed ? 1150 : 2800;
     setTimeout(() => {
       const challenge = state.mode === 'challenge';
-      ui.endHeading.textContent = completed ? (challenge ? 'Challenge complete!' : 'Arcade complete!') : (challenge && reason === 'finish' ? 'Challenge incomplete' : 'Run complete');
+      ui.endHeading.textContent = completed ? (challenge ? 'Challenge complete!' : 'Arcade complete!') : (challenge && (reason === 'finish' || reason === 'challenge-incomplete') ? 'Challenge progress' : 'Run complete');
       ui.score.textContent = `Score ${score}`;
       ui.endBest.textContent = isNewBest ? 'New personal best!' : `Personal best · ${profile.bestScores[state.mode]}`;
       ui.runBreakdown.innerHTML = `<span><strong>${state.heightScore}</strong>Height</span><span><strong>${state.parshad}</strong>Parshad</span><span><strong>${state.tokens}</strong>Khanda earned</span>`;
-      ui.endGoal.textContent = state.mode === 'endless' ? 'Endless Run keeps going—come back and beat your personal best.' : challenge ? (completed ? 'You reached the finish with all 50 parshad bowls!' : `You finished with ${state.parshad} of 50 parshad bowls. Try again to collect every one.`) : (completed ? 'You reached 1,000 and broke through the finish banner!' : 'Reach 1,000 points to break through the finish banner.');
+      const challengeStars = Math.min(5, Math.floor(state.parshad / 10));
+      ui.endGoal.textContent = state.mode === 'endless' ? 'Endless Run keeps going—come back and beat your personal best.' : challenge ? (completed ? 'You reached the finish with all 50 parshad bowls! ★★★★★' : `You collected ${state.parshad} of 50 parshad bowls · ${'★'.repeat(challengeStars)}${'☆'.repeat(5 - challengeStars)} ${challengeStars} / 5 stars`) : (completed ? 'You reached 1,000 and broke through the finish banner!' : 'Reach 1,000 points to break through the finish banner.');
       ui.end.classList.remove('hidden');
       requestAnimationFrame(() => ui.end.classList.add('visible'));
     }, resultDelay);
@@ -378,6 +379,12 @@
     if (state.mode === 'endless' && state.score >= 1000) awardBadge('endless-1000');
     if (state.mode === 'endless' && state.score >= 2000) awardBadge('endless-2000');
     if (rules.isArcadeLike(state.mode)) {
+      // A Challenge run with missed bowls reaches its course end directly,
+      // rather than showing a victory banner that the player cannot earn.
+      if (state.mode === 'challenge' && !rules.didWin('challenge', state.parshad) && state.score >= config.arcadeTargetScore - config.finishBannerLeadScore) {
+        finish(false, 'challenge-incomplete');
+        return;
+      }
       if (!state.finishGate && state.score >= config.arcadeTargetScore - config.finishBannerLeadScore) {
         state.finishGate = { y: p.y - config.finishBannerLeadScore * 18, broken: false };
         addFinishRunway();
@@ -559,7 +566,7 @@
   function pauseGame() { if (!state?.running || state.ending) return; pointerX = null; keys.clear(); state.paused = true; stopMusic(); ui.pause.classList.remove('hidden'); }
   function resumeGame() { if (!state?.paused || state.ending) return; state.paused = false; ui.pause.classList.add('hidden'); if (profile.music) startAudio(); }
   function buyUpgrade(type) {
-    const costs = { falcon: 8, shield: 10, powerJump: 15 + profile.powerJump * 10 };
+    const costs = { falcon: 8, shield: 10, powerJump: config.powerJumpCosts[profile.powerJump] };
     if (type === 'powerJump' && profile.powerJump >= 5) return updateUpgradeUI('Power Jump is already at its maximum level.');
     const cost = costs[type];
     if (profile.tokens < cost) return updateUpgradeUI(`You need ${cost - profile.tokens} more Khanda tokens.`);

@@ -19,8 +19,8 @@ function arcadeTier(score) {
 function endlessPlatformType(difficulty) {
   const roll = Math.random();
   if (roll < .10 + difficulty * .03) return 'spring';
-  if (roll < .18 + difficulty * .18) return 'break';
-  if (roll < .38 + difficulty * .23) return 'moving';
+  if (roll < .18 + difficulty * .14) return 'break';
+  if (roll < .38 + difficulty * .18) return 'moving';
   return 'normal';
 }
 function randomBetween(min, max) { return min + Math.random() * (max - min); }

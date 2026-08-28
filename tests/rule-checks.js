@@ -9,13 +9,17 @@ assert.equal(rules.shouldComplete('endless', score, config.challengeParshadTarge
 assert.equal(rules.shouldComplete('arcade', config.arcadeTargetScore - 1, 999), false);
 assert.equal(rules.shouldComplete('arcade', config.arcadeTargetScore, 0), true);
 assert.equal(rules.shouldComplete('challenge', config.arcadeTargetScore - 1, 999), false);
-assert.equal(rules.shouldComplete('challenge', config.arcadeTargetScore, 0), true);
+assert.equal(rules.shouldComplete('challenge', config.arcadeTargetScore, config.challengeParshadTarget - 1), false);
+assert.equal(rules.shouldComplete('challenge', config.arcadeTargetScore, config.challengeParshadTarget), true);
 assert.equal(rules.didWin('challenge', config.challengeParshadTarget - 1), false);
 assert.equal(rules.didWin('challenge', config.challengeParshadTarget), true);
 assert.equal(rules.didWin('arcade', 0), true);
 assert.equal(rules.isArcadeLike('arcade'), true);
 assert.equal(rules.isArcadeLike('challenge'), true);
 assert.equal(rules.isArcadeLike('endless'), false);
+assert.equal(rules.endlessBirdChance(config.endlessBirdStartScore - 1), 0, 'Birds should not begin before their intro score.');
+assert(rules.endlessBirdChance(config.endlessBirdStartScore) > 0 && rules.endlessBirdChance(config.endlessBirdStartScore) < config.endlessBirdChanceRange[0], 'Birds should begin with a gentle chance.');
+assert(rules.endlessBirdChance(config.endlessDifficultyScore) <= config.endlessBirdChanceRange[1], 'Bird chance must remain capped.');
 assert.equal(rules.endlessDifficulty(0), 0, 'Endless difficulty should begin gently.');
 assert(rules.endlessDifficulty(750) > 0 && rules.endlessDifficulty(750) < 1, 'Endless difficulty should ramp continuously.');
 assert.equal(rules.endlessDifficulty(config.endlessDifficultyScore), 1, 'Endless difficulty should reach its capped late-game intensity.');
@@ -24,6 +28,7 @@ assert(rules.maxDefaultPlatformGap() < config.baseJumpVelocity ** 2 / (2 * confi
 assert.equal(rules.maxDefaultPlatformGap(), config.safeDefaultPlatformGap, 'The generator must respect its conservative default-jump safety cap.');
 assert.equal(rules.canHaveDoublePlatform('moving'), false, 'Moving platforms must never share a row.');
 assert.equal(rules.canHaveDoublePlatform('normal'), true, 'A normal platform may have a companion route.');
+assert.equal(config.powerJumpCosts.reduce((sum, cost) => sum + cost, 0), 130, 'Power Jump should stay attainable across its five levels.');
 
 // Challenge placement: one bowl every third generated platform, then no more.
 let placed = 0;
