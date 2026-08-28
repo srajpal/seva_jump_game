@@ -69,7 +69,9 @@ for (let run = 0; run < RUNS; run++) {
       // landing is valid once the player's body overlaps the destination.
       const movingDistance = type === 'moving' ? MOVING_SPEED * time : 0;
       const requiredTravel = Math.max(0, Math.abs(center - previous.center) + movingDistance - width / 2 - PLAYER_HALF_WIDTH);
-      const availableTravel = config.maxHorizontalSpeed * time;
+      // Drag is the more restrictive movement method after its dedicated
+      // mobile cap, so use it for the fairness guarantee.
+      const availableTravel = config.pointerMaxHorizontalSpeed * time;
       if (requiredTravel > availableTravel + .01) horizontalFailures++;
       elapsed += time;
     }

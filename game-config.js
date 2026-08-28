@@ -7,6 +7,10 @@ const SEVA_CONFIG = {
   // Responsive enough for a phone drag, while still leaving time to line up
   // on the narrower late-game platforms.
   maxHorizontalSpeed: 440,
+  // Drag input targets a position directly, so it needs a gentler cap than
+  // keyboard input. This keeps a single phone swipe from crossing the entire
+  // stage while preserving reachability for every generated platform route.
+  pointerMaxHorizontalSpeed: 300,
   pointerSteeringGain: 9,
   pointerSteeringResponse: 18,
   keyboardAcceleration: 1500,

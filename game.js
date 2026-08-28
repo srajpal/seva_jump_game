@@ -348,7 +348,7 @@
     if (state.invincibleTimer > 0) state.invincibleTimer = Math.max(0, state.invincibleTimer - dt);
     const keyboard = (keys.has('ArrowRight') ? 1 : 0) - (keys.has('ArrowLeft') ? 1 : 0);
     if (pointerX !== null) {
-      const desiredVelocity = Math.max(-config.maxHorizontalSpeed, Math.min(config.maxHorizontalSpeed, (pointerX - p.x) * config.pointerSteeringGain));
+      const desiredVelocity = Math.max(-config.pointerMaxHorizontalSpeed, Math.min(config.pointerMaxHorizontalSpeed, (pointerX - p.x) * config.pointerSteeringGain));
       p.vx += (desiredVelocity - p.vx) * Math.min(1, config.pointerSteeringResponse * dt);
     } else {
       p.vx += keyboard * config.keyboardAcceleration * dt;
