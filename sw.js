@@ -1,4 +1,4 @@
-const CACHE_NAME = 'seva-jump-v22';
+const CACHE_NAME = 'seva-jump-v23';
 const APP_FILES = [
   './',
   './index.html',
@@ -43,9 +43,13 @@ self.addEventListener('activate', event => {
 
 self.addEventListener('fetch', event => {
   if (event.request.method !== 'GET') return;
-  event.respondWith(caches.match(event.request).then(cached => cached || fetch(event.request).then(response => {
+  const isAppShell = event.request.mode === 'navigate' || ['script', 'style'].includes(event.request.destination);
+  const networkFirst = () => fetch(event.request).then(response => {
     const copy = response.clone();
     caches.open(CACHE_NAME).then(cache => cache.put(event.request, copy));
     return response;
-  }).catch(() => caches.match('./index.html'))));
+  });
+  event.respondWith(isAppShell
+    ? networkFirst().catch(() => caches.match(event.request).then(cached => cached || caches.match('./index.html')))
+    : caches.match(event.request).then(cached => cached || networkFirst().catch(() => caches.match('./index.html'))));
 });
