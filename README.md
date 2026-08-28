@@ -2,7 +2,7 @@
 
 **A skyward seva adventure.**
 
-Current playtest build: **v0.7.3**.
+Current playtest build: **v0.7.4**.
 
 The birds have flown away with the parshad. Choose a young Sikh boy or girl, leap from platform to platform, and bring it back in this cheerful browser game prototype.
 
@@ -11,6 +11,8 @@ Seva Jump is designed for ages 8–15, with touch-first controls, a calm gurdwar
 ## Play
 
 Open **`index.html`** in a modern browser. On a phone or tablet, drag anywhere across the game to steer left and right. On a desktop, you can also use the arrow keys or on-screen controls.
+
+New players receive a short three-step guide after choosing their first mode. It can be replayed later from Settings.
 
 The game is self-contained: no login, ads, purchases, or network connection are needed to play locally. When opened from the published site, it also caches the game after the first successful visit so it remains playable offline.
 

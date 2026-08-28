@@ -45,7 +45,7 @@
             <div class="home-links"><button id="open-upgrades-button" class="secondary">Upgrades</button><button id="open-badges-button" class="secondary">Badges</button><button id="open-stats-button" class="secondary">Stats</button><button id="open-about-button" class="secondary">About &amp; Help</button><button id="open-settings-button" class="secondary">Settings</button></div>
           </section>
           <p class="help">Choose a mode to start your skyward seva adventure.</p>
-          <p class="game-version" aria-label="Game version 0.7.3">v0.7.3 · Playtest build</p>
+          <p class="game-version" aria-label="Game version 0.7.4">v0.7.4 · Playtest build</p>
         </div>
         <div id="end-screen" class="overlay hidden">
           <p class="eyebrow">Nice climb!</p>
@@ -59,6 +59,16 @@
             <button id="end-home-button" class="secondary">Main screen</button>
             <button id="end-upgrades-button" class="secondary">Upgrades</button>
           </div>
+        </div>
+        <div id="tutorial-screen" class="overlay tutorial-screen hidden" role="dialog" aria-modal="true" aria-labelledby="tutorial-heading">
+          <p class="eyebrow">First-run guide</p>
+          <div id="tutorial-icon" class="tutorial-icon" aria-hidden="true">↔</div>
+          <p id="tutorial-step" class="tutorial-step">1 of 3</p>
+          <h2 id="tutorial-heading">Guide your jumper</h2>
+          <p id="tutorial-copy" class="tutorial-copy">Drag anywhere across the game to move left and right while your jumper bounces automatically.</p>
+          <div id="tutorial-dots" class="tutorial-dots" aria-hidden="true"><span class="active"></span><span></span><span></span></div>
+          <button id="tutorial-next-button" class="primary" type="button">Next</button>
+          <button id="tutorial-skip-button" class="secondary" type="button">Skip guide</button>
         </div>
         <div id="pause-screen" class="overlay pause-screen hidden" role="dialog" aria-modal="true" aria-labelledby="pause-heading">
           <p class="eyebrow">Game paused</p>
@@ -79,6 +89,7 @@
             <label><span>Reduced motion</span><input id="reduced-motion-toggle" type="checkbox" /></label>
           </div>
           <p class="setting-note">Reduced Motion makes decorative effects still: character bobbing, net hovering, finish-banner floating, fireworks expansion, and interface transitions.</p>
+          <button id="replay-tutorial-button" class="secondary" type="button">Replay first-run guide</button>
           <div class="reset-panel">
             <strong>Reset this device</strong>
             <p>Delete all saved scores, upgrades, badges, and settings.</p>

@@ -6,7 +6,7 @@
   const config = globalThis.SEVA_CONFIG;
   const rules = globalThis.SEVA_RULES;
   const ui = {
-    home: document.querySelector('#home-screen'), end: document.querySelector('#end-screen'), upgrades: document.querySelector('#upgrades-screen'), about: document.querySelector('#about-screen'), pause: document.querySelector('#pause-screen'), gameTools: document.querySelector('#game-tools'),
+    home: document.querySelector('#home-screen'), end: document.querySelector('#end-screen'), upgrades: document.querySelector('#upgrades-screen'), about: document.querySelector('#about-screen'), tutorial: document.querySelector('#tutorial-screen'), tutorialIcon: document.querySelector('#tutorial-icon'), tutorialStep: document.querySelector('#tutorial-step'), tutorialHeading: document.querySelector('#tutorial-heading'), tutorialCopy: document.querySelector('#tutorial-copy'), tutorialDots: document.querySelector('#tutorial-dots'), tutorialNext: document.querySelector('#tutorial-next-button'), tutorialSkip: document.querySelector('#tutorial-skip-button'), pause: document.querySelector('#pause-screen'), gameTools: document.querySelector('#game-tools'),
     score: document.querySelector('#end-score'), endHeading: document.querySelector('#end-heading'), endBest: document.querySelector('#end-best'), runBreakdown: document.querySelector('#run-breakdown'), endGoal: document.querySelector('#end-goal'), homeRecords: document.querySelector('#home-records'), endless: document.querySelector('#endless-button'), arcade: document.querySelector('#arcade-button'), challenge: document.querySelector('#challenge-button'), modeChoices: document.querySelectorAll('.mode-actions button'),
     restart: document.querySelector('#restart-button'), choices: document.querySelectorAll('.scene-character'),
     sceneGirl: document.querySelector('.scene-girl'), sceneBoy: document.querySelector('.scene-boy'),
@@ -16,7 +16,7 @@
     falconOwned: document.querySelector('#falcon-owned'), shieldOwned: document.querySelector('#shield-owned'), powerOwned: document.querySelector('#power-owned'),
     buyFalcon: document.querySelector('#buy-falcon'), buyShield: document.querySelector('#buy-shield'), buyPower: document.querySelector('#buy-power'),
     openAbout: document.querySelector('#open-about-button'), closeAbout: document.querySelector('#close-about-button'), openSettings: document.querySelector('#open-settings-button'), closeSettings: document.querySelector('#close-settings-button'), pauseSettings: document.querySelector('#pause-settings-button'), resetProgress: document.querySelector('#reset-progress-button'), settings: document.querySelector('#settings-screen'), openBadges: document.querySelector('#open-badges-button'), closeBadges: document.querySelector('#close-badges-button'), badges: document.querySelector('#badges-screen'), badgeCount: document.querySelector('#badge-count'), badgeGrid: document.querySelector('#badge-grid'), badgeToast: document.querySelector('#badge-toast'), badgeToastIcon: document.querySelector('#badge-toast-icon'), badgeToastName: document.querySelector('#badge-toast-name'), openStats: document.querySelector('#open-stats-button'), closeStats: document.querySelector('#close-stats-button'), stats: document.querySelector('#stats-screen'), statsSummary: document.querySelector('#stats-summary'), deathBreakdown: document.querySelector('#death-breakdown'),
-    musicToggle: document.querySelector('#music-toggle'), soundToggle: document.querySelector('#sound-toggle'), reducedMotionToggle: document.querySelector('#reduced-motion-toggle'),
+    musicToggle: document.querySelector('#music-toggle'), soundToggle: document.querySelector('#sound-toggle'), reducedMotionToggle: document.querySelector('#reduced-motion-toggle'), replayTutorial: document.querySelector('#replay-tutorial-button'),
     pauseButton: document.querySelector('#pause-button'), resume: document.querySelector('#resume-button'), pauseRestart: document.querySelector('#pause-restart-button'), pauseHome: document.querySelector('#pause-home-button'),
   };
   const palette = ['#bce7ef', '#f8d9a7', '#c9e5c0', '#e5c4d6'];
@@ -67,11 +67,11 @@
     { id: 'bird-defender', icon: '◒', title: 'Bird Defender', description: 'Block 3 bird collisions.', color: '#5476a8' },
     { id: 'power-seeker', icon: '⚡', title: 'Power Seeker', description: 'Collect 5 power-ups.', color: '#b65e45' },
   ];
-  const defaultProfile = { tokens: 0, falcon: 0, shield: 0, powerJump: 0, character: 'girl', music: true, sound: true, reducedMotion: false, bestScores: { endless: 0, arcade: 0, challenge: 0 }, badges: {}, stats: { runs: 0, wins: 0, deaths: 0, fallDeaths: 0, birdDeaths: 0, challengeMisses: 0, jumps: 0, totalScore: 0, totalHeight: 0, parshad: 0, tokens: 0, powerups: 0, birdsSeen: 0, birdsBlocked: 0, falconSaves: 0, shieldsUsed: 0 } };
+  const defaultProfile = { tokens: 0, falcon: 0, shield: 0, powerJump: 0, character: 'girl', tutorialSeen: false, music: true, sound: true, reducedMotion: false, bestScores: { endless: 0, arcade: 0, challenge: 0 }, badges: {}, stats: { runs: 0, wins: 0, deaths: 0, fallDeaths: 0, birdDeaths: 0, challengeMisses: 0, jumps: 0, totalScore: 0, totalHeight: 0, parshad: 0, tokens: 0, powerups: 0, birdsSeen: 0, birdsBlocked: 0, falconSaves: 0, shieldsUsed: 0 } };
   function loadProfile() { try { const saved = JSON.parse(localStorage.getItem('seva-jump-profile')) || {}; return { ...defaultProfile, ...saved, bestScores: { ...defaultProfile.bestScores, ...saved.bestScores }, badges: { ...defaultProfile.badges, ...saved.badges }, stats: { ...defaultProfile.stats, ...saved.stats } }; } catch { return { ...defaultProfile, bestScores: { ...defaultProfile.bestScores }, badges: {}, stats: { ...defaultProfile.stats } }; } }
   function saveProfile() { localStorage.setItem('seva-jump-profile', JSON.stringify(profile)); }
   let profile = loadProfile();
-  let state, selectedCharacter = profile.character === 'boy' ? 'boy' : 'girl', settingsReturn = 'home', pointerX = null, keys = new Set(), lastTime = 0;
+  let state, selectedCharacter = profile.character === 'boy' ? 'boy' : 'girl', settingsReturn = 'home', pointerX = null, keys = new Set(), lastTime = 0, tutorialIndex = 0, tutorialResumesRun = false;
   let audioContext, musicTimer = null, musicVoices = [], badgeQueue = [], badgeToastTimer = null;
 
   function applyPreferences() {
@@ -555,10 +555,32 @@
     ui.sceneBoy.classList.toggle('selected', character === 'boy');
   }
   ui.choices.forEach(button => button.addEventListener('click', () => { setSelectedCharacter(button.dataset.character); sound('ui'); }));
+  const TUTORIAL_STEPS = [
+    { icon: '↔', title: 'Guide your jumper', copy: 'Drag anywhere across the game to move left and right while your jumper bounces automatically.' },
+    { icon: '✦', title: 'Land and collect', copy: 'Land on platforms, collect glowing parshad bowls for score, and earn Khanda tokens for upgrades.' },
+    { icon: '☂', title: 'Watch for birds', copy: 'Avoid birds, use boosts when you find them, and keep climbing. Your first run starts now!' },
+  ];
+  function renderTutorial() {
+    const step = TUTORIAL_STEPS[tutorialIndex];
+    ui.tutorialIcon.textContent = step.icon; ui.tutorialHeading.textContent = step.title; ui.tutorialCopy.textContent = step.copy;
+    ui.tutorialStep.textContent = `${tutorialIndex + 1} of ${TUTORIAL_STEPS.length}`;
+    ui.tutorialDots.querySelectorAll('span').forEach((dot, index) => dot.classList.toggle('active', index === tutorialIndex));
+    ui.tutorialNext.textContent = tutorialIndex === TUTORIAL_STEPS.length - 1 ? 'Let’s jump!' : 'Next';
+  }
+  function showTutorial() {
+    tutorialIndex = 0; tutorialResumesRun = Boolean(state?.running); if (state?.running) state.paused = true;
+    ui.home.classList.add('hidden'); ui.end.classList.add('hidden'); ui.upgrades.classList.add('hidden'); ui.about.classList.add('hidden'); ui.badges.classList.add('hidden'); ui.stats.classList.add('hidden'); ui.settings.classList.add('hidden'); ui.pause.classList.add('hidden'); ui.gameTools.classList.add('hidden');
+    renderTutorial(); ui.tutorial.classList.remove('hidden');
+  }
+  function finishTutorial() {
+    profile.tutorialSeen = true; saveProfile(); ui.tutorial.classList.add('hidden');
+    if (tutorialResumesRun && state) { state.paused = false; startAudio(); ui.gameTools.classList.remove('hidden'); }
+    else showHome();
+  }
   function openSettings(from) { settingsReturn = from; if (from === 'pause') ui.pause.classList.add('hidden'); else ui.home.classList.add('hidden'); ui.settings.classList.remove('hidden'); }
   function closeSettings() { ui.settings.classList.add('hidden'); if (settingsReturn === 'pause' && state?.paused) ui.pause.classList.remove('hidden'); else ui.home.classList.remove('hidden'); }
-  function start(mode) { reset(mode); startAudio(); ui.home.classList.add('hidden'); ui.end.classList.add('hidden'); ui.end.classList.remove('visible'); ui.upgrades.classList.add('hidden'); ui.about.classList.add('hidden'); ui.badges.classList.add('hidden'); ui.stats.classList.add('hidden'); ui.settings.classList.add('hidden'); ui.pause.classList.add('hidden'); ui.gameTools.classList.remove('hidden'); }
-  function showHome() { pointerX = null; keys.clear(); if (state) state.running = false; stopMusic(); updateRecordsUI(); ui.home.classList.remove('hidden'); ui.end.classList.add('hidden'); ui.end.classList.remove('visible'); ui.upgrades.classList.add('hidden'); ui.about.classList.add('hidden'); ui.badges.classList.add('hidden'); ui.stats.classList.add('hidden'); ui.settings.classList.add('hidden'); ui.pause.classList.add('hidden'); ui.gameTools.classList.add('hidden'); }
+  function start(mode) { reset(mode); ui.home.classList.add('hidden'); ui.end.classList.add('hidden'); ui.end.classList.remove('visible'); ui.upgrades.classList.add('hidden'); ui.about.classList.add('hidden'); ui.badges.classList.add('hidden'); ui.stats.classList.add('hidden'); ui.settings.classList.add('hidden'); ui.pause.classList.add('hidden'); if (!profile.tutorialSeen) return showTutorial(); startAudio(); ui.tutorial.classList.add('hidden'); ui.gameTools.classList.remove('hidden'); }
+  function showHome() { pointerX = null; keys.clear(); if (state) state.running = false; stopMusic(); updateRecordsUI(); ui.home.classList.remove('hidden'); ui.end.classList.add('hidden'); ui.end.classList.remove('visible'); ui.upgrades.classList.add('hidden'); ui.about.classList.add('hidden'); ui.badges.classList.add('hidden'); ui.stats.classList.add('hidden'); ui.tutorial.classList.add('hidden'); ui.settings.classList.add('hidden'); ui.pause.classList.add('hidden'); ui.gameTools.classList.add('hidden'); }
   function showUpgrades() { pointerX = null; keys.clear(); if (state) state.running = false; stopMusic(); updateUpgradeUI(); ui.home.classList.add('hidden'); ui.end.classList.add('hidden'); ui.upgrades.classList.remove('hidden'); ui.about.classList.add('hidden'); ui.badges.classList.add('hidden'); ui.stats.classList.add('hidden'); ui.settings.classList.add('hidden'); ui.pause.classList.add('hidden'); ui.gameTools.classList.add('hidden'); }
   function showAbout() { pointerX = null; keys.clear(); if (state) state.running = false; stopMusic(); ui.home.classList.add('hidden'); ui.end.classList.add('hidden'); ui.upgrades.classList.add('hidden'); ui.about.classList.remove('hidden'); ui.badges.classList.add('hidden'); ui.stats.classList.add('hidden'); ui.settings.classList.add('hidden'); ui.pause.classList.add('hidden'); ui.gameTools.classList.add('hidden'); }
   function showBadges() { renderBadges(); ui.home.classList.add('hidden'); ui.badges.classList.remove('hidden'); ui.stats.classList.add('hidden'); }
@@ -574,12 +596,14 @@
   }
   ui.modeChoices.forEach(button => button.addEventListener('click', () => start(button.dataset.mode)));
   ui.restart.addEventListener('click', () => start(state?.mode || 'endless'));
-  ui.openUpgrades.addEventListener('click', showUpgrades); ui.endUpgrades.addEventListener('click', showUpgrades); ui.endHome.addEventListener('click', showHome); ui.closeUpgrades.addEventListener('click', showHome); ui.openAbout.addEventListener('click', showAbout); ui.closeAbout.addEventListener('click', showHome); ui.openBadges.addEventListener('click', showBadges); ui.closeBadges.addEventListener('click', showHome); ui.openStats.addEventListener('click', showStats); ui.closeStats.addEventListener('click', showHome); ui.openSettings.addEventListener('click', () => openSettings('home')); ui.pauseSettings.addEventListener('click', () => openSettings('pause')); ui.closeSettings.addEventListener('click', closeSettings); ui.resetProgress.addEventListener('click', resetAllProgress);
+  ui.openUpgrades.addEventListener('click', showUpgrades); ui.endUpgrades.addEventListener('click', showUpgrades); ui.endHome.addEventListener('click', showHome); ui.closeUpgrades.addEventListener('click', showHome); ui.openAbout.addEventListener('click', showAbout); ui.closeAbout.addEventListener('click', showHome); ui.openBadges.addEventListener('click', showBadges); ui.closeBadges.addEventListener('click', showHome); ui.openStats.addEventListener('click', showStats); ui.closeStats.addEventListener('click', showHome); ui.openSettings.addEventListener('click', () => openSettings('home')); ui.pauseSettings.addEventListener('click', () => openSettings('pause')); ui.closeSettings.addEventListener('click', closeSettings); ui.replayTutorial.addEventListener('click', showTutorial); ui.resetProgress.addEventListener('click', resetAllProgress);
   ui.buyFalcon.addEventListener('click', () => buyUpgrade('falcon')); ui.buyShield.addEventListener('click', () => buyUpgrade('shield')); ui.buyPower.addEventListener('click', () => buyUpgrade('powerJump'));
   ui.pauseButton.addEventListener('click', pauseGame); ui.resume.addEventListener('click', resumeGame); ui.pauseRestart.addEventListener('click', () => start(state?.mode || 'endless')); ui.pauseHome.addEventListener('click', showHome);
   ui.musicToggle.addEventListener('change', () => { profile.music = ui.musicToggle.checked; saveProfile(); if (profile.music && !state?.paused) startAudio(); else setMusic(); });
   ui.soundToggle.addEventListener('change', () => { profile.sound = ui.soundToggle.checked; saveProfile(); });
   ui.reducedMotionToggle.addEventListener('change', () => { profile.reducedMotion = ui.reducedMotionToggle.checked; document.documentElement.classList.toggle('reduced-motion', profile.reducedMotion); saveProfile(); });
+  ui.tutorialNext.addEventListener('click', () => { if (tutorialIndex < TUTORIAL_STEPS.length - 1) { tutorialIndex++; renderTutorial(); sound('ui'); } else finishTutorial(); });
+  ui.tutorialSkip.addEventListener('click', finishTutorial);
   canvas.addEventListener('pointerdown', e => { pointerX = (e.offsetX / canvas.clientWidth) * W; canvas.setPointerCapture?.(e.pointerId); });
   canvas.addEventListener('pointermove', e => { if (e.buttons) pointerX = (e.offsetX / canvas.clientWidth) * W; });
   canvas.addEventListener('pointerup', () => { pointerX = null; });
