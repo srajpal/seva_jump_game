@@ -40,12 +40,12 @@
             <button id="arcade-button" class="mode-button" data-mode="arcade" aria-pressed="false"><span>Arcade Mode</span><small>Reach 1,000 to complete the run</small></button>
             <button id="challenge-button" class="challenge-button" data-mode="challenge" aria-pressed="false"><span>Challenge Mode</span><small>Collect all 50 parshad bowls</small></button>
           </div>
+          <p class="help mode-help">Choose a mode to start your skyward seva adventure.</p>
           <section class="home-utilities" aria-label="More game options">
             <p>More to explore</p>
             <div class="home-links"><button id="open-upgrades-button" class="secondary">Upgrades</button><button id="open-badges-button" class="secondary">Badges</button><button id="open-stats-button" class="secondary">Stats</button><button id="open-about-button" class="secondary">About &amp; Help</button><button id="open-settings-button" class="secondary">Settings</button></div>
           </section>
-          <p class="help">Choose a mode to start your skyward seva adventure.</p>
-          <p class="game-version" aria-label="Game version 0.7.4">v0.7.4 · Playtest build</p>
+          <p class="game-version" aria-label="Game version 0.7.5">v0.7.5 · Playtest build</p>
         </div>
         <div id="end-screen" class="overlay hidden">
           <p class="eyebrow">Nice climb!</p>
@@ -96,6 +96,12 @@
             <button id="reset-progress-button" class="danger-button" type="button">Reset all progress</button>
           </div>
           <button id="close-settings-button" class="primary">Back</button>
+        </div>
+        <div id="reset-confirm-screen" class="overlay reset-confirm-screen hidden" role="dialog" aria-modal="true" aria-labelledby="reset-confirm-heading">
+          <p class="eyebrow">Confirm reset</p>
+          <h2 id="reset-confirm-heading">Start fresh?</h2>
+          <p>This permanently deletes your scores, upgrades, badges, statistics, and settings from this device.</p>
+          <div class="menu-actions"><button id="confirm-reset-button" class="primary" type="button">Yes, reset everything</button><button id="cancel-reset-button" class="secondary" type="button">Keep my progress</button></div>
         </div>
         <div id="badges-screen" class="overlay badges-screen hidden" role="dialog" aria-modal="true" aria-labelledby="badges-heading">
           <p class="eyebrow">Your collection</p>
