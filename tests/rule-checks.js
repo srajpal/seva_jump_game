@@ -31,6 +31,9 @@ assert(rules.hardBirdChance(config.hardBirdStartScore) > 0, 'Hard birds should b
 assert(rules.hardBirdChance(100000) <= config.hardBirdChanceRange[1], 'Hard bird chance must remain capped.');
 assert.equal(rules.canSpawnHardBird([0], 799, 800), false, 'Hard Mode must not place two birds within one screen height.');
 assert.equal(rules.canSpawnHardBird([0], 800, 800), true, 'A new hard bird may appear after one full screen height.');
+assert(config.challengeBirdStartScore < config.arcadeBirdStartScore, 'Challenge birds should arrive earlier than Arcade birds.');
+assert.equal(rules.canSpawnChallengeBird([0], config.challengeBirdScreenSpacing - 1), false, 'Challenge must not place two birds within one screen.');
+assert.equal(rules.canSpawnChallengeBird([0], config.challengeBirdScreenSpacing), true, 'Challenge may place another bird after one full screen.');
 assert(config.hardBreakPlatformWidthRange[1] < 80, 'Hard breakable platforms should stay small.');
 assert(config.hardMovingPlatformWidthRange[1] < 96, 'Hard moving platforms should stay smaller than standard routes.');
 assert(rules.maxDefaultPlatformGap() < config.baseJumpVelocity ** 2 / (2 * config.gravity), 'Every generated platform gap must remain below the default jump apex.');
@@ -56,6 +59,8 @@ assert.equal(rules.isBelowFinishBanner(99, 100), false, 'Platforms above the fin
 assert.equal(rules.arcadeBreakChance(config.tierThresholds[0] - 1), 0, 'Early Arcade should not generate breakables.');
 assert(rules.arcadeBreakChance(config.arcadeTargetScore) > rules.arcadeBreakChance(config.arcadeFinalBreakableStartScore), 'Breakables should increase modestly in the final Arcade section.');
 assert(rules.arcadeBreakChance(config.arcadeTargetScore) <= .3, 'Final Arcade breakables must remain below the fairness cap.');
+assert(rules.challengeBreakChance(config.arcadeTargetScore) > rules.arcadeBreakChance(config.arcadeTargetScore), 'Late Challenge should use modestly more breakables than Arcade.');
+assert(rules.challengeBreakChance(config.arcadeTargetScore) <= .4, 'Late Challenge breakables must remain below the fairness cap.');
 assert(config.victorySceneDurationMs >= 5000, 'The completed run should remain visible for at least five seconds.');
 assert(rules.boostVelocity('kara') < -config.baseJumpVelocity, 'Kara must provide a higher immediate jump.');
 assert(Math.abs(rules.boostVelocity('kara')) <= config.baseJumpVelocity * 1.5, 'Kara must remain below its one-jump safety cap.');

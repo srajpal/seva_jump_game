@@ -31,11 +31,20 @@ const SEVA_RULES = {
   canSpawnHardBird(existingBirdYs, candidateY, screenHeight) {
     return existingBirdYs.every(y => Math.abs(y - candidateY) >= screenHeight);
   },
+  canSpawnChallengeBird(existingBirdYs, candidateY) {
+    return existingBirdYs.every(y => Math.abs(y - candidateY) >= RULE_CONFIG.challengeBirdScreenSpacing);
+  },
   arcadeBreakChance(score) {
     const [base, late] = RULE_CONFIG.arcadeBreakChanceRange;
     if (score < RULE_CONFIG.tierThresholds[0]) return 0;
     const progress = Math.max(0, Math.min(1, (score - RULE_CONFIG.arcadeFinalBreakableStartScore) / (RULE_CONFIG.arcadeTargetScore - RULE_CONFIG.arcadeFinalBreakableStartScore)));
     return base + (late - base) * progress;
+  },
+  challengeBreakChance(score) {
+    const base = this.arcadeBreakChance(score);
+    const range = RULE_CONFIG.arcadeTargetScore - RULE_CONFIG.challengeLateBreakStartScore;
+    const progress = Math.max(0, Math.min(1, (score - RULE_CONFIG.challengeLateBreakStartScore) / range));
+    return Math.min(.4, base + RULE_CONFIG.challengeBreakChanceBonus * progress);
   },
   isBelowFinishBanner(platformY, bannerY) {
     return platformY > bannerY;

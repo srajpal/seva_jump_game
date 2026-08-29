@@ -227,7 +227,7 @@
       type = r < config.hardMovingChance ? 'moving' : 'break';
     } else if (arcade) {
       if (r < .09) type = 'spring';
-      else if (level >= 2 && r < .09 + rules.arcadeBreakChance(state.score)) type = 'break';
+      else if (level >= 2 && r < .09 + (state.mode === 'challenge' ? rules.challengeBreakChance(state.score) : rules.arcadeBreakChance(state.score))) type = 'break';
       else if (r < .55) type = 'moving';
     } else {
       // Endless has no tiers: its platform mix gradually becomes more varied.
@@ -286,14 +286,20 @@
     } else if (Math.random() < .53) state.collectibles.push({ x: x + w / 2, y: platform.y - 37, type: Math.random() < .16 ? 'token' : 'parshad' });
     if (level >= 3 && Math.random() < .055) state.powerups.push({ x: x + w / 2, y: platform.y - 60, type: 'kara' });
     if (level >= 4 && Math.random() < .04) state.powerups.push({ x: x + w / 2, y: platform.y - 60, type: 'nishan' });
-    const birdChance = arcade ? (state.score >= config.arcadeBirdStartScore ? .18 : 0) : hard ? rules.hardBirdChance(state.score) : rules.endlessBirdChance(state.score);
+    const birdChance = state.mode === 'challenge'
+      ? (state.score >= config.challengeBirdStartScore ? config.challengeBirdChance : 0)
+      : arcade ? (state.score >= config.arcadeBirdStartScore ? .18 : 0)
+        : hard ? rules.hardBirdChance(state.score) : rules.endlessBirdChance(state.score);
     const candidateBirdY = platform.y - 90;
-    const birdSpacingIsSafe = !hard || rules.canSpawnHardBird(state.enemies.filter(bird => !bird.hit).map(bird => bird.y), candidateBirdY, H);
+    const activeBirdYs = state.enemies.filter(bird => !bird.hit).map(bird => bird.y);
+    const birdSpacingIsSafe = hard ? rules.canSpawnHardBird(activeBirdYs, candidateBirdY, H)
+      : state.mode === 'challenge' ? rules.canSpawnChallengeBird(activeBirdYs, candidateBirdY) : true;
     if (!challengeBowlPlatform && birdSpacingIsSafe && Math.random() < birdChance) {
       const types = ['pigeon', 'sparrow', 'swift'], platformCenter = x + w / 2, clearance = config.birdPlatformClearance;
       const leftLimit = Math.max(25, platformCenter - clearance), rightLimit = Math.min(W - 25, platformCenter + clearance);
       const birdX = Math.random() < .5 && leftLimit > 25 ? 25 + Math.random() * (leftLimit - 25) : rightLimit < W - 25 ? rightLimit + Math.random() * (W - 25 - rightLimit) : platformCenter < W / 2 ? W - 25 : 25;
-      state.enemies.push({ x: birdX, y: candidateBirdY, vx: (Math.random() < .5 ? -1 : 1) * (60 + Math.random() * 45 + endlessDifficulty * 35 + (hard ? 12 : 0)), type: types[Math.floor(Math.random() * types.length)], flapOffset: Math.random() * Math.PI * 2 });
+      const challengeSpeedBonus = state.mode === 'challenge' ? config.challengeBirdSpeedBonus : 0;
+      state.enemies.push({ x: birdX, y: candidateBirdY, vx: (Math.random() < .5 ? -1 : 1) * (60 + Math.random() * 45 + endlessDifficulty * 35 + (hard ? 12 : 0) + challengeSpeedBonus), type: types[Math.floor(Math.random() * types.length)], flapOffset: Math.random() * Math.PI * 2 });
       profile.stats.birdsSeen++;
     }
     // A normal jump reaches about 128 pixels. Endless ramps continuously;

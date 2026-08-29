@@ -44,6 +44,12 @@ const SEVA_CONFIG = {
   arcadeTargetScore: 1000,
   challengeParshadTarget: 50,
   arcadeBirdStartScore: 500,
+  // Challenge introduces birds earlier than Arcade, but keeps them at least
+  // one screen apart so each encounter remains readable.
+  challengeBirdStartScore: 350,
+  challengeBirdChance: .24,
+  challengeBirdScreenSpacing: 800,
+  challengeBirdSpeedBonus: 60,
   finishBannerLeadScore: 28,
   finishRunwayGap: 96,
   finishRunwaySteps: 4,
@@ -52,6 +58,8 @@ const SEVA_CONFIG = {
   victoryFadeDurationMs: 700,
   arcadeFinalBreakableStartScore: 700,
   arcadeBreakChanceRange: [.22, .29],
+  challengeLateBreakStartScore: 600,
+  challengeBreakChanceBonus: .1,
   arcadeHorizontalMultiplier: 1.16,
   arcadeGapBonus: 6,
   movingPlatformSpeedRange: [44, 72],
