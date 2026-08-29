@@ -32,6 +32,7 @@ h2 { font-size: 2.3rem; }.eyebrow { margin: 0 0 7px; color: #a85e30; font-weight
 .character-choice { display: flex; gap: 8px; margin: 13px 0; }.choice, .primary, .secondary, .controls button { border: 0; cursor: pointer; font: inherit; font-weight: 800; }
 .choice { padding: 10px; border: 2px solid #bca582; border-radius: 12px; background: #fff9ee; color: #4f4438; }.choice.selected { border-color: #24483f; background: #d8eee5; }
 .primary { padding: 13px 22px; border-radius: 999px; background: #d56d39; color: white; box-shadow: 0 4px 0 #9c4825; }.primary:active { transform: translateY(3px); box-shadow: 0 1px 0 #9c4825; }.help { font-size: .8rem; color: #685d50; }
+.privacy-link { margin: 0 0 9px; color: #527165; font-size: .72rem; font-weight: 900; text-decoration: underline; }
 .stats-summary article, .death-breakdown article { min-width: 0; }.stats-summary strong, .death-breakdown strong { overflow: hidden; font-size: clamp(.72rem, 3.8vw, .88rem); line-height: 1.05; text-overflow: ellipsis; white-space: nowrap; }.stats-summary span, .death-breakdown span { overflow-wrap: anywhere; }
 .secondary { padding: 10px 16px; border: 2px solid #527165; border-radius: 999px; background: #fff9ee; color: #24483f; }.secondary:active { transform: translateY(2px); }
 .menu-actions { display: grid; gap: 9px; width: min(100%, 220px); }.menu-actions .primary, .menu-actions .secondary { width: 100%; }

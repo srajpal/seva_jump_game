@@ -1,10 +1,22 @@
 {
   "name": "Seva Jump",
   "short_name": "Seva Jump",
-  "description": "A skyward seva adventure.",
-  "start_url": "./index.html",
+  "description": "A free, offline-friendly skyward seva adventure.",
+  "id": "./",
+  "start_url": "./?source=pwa",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#bce7ef",
   "theme_color": "#bce7ef",
-  "orientation": "portrait"
+  "orientation": "portrait",
+  "lang": "en",
+  "categories": ["games", "kids", "education"],
+  "icons": [
+    {
+      "src": "assets/app-icon-parshad-v1.png",
+      "sizes": "1024x1024",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
 }

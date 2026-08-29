@@ -1,4 +1,4 @@
-const CACHE_NAME = 'seva-jump-v32';
+const CACHE_NAME = 'seva-jump-v33';
 const APP_FILES = [
   './',
   './index.html',
@@ -7,6 +7,8 @@ const APP_FILES = [
   './game-rules.js',
   './game.js',
   './manifest.webmanifest',
+  './privacy.html',
+  './assets/app-icon-parshad-v1.png',
   './assets/gurdwara-courtyard-pixel-v1.png',
   './assets/gurdwara-sunset-pixel-v1.png',
   './assets/gurdwara-dawn-pixel-v1.png',
