@@ -6,7 +6,7 @@
   const config = globalThis.SEVA_CONFIG;
   const rules = globalThis.SEVA_RULES;
   const ui = {
-    home: document.querySelector('#home-screen'), end: document.querySelector('#end-screen'), upgrades: document.querySelector('#upgrades-screen'), about: document.querySelector('#about-screen'), tutorial: document.querySelector('#tutorial-screen'), tutorialIcon: document.querySelector('#tutorial-icon'), tutorialStep: document.querySelector('#tutorial-step'), tutorialHeading: document.querySelector('#tutorial-heading'), tutorialCopy: document.querySelector('#tutorial-copy'), tutorialDots: document.querySelector('#tutorial-dots'), tutorialNext: document.querySelector('#tutorial-next-button'), tutorialSkip: document.querySelector('#tutorial-skip-button'), pause: document.querySelector('#pause-screen'), gameTools: document.querySelector('#game-tools'),
+    home: document.querySelector('#home-screen'), end: document.querySelector('#end-screen'), upgrades: document.querySelector('#upgrades-screen'), about: document.querySelector('#about-screen'), tutorial: document.querySelector('#tutorial-screen'), tutorialIcon: document.querySelector('#tutorial-icon'), tutorialStep: document.querySelector('#tutorial-step'), tutorialHeading: document.querySelector('#tutorial-heading'), tutorialCopy: document.querySelector('#tutorial-copy'), tutorialDots: document.querySelector('#tutorial-dots'), tutorialNext: document.querySelector('#tutorial-next-button'), tutorialSkip: document.querySelector('#tutorial-skip-button'), pause: document.querySelector('#pause-screen'), gameTools: document.querySelector('#game-tools'), mobileHud: document.querySelector('#mobile-hud'), mobileScore: document.querySelector('#mobile-score'), mobileItems: document.querySelector('#mobile-items'), mobileMode: document.querySelector('#mobile-mode'),
     score: document.querySelector('#end-score'), endHeading: document.querySelector('#end-heading'), endBest: document.querySelector('#end-best'), runBreakdown: document.querySelector('#run-breakdown'), endGoal: document.querySelector('#end-goal'), homeRecords: document.querySelector('#home-records'), endless: document.querySelector('#endless-button'), arcade: document.querySelector('#arcade-button'), challenge: document.querySelector('#challenge-button'), modeChoices: document.querySelectorAll('.mode-actions button'),
     restart: document.querySelector('#restart-button'), choices: document.querySelectorAll('.scene-character'),
     sceneGirl: document.querySelector('.scene-girl'), sceneBoy: document.querySelector('.scene-boy'),
@@ -509,6 +509,8 @@
       x += 66;
     }
   }
+  const usesMobileHud = () => window.matchMedia?.('(hover: none) and (pointer: coarse)').matches;
+  function updateMobileHud() { if (!usesMobileHud() || !state?.running) { ui.mobileHud.classList.add('hidden'); return; } const name = state.mode === 'arcade' ? 'ARCADE' : state.mode === 'challenge' ? 'CHALLENGE' : 'ENDLESS'; const detail = state.mode === 'challenge' ? `${state.parshad} / ${config.challengeParshadTarget}` : state.mode === 'arcade' ? `${Math.floor(state.score)} / ${config.arcadeTargetScore}` : 'KEEP CLIMBING'; ui.mobileScore.textContent = `Score ${Math.floor(state.score)}`; ui.mobileItems.textContent = `Parshad ${state.parshad} · Khanda ${state.tokens}`; ui.mobileMode.textContent = `${name} · ${detail}`; ui.mobileHud.classList.remove('hidden'); }
   function drawUpgradeEffect() {
     const effect = state.upgradeEffect;
     if (!effect) return;
@@ -593,6 +595,7 @@
     }
     drawFalconRescue();
     if (state.running || state.ending) {
+      updateMobileHud(); if (usesMobileHud()) { drawUpgradeEffect(); drawLossTransition(); return; }
       ctx.fillStyle = '#24483f'; ctx.font = 'bold 18px "Trebuchet MS"'; ctx.textAlign = 'left'; ctx.fillText(`Score ${Math.floor(state.score)}`, 18, 31); ctx.font = 'bold 13px "Trebuchet MS"'; ctx.fillText(`Parshad ${state.parshad}  ·  Khanda ${state.tokens}`, 18, 52);
       drawUpgradeStatus();
       const modeName = state.mode === 'arcade' ? 'ARCADE MODE' : state.mode === 'challenge' ? 'CHALLENGE MODE' : 'ENDLESS RUN';
@@ -644,23 +647,13 @@
   function leaveRunEarly() { if (state?.running && state.paused && !state.ending) { profile.stats.leftEarly++; saveProfile(); } showHome(); }
   function restartPausedRun() { const mode = state?.mode || 'endless'; leaveRunEarly(); start(mode); }
   function start(mode) { getAudio(); reset(mode); ui.home.classList.add('hidden'); ui.end.classList.add('hidden'); ui.end.classList.remove('visible'); ui.upgrades.classList.add('hidden'); ui.about.classList.add('hidden'); ui.privacy.classList.add('hidden'); ui.badges.classList.add('hidden'); ui.stats.classList.add('hidden'); ui.settings.classList.add('hidden'); ui.resetConfirm.classList.add('hidden'); ui.exitConfirm.classList.add('hidden'); ui.pause.classList.add('hidden'); if (!profile.tutorialComplete) return showTutorial(); startAudio(); ui.tutorial.classList.add('hidden'); ui.gameTools.classList.remove('hidden'); }
-  function showHome() { pointerX = null; keys.clear(); if (state) state.running = false; stopMusic(); updateRecordsUI(); ui.home.classList.remove('hidden'); ui.end.classList.add('hidden'); ui.end.classList.remove('visible'); ui.upgrades.classList.add('hidden'); ui.about.classList.add('hidden'); ui.privacy.classList.add('hidden'); ui.badges.classList.add('hidden'); ui.stats.classList.add('hidden'); ui.tutorial.classList.add('hidden'); ui.settings.classList.add('hidden'); ui.resetConfirm.classList.add('hidden'); ui.exitConfirm.classList.add('hidden'); ui.pause.classList.add('hidden'); ui.gameTools.classList.add('hidden'); }
+  function showHome() { pointerX = null; keys.clear(); if (state) state.running = false; stopMusic(); ui.mobileHud.classList.add('hidden'); updateRecordsUI(); ui.home.classList.remove('hidden'); ui.end.classList.add('hidden'); ui.end.classList.remove('visible'); ui.upgrades.classList.add('hidden'); ui.about.classList.add('hidden'); ui.privacy.classList.add('hidden'); ui.badges.classList.add('hidden'); ui.stats.classList.add('hidden'); ui.tutorial.classList.add('hidden'); ui.settings.classList.add('hidden'); ui.resetConfirm.classList.add('hidden'); ui.exitConfirm.classList.add('hidden'); ui.pause.classList.add('hidden'); ui.gameTools.classList.add('hidden'); }
   function showUpgrades() { pointerX = null; keys.clear(); if (state) state.running = false; stopMusic(); updateUpgradeUI(); ui.home.classList.add('hidden'); ui.end.classList.add('hidden'); ui.upgrades.classList.remove('hidden'); ui.about.classList.add('hidden'); ui.badges.classList.add('hidden'); ui.stats.classList.add('hidden'); ui.settings.classList.add('hidden'); ui.pause.classList.add('hidden'); ui.gameTools.classList.add('hidden'); }
   function showAbout() { pointerX = null; keys.clear(); if (state) state.running = false; stopMusic(); ui.home.classList.add('hidden'); ui.end.classList.add('hidden'); ui.upgrades.classList.add('hidden'); ui.about.classList.remove('hidden'); ui.privacy.classList.add('hidden'); ui.badges.classList.add('hidden'); ui.stats.classList.add('hidden'); ui.settings.classList.add('hidden'); ui.pause.classList.add('hidden'); ui.gameTools.classList.add('hidden'); }
   function showPrivacy() { ui.about.classList.add('hidden'); ui.privacy.classList.remove('hidden'); }
   function openExitConfirm() { ui.exitConfirm.classList.remove('hidden'); }
   function closeExitConfirm() { ui.exitConfirm.classList.add('hidden'); }
-  function handleNativeBack() {
-    if (!ui.exitConfirm.classList.contains('hidden')) return closeExitConfirm();
-    if (!ui.privacy.classList.contains('hidden')) return showAbout();
-    if (!ui.resetConfirm.classList.contains('hidden')) return cancelResetProgress();
-    if (!ui.settings.classList.contains('hidden')) return closeSettings();
-    if (!ui.tutorial.classList.contains('hidden')) return finishTutorial();
-    if (!ui.home.classList.contains('hidden')) return openExitConfirm();
-    if (!ui.pause.classList.contains('hidden')) return resumeGame();
-    if (state?.running) return pauseGame();
-    showHome();
-  }
+  function handleNativeBack() { if (!ui.exitConfirm.classList.contains('hidden')) return closeExitConfirm(); if (!ui.home.classList.contains('hidden')) return exitNativeApp(); if (state?.running && !state.paused) pauseGame(); openExitConfirm(); }
   function exitNativeApp() { const app = window.Capacitor?.Plugins?.App; if (app?.exitApp) app.exitApp(); else window.close(); }
   function showBadges() { renderBadges(); ui.home.classList.add('hidden'); ui.badges.classList.remove('hidden'); ui.stats.classList.add('hidden'); }
   function showStats() { renderStats(); ui.home.classList.add('hidden'); ui.badges.classList.add('hidden'); ui.stats.classList.remove('hidden'); }

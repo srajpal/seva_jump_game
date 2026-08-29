@@ -11,13 +11,14 @@
     <link rel="manifest" href="manifest.webmanifest" />
     <link rel="icon" href="assets/app-icon-bird-v1.png" type="image/png" />
     <link rel="apple-touch-icon" href="assets/app-icon-bird-v1.png" />
-    <link rel="stylesheet" href="styles.css?v=0.9.1" />
+    <link rel="stylesheet" href="styles.css?v=0.9.2" />
   </head>
   <body>
     <main class="game-shell">
       <header><span>SEVA JUMP</span><small>Playtest</small></header>
       <section class="game-frame" aria-label="Seva Jump game">
         <canvas id="game" width="450" height="800" aria-label="Seva Jump canvas"></canvas>
+        <div id="mobile-hud" class="mobile-hud hidden" aria-live="polite"><div><strong id="mobile-score">Score 0</strong><span id="mobile-items">Parshad 0 · Khanda 0</span></div><span id="mobile-mode">ENDLESS RUN</span></div>
         <div id="game-tools" class="game-tools hidden">
           <button id="pause-button" class="game-tool" type="button" aria-label="Pause game" title="Pause game">Ⅱ</button>
         </div>
@@ -47,7 +48,7 @@
             <p>More to explore</p>
             <div class="home-links"><button id="open-upgrades-button" class="secondary">Upgrades</button><button id="open-badges-button" class="secondary">Badges</button><button id="open-stats-button" class="secondary">Stats</button><button id="open-about-button" class="secondary">About &amp; Help</button><button id="open-settings-button" class="secondary">Settings</button></div>
           </section>
-          <p class="game-version" aria-label="Game version 0.9.1">v0.9.1 · Playtest build</p>
+          <p class="game-version" aria-label="Game version 0.9.2">v0.9.2 · Playtest build</p>
         </div>
         <div id="end-screen" class="overlay hidden">
           <p class="eyebrow">Nice climb!</p>
@@ -203,8 +204,8 @@
         <button id="right-button" aria-label="Move right">→</button>
       </section>
     </main>
-    <script src="game-config.js?v=0.9.1"></script>
-    <script src="game-rules.js?v=0.9.1"></script>
-    <script src="game.js?v=0.9.1"></script>
+    <script src="game-config.js?v=0.9.2"></script>
+    <script src="game-rules.js?v=0.9.2"></script>
+    <script src="game.js?v=0.9.2"></script>
   </body>
 </html>

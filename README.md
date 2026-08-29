@@ -2,7 +2,7 @@
 
 **A skyward seva adventure.**
 
-Current playtest build: **v0.9.1**.
+Current playtest build: **v0.9.2**.
 
 The birds have flown away with the parshad. Choose a young Sikh boy or girl, leap from platform to platform, and bring it back in this cheerful browser game prototype.
 
