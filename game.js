@@ -120,6 +120,7 @@
     else if (type === 'token') { tone(580, .08, { slide: 920, volume: .045 }); setTimeout(() => tone(1180, .11, { volume: .034 }), 62); }
     else if (type === 'boost') { tone(330, .16, { slide: 820, wave: 'sine', volume: .052 }); setTimeout(() => tone(990, .13, { volume: .034 }), 82); }
     else if (type === 'shield') { tone(260, .16, { slide: 150, wave: 'square', volume: .045 }); setTimeout(() => tone(420, .12, { volume: .025 }), 50); }
+    else if (type === 'hit') { noise(.09, { filter: 'bandpass', frequency: 780, volume: .038 }); tone(190, .12, { slide: 125, wave: 'square', volume: .035 }); }
     else if (type === 'break') { noise(.14, { filter: 'lowpass', frequency: 620, volume: .05 }); tone(165, .12, { slide: 85, wave: 'sawtooth', volume: .026 }); }
     else if (type === 'save') { tone(500, .12, { slide: 780, volume: .05 }); setTimeout(() => tone(980, .15, { volume: .036 }), 78); }
     else if (type === 'badge') { [659, 784, 1047].forEach((note, i) => setTimeout(() => tone(note, .13, { volume: .033 }), i * 88)); }
@@ -205,7 +206,7 @@
   function reset(mode = 'endless') {
     state = {
       running: true, paused: false, mode, score: 0, heightScore: 0, parshad: 0, tokens: 0, cameraY: 0,
-      background: Math.floor(Math.random() * backgroundImages.length), nextY: 610, ending: false, falconUsed: false, invincibleTimer: 0, finishGate: null, challengePlaced: 0, challengePlatformCount: 0, upgradeEffect: null,
+      background: Math.floor(Math.random() * backgroundImages.length), nextY: 610, ending: false, falconUsed: false, invincibleTimer: 0, finishGate: null, challengePlaced: 0, challengePlatformCount: 0, upgradeEffect: null, hitStop: null,
       player: { x: W / 2, y: 650, vx: 0, vy: -config.baseJumpVelocity * (1 + profile.powerJump * .1), w: 31, h: 48, character: selectedCharacter, facing: 1 },
       platforms: [{ x: 170, y: 700, w: 115, type: 'normal' }], lastPlatform: { x: 170, y: 700, w: 115 }, collectibles: [], enemies: [], powerups: [], particles: [],
       message: mode === 'challenge' ? `Challenge · collect all ${config.challengeParshadTarget} parshad` : mode === 'arcade' ? `Arcade · reach ${config.arcadeTargetScore}` : 'Endless Run · Keep climbing', messageTimer: 3,
@@ -342,8 +343,29 @@
       requestAnimationFrame(() => ui.end.classList.add('visible'));
     }, resultDelay);
   }
+  function triggerBirdHit(bird) {
+    if (state.hitStop || state.ending) return;
+    state.hitStop = { bird, type: state.invincibleTimer > 0 ? 'nishan' : profile.shield > 0 ? 'shield' : 'loss', started: lastTime, resolvesAt: lastTime + (profile.reducedMotion ? 750 : 1000) };
+    state.message = state.hitStop.type === 'loss' ? 'BIRD HIT!' : 'BIRD BLOCKED!';
+    state.messageTimer = 1.1;
+    sound('hit');
+  }
+  function resolveBirdHit() {
+    const hit = state.hitStop;
+    if (!hit || lastTime < hit.resolvesAt) return false;
+    state.hitStop = null; hit.bird.hit = true;
+    if (hit.type === 'nishan') {
+      profile.stats.birdsBlocked++; if (profile.stats.birdsBlocked >= 3) awardBadge('bird-defender'); sound('shield');
+      state.message = 'Nishan boost protected you!'; state.messageTimer = 2;
+    } else if (hit.type === 'shield') {
+      profile.stats.birdsBlocked++; profile.stats.shieldsUsed++; if (profile.stats.birdsBlocked >= 3) awardBadge('bird-defender'); sound('shield');
+      profile.shield--; state.upgradeEffect = { type: 'shield', started: lastTime }; saveProfile(); updateUpgradeUI(); state.message = 'Dhal Shield activated!'; state.messageTimer = 2;
+    } else { finish(false, 'bird'); return true; }
+    return false;
+  }
   function update(dt) {
     if (!state.running || state.paused) return;
+    if (state.hitStop) { if (resolveBirdHit()) return; if (state.hitStop) return; }
     const p = state.player;
     if (state.invincibleTimer > 0) state.invincibleTimer = Math.max(0, state.invincibleTimer - dt);
     const keyboard = (keys.has('ArrowRight') ? 1 : 0) - (keys.has('ArrowLeft') ? 1 : 0);
@@ -403,7 +425,7 @@
     state.collectibles = state.collectibles.filter(c => !c.taken && c.y < state.cameraY + H + 100);
     for (const power of state.powerups) if (!power.taken && collide(p, power, 30)) { power.taken = true; profile.stats.powerups++; burst(power.x, power.y, power.type === 'kara' ? '#f5cb58' : '#f1815a', 14); if (profile.stats.powerups >= 5) awardBadge('power-seeker'); sound('boost'); if (power.type === 'nishan') state.invincibleTimer = 5; p.vy = rules.boostVelocity(power.type, profile.powerJump); state.message = power.type === 'kara' ? 'Kara boost · one higher jump!' : 'Nishan boost · one jump + protection!'; state.messageTimer = 2; }
     state.powerups = state.powerups.filter(o => !o.taken && o.y < state.cameraY + H + 100);
-    for (const bird of state.enemies) { bird.x += bird.vx * dt; if (bird.x < 20 || bird.x > W - 20) bird.vx *= -1; if (collide(p, bird, 28)) { if (state.invincibleTimer > 0) { profile.stats.birdsBlocked++; if (profile.stats.birdsBlocked >= 3) awardBadge('bird-defender'); sound('shield'); bird.hit = true; state.message = 'Nishan boost protected you!'; state.messageTimer = 2; } else if (profile.shield > 0) { profile.stats.birdsBlocked++; profile.stats.shieldsUsed++; if (profile.stats.birdsBlocked >= 3) awardBadge('bird-defender'); sound('shield'); profile.shield--; bird.hit = true; state.upgradeEffect = { type: 'shield', started: lastTime }; saveProfile(); updateUpgradeUI(); state.message = 'Dhal Shield activated!'; state.messageTimer = 2; } else finish(false, 'bird'); } }
+    for (const bird of state.enemies) { bird.x += bird.vx * dt; if (bird.x < 20 || bird.x > W - 20) bird.vx *= -1; if (collide(p, bird, 28)) triggerBirdHit(bird); }
     state.enemies = state.enemies.filter(o => o.y < state.cameraY + H + 100 && !o.hit);
     for (const particle of state.particles) { particle.x += particle.vx * dt; particle.y += particle.vy * dt; particle.vy += 360 * dt; particle.life -= dt; }
     state.particles = state.particles.filter(particle => particle.life > 0);
@@ -509,7 +531,7 @@
     for (const particle of state.particles) { const alpha = Math.max(0, particle.life / particle.maxLife); ctx.save(); ctx.globalAlpha = alpha; ctx.fillStyle = particle.color; ctx.fillRect(Math.round(particle.x - particle.size / 2), Math.round(worldToScreen(particle.y) - particle.size / 2), particle.size, particle.size); ctx.restore(); }
     for (const c of state.collectibles) { const y = worldToScreen(c.y); ctx.save(); ctx.translate(c.x, y); if (c.type === 'token' && khandaTokenSprite.complete && khandaTokenSprite.naturalWidth) { ctx.drawImage(khandaTokenSprite, -18, -18, 36, 36); } else if (c.type === 'token') { ctx.fillStyle = '#e3a721'; ctx.beginPath(); ctx.arc(0, 0, 12, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = '#fff4b2'; ctx.font = 'bold 14px sans-serif'; ctx.textAlign = 'center'; ctx.fillText('✦', 0, 5); } else if (parshadSprite.complete && parshadSprite.naturalWidth) { ctx.drawImage(parshadSprite, -24, -24, 48, 48); } else { ctx.shadowColor = '#fff3a6'; ctx.shadowBlur = 16; ctx.fillStyle = '#f6c879'; ctx.beginPath(); ctx.ellipse(0, 4, 15, 7, 0, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = '#fff0ae'; ctx.beginPath(); ctx.arc(-5, -4, 5, 0, Math.PI * 2); ctx.arc(4, -4, 5, 0, Math.PI * 2); ctx.fill(); } ctx.restore(); }
     for (const o of state.powerups) { const y = worldToScreen(o.y); const sprite = powerupSprites[o.type]; if (sprite.complete && sprite.naturalWidth) ctx.drawImage(sprite, o.x - 25, y - 25, 50, 50); else { ctx.fillStyle = o.type === 'kara' ? '#d6a740' : '#ed7353'; ctx.beginPath(); ctx.arc(o.x, y, 15, 0, Math.PI * 2); ctx.fill(); } }
-    for (const b of state.enemies) { const y = worldToScreen(b.y); const birdSprite = birdSprites[b.type] || birdSprites.pigeon; const frame = profile.reducedMotion ? 1 : Math.floor((lastTime / 100 + b.flapOffset) % 3); if (birdSprite.complete && birdSprite.naturalWidth) { const frameWidth = birdSprite.naturalWidth / 3; ctx.save(); ctx.translate(b.x, y); if (b.vx < 0) ctx.scale(-1, 1); ctx.drawImage(birdSprite, frame * frameWidth, 0, frameWidth, birdSprite.naturalHeight, -35, -28, 70, 56); ctx.restore(); } else { ctx.fillStyle = '#42546c'; ctx.beginPath(); ctx.ellipse(b.x, y, 19, 11, 0, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = '#1f344a'; ctx.beginPath(); ctx.moveTo(b.x - 4, y); ctx.lineTo(b.x - 31, y - 15); ctx.lineTo(b.x - 19, y + 9); ctx.fill(); ctx.fillStyle = '#f2ba4a'; ctx.beginPath(); ctx.moveTo(b.x + 18, y); ctx.lineTo(b.x + 30, y + 3); ctx.lineTo(b.x + 18, y + 6); ctx.fill(); } }
+    for (const b of state.enemies) { const y = worldToScreen(b.y); const birdSprite = birdSprites[b.type] || birdSprites.pigeon; const frame = profile.reducedMotion ? 1 : Math.floor((lastTime / 100 + b.flapOffset) % 3); const isHit = state.hitStop?.bird === b; if (birdSprite.complete && birdSprite.naturalWidth) { const frameWidth = birdSprite.naturalWidth / 3; ctx.save(); ctx.translate(b.x, y); if (isHit && !profile.reducedMotion) ctx.globalAlpha = Math.floor(lastTime / 85) % 2 ? .34 : 1; if (b.vx < 0) ctx.scale(-1, 1); ctx.drawImage(birdSprite, frame * frameWidth, 0, frameWidth, birdSprite.naturalHeight, -35, -28, 70, 56); ctx.restore(); } else { ctx.fillStyle = '#42546c'; ctx.beginPath(); ctx.ellipse(b.x, y, 19, 11, 0, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = '#1f344a'; ctx.beginPath(); ctx.moveTo(b.x - 4, y); ctx.lineTo(b.x - 31, y - 15); ctx.lineTo(b.x - 19, y + 9); ctx.fill(); ctx.fillStyle = '#f2ba4a'; ctx.beginPath(); ctx.moveTo(b.x + 18, y); ctx.lineTo(b.x + 30, y + 3); ctx.lineTo(b.x + 18, y + 6); ctx.fill(); } if (isHit) { ctx.save(); ctx.fillStyle = state.hitStop.type === 'loss' ? '#e45d43' : '#f4ca4a'; ctx.font = '900 28px "Trebuchet MS"'; ctx.textAlign = 'center'; ctx.fillText('✦', b.x - 24, y - 28); ctx.fillText('✦', b.x + 25, y - 17); ctx.restore(); } }
     drawCatchNet();
     const p = state.player, py = worldToScreen(p.y);
     const isNetLanding = state.ending && !state.completed && (state.endReason === 'fall' || state.endReason === 'bird');
