@@ -28,6 +28,16 @@ const SEVA_CONFIG = {
   endlessBirdWarmupScore: 120,
   endlessBirdIntroChance: .025,
   endlessBirdChanceRange: [.08, .26],
+  hardBirdStartScore: 60,
+  hardBirdWarmupScore: 140,
+  hardBirdIntroChance: .04,
+  hardBirdChanceRange: [.10, .22],
+  hardMovingChance: .38,
+  hardDoubleBreakChance: .34,
+  hardBreakPlatformWidthRange: [58, 72],
+  hardMovingPlatformWidthRange: [72, 88],
+  hardHorizontalShiftRange: [92, 132],
+  hardMovingPlatformSpeedRange: [58, 92],
   // Birds should be hazards to steer around, never sit directly above the
   // platform a player is trying to land on.
   birdPlatformClearance: 76,

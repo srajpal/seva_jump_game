@@ -2,6 +2,7 @@ const RULE_CONFIG = typeof module !== 'undefined' ? require('./game-config.js') 
 
 const SEVA_RULES = {
   isArcadeLike(mode) { return mode === 'arcade' || mode === 'challenge'; },
+  isHard(mode) { return mode === 'hard'; },
   endlessDifficulty(score) {
     return Math.max(0, Math.min(1, score / RULE_CONFIG.endlessDifficultyScore));
   },
@@ -19,6 +20,16 @@ const SEVA_RULES = {
     const targetChance = low + (high - low) * difficulty;
     const warmup = Math.min(1, (score - RULE_CONFIG.endlessBirdStartScore) / RULE_CONFIG.endlessBirdWarmupScore);
     return RULE_CONFIG.endlessBirdIntroChance + (targetChance - RULE_CONFIG.endlessBirdIntroChance) * warmup;
+  },
+  hardBirdChance(score) {
+    if (score < RULE_CONFIG.hardBirdStartScore) return 0;
+    const [low, high] = RULE_CONFIG.hardBirdChanceRange;
+    const targetChance = low + (high - low) * this.endlessDifficulty(score);
+    const warmup = Math.min(1, (score - RULE_CONFIG.hardBirdStartScore) / RULE_CONFIG.hardBirdWarmupScore);
+    return RULE_CONFIG.hardBirdIntroChance + (targetChance - RULE_CONFIG.hardBirdIntroChance) * warmup;
+  },
+  canSpawnHardBird(existingBirdYs, candidateY, screenHeight) {
+    return existingBirdYs.every(y => Math.abs(y - candidateY) >= screenHeight);
   },
   arcadeBreakChance(score) {
     const [base, late] = RULE_CONFIG.arcadeBreakChanceRange;

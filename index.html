@@ -11,7 +11,7 @@
     <link rel="manifest" href="manifest.webmanifest" />
     <link rel="icon" href="assets/app-icon-bird-v1.png" type="image/png" />
     <link rel="apple-touch-icon" href="assets/app-icon-bird-v1.png" />
-    <link rel="stylesheet" href="styles.css?v=0.9.7" />
+    <link rel="stylesheet" href="styles.css?v=0.9.8" />
   </head>
   <body>
     <main class="game-shell">
@@ -40,7 +40,7 @@
             </div>
             <p id="home-records" class="home-records" aria-live="polite">Best scores · Endless 0 · Arcade 0 · Challenge 0</p>
             <div class="home-scene" aria-label="Choose your character">
-              <img class="scene-bowl" src="assets/parshad-bowl-pixel-v1.png" alt="" />
+              <img class="scene-bowl" src="assets/parshad-bowl-pixel-v3.png" alt="" />
               <button class="scene-girl scene-character selected" data-character="girl" type="button" aria-label="Play as the young Sikh girl" aria-pressed="true"><img src="assets/player-girl-pixel-v1.png" alt="" /></button>
               <button class="scene-boy scene-character" data-character="boy" type="button" aria-label="Play as the young Sikh boy" aria-pressed="false"><img src="assets/player-boy-pixel-v1.png" alt="" /></button>
             </div>
@@ -50,13 +50,14 @@
             <button id="endless-button" class="mode-button" data-mode="endless" aria-pressed="false"><span>Endless Run</span><small>Climb as far as you can</small></button>
             <button id="arcade-button" class="mode-button" data-mode="arcade" aria-pressed="false"><span>Arcade Mode</span><small>Reach 1,000 to complete the run</small></button>
             <button id="challenge-button" class="challenge-button" data-mode="challenge" aria-pressed="false"><span>Challenge Mode</span><small>Collect all 50 parshad bowls</small></button>
+            <button id="hard-button" class="hard-mode-button" data-mode="hard" aria-pressed="false"><span>Hard Mode</span><small>Small, shifting, breakable routes</small></button>
           </div>
           <p class="help mode-help">Choose a mode to start your skyward seva adventure.</p>
           <section class="home-utilities" aria-label="More game options">
             <p>More to explore</p>
             <div class="home-links"><button id="open-upgrades-button" class="secondary">Upgrades</button><button id="open-badges-button" class="secondary">Badges</button><button id="open-stats-button" class="secondary">Stats</button><button id="open-about-button" class="secondary">About &amp; Help</button><button id="open-settings-button" class="secondary">Settings</button></div>
           </section>
-          <p class="game-version" aria-label="Game version 0.9.7">v0.9.7 · Playtest build</p>
+          <p class="game-version" aria-label="Game version 0.9.8">v0.9.8 · Playtest build</p>
         </div>
         <div id="end-screen" class="overlay hidden">
           <p class="eyebrow">Nice climb!</p>
@@ -156,14 +157,15 @@
           <p class="about-intro">A playful jumping adventure inspired by Sikh community values. Here is everything you need for your next run.</p>
           <h3 class="about-subhead"><span aria-hidden="true">✦</span> Collect, jump, protect</h3>
           <div class="item-guide" role="list">
-            <article class="guide-card" role="listitem"><img src="assets/parshad-bowl-pixel-v1.png" alt="" /><span><strong>Parshad bowl</strong><small>Adds to your score.</small></span></article>
-            <article class="guide-card" role="listitem"><img src="assets/khanda-token-pixel-v1.png" alt="" /><span><strong>Khanda token</strong><small>Spend these in Upgrades.</small></span></article>
+            <article class="guide-card" role="listitem"><img src="assets/parshad-bowl-pixel-v3.png" alt="" /><span><strong>Parshad bowl</strong><small>Adds to your score.</small></span></article>
+            <article class="guide-card" role="listitem"><img src="assets/khanda-token-pixel-v3.png" alt="" /><span><strong>Khanda token</strong><small>Spend these in Upgrades.</small></span></article>
             <article class="guide-card" role="listitem"><img src="assets/platform-spring-pixel-v1.png" alt="" /><span><strong>Platforms</strong><small>Grass is steady; spring launches, moving shifts, and wood breaks.</small></span></article>
             <article class="guide-card" role="listitem"><img src="assets/powerup-kara-pixel-v1.png" alt="" /><span><strong>Kara boost</strong><small>Gives one higher jump.</small></span></article>
             <article class="guide-card" role="listitem"><img src="assets/powerup-nishan-pixel-v1.png" alt="" /><span><strong>Nishan boost</strong><small>One stronger jump plus 5 seconds of bird protection.</small></span></article>
             <article class="guide-card" role="listitem"><img src="assets/falcon-save-pixel-v1.png" alt="" /><span><strong>Falcon Save</strong><small>Catches one fall during a run.</small></span></article>
             <article class="guide-card" role="listitem"><img src="assets/dhal-shield-pixel-v1.png" alt="" /><span><strong>Dhal Shield</strong><small>Blocks one bird collision.</small></span></article>
             <article class="guide-card bird-guide" role="listitem"><span class="guide-symbol" aria-hidden="true">🕊</span><span><strong>Birds</strong><small>Avoid them unless you are protected.</small></span></article>
+            <article class="guide-card" role="listitem"><span class="guide-symbol hard-guide-symbol" aria-hidden="true">!</span><span><strong>Hard Mode</strong><small>Only small moving and breakable routes. Birds arrive earlier, one per screen.</small></span></article>
           </div>
           <section class="control-card" aria-labelledby="controls-heading">
             <h3 id="controls-heading"><span aria-hidden="true">↔</span> How to play</h3>
@@ -212,8 +214,8 @@
         <button id="right-button" aria-label="Move right">→</button>
       </section>
     </main>
-    <script src="game-config.js?v=0.9.7"></script>
-    <script src="game-rules.js?v=0.9.7"></script>
-    <script src="game.js?v=0.9.7"></script>
+    <script src="game-config.js?v=0.9.8"></script>
+    <script src="game-rules.js?v=0.9.8"></script>
+    <script src="game.js?v=0.9.8"></script>
   </body>
 </html>

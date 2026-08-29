@@ -2,7 +2,7 @@
 
 **A skyward seva adventure.**
 
-Current playtest build: **v0.9.7**.
+Current playtest build: **v0.9.8**.
 
 The birds have flown away with the parshad. Choose a young Sikh boy or girl, leap from platform to platform, and bring it back in this cheerful browser game prototype.
 
@@ -38,6 +38,7 @@ adb install -r android\app\build\outputs\apk\debug\app-debug.apk
 | **Endless Run** | Keep climbing for as long as you can. The course continues indefinitely. |
 | **Arcade Mode** | Reach 1,000 points, break through the finish banner, and celebrate. |
 | **Challenge Mode** | Reach the finish with every one of the 50 parshad bowls collected. |
+| **Hard Mode** | Keep climbing on small moving and breakable platforms while earlier birds remain limited to one per screen. |
 
 ## Collectibles, platforms, and boosts
 
@@ -64,9 +65,10 @@ node tests\rule-checks.js
 node tests\soak-test.js
 node tests\full-run-checks.js
 node tests\endless-bird-checks.js
+node tests\hard-mode-checks.js
 ```
 
-These checks verify core rules, full-mode outcomes, Challenge Mode’s 50-bowl placement, power-up/Falcon behavior, procedural platform reachability, and platform pacing.
+These checks verify core rules, full-mode outcomes, Challenge Mode’s 50-bowl placement, Hard Mode’s platform and bird limits, power-up/Falcon behavior, procedural platform reachability, and platform pacing.
 
 ## Project structure
 

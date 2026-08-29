@@ -1,4 +1,4 @@
-const CACHE_NAME = 'seva-jump-v44';
+const CACHE_NAME = 'seva-jump-v45';
 const APP_FILES = [
   './',
   './index.html',
@@ -22,8 +22,8 @@ const APP_FILES = [
   './assets/platform-spring-pixel-v1.png',
   './assets/platform-moving-pixel-v1.png',
   './assets/platform-break-wood-pixel-v1.png',
-  './assets/parshad-bowl-pixel-v2.png',
-  './assets/khanda-token-pixel-v2.png',
+  './assets/parshad-bowl-pixel-v3.png',
+  './assets/khanda-token-pixel-v3.png',
   './assets/bird-pigeon-flap-pixel-v1.png',
   './assets/bird-sparrow-flap-pixel-v1.png',
   './assets/bird-swift-flap-pixel-v1.png',
