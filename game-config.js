@@ -41,7 +41,8 @@ const SEVA_CONFIG = {
   arcadeGapBonus: 6,
   movingPlatformSpeedRange: [44, 72],
   arcadeMovingPlatformSpeedRange: [54, 104],
-  powerJumpCosts: [10, 15, 25, 35, 45],
+  // Rounded up from the previous prices: each level is 50% more expensive.
+  powerJumpCosts: [15, 23, 38, 53, 68],
 };
 
 globalThis.SEVA_CONFIG = SEVA_CONFIG;

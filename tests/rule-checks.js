@@ -28,7 +28,7 @@ assert(rules.maxDefaultPlatformGap() < config.baseJumpVelocity ** 2 / (2 * confi
 assert.equal(rules.maxDefaultPlatformGap(), config.safeDefaultPlatformGap, 'The generator must respect its conservative default-jump safety cap.');
 assert.equal(rules.canHaveDoublePlatform('moving'), false, 'Moving platforms must never share a row.');
 assert.equal(rules.canHaveDoublePlatform('normal'), true, 'A normal platform may have a companion route.');
-assert.equal(config.powerJumpCosts.reduce((sum, cost) => sum + cost, 0), 130, 'Power Jump should stay attainable across its five levels.');
+assert.equal(config.powerJumpCosts.reduce((sum, cost) => sum + cost, 0), 197, 'Power Jump pricing should use the 50% higher playtest costs.');
 
 // Challenge placement: one bowl every third generated platform, then no more.
 let placed = 0;
