@@ -206,7 +206,7 @@
   function reset(mode = 'endless') {
     state = {
       running: true, paused: false, mode, score: 0, heightScore: 0, parshad: 0, tokens: 0, cameraY: 0,
-      background: Math.floor(Math.random() * backgroundImages.length), nextY: 610, ending: false, falconUsed: false, invincibleTimer: 0, finishGate: null, challengePlaced: 0, challengePlatformCount: 0, upgradeEffect: null, hitStop: null,
+      background: Math.floor(Math.random() * backgroundImages.length), nextY: 610, ending: false, falconUsed: false, invincibleTimer: 0, finishGate: null, challengePlaced: 0, challengePlatformCount: 0, upgradeEffect: null, hitStop: null, falconRescue: null,
       player: { x: W / 2, y: 650, vx: 0, vy: -config.baseJumpVelocity * (1 + profile.powerJump * .1), w: 31, h: 48, character: selectedCharacter, facing: 1 },
       platforms: [{ x: 170, y: 700, w: 115, type: 'normal' }], lastPlatform: { x: 170, y: 700, w: 115 }, collectibles: [], enemies: [], powerups: [], particles: [],
       message: mode === 'challenge' ? `Challenge · collect all ${config.challengeParshadTarget} parshad` : mode === 'arcade' ? `Arcade · reach ${config.arcadeTargetScore}` : 'Endless Run · Keep climbing', messageTimer: 3,
@@ -363,8 +363,30 @@
     } else { finish(false, 'bird'); return true; }
     return false;
   }
+  function triggerFalconSave() {
+    const p = state.player, platformW = 124, platformY = state.cameraY + H - 155;
+    const platformX = Math.max(12, Math.min(W - platformW - 12, p.x - platformW / 2));
+    const platform = { x: platformX, y: platformY, w: platformW, type: 'normal', speed: 0, dir: 1, broken: false, rescuePlatform: true };
+    state.platforms.push(platform);
+    state.falconRescue = { started: lastTime, duration: profile.reducedMotion ? 650 : 1100, pickupX: p.x, pickupY: p.y, platform };
+    p.vx = 0; p.vy = 0; profile.falcon--; profile.stats.falconSaves++; state.falconUsed = true;
+    state.upgradeEffect = { type: 'falcon', started: lastTime }; saveProfile(); updateUpgradeUI(); state.message = 'FALCON SAVE!'; state.messageTimer = 1.2; sound('save');
+  }
+  function updateFalconRescue() {
+    const rescue = state.falconRescue;
+    if (!rescue) return false;
+    const elapsed = lastTime - rescue.started, progress = Math.min(1, elapsed / rescue.duration), p = state.player;
+    if (progress < .55) { p.x = rescue.pickupX; p.y = rescue.pickupY; return true; }
+    const carry = (progress - .55) / .45, targetX = rescue.platform.x + rescue.platform.w / 2, targetY = rescue.platform.y - p.h / 2;
+    p.x = rescue.pickupX + (targetX - rescue.pickupX) * carry; p.y = rescue.pickupY + (targetY - rescue.pickupY) * carry;
+    if (progress < 1) return true;
+    p.x = targetX; p.y = targetY; p.vx = 0; p.vy = -config.baseJumpVelocity * (1 + profile.powerJump * .1); state.invincibleTimer = Math.max(state.invincibleTimer, 1.2); state.falconRescue = null;
+    state.message = 'Back in the sky!'; state.messageTimer = 1.4;
+    return false;
+  }
   function update(dt) {
     if (!state.running || state.paused) return;
+    if (state.falconRescue && updateFalconRescue()) return;
     if (state.hitStop) { if (resolveBirdHit()) return; if (state.hitStop) return; }
     const p = state.player;
     if (state.invincibleTimer > 0) state.invincibleTimer = Math.max(0, state.invincibleTimer - dt);
@@ -432,7 +454,7 @@
     // End the run as the character reaches the visible net, rather than after
     // they have already disappeared below the frame.
     if (p.y > state.cameraY + H - 52) {
-      if (rules.canUseFalconSave(profile.falcon, state.falconUsed)) { sound('save'); profile.falcon--; profile.stats.falconSaves++; state.falconUsed = true; state.upgradeEffect = { type: 'falcon', started: lastTime }; saveProfile(); updateUpgradeUI(); p.y = state.cameraY + H - 185; p.vy = -(config.springJumpVelocity + 40) * (1 + profile.powerJump * .1); state.message = 'Falcon Save activated!'; state.messageTimer = 2; }
+      if (rules.canUseFalconSave(profile.falcon, state.falconUsed)) triggerFalconSave();
       else finish(false, 'fall');
     }
     state.messageTimer -= dt;
@@ -489,13 +511,24 @@
     const effect = state.upgradeEffect;
     if (!effect) return;
     const age = lastTime - effect.started;
-    if (age > 950) { state.upgradeEffect = null; return; }
-    const alpha = Math.max(0, 1 - age / 950);
+    const duration = effect.type === 'falcon' ? 1100 : 950;
+    if (age > duration) { state.upgradeEffect = null; return; }
+    const alpha = Math.max(0, 1 - age / duration);
     const icon = effect.type === 'falcon' ? falconSaveSprite : dhalShieldSprite;
     const title = effect.type === 'falcon' ? 'FALCON SAVE!' : 'DHAL SHIELD!';
     ctx.save(); ctx.globalAlpha = alpha * .26; ctx.fillStyle = effect.type === 'falcon' ? '#f3b84e' : '#6ca0b5'; ctx.fillRect(0, 0, W, H); ctx.globalAlpha = alpha;
     if (icon.complete && icon.naturalWidth) ctx.drawImage(icon, W / 2 - 45, 136, 90, 90);
     ctx.fillStyle = '#fff9e8'; ctx.strokeStyle = '#24483f'; ctx.lineWidth = 4; ctx.font = '900 22px "Trebuchet MS"'; ctx.textAlign = 'center'; ctx.strokeText(title, W / 2, 244); ctx.fillText(title, W / 2, 244); ctx.restore();
+  }
+  function drawFalconRescue() {
+    const rescue = state.falconRescue;
+    if (!rescue) return;
+    const progress = Math.min(1, (lastTime - rescue.started) / rescue.duration), pickupScreenY = worldToScreen(rescue.pickupY), targetX = rescue.platform.x + rescue.platform.w / 2, targetY = worldToScreen(rescue.platform.y - 48);
+    let x, y;
+    if (progress < .55) { const t = progress / .55; x = W + 68 + (rescue.pickupX - (W + 68)) * t; y = 54 + (pickupScreenY - 54) * t; }
+    else { const t = (progress - .55) / .45; x = rescue.pickupX + (targetX - rescue.pickupX) * t; y = pickupScreenY + (targetY - pickupScreenY) * t; }
+    const destinationX = progress < .55 ? rescue.pickupX : targetX;
+    ctx.save(); ctx.translate(x, y); if (x > destinationX) ctx.scale(-1, 1); if (falconSaveSprite.complete && falconSaveSprite.naturalWidth) ctx.drawImage(falconSaveSprite, -64, -57, 128, 114); else { ctx.fillStyle = '#c88932'; ctx.beginPath(); ctx.ellipse(0, 0, 42, 22, 0, 0, Math.PI * 2); ctx.fill(); } ctx.restore();
   }
   function drawNetStars() {
     const centerX = W / 2, centerY = H - 164;
@@ -556,6 +589,7 @@
     if ((profile.shield > 0 || state.invincibleTimer > 0) && dhalShieldSprite.complete && dhalShieldSprite.naturalWidth) ctx.drawImage(dhalShieldSprite, 6, -14, 39, 39);
     ctx.restore();
     }
+    drawFalconRescue();
     if (state.running || state.ending) {
       ctx.fillStyle = '#24483f'; ctx.font = 'bold 18px "Trebuchet MS"'; ctx.textAlign = 'left'; ctx.fillText(`Score ${Math.floor(state.score)}`, 18, 31); ctx.font = 'bold 13px "Trebuchet MS"'; ctx.fillText(`Parshad ${state.parshad}  ·  Khanda ${state.tokens}`, 18, 52);
       drawUpgradeStatus();
