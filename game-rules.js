@@ -35,6 +35,15 @@ const SEVA_RULES = {
   canUseFalconSave(owned, alreadyUsed) {
     return owned > 0 && !alreadyUsed;
   },
+  formatStat(value) {
+    const number = Math.max(0, Math.floor(Number(value) || 0));
+    if (number < 10000) return number.toLocaleString();
+    const units = [[1e15, 'Q'], [1e12, 'T'], [1e9, 'B'], [1e6, 'M'], [1e3, 'K']];
+    const [size, suffix] = units.find(([threshold]) => number >= threshold);
+    const compact = number / size;
+    const rounded = compact < 10 ? Math.round(compact * 10) / 10 : Math.round(compact);
+    return `${rounded}${suffix}`;
+  },
   finishRunwayIsReachable() {
     const jumpApex = RULE_CONFIG.baseJumpVelocity ** 2 / (2 * RULE_CONFIG.gravity);
     const neededAfterLastPlatform = RULE_CONFIG.finishBannerLeadScore * 18 - RULE_CONFIG.finishRunwaySteps * RULE_CONFIG.finishRunwayGap;

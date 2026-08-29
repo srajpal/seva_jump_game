@@ -67,7 +67,7 @@
     { id: 'bird-defender', icon: '◒', title: 'Bird Defender', description: 'Block 3 bird collisions.', color: '#5476a8' },
     { id: 'power-seeker', icon: '⚡', title: 'Power Seeker', description: 'Collect 5 power-ups.', color: '#b65e45' },
   ];
-  const defaultProfile = { tokens: 0, falcon: 0, shield: 0, powerJump: 0, character: 'girl', tutorialModes: { endless: false, arcade: false, challenge: false }, music: true, sound: true, reducedMotion: false, bestScores: { endless: 0, arcade: 0, challenge: 0 }, badges: {}, stats: { runs: 0, wins: 0, deaths: 0, fallDeaths: 0, birdDeaths: 0, challengeMisses: 0, jumps: 0, totalScore: 0, totalHeight: 0, parshad: 0, tokens: 0, powerups: 0, birdsSeen: 0, birdsBlocked: 0, falconSaves: 0, shieldsUsed: 0 } };
+  const defaultProfile = { tokens: 0, falcon: 0, shield: 0, powerJump: 0, character: 'girl', tutorialModes: { endless: false, arcade: false, challenge: false }, music: true, sound: true, reducedMotion: false, bestScores: { endless: 0, arcade: 0, challenge: 0 }, badges: {}, stats: { runs: 0, wins: 0, arcadeWins: 0, challengeWins: 0, deaths: 0, fallDeaths: 0, birdDeaths: 0, challengeMisses: 0, jumps: 0, totalScore: 0, totalHeight: 0, parshad: 0, tokens: 0, powerups: 0, birdsSeen: 0, birdsBlocked: 0, falconSaves: 0, shieldsUsed: 0 } };
   function loadProfile() { try { const saved = JSON.parse(localStorage.getItem('seva-jump-profile')) || {}; return { ...defaultProfile, ...saved, tutorialModes: { ...defaultProfile.tutorialModes, ...saved.tutorialModes }, bestScores: { ...defaultProfile.bestScores, ...saved.bestScores }, badges: { ...defaultProfile.badges, ...saved.badges }, stats: { ...defaultProfile.stats, ...saved.stats } }; } catch { return { ...defaultProfile, tutorialModes: { ...defaultProfile.tutorialModes }, bestScores: { ...defaultProfile.bestScores }, badges: {}, stats: { ...defaultProfile.stats } }; } }
   function saveProfile() { localStorage.setItem('seva-jump-profile', JSON.stringify(profile)); }
   let profile = loadProfile();
@@ -174,13 +174,13 @@
   function renderStats() {
     const s = profile.stats, averageScore = s.runs ? Math.round(s.totalScore / s.runs) : 0;
     ui.statsSummary.innerHTML = [
-      ['Runs', s.runs], ['Wins', s.wins], ['Jumps', s.jumps], ['Best Endless', profile.bestScores.endless],
+      ['Runs', s.runs], ['Jumps', s.jumps], ['Best Endless', profile.bestScores.endless], ['Best Arcade', profile.bestScores.arcade],
       ['Average score', averageScore], ['Height climbed', s.totalHeight], ['Parshad', s.parshad], ['Khanda earned', s.tokens],
-      ['Power-ups', s.powerups], ['Birds seen', s.birdsSeen], ['Birds blocked', s.birdsBlocked], ['Falcon Saves', s.falconSaves],
-    ].map(([label, value]) => `<article><strong>${value.toLocaleString()}</strong><span>${label}</span></article>`).join('');
+      ['Boosts collected', s.powerups], ['Birds seen', s.birdsSeen], ['Birds blocked', s.birdsBlocked], ['Falcon Saves', s.falconSaves],
+    ].map(([label, value]) => `<article><strong>${rules.formatStat(value)}</strong><span>${label}</span></article>`).join('');
     ui.deathBreakdown.innerHTML = [
-      ['Total deaths', s.deaths, '#a84f2b'], ['Falls', s.fallDeaths, '#bd7d54'], ['Bird collisions', s.birdDeaths, '#6b86a8'], ['Challenge incomplete', s.challengeMisses, '#b78448'], ['Dhal Shields used', s.shieldsUsed, '#5b8692'],
-    ].map(([label, value, color]) => `<article style="--stat-color:${color}"><strong>${value.toLocaleString()}</strong><span>${label}</span></article>`).join('');
+      ['Course finishes', s.wins, '#477e55'], ['Arcade wins', s.arcadeWins, '#5c9c74'], ['Challenge wins', s.challengeWins, '#9b597e'], ['Falls', s.fallDeaths, '#bd7d54'], ['Bird collisions', s.birdDeaths, '#6b86a8'], ['Challenge incomplete', s.challengeMisses, '#b78448'], ['Dhal Shields used', s.shieldsUsed, '#5b8692'],
+    ].map(([label, value, color]) => `<article style="--stat-color:${color}"><strong>${rules.formatStat(value)}</strong><span>${label}</span></article>`).join('');
   }
   function showNextBadgeToast() {
     const badge = badgeQueue.shift();
@@ -319,7 +319,7 @@
     profile.stats.runs++;
     profile.stats.totalScore += score;
     profile.stats.totalHeight += state.heightScore;
-    if (completed) profile.stats.wins++;
+    if (completed) { profile.stats.wins++; if (state.mode === 'arcade') profile.stats.arcadeWins++; if (state.mode === 'challenge') profile.stats.challengeWins++; }
     else {
       profile.stats.deaths++;
       if (reason === 'bird') profile.stats.birdDeaths++;

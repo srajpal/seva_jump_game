@@ -49,4 +49,12 @@ assert.equal(rules.canUseFalconSave(1, false), true, 'An owned unused Falcon Sav
 assert.equal(rules.canUseFalconSave(0, false), false, 'Falcon Save should not activate when none are owned.');
 assert.equal(rules.canUseFalconSave(1, true), false, 'Only one Falcon Save can activate in a run.');
 
+// Stat labels must remain compact enough for the narrow mobile stat cards.
+for (const value of [0, 9_999, 10_000, 123_456, 9_999_999, 123_456_789, Number.MAX_SAFE_INTEGER]) {
+  const display = rules.formatStat(value);
+  assert(display.length <= 6, `Stat display ${display} must fit a compact card.`);
+}
+assert.equal(rules.formatStat(123_456), '123K');
+assert.equal(rules.formatStat(1_234_567), '1.2M');
+
 console.log(`Rule checks passed. Challenge contains exactly ${placed} parshad bowls across its first 150 platforms.`);
