@@ -2,4 +2,8 @@ node_modules/
 www/
 .capacitor/
 *.apk
+*.aab
+*.jks
+*.keystore
+keystore.properties
 android/local.properties
