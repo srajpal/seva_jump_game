@@ -359,7 +359,7 @@
       state.message = 'Nishan boost protected you!'; state.messageTimer = 2;
     } else if (hit.type === 'shield') {
       profile.stats.birdsBlocked++; profile.stats.shieldsUsed++; if (profile.stats.birdsBlocked >= 3) awardBadge('bird-defender'); sound('shield');
-      profile.shield--; state.upgradeEffect = { type: 'shield', started: lastTime }; saveProfile(); updateUpgradeUI(); state.message = 'Dhal Shield activated!'; state.messageTimer = 2;
+      profile.shield--; state.invincibleTimer = 4; state.upgradeEffect = { type: 'shield', started: lastTime }; saveProfile(); updateUpgradeUI(); state.message = 'Dhal Shield activated! 4 seconds protected.'; state.messageTimer = 2;
     } else { finish(false, 'bird'); return true; }
     return false;
   }
@@ -425,7 +425,7 @@
     state.collectibles = state.collectibles.filter(c => !c.taken && c.y < state.cameraY + H + 100);
     for (const power of state.powerups) if (!power.taken && collide(p, power, 30)) { power.taken = true; profile.stats.powerups++; burst(power.x, power.y, power.type === 'kara' ? '#f5cb58' : '#f1815a', 14); if (profile.stats.powerups >= 5) awardBadge('power-seeker'); sound('boost'); if (power.type === 'nishan') state.invincibleTimer = 5; p.vy = rules.boostVelocity(power.type, profile.powerJump); state.message = power.type === 'kara' ? 'Kara boost · one higher jump!' : 'Nishan boost · one jump + protection!'; state.messageTimer = 2; }
     state.powerups = state.powerups.filter(o => !o.taken && o.y < state.cameraY + H + 100);
-    for (const bird of state.enemies) { bird.x += bird.vx * dt; if (bird.x < 20 || bird.x > W - 20) bird.vx *= -1; if (collide(p, bird, 28)) triggerBirdHit(bird); }
+    for (const bird of state.enemies) { if (bird.hit) continue; bird.x += bird.vx * dt; if (bird.x < 20 || bird.x > W - 20) bird.vx *= -1; if (collide(p, bird, 28)) triggerBirdHit(bird); }
     state.enemies = state.enemies.filter(o => o.y < state.cameraY + H + 100 && !o.hit);
     for (const particle of state.particles) { particle.x += particle.vx * dt; particle.y += particle.vy * dt; particle.vy += 360 * dt; particle.life -= dt; }
     state.particles = state.particles.filter(particle => particle.life > 0);
@@ -545,7 +545,7 @@
     const playerSprite = playerSprites[p.character][isFalling ? 'fall' : 'jump'];
     const tilt = isFalling ? Math.max(-.12, Math.min(.12, p.vx / 1300)) : Math.max(-.055, Math.min(.055, p.vx / 4200));
     const bob = isFalling || profile.reducedMotion ? 0 : Math.sin(lastTime / 85) * 1.25;
-    ctx.save(); ctx.translate(p.x, py + bob); ctx.rotate(tilt); ctx.scale(p.facing, 1);
+    ctx.save(); ctx.translate(p.x, py + bob); ctx.rotate(tilt); ctx.scale(p.facing, 1); if (state.invincibleTimer > 0 && !profile.reducedMotion && Math.floor(lastTime / 105) % 2) ctx.globalAlpha = .48;
     if (playerSprite.complete && playerSprite.naturalWidth) {
       // The source has transparent padding; these bounds align its visible feet
       // with the collision body while preserving a crisp, readable silhouette.
@@ -553,7 +553,7 @@
     } else {
       ctx.fillStyle = p.character === 'girl' ? '#d46686' : '#477e55'; ctx.beginPath(); ctx.arc(0, -15, 16, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = '#a96942'; ctx.beginPath(); ctx.arc(0, -8, 12, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = '#324e3d'; ctx.fillRect(-11, 1, 22, 26); ctx.fillStyle = '#f6d4b0'; ctx.fillRect(-18, 5, 8, 20); ctx.fillRect(10, 5, 8, 20);
     }
-    if (profile.shield > 0 && dhalShieldSprite.complete && dhalShieldSprite.naturalWidth) ctx.drawImage(dhalShieldSprite, 5, -18, 52, 52);
+    if ((profile.shield > 0 || state.invincibleTimer > 0) && dhalShieldSprite.complete && dhalShieldSprite.naturalWidth) ctx.drawImage(dhalShieldSprite, 6, -14, 39, 39);
     ctx.restore();
     }
     if (state.running || state.ending) {
