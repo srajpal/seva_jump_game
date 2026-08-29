@@ -127,6 +127,7 @@
     else if (type === 'ui') tone(610, .045, { slide: 700, volume: .018 });
     else if (type === 'purchase') { tone(440, .08, { slide: 660, volume: .03 }); setTimeout(() => tone(880, .1, { volume: .026 }), 64); }
     else if (type === 'win') { [523, 659, 784, 1047].forEach((note, i) => setTimeout(() => tone(note, .17, { volume: .045 }), i * 100)); }
+    else if (type === 'firework') { noise(.28, { filter: 'lowpass', frequency: 360, volume: .05 }); tone(180, .16, { slide: 85, wave: 'sawtooth', volume: .027 }); setTimeout(() => noise(.16, { frequency: 1350, volume: .023 }), 115); }
     else if (type === 'loss') { tone(260, .3, { slide: 110, wave: 'sine', volume: .042 }); noise(.12, { frequency: 230, volume: .014 }); }
   }
   function playMusicPhrase() {
@@ -204,9 +205,10 @@
   }
 
   function reset(mode = 'endless') {
+    if (state?.fireworkSoundTimers) state.fireworkSoundTimers.forEach(clearTimeout);
     state = {
       running: true, paused: false, mode, score: 0, heightScore: 0, parshad: 0, tokens: 0, cameraY: 0,
-      background: Math.floor(Math.random() * backgroundImages.length), nextY: 610, ending: false, falconUsed: false, invincibleTimer: 0, shieldVisualTimer: 0, finishGate: null, challengePlaced: 0, challengePlatformCount: 0, upgradeEffect: null, hitStop: null, falconRescue: null,
+      background: Math.floor(Math.random() * backgroundImages.length), nextY: 610, ending: false, falconUsed: false, invincibleTimer: 0, shieldVisualTimer: 0, finishGate: null, fireworkSoundTimers: [], challengePlaced: 0, challengePlatformCount: 0, upgradeEffect: null, hitStop: null, falconRescue: null,
       player: { x: W / 2, y: 650, vx: 0, vy: -config.baseJumpVelocity * (1 + profile.powerJump * .1), w: 31, h: 48, character: selectedCharacter, facing: 1 },
       platforms: [{ x: 170, y: 700, w: 115, type: 'normal' }], lastPlatform: { x: 170, y: 700, w: 115 }, collectibles: [], enemies: [], powerups: [], particles: [],
       message: mode === 'challenge' ? `Challenge · collect all ${config.challengeParshadTarget} parshad` : mode === 'arcade' ? `Arcade · reach ${config.arcadeTargetScore}` : 'Endless Run · Keep climbing', messageTimer: 3,
@@ -222,7 +224,7 @@
     let type = 'normal';
     if (arcade) {
       if (r < .09) type = 'spring';
-      else if (level >= 2 && r < .31) type = 'break';
+      else if (level >= 2 && r < .09 + rules.arcadeBreakChance(state.score)) type = 'break';
       else if (r < .55) type = 'moving';
     } else {
       // Endless has no tiers: its platform mix gradually becomes more varied.
@@ -296,14 +298,27 @@
     for (let i = 0; i < count; i++) state.particles.push({ x, y, vx: (Math.random() * 2 - 1) * 145, vy: -45 - Math.random() * 155, color, life: .5 + Math.random() * .3, maxLife: .8, size: 4 + Math.floor(Math.random() * 5) });
   }
   function addFinishRunway() {
-    // The last score band is a fixed, generous staircase. This guarantees a
-    // route to the banner instead of leaving the final climb to random rolls.
+    // Reuse the route that is already waiting above the player. Creating a
+    // second staircase here made platforms visibly pop into the playfield.
     const p = state.player;
-    let center = p.x;
-    for (let step = 1; step <= config.finishRunwaySteps; step++) {
-      center = Math.max(74, Math.min(W - 74, center + (step % 2 ? 28 : -20)));
-      state.platforms.push({ x: center - 62, y: p.y - config.finishRunwayGap * step, w: 124, type: 'normal', speed: 0, dir: 1, broken: false, finishRunway: true });
-    }
+    const runway = state.platforms.filter(platform => !platform.companion && !platform.broken && platform.y < p.y - 24).sort((a, b) => b.y - a.y).slice(0, config.finishRunwaySteps);
+    if (!runway.length) return false;
+    runway.forEach((platform, index) => {
+      platform.finishRunway = true;
+      platform.speed = 0;
+      platform.dir = 1;
+      // A few late breakables add tension; the final launch platform remains
+      // solid so the banner jump is always fair.
+      platform.type = index === runway.length - 1 ? 'normal' : (Math.random() < rules.arcadeBreakChance(state.score) ? 'break' : 'normal');
+    });
+    const topPlatform = runway[runway.length - 1];
+    state.finishGate = { y: topPlatform.y - config.finishBannerGap, broken: false };
+    const belowBanner = object => rules.isBelowFinishBanner(object.y, state.finishGate.y);
+    state.platforms = state.platforms.filter(belowBanner);
+    state.collectibles = state.collectibles.filter(belowBanner);
+    state.powerups = state.powerups.filter(belowBanner);
+    state.enemies = state.enemies.filter(belowBanner);
+    return true;
   }
   // Longer score bands let a full run breathe before new hazards appear.
   function levelForScore(score) { const [two, three, four, five] = config.tierThresholds; return score >= five ? 5 : score >= four ? 4 : score >= three ? 3 : score >= two ? 2 : 1; }
@@ -315,6 +330,9 @@
     ui.pause.classList.add('hidden'); ui.gameTools.classList.add('hidden');
     stopMusic();
     sound(completed ? 'win' : 'loss');
+    if (completed) {
+      [450, 1350, 2350, 3450, 4300].forEach(delay => state.fireworkSoundTimers.push(setTimeout(() => sound('firework'), delay)));
+    }
     const score = Math.floor(state.score), previousBest = profile.bestScores[state.mode] || 0, isNewBest = score > previousBest;
     if (isNewBest) profile.bestScores[state.mode] = score;
     profile.stats.runs++;
@@ -331,7 +349,7 @@
     if (state.mode === 'arcade' && completed) awardBadge('arcade-complete');
     if (state.mode === 'challenge' && completed) awardBadge('challenge-complete');
     profile.tokens += state.tokens; saveProfile(); updateUpgradeUI(); updateRecordsUI();
-    const resultDelay = completed ? 1150 : 2800;
+    const resultDelay = completed ? config.victorySceneDurationMs : 2800;
     setTimeout(() => {
       const challenge = state.mode === 'challenge';
       ui.endHeading.textContent = completed ? (challenge ? 'Challenge complete!' : 'Arcade complete!') : (challenge && (reason === 'finish' || reason === 'challenge-incomplete') ? 'Challenge progress' : 'Run complete');
@@ -433,17 +451,16 @@
         return;
       }
       if (!state.finishGate && state.score >= config.arcadeTargetScore - config.finishBannerLeadScore) {
-        state.finishGate = { y: p.y - config.finishBannerLeadScore * 18, broken: false };
-        addFinishRunway();
-        state.message = 'The finish banner is ahead!'; state.messageTimer = 2;
+        if (addFinishRunway()) { state.message = 'The finish banner is ahead!'; state.messageTimer = 2; }
       }
       if (state.finishGate && p.y <= state.finishGate.y) {
         state.finishGate.broken = true;
+        state.score = Math.max(state.score, config.arcadeTargetScore);
         finish(rules.didWin(state.mode, state.parshad), 'finish');
         return;
       }
     }
-    while (state.nextY > state.cameraY - 900) addPlatform();
+    while (state.nextY > state.cameraY - 900 && (!state.finishGate || state.nextY > state.finishGate.y)) addPlatform();
     state.platforms = state.platforms.filter(o => o.y < state.cameraY + H + 100 && !o.broken);
     for (const c of state.collectibles) if (!c.taken && collide(p, c, c.challengeBowl ? 86 : 27)) { c.taken = true; if (c.type === 'token') { state.tokens++; profile.stats.tokens++; burst(c.x, c.y, '#f5cd57', 9); sound('token'); if (profile.stats.tokens >= 10) awardBadge('tokens-10'); } else { state.parshad++; profile.stats.parshad++; state.score += 3; burst(c.x, c.y, '#fff1a5', 8); sound('collect'); if (profile.stats.parshad >= 50) awardBadge('parshad-50'); } }
     state.collectibles = state.collectibles.filter(c => !c.taken && c.y < state.cameraY + H + 100);
@@ -479,13 +496,15 @@
     if (!state.completed) return;
     const age = Math.max(0, (lastTime - state.winStarted) / 1000);
     const colors = ['#ffe46b', '#f47c4b', '#4da8dc', '#f7f2d0'];
-    for (let burst = 0; burst < 3; burst++) {
-      const cx = 105 + burst * 120, cy = 130 + (burst % 2) * 65;
-      for (let spark = 0; spark < 12; spark++) {
-        const angle = spark / 12 * Math.PI * 2 + burst;
-        const distance = profile.reducedMotion ? 34 : 12 + ((age * 75 + burst * 17) % 58);
+    for (let burst = 0; burst < 5; burst++) {
+      const cx = 62 + burst * 92, cy = 115 + (burst % 3) * 70;
+      const burstAge = Math.max(0, age - burst * .22);
+      for (let spark = 0; spark < 14; spark++) {
+        const angle = spark / 14 * Math.PI * 2 + burst;
+        const distance = profile.reducedMotion ? 34 : 10 + ((burstAge * 82 + burst * 13) % 72);
         ctx.fillStyle = colors[(spark + burst) % colors.length];
-        ctx.fillRect(cx + Math.cos(angle) * distance - 3, cy + Math.sin(angle) * distance - 3, 6, 6);
+        const fall = profile.reducedMotion ? 0 : Math.min(24, burstAge * burstAge * 3);
+        ctx.fillRect(cx + Math.cos(angle) * distance - 3, cy + Math.sin(angle) * distance + fall - 3, 6, 6);
       }
     }
   }
@@ -556,6 +575,13 @@
     [-18, W / 2, W + 18].forEach((x, index) => { ctx.beginPath(); ctx.arc(x, H / 2 + (index - 1) * 46, radius, 0, Math.PI * 2); ctx.fill(); });
     ctx.restore();
   }
+  function drawWinTransition() {
+    if (!state.ending || !state.completed) return;
+    const fadeStart = config.victorySceneDurationMs - config.victoryFadeDurationMs;
+    const progress = Math.max(0, Math.min(1, (lastTime - state.winStarted - fadeStart) / config.victoryFadeDurationMs));
+    if (!progress) return;
+    ctx.save(); ctx.globalAlpha = progress; ctx.fillStyle = '#fff7e7'; ctx.fillRect(0, 0, W, H); ctx.restore();
+  }
   function draw() {
     if (!state) return; ctx.clearRect(0, 0, W, H); drawBackdrop();
     drawFireworks();
@@ -595,7 +621,7 @@
     }
     drawFalconRescue();
     if (state.running || state.ending) {
-      updateMobileHud(); if (usesMobileHud()) { drawUpgradeEffect(); drawLossTransition(); return; }
+      updateMobileHud(); if (usesMobileHud()) { drawUpgradeEffect(); drawLossTransition(); drawWinTransition(); return; }
       ctx.fillStyle = '#24483f'; ctx.font = 'bold 18px "Trebuchet MS"'; ctx.textAlign = 'left'; ctx.fillText(`Score ${Math.floor(state.score)}`, 18, 31); ctx.font = 'bold 13px "Trebuchet MS"'; ctx.fillText(`Parshad ${state.parshad}  ·  Khanda ${state.tokens}`, 18, 52);
       drawUpgradeStatus();
       const modeName = state.mode === 'arcade' ? 'ARCADE MODE' : state.mode === 'challenge' ? 'CHALLENGE MODE' : 'ENDLESS RUN';
@@ -607,6 +633,7 @@
     }
     drawUpgradeEffect();
     drawLossTransition();
+    drawWinTransition();
   }
   function loop(time) { const dt = Math.min(.04, (time - lastTime) / 1000 || 0); lastTime = time; update(dt); draw(); requestAnimationFrame(loop); }
   function setSelectedCharacter(character) {

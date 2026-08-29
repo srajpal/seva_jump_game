@@ -20,6 +20,15 @@ const SEVA_RULES = {
     const warmup = Math.min(1, (score - RULE_CONFIG.endlessBirdStartScore) / RULE_CONFIG.endlessBirdWarmupScore);
     return RULE_CONFIG.endlessBirdIntroChance + (targetChance - RULE_CONFIG.endlessBirdIntroChance) * warmup;
   },
+  arcadeBreakChance(score) {
+    const [base, late] = RULE_CONFIG.arcadeBreakChanceRange;
+    if (score < RULE_CONFIG.tierThresholds[0]) return 0;
+    const progress = Math.max(0, Math.min(1, (score - RULE_CONFIG.arcadeFinalBreakableStartScore) / (RULE_CONFIG.arcadeTargetScore - RULE_CONFIG.arcadeFinalBreakableStartScore)));
+    return base + (late - base) * progress;
+  },
+  isBelowFinishBanner(platformY, bannerY) {
+    return platformY > bannerY;
+  },
   shouldComplete(mode, score, parshad) {
     if (mode === 'arcade') return score >= RULE_CONFIG.arcadeTargetScore;
     if (mode === 'challenge') return score >= RULE_CONFIG.arcadeTargetScore && parshad >= RULE_CONFIG.challengeParshadTarget;
@@ -46,8 +55,7 @@ const SEVA_RULES = {
   },
   finishRunwayIsReachable() {
     const jumpApex = RULE_CONFIG.baseJumpVelocity ** 2 / (2 * RULE_CONFIG.gravity);
-    const neededAfterLastPlatform = RULE_CONFIG.finishBannerLeadScore * 18 - RULE_CONFIG.finishRunwaySteps * RULE_CONFIG.finishRunwayGap;
-    return RULE_CONFIG.finishRunwayGap < jumpApex && neededAfterLastPlatform < jumpApex;
+    return RULE_CONFIG.finishRunwayGap < jumpApex && RULE_CONFIG.finishBannerGap < jumpApex;
   },
 };
 

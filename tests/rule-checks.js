@@ -39,8 +39,15 @@ assert.equal(placed, config.challengeParshadTarget, 'Challenge must contain exac
 assert.equal(config.challengeParshadTarget * 3, 150, 'All Challenge bowls should appear before the finish section.');
 assert(config.arcadeMovingPlatformSpeedRange[1] <= 110, 'Arcade platform speed cap should remain manageable.');
 assert(config.finishRunwayGap < config.baseJumpVelocity ** 2 / (2 * config.gravity), 'Each finish-runway platform must be within a normal jump apex.');
-assert(config.finishRunwaySteps * config.finishRunwayGap >= config.finishBannerLeadScore * 18 - config.baseJumpVelocity ** 2 / (2 * config.gravity), 'The finish runway must reach the banner approach.');
+assert(config.finishBannerGap < config.baseJumpVelocity ** 2 / (2 * config.gravity), 'The final banner jump must remain within the normal jump apex.');
 assert.equal(rules.finishRunwayIsReachable(), true, 'The finish runway must remain reachable as a complete path.');
+assert.equal(rules.isBelowFinishBanner(101, 100), true, 'Platforms below the finish banner should remain.');
+assert.equal(rules.isBelowFinishBanner(100, 100), false, 'Platforms at the finish banner must be removed.');
+assert.equal(rules.isBelowFinishBanner(99, 100), false, 'Platforms above the finish banner must be removed.');
+assert.equal(rules.arcadeBreakChance(config.tierThresholds[0] - 1), 0, 'Early Arcade should not generate breakables.');
+assert(rules.arcadeBreakChance(config.arcadeTargetScore) > rules.arcadeBreakChance(config.arcadeFinalBreakableStartScore), 'Breakables should increase modestly in the final Arcade section.');
+assert(rules.arcadeBreakChance(config.arcadeTargetScore) <= .3, 'Final Arcade breakables must remain below the fairness cap.');
+assert(config.victorySceneDurationMs >= 5000, 'The completed run should remain visible for at least five seconds.');
 assert(rules.boostVelocity('kara') < -config.baseJumpVelocity, 'Kara must provide a higher immediate jump.');
 assert(Math.abs(rules.boostVelocity('kara')) <= config.baseJumpVelocity * 1.5, 'Kara must remain below its one-jump safety cap.');
 assert(rules.boostVelocity('nishan') < rules.boostVelocity('kara'), 'Nishan should be stronger than Kara.');
