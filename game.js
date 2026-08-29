@@ -39,9 +39,9 @@
   movingPlatformSprite.src = 'assets/platform-moving-pixel-v1.png';
   const platformSprites = { normal: platformSprite, spring: springPlatformSprite, break: breakPlatformSprite, moving: movingPlatformSprite };
   const parshadSprite = new Image();
-  parshadSprite.src = 'assets/parshad-bowl-pixel-v1.png';
+  parshadSprite.src = 'assets/parshad-bowl-pixel-v2.png';
   const khandaTokenSprite = new Image();
-  khandaTokenSprite.src = 'assets/khanda-token-pixel-v1.png';
+  khandaTokenSprite.src = 'assets/khanda-token-pixel-v2.png';
   const birdSprites = {};
   [['pigeon', 'assets/bird-pigeon-flap-pixel-v1.png'], ['sparrow', 'assets/bird-sparrow-flap-pixel-v1.png'], ['swift', 'assets/bird-swift-flap-pixel-v1.png']].forEach(([type, src]) => { const image = new Image(); image.src = src; birdSprites[type] = image; });
   const powerupSprites = { kara: new Image(), nishan: new Image() };
@@ -626,9 +626,10 @@
       drawUpgradeStatus();
       const modeName = state.mode === 'arcade' ? 'ARCADE MODE' : state.mode === 'challenge' ? 'CHALLENGE MODE' : 'ENDLESS RUN';
       const modeDetail = state.mode === 'arcade' ? `${Math.floor(state.score)} / ${config.arcadeTargetScore}` : state.mode === 'challenge' ? `${state.parshad} / ${config.challengeParshadTarget} BOWLS` : 'KEEP CLIMBING';
-      ctx.fillStyle = '#fff8e9e8'; ctx.fillRect(W - 178, 12, 160, 44);
-      ctx.strokeStyle = state.mode === 'challenge' ? '#b56b2e' : state.mode === 'arcade' ? '#d56d39' : '#527165'; ctx.lineWidth = 2; ctx.strokeRect(W - 178, 12, 160, 44);
-      ctx.textAlign = 'center'; ctx.fillStyle = '#24483f'; ctx.font = 'bold 12px "Trebuchet MS"'; ctx.fillText(modeName, W - 98, 29); ctx.font = 'bold 11px "Trebuchet MS"'; ctx.fillText(modeDetail, W - 98, 45);
+      ctx.fillStyle = '#fff8e9e8'; ctx.fillRect(W / 2 - 80, H - 55, 160, 38);
+      ctx.strokeStyle = state.mode === 'challenge' ? '#b56b2e' : state.mode === 'arcade' ? '#d56d39' : '#527165'; ctx.lineWidth = 2;
+      ctx.strokeRect(W / 2 - 80, H - 55, 160, 38);
+      ctx.textAlign = 'center'; ctx.fillStyle = '#24483f'; ctx.font = 'bold 11px "Trebuchet MS"'; ctx.fillText(`${modeName} · ${modeDetail}`, W / 2, H - 31);
       if (state.messageTimer > 0) { ctx.textAlign = 'center'; ctx.fillStyle = '#24483f'; ctx.font = 'bold 15px "Trebuchet MS"'; ctx.fillText(state.message, W / 2, 120); }
     }
     drawUpgradeEffect();

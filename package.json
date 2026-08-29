@@ -1,6 +1,6 @@
 {
   "name": "seva-jump",
-  "version": "0.9.6",
+  "version": "0.9.7",
   "private": true,
   "description": "Seva Jump Android wrapper and web build tools.",
   "scripts": {
