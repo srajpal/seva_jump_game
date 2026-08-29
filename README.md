@@ -2,7 +2,7 @@
 
 **A skyward seva adventure.**
 
-Current playtest build: **v0.8.8**.
+Current playtest build: **v0.8.9**.
 
 The birds have flown away with the parshad. Choose a young Sikh boy or girl, leap from platform to platform, and bring it back in this cheerful browser game prototype.
 
@@ -15,6 +15,21 @@ Open **`index.html`** in a modern browser. On a phone or tablet, drag anywhere a
 New players receive a short three-step guide after choosing their first mode. It can be replayed later from Settings.
 
 The game is self-contained: no login, ads, purchases, or network connection are needed to play locally. When opened from the published site, it also caches the game after the first successful visit so it remains playable offline.
+
+## Android device build
+
+The project now includes a Capacitor Android wrapper for direct device testing. With Android Studio, Java 21, and the Android SDK installed, run:
+
+```powershell
+npm install
+npm run android:debug
+```
+
+The debug APK is written to `android\app\build\outputs\apk\debug\app-debug.apk`. With USB debugging enabled on a connected Android device, install it with:
+
+```powershell
+adb install -r android\app\build\outputs\apk\debug\app-debug.apk
+```
 
 ## Game modes
 
@@ -42,7 +57,7 @@ The setting is gurdwara-inspired and avoids using sacred spaces or symbols as ob
 
 ## Run the checks
 
-No build step or package installation is required. With Node.js available, run:
+With Node.js available, run:
 
 ```powershell
 node tests\rule-checks.js
@@ -63,6 +78,8 @@ game-config.js      Central tuning values
 game-rules.js       Shared mode and completion rules
 assets/             Pixel-art game assets
 tests/              Rule and procedural-generation checks
+android/            Native Android wrapper
+scripts/            Web asset sync script for native builds
 ```
 
 ## Roadmap
