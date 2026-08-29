@@ -11,7 +11,7 @@
     <link rel="manifest" href="manifest.webmanifest" />
     <link rel="icon" href="assets/app-icon-bird-v1.png" type="image/png" />
     <link rel="apple-touch-icon" href="assets/app-icon-bird-v1.png" />
-    <link rel="stylesheet" href="styles.css?v=0.8.9" />
+    <link rel="stylesheet" href="styles.css?v=0.9.1" />
   </head>
   <body>
     <main class="game-shell">
@@ -47,7 +47,7 @@
             <p>More to explore</p>
             <div class="home-links"><button id="open-upgrades-button" class="secondary">Upgrades</button><button id="open-badges-button" class="secondary">Badges</button><button id="open-stats-button" class="secondary">Stats</button><button id="open-about-button" class="secondary">About &amp; Help</button><button id="open-settings-button" class="secondary">Settings</button></div>
           </section>
-          <p class="game-version" aria-label="Game version 0.8.9">v0.8.9 · Playtest build</p>
+          <p class="game-version" aria-label="Game version 0.9.1">v0.9.1 · Playtest build</p>
         </div>
         <div id="end-screen" class="overlay hidden">
           <p class="eyebrow">Nice climb!</p>
@@ -172,8 +172,29 @@
             <div><dt>Khanda</dt><dd>A widely recognized Sikh emblem.</dd></div>
             <div><dt>Dhal</dt><dd>A shield; in the game, it blocks one bird collision.</dd></div>
           </dl>
-          <a class="privacy-link" href="privacy.html">Privacy</a>
+          <button id="open-privacy-button" class="privacy-link" type="button">Privacy</button>
           <button id="close-about-button" class="primary">Back to main screen</button>
+        </div>
+        <div id="privacy-screen" class="overlay privacy-screen hidden" role="dialog" aria-modal="true" aria-labelledby="privacy-heading">
+          <p class="eyebrow">Seva Jump</p>
+          <h2 id="privacy-heading">Privacy</h2>
+          <p class="privacy-updated">Last updated: August 28, 2026</p>
+          <section class="privacy-card">
+            <p>Seva Jump is free and offline-friendly. We do not collect, sell, or share personal information.</p>
+            <h3>What stays on your device</h3>
+            <p>Your scores, settings, upgrades, badges, and statistics are stored only on your device to remember your progress.</p>
+            <h3>What we do not use</h3>
+            <ul><li>No accounts or sign-in</li><li>No advertising or purchases</li><li>No analytics or tracking cookies</li><li>No collection of location, contacts, photos, microphone, or camera data</li></ul>
+            <h3>Children</h3>
+            <p>The game does not collect personal information from children or adults.</p>
+          </section>
+          <button id="close-privacy-button" class="primary" type="button">Back to About</button>
+        </div>
+        <div id="exit-confirm-screen" class="overlay reset-confirm-screen hidden" role="dialog" aria-modal="true" aria-labelledby="exit-heading">
+          <p class="eyebrow">Leaving Seva Jump</p>
+          <h2 id="exit-heading">Close the game?</h2>
+          <p>Your progress is saved on this device. You can pick up another run later.</p>
+          <div class="menu-actions"><button id="confirm-exit-button" class="primary" type="button">Close app</button><button id="cancel-exit-button" class="secondary" type="button">Keep playing</button></div>
         </div>
       </section>
       <section class="controls" aria-label="Movement controls">
@@ -182,8 +203,8 @@
         <button id="right-button" aria-label="Move right">→</button>
       </section>
     </main>
-    <script src="game-config.js?v=0.8.9"></script>
-    <script src="game-rules.js?v=0.8.9"></script>
-    <script src="game.js?v=0.8.9"></script>
+    <script src="game-config.js?v=0.9.1"></script>
+    <script src="game-rules.js?v=0.9.1"></script>
+    <script src="game.js?v=0.9.1"></script>
   </body>
 </html>
