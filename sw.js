@@ -1,4 +1,4 @@
-const CACHE_NAME = 'seva-jump-v30';
+const CACHE_NAME = 'seva-jump-v31';
 const APP_FILES = [
   './',
   './index.html',
