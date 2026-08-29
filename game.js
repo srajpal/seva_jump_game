@@ -534,14 +534,16 @@
     if (profile.shield > 0 && dhalShieldSprite.complete && dhalShieldSprite.naturalWidth) ctx.drawImage(dhalShieldSprite, 5, -18, 52, 52);
     ctx.restore();
     }
-    ctx.fillStyle = '#24483f'; ctx.font = 'bold 18px "Trebuchet MS"'; ctx.textAlign = 'left'; ctx.fillText(`Score ${Math.floor(state.score)}`, 18, 31); ctx.font = 'bold 13px "Trebuchet MS"'; ctx.fillText(`Parshad ${state.parshad}  ·  Khanda ${state.tokens}`, 18, 52); ctx.textAlign = 'right'; ctx.fillText(state.mode === 'arcade' ? `Arcade ${Math.floor(state.score)} / ${config.arcadeTargetScore}` : state.mode === 'challenge' ? `Challenge ${state.parshad} / ${config.challengeParshadTarget}` : 'Endless · Keep climbing', W - 18, 31);
-    drawUpgradeStatus();
-    const modeName = state.mode === 'arcade' ? 'ARCADE MODE' : state.mode === 'challenge' ? 'CHALLENGE MODE' : 'ENDLESS RUN';
-    const modeDetail = state.mode === 'arcade' ? `${Math.floor(state.score)} / ${config.arcadeTargetScore}` : state.mode === 'challenge' ? `${state.parshad} / ${config.challengeParshadTarget} BOWLS` : 'KEEP CLIMBING';
-    ctx.fillStyle = '#fff8e9e8'; ctx.fillRect(W - 178, 12, 160, 44);
-    ctx.strokeStyle = state.mode === 'challenge' ? '#b56b2e' : state.mode === 'arcade' ? '#d56d39' : '#527165'; ctx.lineWidth = 2; ctx.strokeRect(W - 178, 12, 160, 44);
-    ctx.textAlign = 'center'; ctx.fillStyle = '#24483f'; ctx.font = 'bold 12px "Trebuchet MS"'; ctx.fillText(modeName, W - 98, 29); ctx.font = 'bold 11px "Trebuchet MS"'; ctx.fillText(modeDetail, W - 98, 45);
-    if (state.messageTimer > 0) { ctx.textAlign = 'center'; ctx.fillStyle = '#24483f'; ctx.font = 'bold 15px "Trebuchet MS"'; ctx.fillText(state.message, W / 2, 120); }
+    if (state.running || state.ending) {
+      ctx.fillStyle = '#24483f'; ctx.font = 'bold 18px "Trebuchet MS"'; ctx.textAlign = 'left'; ctx.fillText(`Score ${Math.floor(state.score)}`, 18, 31); ctx.font = 'bold 13px "Trebuchet MS"'; ctx.fillText(`Parshad ${state.parshad}  ·  Khanda ${state.tokens}`, 18, 52);
+      drawUpgradeStatus();
+      const modeName = state.mode === 'arcade' ? 'ARCADE MODE' : state.mode === 'challenge' ? 'CHALLENGE MODE' : 'ENDLESS RUN';
+      const modeDetail = state.mode === 'arcade' ? `${Math.floor(state.score)} / ${config.arcadeTargetScore}` : state.mode === 'challenge' ? `${state.parshad} / ${config.challengeParshadTarget} BOWLS` : 'KEEP CLIMBING';
+      ctx.fillStyle = '#fff8e9e8'; ctx.fillRect(W - 178, 12, 160, 44);
+      ctx.strokeStyle = state.mode === 'challenge' ? '#b56b2e' : state.mode === 'arcade' ? '#d56d39' : '#527165'; ctx.lineWidth = 2; ctx.strokeRect(W - 178, 12, 160, 44);
+      ctx.textAlign = 'center'; ctx.fillStyle = '#24483f'; ctx.font = 'bold 12px "Trebuchet MS"'; ctx.fillText(modeName, W - 98, 29); ctx.font = 'bold 11px "Trebuchet MS"'; ctx.fillText(modeDetail, W - 98, 45);
+      if (state.messageTimer > 0) { ctx.textAlign = 'center'; ctx.fillStyle = '#24483f'; ctx.font = 'bold 15px "Trebuchet MS"'; ctx.fillText(state.message, W / 2, 120); }
+    }
     drawUpgradeEffect();
     drawLossTransition();
   }
