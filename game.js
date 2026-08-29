@@ -177,7 +177,7 @@
     ui.statsSummary.innerHTML = [
       ['Runs', s.runs], ['Jumps', s.jumps], ['Best Endless', profile.bestScores.endless], ['Best Arcade', profile.bestScores.arcade], ['Best Hard', profile.bestScores.hard],
       ['Average score', averageScore], ['Height climbed', s.totalHeight], ['Parshad', s.parshad], ['Khanda earned', s.tokens],
-      ['Boosts collected', s.powerups], ['Birds seen', s.birdsSeen], ['Birds blocked', s.birdsBlocked], ['Falcon Saves', s.falconSaves],
+      ['Boosts collected', s.powerups], ['Birds seen', s.birdsSeen], ['Birds blocked', s.birdsBlocked],
     ].map(([label, value]) => `<article><strong>${rules.formatStat(value)}</strong><span>${label}</span></article>`).join('');
     ui.deathBreakdown.innerHTML = [
       ['Course finishes', s.wins, '#477e55'], ['Arcade wins', s.arcadeWins, '#5c9c74'], ['Challenge wins', s.challengeWins, '#9b597e'], ['Left early', s.leftEarly, '#7b8793'], ['Falls', s.fallDeaths, '#bd7d54'], ['Bird collisions', s.birdDeaths, '#6b86a8'], ['Challenge incomplete', s.challengeMisses, '#b78448'], ['Dhal Shields used', s.shieldsUsed, '#5b8692'],
