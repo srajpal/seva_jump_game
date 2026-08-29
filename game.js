@@ -206,7 +206,7 @@
   function reset(mode = 'endless') {
     state = {
       running: true, paused: false, mode, score: 0, heightScore: 0, parshad: 0, tokens: 0, cameraY: 0,
-      background: Math.floor(Math.random() * backgroundImages.length), nextY: 610, ending: false, falconUsed: false, invincibleTimer: 0, finishGate: null, challengePlaced: 0, challengePlatformCount: 0, upgradeEffect: null, hitStop: null, falconRescue: null,
+      background: Math.floor(Math.random() * backgroundImages.length), nextY: 610, ending: false, falconUsed: false, invincibleTimer: 0, shieldVisualTimer: 0, finishGate: null, challengePlaced: 0, challengePlatformCount: 0, upgradeEffect: null, hitStop: null, falconRescue: null,
       player: { x: W / 2, y: 650, vx: 0, vy: -config.baseJumpVelocity * (1 + profile.powerJump * .1), w: 31, h: 48, character: selectedCharacter, facing: 1 },
       platforms: [{ x: 170, y: 700, w: 115, type: 'normal' }], lastPlatform: { x: 170, y: 700, w: 115 }, collectibles: [], enemies: [], powerups: [], particles: [],
       message: mode === 'challenge' ? `Challenge · collect all ${config.challengeParshadTarget} parshad` : mode === 'arcade' ? `Arcade · reach ${config.arcadeTargetScore}` : 'Endless Run · Keep climbing', messageTimer: 3,
@@ -218,6 +218,7 @@
     const arcade = rules.isArcadeLike(state.mode);
     const level = arcade ? levelForScore(state.score) : 1;
     const endlessDifficulty = rules.endlessDifficulty(state.score);
+    const challengeBowlPlatform = state.mode === 'challenge' && state.challengePlaced < config.challengeParshadTarget && (state.challengePlatformCount + 1) % 3 === 0;
     let type = 'normal';
     if (arcade) {
       if (r < .09) type = 'spring';
@@ -229,7 +230,8 @@
       else if (r < .18 + endlessDifficulty * .14) type = 'break';
       else if (r < .38 + endlessDifficulty * .18) type = 'moving';
     }
-    const w = type === 'break' ? 70 : 96 + Math.random() * 44;
+    if (challengeBowlPlatform) type = 'normal';
+    const w = challengeBowlPlatform ? 128 : type === 'break' ? 70 : 96 + Math.random() * 44;
     // Keep each new platform inside the normal jump arc of the preceding one.
     // The sideways variation grows with tiers instead of producing an
     // unwinnable first jump anywhere across the screen.
@@ -268,14 +270,13 @@
       // The Challenge course contains exactly 50 bowls, spaced through its
       // route. Missing even one means the finish banner cannot be won.
       state.challengePlatformCount++;
-      const placeParshad = state.challengePlaced < config.challengeParshadTarget && state.challengePlatformCount % 3 === 0;
-      if (placeParshad) { state.collectibles.push({ x: x + w / 2, y: platform.y - 37, type: 'parshad' }); state.challengePlaced++; }
+      if (challengeBowlPlatform) { state.collectibles.push({ x: x + w / 2, y: platform.y - 26, type: 'parshad', challengeBowl: true }); state.challengePlaced++; }
       else if (Math.random() < .14) state.collectibles.push({ x: x + w / 2, y: platform.y - 37, type: 'token' });
     } else if (Math.random() < .53) state.collectibles.push({ x: x + w / 2, y: platform.y - 37, type: Math.random() < .16 ? 'token' : 'parshad' });
     if (level >= 3 && Math.random() < .055) state.powerups.push({ x: x + w / 2, y: platform.y - 60, type: 'kara' });
     if (level >= 4 && Math.random() < .04) state.powerups.push({ x: x + w / 2, y: platform.y - 60, type: 'nishan' });
     const birdChance = arcade ? (state.score >= config.arcadeBirdStartScore ? .18 : 0) : rules.endlessBirdChance(state.score);
-    if (Math.random() < birdChance) {
+    if (!challengeBowlPlatform && Math.random() < birdChance) {
       const types = ['pigeon', 'sparrow', 'swift'], platformCenter = x + w / 2, clearance = config.birdPlatformClearance;
       const leftLimit = Math.max(25, platformCenter - clearance), rightLimit = Math.min(W - 25, platformCenter + clearance);
       const birdX = Math.random() < .5 && leftLimit > 25 ? 25 + Math.random() * (leftLimit - 25) : rightLimit < W - 25 ? rightLimit + Math.random() * (W - 25 - rightLimit) : platformCenter < W / 2 ? W - 25 : 25;
@@ -322,9 +323,9 @@
     if (completed) { profile.stats.wins++; if (state.mode === 'arcade') profile.stats.arcadeWins++; if (state.mode === 'challenge') profile.stats.challengeWins++; }
     else {
       profile.stats.deaths++;
+      if (state.mode === 'challenge') profile.stats.challengeMisses++;
       if (reason === 'bird') profile.stats.birdDeaths++;
-      else if (state.mode === 'challenge' && (reason === 'finish' || reason === 'challenge-incomplete')) profile.stats.challengeMisses++;
-      else profile.stats.fallDeaths++;
+      else if (reason !== 'challenge-incomplete') profile.stats.fallDeaths++;
     }
     awardBadge('first-run');
     if (state.mode === 'arcade' && completed) awardBadge('arcade-complete');
@@ -359,7 +360,7 @@
       state.message = 'Nishan boost protected you!'; state.messageTimer = 2;
     } else if (hit.type === 'shield') {
       profile.stats.birdsBlocked++; profile.stats.shieldsUsed++; if (profile.stats.birdsBlocked >= 3) awardBadge('bird-defender'); sound('shield');
-      profile.shield--; state.invincibleTimer = 4; state.upgradeEffect = { type: 'shield', started: lastTime }; saveProfile(); updateUpgradeUI(); state.message = 'Dhal Shield activated! 4 seconds protected.'; state.messageTimer = 2;
+      profile.shield--; state.invincibleTimer = 4; state.shieldVisualTimer = 4; state.upgradeEffect = { type: 'shield', started: lastTime }; saveProfile(); updateUpgradeUI(); state.message = 'Dhal Shield activated! 4 seconds protected.'; state.messageTimer = 2;
     } else { finish(false, 'bird'); return true; }
     return false;
   }
@@ -390,6 +391,7 @@
     if (state.hitStop) { if (resolveBirdHit()) return; if (state.hitStop) return; }
     const p = state.player;
     if (state.invincibleTimer > 0) state.invincibleTimer = Math.max(0, state.invincibleTimer - dt);
+    if (state.shieldVisualTimer > 0) state.shieldVisualTimer = Math.max(0, state.shieldVisualTimer - dt);
     const keyboard = (keys.has('ArrowRight') ? 1 : 0) - (keys.has('ArrowLeft') ? 1 : 0);
     if (pointerX !== null) {
       const desiredVelocity = Math.max(-config.pointerMaxHorizontalSpeed, Math.min(config.pointerMaxHorizontalSpeed, (pointerX - p.x) * config.pointerSteeringGain));
@@ -443,7 +445,7 @@
     }
     while (state.nextY > state.cameraY - 900) addPlatform();
     state.platforms = state.platforms.filter(o => o.y < state.cameraY + H + 100 && !o.broken);
-    for (const c of state.collectibles) if (!c.taken && collide(p, c, 27)) { c.taken = true; if (c.type === 'token') { state.tokens++; profile.stats.tokens++; burst(c.x, c.y, '#f5cd57', 9); sound('token'); if (profile.stats.tokens >= 10) awardBadge('tokens-10'); } else { state.parshad++; profile.stats.parshad++; state.score += 3; burst(c.x, c.y, '#fff1a5', 8); sound('collect'); if (profile.stats.parshad >= 50) awardBadge('parshad-50'); } }
+    for (const c of state.collectibles) if (!c.taken && collide(p, c, c.challengeBowl ? 86 : 27)) { c.taken = true; if (c.type === 'token') { state.tokens++; profile.stats.tokens++; burst(c.x, c.y, '#f5cd57', 9); sound('token'); if (profile.stats.tokens >= 10) awardBadge('tokens-10'); } else { state.parshad++; profile.stats.parshad++; state.score += 3; burst(c.x, c.y, '#fff1a5', 8); sound('collect'); if (profile.stats.parshad >= 50) awardBadge('parshad-50'); } }
     state.collectibles = state.collectibles.filter(c => !c.taken && c.y < state.cameraY + H + 100);
     for (const power of state.powerups) if (!power.taken && collide(p, power, 30)) { power.taken = true; profile.stats.powerups++; burst(power.x, power.y, power.type === 'kara' ? '#f5cb58' : '#f1815a', 14); if (profile.stats.powerups >= 5) awardBadge('power-seeker'); sound('boost'); if (power.type === 'nishan') state.invincibleTimer = 5; p.vy = rules.boostVelocity(power.type, profile.powerJump); state.message = power.type === 'kara' ? 'Kara boost · one higher jump!' : 'Nishan boost · one jump + protection!'; state.messageTimer = 2; }
     state.powerups = state.powerups.filter(o => !o.taken && o.y < state.cameraY + H + 100);
@@ -586,7 +588,7 @@
     } else {
       ctx.fillStyle = p.character === 'girl' ? '#d46686' : '#477e55'; ctx.beginPath(); ctx.arc(0, -15, 16, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = '#a96942'; ctx.beginPath(); ctx.arc(0, -8, 12, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = '#324e3d'; ctx.fillRect(-11, 1, 22, 26); ctx.fillStyle = '#f6d4b0'; ctx.fillRect(-18, 5, 8, 20); ctx.fillRect(10, 5, 8, 20);
     }
-    if ((profile.shield > 0 || state.invincibleTimer > 0) && dhalShieldSprite.complete && dhalShieldSprite.naturalWidth) ctx.drawImage(dhalShieldSprite, 6, -14, 39, 39);
+    if ((profile.shield > 0 || state.shieldVisualTimer > 0) && dhalShieldSprite.complete && dhalShieldSprite.naturalWidth) ctx.drawImage(dhalShieldSprite, 6, -14, 39, 39);
     ctx.restore();
     }
     drawFalconRescue();
