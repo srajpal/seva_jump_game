@@ -11,14 +11,22 @@
     <link rel="manifest" href="manifest.webmanifest" />
     <link rel="icon" href="assets/app-icon-bird-v1.png" type="image/png" />
     <link rel="apple-touch-icon" href="assets/app-icon-bird-v1.png" />
-    <link rel="stylesheet" href="styles.css?v=0.9.3" />
+    <link rel="stylesheet" href="styles.css?v=0.9.4" />
   </head>
   <body>
     <main class="game-shell">
       <header><span>SEVA JUMP</span><small>Playtest</small></header>
       <section class="game-frame" aria-label="Seva Jump game">
         <canvas id="game" width="450" height="800" aria-label="Seva Jump canvas"></canvas>
-        <div id="mobile-hud" class="mobile-hud hidden" aria-live="polite"><div><strong id="mobile-score">Score 0</strong><span id="mobile-items">Parshad 0 · Khanda 0</span></div><span id="mobile-mode">ENDLESS RUN</span></div>
+        <div id="mobile-hud" class="mobile-hud hidden" aria-live="polite">
+          <div class="mobile-hud-score"><strong id="mobile-score">Score 0</strong><span id="mobile-items">Parshad 0 · Khanda 0</span></div>
+          <div class="mobile-hud-upgrades" aria-label="Owned upgrades">
+            <span><img src="assets/falcon-save-pixel-v1.png" alt="Falcon Save" /><b id="mobile-falcon">0</b></span>
+            <span><img src="assets/dhal-shield-pixel-v1.png" alt="Dhal Shield" /><b id="mobile-shield">0</b></span>
+            <span class="mobile-power-icon" aria-label="Power Jump">↑<b id="mobile-power">0</b></span>
+          </div>
+          <span id="mobile-mode" class="mobile-hud-mode">ENDLESS</span>
+        </div>
         <div id="game-tools" class="game-tools hidden">
           <button id="pause-button" class="game-tool" type="button" aria-label="Pause game" title="Pause game">Ⅱ</button>
         </div>
@@ -48,7 +56,7 @@
             <p>More to explore</p>
             <div class="home-links"><button id="open-upgrades-button" class="secondary">Upgrades</button><button id="open-badges-button" class="secondary">Badges</button><button id="open-stats-button" class="secondary">Stats</button><button id="open-about-button" class="secondary">About &amp; Help</button><button id="open-settings-button" class="secondary">Settings</button></div>
           </section>
-          <p class="game-version" aria-label="Game version 0.9.3">v0.9.3 · Playtest build</p>
+          <p class="game-version" aria-label="Game version 0.9.4">v0.9.4 · Playtest build</p>
         </div>
         <div id="end-screen" class="overlay hidden">
           <p class="eyebrow">Nice climb!</p>
@@ -204,8 +212,8 @@
         <button id="right-button" aria-label="Move right">→</button>
       </section>
     </main>
-    <script src="game-config.js?v=0.9.3"></script>
-    <script src="game-rules.js?v=0.9.3"></script>
-    <script src="game.js?v=0.9.3"></script>
+    <script src="game-config.js?v=0.9.4"></script>
+    <script src="game-rules.js?v=0.9.4"></script>
+    <script src="game.js?v=0.9.4"></script>
   </body>
 </html>
