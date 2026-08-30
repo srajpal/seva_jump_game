@@ -10,7 +10,7 @@
 
 The birds have scattered the parshad! Choose your jumper and climb through peaceful, gurdwara-inspired skies to help bring it back.
 
-SevaJump is a cheerful, touch-friendly jumping adventure designed for ages 8–15. Steer through handcrafted pixel-art scenery, collect parshad bowls and Khanda tokens, avoid flying birds, and unlock helpful upgrades—all without ads, purchases, accounts, or an internet connection.
+SevaJump is a cheerful, touch-friendly jumping adventure designed for ages 8-15. Steer through handcrafted pixel-art scenery, collect parshad bowls and Khanda tokens, avoid flying birds, and unlock helpful upgrades. There are no ads, purchases, accounts, or internet connection required.
 
 Four ways to play:
 
@@ -31,7 +31,7 @@ These are preparation notes, not a substitute for reviewing the final Play Conso
 - In-app purchases: No
 - App access: All functionality is available without login or special access
 - Data collection or sharing: None
-- Primary audience: ages 9–12 and 13–15, subject to the developer's final target-audience review
+- Primary audience: ages 9-12 and 13-15, subject to the developer's final target-audience review
 - Online interaction or user-generated content: None
 - Location, camera, microphone, contacts, and photos: Not used
 - Privacy policy: `https://srajpal.github.io/seva_jump_game/privacy.html`

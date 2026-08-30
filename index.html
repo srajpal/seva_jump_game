@@ -7,15 +7,15 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <meta name="apple-mobile-web-app-title" content="Seva Jump" />
-    <title>Seva Jump — Prototype</title>
+    <title>Seva Jump | Khalsa Game Studio</title>
     <link rel="manifest" href="manifest.webmanifest" />
     <link rel="icon" href="assets/app-icon-bird-v1.png" type="image/png" />
     <link rel="apple-touch-icon" href="assets/app-icon-bird-v1.png" />
-    <link rel="stylesheet" href="styles.css?v=0.11.0" />
+    <link rel="stylesheet" href="styles.css?v=0.11.1" />
   </head>
   <body>
     <main class="game-shell">
-      <header><span>SEVA JUMP</span><small>Playtest</small></header>
+      <a id="studio-home-link" class="studio-home-link" href="/" hidden>Back to home</a>
       <section class="game-frame" aria-label="Seva Jump game">
         <canvas id="game" width="450" height="800" aria-label="Seva Jump canvas"></canvas>
         <div id="mobile-hud" class="mobile-hud hidden" aria-live="polite">
@@ -57,7 +57,7 @@
             <p>More to explore</p>
             <div class="home-links"><button id="open-upgrades-button" class="secondary">Upgrades</button><button id="open-badges-button" class="secondary">Badges</button><button id="open-stats-button" class="secondary">Stats</button><button id="open-about-button" class="secondary">About &amp; Help</button><button id="open-settings-button" class="secondary">Settings</button></div>
           </section>
-          <p class="game-version" aria-label="Game version 0.11.0">v0.11.0 · Release candidate</p>
+          <p class="game-version" aria-label="Game version 0.11.1">v0.11.1</p>
         </div>
         <div id="end-screen" class="overlay hidden">
           <p class="eyebrow">Nice climb!</p>
@@ -129,7 +129,7 @@
           <div id="stats-summary" class="stats-summary" aria-live="polite"></div>
           <h3>How runs ended</h3>
           <div id="death-breakdown" class="death-breakdown" aria-live="polite"></div>
-          <p class="stats-note">Use these numbers to spot your progress—and to help us keep Seva Jump fair.</p>
+          <p class="stats-note">Use these numbers to follow your progress and help us keep Seva Jump fair.</p>
           <button id="close-stats-button" class="primary">Back to main screen</button>
         </div>
         <div id="badge-toast" class="badge-toast hidden" role="status" aria-live="assertive">
@@ -170,7 +170,7 @@
           <section class="control-card" aria-labelledby="controls-heading">
             <h3 id="controls-heading"><span aria-hidden="true">↔</span> How to play</h3>
             <div><strong>Phone or tablet</strong><p>Drag anywhere across the game to guide your jumper left and right.</p></div>
-            <div><strong>Desktop</strong><p>Drag with a mouse, use ← and →, or use the on-screen arrow buttons. Press Escape to pause.</p></div>
+            <div><strong>Desktop</strong><p>Drag with a mouse or use the left and right arrow keys. Press Escape to pause.</p></div>
           </section>
           <section class="comfort-card"><span aria-hidden="true">◌</span><p><strong>Reduced Motion</strong> keeps gameplay the same while making decorative movement still, including character bobbing, hovering, fireworks, and transitions.</p></section>
           <h3 class="about-subhead"><span aria-hidden="true">✦</span> Sikh terms</h3>
@@ -208,14 +208,9 @@
           <div class="menu-actions"><button id="confirm-exit-button" class="primary" type="button">Close app</button><button id="cancel-exit-button" class="secondary" type="button">Keep playing</button></div>
         </div>
       </section>
-      <section class="controls" aria-label="Movement controls">
-        <button id="left-button" aria-label="Move left">←</button>
-        <p>Drag to move</p>
-        <button id="right-button" aria-label="Move right">→</button>
-      </section>
     </main>
-    <script src="game-config.js?v=0.11.0"></script>
-    <script src="game-rules.js?v=0.11.0"></script>
-    <script src="game.js?v=0.11.0"></script>
+    <script src="game-config.js?v=0.11.1"></script>
+    <script src="game-rules.js?v=0.11.1"></script>
+    <script src="game.js?v=0.11.1"></script>
   </body>
 </html>

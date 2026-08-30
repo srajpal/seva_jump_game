@@ -2,11 +2,11 @@
 
 **A skyward seva adventure.**
 
-Current release-candidate build: **v0.11.0**.
+Current release-candidate build: **v0.11.1**.
 
 The birds have flown away with the parshad. Choose a young Sikh boy or girl, leap from platform to platform, and bring it back in this cheerful browser game prototype.
 
-Seva Jump is designed for ages 8–15, with touch-first controls, a calm gurdwara-inspired setting, and a respectful introduction to a few Sikh terms used in the game.
+Seva Jump is designed for ages 8-15, with touch-first controls, a calm gurdwara-inspired setting, and a respectful introduction to a few Sikh terms used in the game.
 
 ## Play
 

@@ -374,7 +374,7 @@
       ui.endBest.textContent = isNewBest ? 'New personal best!' : `Personal best · ${profile.bestScores[state.mode]}`;
       ui.runBreakdown.innerHTML = `<span><strong>${state.heightScore}</strong>Height</span><span><strong>${state.parshad}</strong>Parshad</span><span><strong>${state.tokens}</strong>Khanda earned</span>`;
       const challengeStars = Math.min(5, Math.floor(state.parshad / 10));
-      ui.endGoal.textContent = state.mode === 'endless' ? 'Endless Run keeps going—come back and beat your personal best.' : state.mode === 'hard' ? 'Hard Mode keeps climbing with only small moving and breakable platforms.' : challenge ? (completed ? 'You reached the finish with all 50 parshad bowls! ★★★★★' : `You collected ${state.parshad} of 50 parshad bowls · ${'★'.repeat(challengeStars)}${'☆'.repeat(5 - challengeStars)} ${challengeStars} / 5 stars`) : (completed ? 'You reached 1,000 and broke through the finish banner!' : 'Reach 1,000 points to break through the finish banner.');
+      ui.endGoal.textContent = state.mode === 'endless' ? 'Endless Run keeps going. Come back and beat your personal best.' : state.mode === 'hard' ? 'Hard Mode keeps climbing with only small moving and breakable platforms.' : challenge ? (completed ? 'You reached the finish with all 50 parshad bowls! ★★★★★' : `You collected ${state.parshad} of 50 parshad bowls · ${'★'.repeat(challengeStars)}${'☆'.repeat(5 - challengeStars)} ${challengeStars} / 5 stars`) : (completed ? 'You reached 1,000 and broke through the finish banner!' : 'Reach 1,000 points to break through the finish banner.');
       ui.end.classList.remove('hidden');
       requestAnimationFrame(() => ui.end.classList.add('visible'));
     }, resultDelay);
@@ -725,7 +725,8 @@
   canvas.addEventListener('pointermove', e => { if (e.buttons) pointerX = (e.offsetX / canvas.clientWidth) * W; });
   canvas.addEventListener('pointerup', () => { pointerX = null; });
   document.addEventListener('keydown', e => { if (e.key === 'Escape') { if (state?.paused) resumeGame(); else pauseGame(); e.preventDefault(); return; } if (['ArrowLeft', 'ArrowRight'].includes(e.key)) { keys.add(e.key); e.preventDefault(); } }); document.addEventListener('keyup', e => keys.delete(e.key));
-  function bindButton(id, key) { const b = document.querySelector(id); ['pointerdown', 'pointerup', 'pointerleave', 'pointercancel'].forEach(event => b.addEventListener(event, e => { e.preventDefault(); event === 'pointerdown' ? keys.add(key) : keys.delete(key); })); }
-  bindButton('#left-button', 'ArrowLeft'); bindButton('#right-button', 'ArrowRight'); window.sevaJumpNativeBack = handleNativeBack; window.Capacitor?.Plugins?.App?.addListener?.('backButton', handleNativeBack); applyPreferences(); setSelectedCharacter(selectedCharacter); reset(); state.running = false; updateUpgradeUI(); updateRecordsUI(); renderBadges(); renderStats(); requestAnimationFrame(loop);
+  const studioHomeLink = document.querySelector('#studio-home-link');
+  if (studioHomeLink && ['khalsagamestudio.com', 'www.khalsagamestudio.com'].includes(location.hostname)) studioHomeLink.hidden = false;
+  window.sevaJumpNativeBack = handleNativeBack; window.Capacitor?.Plugins?.App?.addListener?.('backButton', handleNativeBack); applyPreferences(); setSelectedCharacter(selectedCharacter); reset(); state.running = false; updateUpgradeUI(); updateRecordsUI(); renderBadges(); renderStats(); requestAnimationFrame(loop);
   if ('serviceWorker' in navigator && location.protocol !== 'file:') window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
 })();
