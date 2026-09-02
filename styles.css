@@ -59,7 +59,7 @@ h2 { font-size: 2.3rem; }.eyebrow { margin: 0 0 7px; color: #a85e30; font-weight
   .native-app body { min-height: 100dvh; display: block; }
   .native-app .game-shell { width: 100vw; height: 100dvh; padding: 0; }
   .native-app .game-frame { width: 100%; height: 100%; padding-top: 96px; border: 0; border-radius: 0; box-shadow: none; background: linear-gradient(#bce7ef, #dff5ef); }
-  .native-app canvas { width: 100%; height: auto; max-height: calc(100% - 96px); margin: 0 auto; aspect-ratio: 7 / 10; object-fit: contain; object-position: top center; }
+  .native-app canvas { width: 100%; height: auto; max-height: calc(100% - 96px); margin: 0 auto; aspect-ratio: 4 / 5; object-fit: contain; object-position: top center; }
   .native-app .mobile-hud { position: absolute; z-index: 2; top: 0; left: 0; right: 0; height: 96px; display: grid; grid-template-columns: minmax(230px, .9fr) minmax(290px, 1.25fr); align-items: center; gap: 15px; padding: 12px 106px 12px 28px; border-bottom: 2px solid #7aa99e; background: linear-gradient(135deg, #dff5ef 0%, #bce7ef 54%, #f8e2b8 100%); box-shadow: 0 3px 8px #24483f33; color: #24483f; text-align: left; }
   .native-app .mobile-hud.hidden { display: none; }
   .native-app .mobile-hud-score strong { display: block; font-size: 1.25rem; line-height: 1.05; }

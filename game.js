@@ -5,7 +5,7 @@
     || /\bwv\b/.test(navigator.userAgent);
   document.documentElement.classList.toggle('native-app', Boolean(nativePlatform));
   const nativeTablet = Boolean(nativePlatform) && Math.min(window.innerWidth, window.innerHeight) >= 700;
-  if (nativeTablet) canvas.width = 560;
+  if (nativeTablet) canvas.width = 640;
   const ctx = canvas.getContext('2d');
   ctx.imageSmoothingEnabled = false;
   const W = canvas.width, H = canvas.height;
