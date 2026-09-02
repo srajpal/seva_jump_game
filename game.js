@@ -549,7 +549,9 @@
       x += 66;
     }
   }
-  const usesMobileHud = () => window.matchMedia?.('(hover: none) and (pointer: coarse)').matches;
+  // Native tablets can report mouse-like pointer capabilities even though they
+  // use the same full-screen HUD as phones.
+  const usesMobileHud = () => Boolean(nativePlatform) || window.matchMedia?.('(hover: none) and (pointer: coarse)').matches;
   function updateMobileHud() { if (!usesMobileHud() || !state?.running) { ui.mobileHud.classList.add('hidden'); return; } const name = state.mode === 'arcade' ? 'ARCADE' : state.mode === 'challenge' ? 'CHALLENGE' : state.mode === 'hard' ? 'HARD' : 'ENDLESS'; const detail = state.mode === 'challenge' ? `${state.parshad}/${config.challengeParshadTarget}` : state.mode === 'arcade' ? `${Math.floor(state.score)}/${config.arcadeTargetScore}` : 'CLIMB'; ui.mobileScore.textContent = `Score ${Math.floor(state.score)}`; ui.mobileItems.textContent = `Parshad ${state.parshad} · Khanda ${state.tokens}`; ui.mobileFalcon.textContent = profile.falcon; ui.mobileShield.textContent = profile.shield; ui.mobilePower.textContent = profile.powerJump; ui.mobileMode.textContent = `${name} · ${detail}`; ui.mobileHud.classList.remove('hidden'); }
   function drawUpgradeEffect() {
     const effect = state.upgradeEffect;
