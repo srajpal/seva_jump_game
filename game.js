@@ -4,6 +4,8 @@
     || ['android', 'ios'].includes(window.Capacitor?.getPlatform?.())
     || /\bwv\b/.test(navigator.userAgent);
   document.documentElement.classList.toggle('native-app', Boolean(nativePlatform));
+  const nativeTablet = Boolean(nativePlatform) && Math.min(window.innerWidth, window.innerHeight) >= 700;
+  if (nativeTablet) canvas.width = 560;
   const ctx = canvas.getContext('2d');
   ctx.imageSmoothingEnabled = false;
   const W = canvas.width, H = canvas.height;
@@ -502,7 +504,17 @@
   function drawBackdrop() {
     const backgroundImage = backgroundImages[state.background];
     if (backgroundImage.complete && backgroundImage.naturalWidth) {
-      ctx.drawImage(backgroundImage, 0, 0, W, H);
+      const sourceRatio = backgroundImage.naturalWidth / backgroundImage.naturalHeight;
+      const targetRatio = W / H;
+      if (targetRatio > sourceRatio) {
+        const sourceHeight = backgroundImage.naturalWidth / targetRatio;
+        const sourceY = (backgroundImage.naturalHeight - sourceHeight) / 2;
+        ctx.drawImage(backgroundImage, 0, sourceY, backgroundImage.naturalWidth, sourceHeight, 0, 0, W, H);
+      } else {
+        const sourceWidth = backgroundImage.naturalHeight * targetRatio;
+        const sourceX = (backgroundImage.naturalWidth - sourceWidth) / 2;
+        ctx.drawImage(backgroundImage, sourceX, 0, sourceWidth, backgroundImage.naturalHeight, 0, 0, W, H);
+      }
       return;
     }
     ctx.fillStyle = palette[state.background]; ctx.fillRect(0, 0, W, H);
