@@ -43,6 +43,14 @@ h2 { font-size: 2.3rem; }.eyebrow { margin: 0 0 7px; color: #a85e30; font-weight
 .reset-confirm-screen { background: linear-gradient(#fff2e8f2, #f8e1d9f2); }.reset-confirm-screen h2 { margin-bottom: 7px; color: #9c4825; }.reset-confirm-screen > p:not(.eyebrow) { max-width: 285px; margin: 0 0 16px; color: #6f4c40; font-size: .84rem; line-height: 1.35; }.reset-confirm-screen .primary { background: #a84f2b; box-shadow: 0 4px 0 #7c321d; }
 .upgrade-intro { margin: 0 0 10px; font-size: .85rem; max-width: 310px; }.upgrade-list { display: grid; gap: 8px; width: min(100%, 330px); margin-bottom: 8px; }.upgrade-card { display: grid; grid-template-columns: 1fr auto; gap: 3px 10px; align-items: center; padding: 9px 12px; border: 2px solid #cdb78f; border-radius: 13px; background: #fff9ee; text-align: left; }.upgrade-card h3, .upgrade-card p { margin: 0; }.upgrade-card h3 { display: flex; align-items: center; gap: 6px; color: #24483f; font-size: .95rem; }.upgrade-icon, .power-jump-icon { width: 25px; height: 25px; object-fit: contain; image-rendering: pixelated; }.power-jump-icon { display: grid; place-items: center; border: 2px solid #a85e30; border-radius: 50%; background: #fff0d6; color: #a85e30; font-size: 1.2rem; font-weight: 900; line-height: 1; }.upgrade-card p { grid-column: 1; font-size: .73rem; color: #685d50; }.upgrade-card button { grid-column: 2; grid-row: 1 / span 2; }.upgrade-card small { grid-column: 1; color: #a85e30; font-weight: bold; }
 .reduced-motion *, .reduced-motion *::before, .reduced-motion *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
+/* Tablets keep the portrait game composition, but give it more room than a
+   phone-sized desktop panel. The canvas aspect ratio stays unchanged. */
+@media (min-width: 700px) and (min-height: 900px) {
+  body { background: radial-gradient(circle at 50% 24%, #fffdf4, #f8f0df 60%); }
+  .game-shell { width: min(calc(100vw - 72px), 560px, calc((100dvh - 132px) * .5625)); padding: 24px 0 30px; }
+  .studio-home-link { margin-bottom: 18px; padding: 10px 19px; font-size: .9rem; }
+  .game-frame { border-width: 6px; border-radius: 30px; box-shadow: 0 10px 0 #d5b48c; }
+}
 /* Phone play uses the whole browser viewport: no decorative outer frame or gaps. */
 @media (hover: none) and (pointer: coarse) {
   :root, body { width: 100%; min-height: 100%; background: #bce7ef; overflow: hidden; }
