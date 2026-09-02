@@ -1,7 +1,7 @@
 {
   "name": "Seva Jump",
   "short_name": "SevaJump",
-  "description": "A free, offline-friendly skyward seva adventure.",
+  "description": "A free, offline-friendly skyward seva adventure from Khalsa Game Studio.",
   "id": "./",
   "start_url": "./?source=pwa",
   "scope": "./",

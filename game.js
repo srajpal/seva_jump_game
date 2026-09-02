@@ -1,5 +1,9 @@
 (() => {
   const canvas = document.querySelector('#game');
+  const nativePlatform = window.Capacitor?.isNativePlatform?.()
+    || ['android', 'ios'].includes(window.Capacitor?.getPlatform?.())
+    || /\bwv\b/.test(navigator.userAgent);
+  document.documentElement.classList.toggle('native-app', Boolean(nativePlatform));
   const ctx = canvas.getContext('2d');
   ctx.imageSmoothingEnabled = false;
   const W = canvas.width, H = canvas.height;
