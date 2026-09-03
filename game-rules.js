@@ -57,9 +57,13 @@ const SEVA_RULES = {
   didWin(mode, parshad) {
     return mode !== 'challenge' || parshad >= RULE_CONFIG.challengeParshadTarget;
   },
+  powerJumpMultiplier(powerJump = 0) {
+    const level = Math.max(0, Math.min(5, Number(powerJump) || 0));
+    return Math.sqrt(1 + level * RULE_CONFIG.powerJumpHeightBonusPerLevel);
+  },
   boostVelocity(type, powerJump = 0) {
     const multiplier = type === 'kara' ? RULE_CONFIG.karaJumpMultiplier : RULE_CONFIG.nishanJumpMultiplier;
-    return -RULE_CONFIG.baseJumpVelocity * multiplier * (1 + powerJump * .1);
+    return -RULE_CONFIG.baseJumpVelocity * multiplier * this.powerJumpMultiplier(powerJump);
   },
   canUseFalconSave(owned, alreadyUsed) {
     return owned > 0 && !alreadyUsed;

@@ -218,7 +218,7 @@
     state = {
       running: true, paused: false, mode, score: 0, heightScore: 0, parshad: 0, tokens: 0, cameraY: 0,
       background: Math.floor(Math.random() * backgroundImages.length), nextY: 610, ending: false, falconUsed: false, invincibleTimer: 0, shieldVisualTimer: 0, finishGate: null, fireworkSoundTimers: [], challengePlaced: 0, challengePlatformCount: 0, upgradeEffect: null, hitStop: null, falconRescue: null,
-      player: { x: W / 2, y: 650, vx: 0, vy: -config.baseJumpVelocity * (1 + profile.powerJump * .1), w: 31, h: 48, character: selectedCharacter, facing: 1 },
+      player: { x: W / 2, y: 650, vx: 0, vy: -config.baseJumpVelocity * rules.powerJumpMultiplier(profile.powerJump), w: 31, h: 48, character: selectedCharacter, facing: 1 },
       platforms: [{ x: 170, y: 700, w: 115, type: 'normal' }], lastPlatform: { x: 170, y: 700, w: 115 }, collectibles: [], enemies: [], powerups: [], particles: [],
       message: mode === 'challenge' ? `Challenge · collect all ${config.challengeParshadTarget} parshad` : mode === 'arcade' ? `Arcade · reach ${config.arcadeTargetScore}` : mode === 'hard' ? 'Hard Mode · fragile routes ahead' : 'Endless Run · Keep climbing', messageTimer: 3,
     };
@@ -426,7 +426,7 @@
     const carry = (progress - .55) / .45, targetX = rescue.platform.x + rescue.platform.w / 2, targetY = rescue.platform.y - p.h / 2;
     p.x = rescue.pickupX + (targetX - rescue.pickupX) * carry; p.y = rescue.pickupY + (targetY - rescue.pickupY) * carry;
     if (progress < 1) return true;
-    p.x = targetX; p.y = targetY; p.vx = 0; p.vy = -config.baseJumpVelocity * (1 + profile.powerJump * .1); state.invincibleTimer = Math.max(state.invincibleTimer, 1.2); state.falconRescue = null;
+    p.x = targetX; p.y = targetY; p.vx = 0; p.vy = -config.baseJumpVelocity * rules.powerJumpMultiplier(profile.powerJump); state.invincibleTimer = Math.max(state.invincibleTimer, 1.2); state.falconRescue = null;
     state.message = 'Back in the sky!'; state.messageTimer = 1.4;
     return false;
   }
@@ -453,7 +453,7 @@
       if (plat.type === 'moving') { plat.x += plat.dir * plat.speed * dt; if (plat.x < 6 || plat.x + plat.w > W - 6) plat.dir *= -1; }
       const top = plat.y;
       if (!plat.broken && p.vy > 0 && p.y + p.h / 2 >= top && p.y + p.h / 2 <= top + 25 && p.x + p.w / 2 > plat.x && p.x - p.w / 2 < plat.x + plat.w) {
-        const jumpMultiplier = 1 + profile.powerJump * .1;
+        const jumpMultiplier = rules.powerJumpMultiplier(profile.powerJump);
         p.y = top - p.h / 2; p.vy = -(plat.type === 'spring' ? config.springJumpVelocity : config.baseJumpVelocity) * jumpMultiplier;
         profile.stats.jumps++;
         sound(plat.type === 'break' ? 'break' : plat.type === 'spring' ? 'spring' : 'land');

@@ -2,6 +2,9 @@ const SEVA_CONFIG = {
   gravity: 1500,
   baseJumpVelocity: 620,
   springJumpVelocity: 820,
+  // Each Power Jump level adds a true 10% to jump height. Velocity uses the
+  // square root of this value because height is proportional to velocity².
+  powerJumpHeightBonusPerLevel: .1,
   karaJumpMultiplier: 1.4,
   nishanJumpMultiplier: 1.6,
   // Responsive enough for a phone drag, while still leaving time to line up
