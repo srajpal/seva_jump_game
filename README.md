@@ -31,6 +31,25 @@ The debug APK is written to `android\app\build\outputs\apk\debug\app-debug.apk`.
 adb install -r android\app\build\outputs\apk\debug\app-debug.apk
 ```
 
+## iOS device build
+
+The repository includes a dependency-free native iOS wrapper in
+`ios/SevaJump.xcodeproj`. It packages the same local HTML, JavaScript, CSS, and
+pixel art as the Android app, so gameplay and saved progress remain offline.
+
+With the full Xcode app installed (not Command Line Tools alone):
+
+1. Open `ios/SevaJump.xcodeproj` in Xcode.
+2. In **Signing & Capabilities**, select your Apple Developer team and use a
+   unique bundle identifier if `org.sevajump.game` is already registered.
+3. Choose an iPhone or iPad running iOS 15 or later, then run the **Seva Jump**
+   scheme.
+4. For TestFlight or App Store distribution, use **Product > Archive**.
+
+The web files are referenced directly from the repository by the Xcode project.
+When changing game code or artwork, rebuild in Xcode; there is no separate web
+sync step for iOS.
+
 ## Game modes
 
 | Mode | Goal |
@@ -81,6 +100,7 @@ game-rules.js       Shared mode and completion rules
 assets/             Pixel-art game assets
 tests/              Rule and procedural-generation checks
 android/            Native Android wrapper
+ios/                Native iOS wrapper
 scripts/            Web asset sync script for native builds
 ```
 
@@ -88,7 +108,7 @@ scripts/            Web asset sync script for native builds
 
 The feature set is frozen for the first Android release candidate. Use [RELEASE_CHECKLIST.md](RELEASE_CHECKLIST.md) for regression testing and signing, and [STORE_LISTING.md](STORE_LISTING.md) for the prepared Google Play copy and declarations.
 
-Remaining launch work is external to the game code: final community/content review, store screenshots, an upload signing key, Play Console forms, and closed testing. iOS packaging and localization remain planned follow-up work.
+Remaining launch work is external to the game code: final community/content review, store screenshots, signing credentials, store-console forms, device testing, and closed testing. Localization remains planned follow-up work.
 
 ## License
 

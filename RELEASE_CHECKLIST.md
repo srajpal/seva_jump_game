@@ -8,6 +8,7 @@ Use this checklist for every release candidate. Do not create or commit an uploa
 - [x] Challenge contains exactly 50 reachable bowls and celebrates only after all 50 are collected.
 - [x] First-run guide, settings, reset confirmation, statistics, badges, upgrades, music, and sound effects are implemented.
 - [x] Android portrait layout, safe areas, system back behavior, launcher name, and direct-device play have been tested.
+- [ ] Test the iOS portrait layout, touch controls, offline launch, outbound studio link, and saved progress on an iPhone and iPad.
 - [x] The app has no ads, purchases, accounts, analytics, or gameplay network dependency.
 - [x] Progress can be erased from Settings, Android cloud backup is disabled, and cleartext network traffic is disabled.
 - [ ] Complete a final Sikh community/content review of terminology, imagery, and gameplay context.
@@ -46,5 +47,9 @@ node tests\hard-mode-checks.js
 node tests\soak-test.js
 npm run android:debug
 ```
+
+For iOS, open `ios/SevaJump.xcodeproj`, select a signing team, then build the
+**Seva Jump** scheme on an iOS 15+ device or simulator. Archive from Xcode for
+TestFlight or App Store submission.
 
 For the store, use Android Studio's **Build > Generate Signed Bundle / APK > Android App Bundle** flow. Increment both `versionCode` and the visible version before every upload.

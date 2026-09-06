@@ -8,3 +8,6 @@ screenshots/
 *.keystore
 keystore.properties
 android/local.properties
+ios/build/
+ios/DerivedData/
+*.xcuserstate
