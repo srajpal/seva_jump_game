@@ -1,5 +1,7 @@
 # SevaJump store listing draft
 
+This document targets Google Play. For itch.io browser distribution, use [ITCH_LISTING.md](ITCH_LISTING.md). Current verification and remaining work are tracked in [RELEASE_PROGRESS.md](RELEASE_PROGRESS.md).
+
 ## Core listing
 
 **App name:** SevaJump
@@ -10,7 +12,7 @@
 
 The birds have scattered the parshad! Choose your jumper and climb through peaceful, gurdwara-inspired skies to help bring it back.
 
-SevaJump is a cheerful, touch-friendly jumping adventure designed for ages 8-15. Steer through handcrafted pixel-art scenery, collect parshad bowls and Khanda tokens, avoid flying birds, and unlock helpful upgrades. There are no ads, purchases, accounts, or internet connection required.
+SevaJump is a cheerful, touch-friendly jumping adventure designed for ages 8-15. Steer through bright pixel-art scenery, collect parshad bowls and Khanda tokens, avoid flying birds, and unlock helpful upgrades. The game has no ads, purchases, or accounts, and gameplay does not need an internet connection.
 
 Four ways to play:
 
@@ -48,4 +50,4 @@ Keep screenshots free of browser chrome, debug overlays, test currency, and noti
 
 ## Before submission
 
-Replace or confirm the developer name, support email, website, and privacy-policy contact information in Play Console. Have a knowledgeable community reviewer approve the Sikh terminology and imagery before production release.
+Confirm the developer name, support email, website, and privacy-policy contact information in Play Console. The creator has reviewed and approved the current Sikh terminology and imagery; review any later changes to that content before release.

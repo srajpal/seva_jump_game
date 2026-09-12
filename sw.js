@@ -1,6 +1,12 @@
-const CACHE_NAME = 'seva-jump-v63';
+const RELEASE_VERSION = '0.13.2';
+const SCOPE_URL = new URL(self.registration.scope);
+const SCOPE_KEY = encodeURIComponent(SCOPE_URL.pathname);
+const CACHE_PREFIX = `seva-jump-${SCOPE_KEY}-`;
+const CACHE_NAME = `${CACHE_PREFIX}v${RELEASE_VERSION}`;
+
+// Keep this list explicit: itch.io rejects directory requests, and one failed
+// request would prevent the whole release cache from installing.
 const APP_FILES = [
-  './',
   './index.html',
   './styles.css',
   './game-config.js',
@@ -35,23 +41,80 @@ const APP_FILES = [
   './assets/finish-banner-hover-pixel-v1.png',
 ];
 
+const cacheMatch = request => caches.open(CACHE_NAME)
+  .then(cache => cache.match(request, { ignoreSearch: true }));
+
+const canCache = (request, response) => {
+  const url = new URL(request.url);
+  return response.ok
+    && response.type !== 'opaque'
+    && url.origin === SCOPE_URL.origin
+    && url.href.startsWith(SCOPE_URL.href);
+};
+
+const fetchAndCache = request => fetch(request).then(response => {
+  if (!canCache(request, response)) return response;
+  const cacheKey = new URL(request.url);
+  cacheKey.search = '';
+  return caches.open(CACHE_NAME)
+    .then(cache => cache.put(cacheKey.href, response.clone()))
+    .catch(() => undefined)
+    .then(() => response);
+});
+
+const unavailableResponse = destination => {
+  const contentTypes = {
+    script: 'application/javascript; charset=utf-8',
+    style: 'text/css; charset=utf-8',
+    image: 'image/svg+xml; charset=utf-8',
+  };
+  return new Response('', {
+    status: 503,
+    statusText: 'Offline',
+    headers: { 'Content-Type': contentTypes[destination] || 'text/plain; charset=utf-8' },
+  });
+};
+
 self.addEventListener('install', event => {
-  event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(APP_FILES)).then(() => self.skipWaiting()));
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+      .then(cache => cache.addAll(APP_FILES))
+      .then(() => self.skipWaiting()),
+  );
 });
 
 self.addEventListener('activate', event => {
-  event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(key => key !== CACHE_NAME).map(key => caches.delete(key)))).then(() => self.clients.claim()));
+  event.waitUntil(
+    caches.keys()
+      .then(keys => Promise.all(
+        keys.filter(key => key.startsWith(CACHE_PREFIX) && key !== CACHE_NAME)
+          .map(key => caches.delete(key)),
+      ))
+      .then(() => self.clients.claim()),
+  );
 });
 
 self.addEventListener('fetch', event => {
   if (event.request.method !== 'GET') return;
-  const isAppShell = event.request.mode === 'navigate' || ['script', 'style'].includes(event.request.destination);
-  const networkFirst = () => fetch(event.request).then(response => {
-    const copy = response.clone();
-    caches.open(CACHE_NAME).then(cache => cache.put(event.request, copy));
-    return response;
-  });
-  event.respondWith(isAppShell
-    ? networkFirst().catch(() => caches.match(event.request).then(cached => cached || caches.match('./index.html')))
-    : caches.match(event.request).then(cached => cached || networkFirst().catch(() => caches.match('./index.html'))));
+
+  const requestUrl = new URL(event.request.url);
+  if (requestUrl.origin !== SCOPE_URL.origin || !requestUrl.href.startsWith(SCOPE_URL.href)) return;
+
+  if (event.request.mode === 'navigate') {
+    event.respondWith(
+      // Keep a controlled page on one complete release. The browser still
+      // checks sw.js for updates; the next worker takes over only after its
+      // entire APP_FILES cache installs successfully.
+      cacheMatch('./index.html')
+        .then(cached => cached || fetchAndCache(event.request))
+        .catch(() => unavailableResponse('document')),
+    );
+    return;
+  }
+
+  event.respondWith(
+    cacheMatch(event.request)
+      .then(cached => cached || fetchAndCache(event.request))
+      .catch(() => unavailableResponse(event.request.destination)),
+  );
 });

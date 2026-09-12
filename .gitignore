@@ -1,5 +1,6 @@
 node_modules/
 www/
+dist/
 screenshots/
 .capacitor/
 *.apk

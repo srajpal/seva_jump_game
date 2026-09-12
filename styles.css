@@ -1,17 +1,20 @@
 :root { --safe-top: max(env(safe-area-inset-top, 0px), var(--android-safe-top, 0px)); --safe-right: max(env(safe-area-inset-right, 0px), var(--android-safe-right, 0px)); --safe-bottom: max(env(safe-area-inset-bottom, 0px), var(--android-safe-bottom, 0px)); --safe-left: max(env(safe-area-inset-left, 0px), var(--android-safe-left, 0px)); color-scheme: light; font-family: "Trebuchet MS", system-ui, sans-serif; background: #f8f0df; color: #24312d; }
 * { box-sizing: border-box; }
-body { margin: 0; min-height: 100vh; display: grid; place-items: center; }
-.game-shell { width: min(100%, 500px); padding: 14px; text-align: center; }
+.storage-warning { position: fixed; z-index: 20; bottom: max(8px, var(--safe-bottom)); left: 50%; width: min(92vw, 390px); margin: 0; padding: 8px 12px; border: 2px solid #7c321d; border-radius: 10px; background: #fff9ee; color: #62331e; box-shadow: 0 2px 8px #24483f33; font-size: .75rem; line-height: 1.3; text-align: center; transform: translateX(-50%); pointer-events: none; }
+body { margin: 0; min-height: 100vh; min-height: 100dvh; display: grid; place-items: center; }
+.game-shell { width: min(100%, 500px, calc((100dvh - 96px) * .5625)); padding: 14px; text-align: center; }
 .studio-home-link { display: block; width: fit-content; margin: 0 auto 12px; padding: 9px 16px; border: 2px solid #527165; border-radius: 999px; background: #fff9ee; box-shadow: 0 3px 0 #9eb6aa; color: #24483f; font-size: .8rem; font-weight: 900; text-decoration: none; }
 .studio-home-link:active { transform: translateY(2px); box-shadow: 0 1px 0 #9eb6aa; }
 .native-app .studio-home-link { display: none; }
 .game-frame { position: relative; overflow: hidden; border: 5px solid #24483f; border-radius: 24px; box-shadow: 0 8px 0 #d5b48c; background: #bce7ef; }
 canvas { display: block; width: 100%; height: auto; touch-action: none; }
-.overlay { position: absolute; inset: 0; z-index: 3; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 30px; background: linear-gradient(#ffffffcf, #f8f0dfdf); }
+.overlay { position: absolute; inset: 0; z-index: 3; display: flex; flex-direction: column; justify-content: safe center; align-items: center; padding: 30px; overflow-x: hidden; overflow-y: auto; scrollbar-width: thin; background: linear-gradient(#ffffffcf, #f8f0dfdf); }
+.overlay > * { flex: 0 0 auto; }
 .game-tools { position: absolute; z-index: 2; top: 64px; right: 12px; }
 .mobile-hud { display: none; }
 .game-tool { width: 42px; height: 42px; border: 2px solid #24483f; border-radius: 50%; background: #fff9eee8; color: #24483f; box-shadow: 0 3px 0 #bca582; cursor: pointer; font: 900 1.15rem/1 system-ui, sans-serif; }
 .game-tool:active { transform: translateY(2px); box-shadow: 0 1px 0 #bca582; }
+:where(a, button, input):focus-visible { outline: 3px solid #1d6fa5; outline-offset: 3px; }
 .home-screen { justify-content: space-between; padding: 25px 28px 22px; background: linear-gradient(#eaf7f4e8, #fff8e9ee), url('assets/gurdwara-courtyard-pixel-v1.png') center / cover; }
 .home-content { width: 100%; display: grid; justify-items: center; gap: 5px; }.home-screen .eyebrow { margin-top: 2px; letter-spacing: .05em; text-transform: uppercase; font-size: .74rem; }
 .home-screen h1 { margin: 0; font-family: "Arial Rounded MT Bold", "Trebuchet MS", system-ui, sans-serif; font-size: clamp(3.25rem, 15vw, 4.6rem); letter-spacing: -.075em; line-height: .9; color: #24483f; text-shadow: 0 3px 0 #fff7e7; }.home-screen h1 span { color: #d56d39; }
@@ -126,3 +129,40 @@ h2 { font-size: 2.3rem; }.eyebrow { margin: 0 0 7px; color: #a85e30; font-weight
 }
 
 @media (max-width: 420px) and (hover: hover) { .game-shell { padding: 7px; } .game-frame { border-width: 3px; border-radius: 18px; } }
+
+/* Height-capped browser frames are narrow as well as short. Keep the complete
+   home menu visible at common laptop and embed heights without shrinking the
+   gameplay canvas out of proportion. */
+@media (hover: hover) and (pointer: fine) and (max-height: 850px) {
+  .home-screen { gap: 4px; padding: 12px 16px 10px; }
+  .home-content { gap: 3px; }
+  .home-screen .eyebrow { font-size: .62rem; }
+  .home-screen h1 { max-width: 100%; font-size: clamp(2.2rem, 9cqw, 2.7rem); line-height: .95; white-space: nowrap; }
+  .story-card { grid-template-columns: 22px 1fr; gap: 5px; padding: 6px 9px; }
+  .story-card p { font-size: .7rem; line-height: 1.2; }
+  .story-icon { width: 21px; height: 21px; font-size: .8rem; }
+  .home-records { padding: 4px 7px; font-size: .55rem; }
+  .home-scene { width: min(100%, 230px); height: 92px; margin: 0; }
+  .home-scene .scene-character { height: 88px; }
+  .scene-girl { left: 26px; top: 2px; }
+  .scene-boy { right: 24px; top: 3px; }
+  .scene-bowl { width: 45px; left: calc(50% - 22px); }
+  .character-prompt { font-size: .62rem; }
+  .mode-actions { gap: 5px; }
+  .mode-actions button { min-height: 44px; padding: 5px; border-radius: 11px; box-shadow: 0 3px 0 #9eb6aa, 0 4px 7px #24483a20; }
+  .mode-actions span { font-size: .76rem; }
+  .mode-actions small { font-size: .53rem; }
+  .mode-help { margin: 1px 0; font-size: .65rem; }
+  .home-utilities { gap: 3px; padding-top: 4px; }
+  .home-utilities > p { font-size: .52rem; }
+  .home-links { gap: 4px; }
+  .home-screen .home-links .secondary { padding: 4px 7px; font-size: .62rem; }
+  .game-version { font-size: .5rem; }
+}
+
+/* Short touch viewports (especially landscape phones) have more menu content
+   than vertical space. Start at the top so the title is reachable by scrolling. */
+@media (hover: none) and (pointer: coarse) and (max-height: 699px) {
+  .home-screen { justify-content: flex-start; }
+  .home-screen h1 { max-width: 100%; font-size: clamp(2.45rem, 12vw, 3.5rem); line-height: .95; }
+}

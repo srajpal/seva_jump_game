@@ -77,8 +77,51 @@
     { id: 'power-seeker', icon: '⚡', title: 'Power Seeker', description: 'Collect 5 power-ups.', color: '#b65e45' },
   ];
   const defaultProfile = { tokens: 0, falcon: 0, shield: 0, powerJump: 0, character: 'girl', tutorialComplete: false, music: true, sound: true, reducedMotion: false, bestScores: { endless: 0, arcade: 0, challenge: 0, hard: 0 }, badges: {}, stats: { runs: 0, wins: 0, arcadeWins: 0, challengeWins: 0, leftEarly: 0, deaths: 0, fallDeaths: 0, birdDeaths: 0, challengeMisses: 0, jumps: 0, totalScore: 0, totalHeight: 0, parshad: 0, tokens: 0, powerups: 0, birdsSeen: 0, birdsBlocked: 0, falconSaves: 0, shieldsUsed: 0 } };
-  function loadProfile() { try { const saved = JSON.parse(localStorage.getItem('seva-jump-profile')) || {}; const tutorialComplete = saved.tutorialComplete ?? Object.values(saved.tutorialModes || {}).some(Boolean); return { ...defaultProfile, ...saved, tutorialComplete, bestScores: { ...defaultProfile.bestScores, ...saved.bestScores }, badges: { ...defaultProfile.badges, ...saved.badges }, stats: { ...defaultProfile.stats, ...saved.stats } }; } catch { return { ...defaultProfile, bestScores: { ...defaultProfile.bestScores }, badges: {}, stats: { ...defaultProfile.stats } }; } }
-  function saveProfile() { localStorage.setItem('seva-jump-profile', JSON.stringify(profile)); }
+  const profileStorageKey = 'seva-jump-profile';
+  let storageAvailable = true;
+  function freshProfile() { return { ...defaultProfile, bestScores: { ...defaultProfile.bestScores }, badges: {}, stats: { ...defaultProfile.stats } }; }
+  function wholeNumber(value, maximum = Number.MAX_SAFE_INTEGER) { const number = Number(value); return Number.isFinite(number) ? Math.max(0, Math.min(maximum, Math.floor(number))) : 0; }
+  function normalizeProfile(saved) {
+    if (!saved || typeof saved !== 'object' || Array.isArray(saved)) return freshProfile();
+    const normalized = freshProfile();
+    ['tokens', 'falcon', 'shield'].forEach(key => { normalized[key] = wholeNumber(saved[key]); });
+    normalized.powerJump = wholeNumber(saved.powerJump, 5);
+    normalized.character = saved.character === 'boy' ? 'boy' : 'girl';
+    ['music', 'sound', 'reducedMotion'].forEach(key => { if (typeof saved[key] === 'boolean') normalized[key] = saved[key]; });
+    normalized.tutorialComplete = typeof saved.tutorialComplete === 'boolean' ? saved.tutorialComplete : Object.values(saved.tutorialModes && typeof saved.tutorialModes === 'object' ? saved.tutorialModes : {}).some(Boolean);
+    Object.keys(normalized.bestScores).forEach(key => { normalized.bestScores[key] = wholeNumber(saved.bestScores?.[key]); });
+    if (saved.badges && typeof saved.badges === 'object' && !Array.isArray(saved.badges)) Object.keys(saved.badges).forEach(key => { if (saved.badges[key] === true) normalized.badges[key] = true; });
+    Object.keys(normalized.stats).forEach(key => { normalized.stats[key] = wholeNumber(saved.stats?.[key]); });
+    return normalized;
+  }
+  function showStorageWarning(message = 'Progress can’t be saved in this browser. You can keep playing for this session.') {
+    storageAvailable = false;
+    let warning = document.querySelector('#storage-warning');
+    if (!warning) {
+      warning = document.createElement('p'); warning.id = 'storage-warning'; warning.className = 'storage-warning';
+      warning.setAttribute('role', 'status'); warning.setAttribute('aria-live', 'polite');
+      document.querySelector('.game-frame')?.append(warning);
+    }
+    warning.textContent = message;
+    warning.classList.remove('hidden');
+  }
+  function loadProfile() {
+    let value;
+    try { value = localStorage.getItem(profileStorageKey); }
+    catch { queueMicrotask(showStorageWarning); return freshProfile(); }
+    if (value === null) return freshProfile();
+    try { return normalizeProfile(JSON.parse(value)); }
+    catch { return freshProfile(); }
+  }
+  function saveProfile() { if (!storageAvailable) return false; try { localStorage.setItem(profileStorageKey, JSON.stringify(profile)); return true; } catch { showStorageWarning(); return false; } }
+  function removeSavedProfile() {
+    try {
+      localStorage.removeItem(profileStorageKey);
+      storageAvailable = true;
+      document.querySelector('#storage-warning')?.classList.add('hidden');
+      return true;
+    } catch { showStorageWarning('Saved progress could not be erased. Your progress is reset for this session only.'); return false; }
+  }
   let profile = loadProfile();
   let state, selectedCharacter = profile.character === 'boy' ? 'boy' : 'girl', settingsReturn = 'home', pointerX = null, keys = new Set(), lastTime = 0, tutorialIndex = 0, tutorialResumesRun = false;
   let audioContext, musicTimer = null, musicVoices = [], badgeQueue = [], badgeToastTimer = null;
@@ -89,21 +132,32 @@
     ui.reducedMotionToggle.checked = profile.reducedMotion;
     document.documentElement.classList.toggle('reduced-motion', profile.reducedMotion);
   }
-  function requestResetProgress() { ui.settings.classList.add('hidden'); ui.resetConfirm.classList.remove('hidden'); }
-  function cancelResetProgress() { ui.resetConfirm.classList.add('hidden'); ui.settings.classList.remove('hidden'); }
+  function requestResetProgress() { ui.settings.classList.add('hidden'); ui.resetConfirm.classList.remove('hidden'); syncModalAccessibility(); }
+  function cancelResetProgress() { ui.resetConfirm.classList.add('hidden'); ui.settings.classList.remove('hidden'); syncModalAccessibility(); }
   function resetAllProgress() {
     ui.resetConfirm.classList.add('hidden');
-    localStorage.removeItem('seva-jump-profile');
-    profile = { ...defaultProfile, bestScores: { ...defaultProfile.bestScores }, badges: {}, stats: { ...defaultProfile.stats } };
+    removeSavedProfile();
+    profile = freshProfile();
+    setSelectedCharacter(profile.character, false);
     clearTimeout(badgeToastTimer); badgeQueue = []; ui.badgeToast.classList.add('hidden');
     applyPreferences(); updateUpgradeUI(); updateRecordsUI(); renderBadges(); renderStats();
     showHome();
   }
 
   function getAudio() {
-    if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    if (audioContext.state === 'suspended') audioContext.resume();
-    return audioContext;
+    try {
+      const Audio = window.AudioContext || window.webkitAudioContext;
+      if (!Audio) throw new Error('Audio unavailable');
+      if (!audioContext) audioContext = new Audio();
+      if (audioContext.state === 'suspended') audioContext.resume()?.catch(() => {});
+      return audioContext;
+    } catch {
+      // Sound is optional: missing devices or browser APIs must not stop play.
+      audioContext = null;
+      ui.musicToggle.disabled = true; ui.soundToggle.disabled = true;
+      document.querySelector('#audio-warning')?.classList.remove('hidden');
+      return null;
+    }
   }
   function tone(frequency, duration, options = {}) {
     if (!ui.soundToggle.checked || !audioContext) return;
@@ -386,6 +440,7 @@
       const challengeStars = Math.min(5, Math.floor(state.parshad / 10));
       ui.endGoal.textContent = state.mode === 'endless' ? 'Endless Run keeps going. Come back and beat your personal best.' : state.mode === 'hard' ? 'Hard Mode keeps climbing with only small moving and breakable platforms.' : challenge ? (completed ? 'You reached the finish with all 50 parshad bowls! ★★★★★' : `You collected ${state.parshad} of 50 parshad bowls · ${'★'.repeat(challengeStars)}${'☆'.repeat(5 - challengeStars)} ${challengeStars} / 5 stars`) : (completed ? 'You reached 1,000 and broke through the finish banner!' : 'Reach 1,000 points to break through the finish banner.');
       ui.end.classList.remove('hidden');
+      syncModalAccessibility();
       requestAnimationFrame(() => ui.end.classList.add('visible'));
     }, resultDelay);
   }
@@ -405,7 +460,7 @@
       state.message = 'Nishan boost protected you!'; state.messageTimer = 2;
     } else if (hit.type === 'shield') {
       profile.stats.birdsBlocked++; profile.stats.shieldsUsed++; if (profile.stats.birdsBlocked >= 3) awardBadge('bird-defender'); sound('shield');
-      profile.shield--; state.invincibleTimer = 4; state.shieldVisualTimer = 4; state.upgradeEffect = { type: 'shield', started: lastTime }; saveProfile(); updateUpgradeUI(); state.message = 'Dhal Shield activated! 4 seconds protected.'; state.messageTimer = 2;
+      profile.shield--; state.invincibleTimer = 4; state.shieldVisualTimer = 4; state.upgradeEffect = { type: 'shield', started: lastTime }; saveProfile(); updateUpgradeUI(); state.message = 'Dhal Shield activated! You are protected for 4 seconds.'; state.messageTimer = 2;
     } else { finish(false, 'bird'); return true; }
     return false;
   }
@@ -448,11 +503,12 @@
     p.vx = Math.max(-config.maxHorizontalSpeed, Math.min(config.maxHorizontalSpeed, p.vx));
     if (Math.abs(p.vx) > 22) p.facing = Math.sign(p.vx);
     p.x += p.vx * dt;
+    const previousBottom = p.y + p.h / 2;
     p.x = Math.max(p.w / 2, Math.min(W - p.w / 2, p.x)); p.vy += config.gravity * dt; p.y += p.vy * dt;
     for (const plat of state.platforms) {
       if (plat.type === 'moving') { plat.x += plat.dir * plat.speed * dt; if (plat.x < 6 || plat.x + plat.w > W - 6) plat.dir *= -1; }
       const top = plat.y;
-      if (!plat.broken && p.vy > 0 && p.y + p.h / 2 >= top && p.y + p.h / 2 <= top + 25 && p.x + p.w / 2 > plat.x && p.x - p.w / 2 < plat.x + plat.w) {
+      if (!plat.broken && p.vy > 0 && previousBottom <= top && p.y + p.h / 2 >= top && p.x + p.w / 2 > plat.x && p.x - p.w / 2 < plat.x + plat.w) {
         const jumpMultiplier = rules.powerJumpMultiplier(profile.powerJump);
         p.y = top - p.h / 2; p.vy = -(plat.type === 'spring' ? config.springJumpVelocity : config.baseJumpVelocity) * jumpMultiplier;
         profile.stats.jumps++;
@@ -676,10 +732,10 @@
     drawWinTransition();
   }
   function loop(time) { const dt = Math.min(.04, (time - lastTime) / 1000 || 0); lastTime = time; update(dt); draw(); requestAnimationFrame(loop); }
-  function setSelectedCharacter(character) {
+  function setSelectedCharacter(character, persist = true) {
     selectedCharacter = character;
     profile.character = character;
-    saveProfile();
+    if (persist) saveProfile();
     ui.choices.forEach(button => button.classList.toggle('selected', button.dataset.character === character));
     ui.choices.forEach(button => button.setAttribute('aria-pressed', button.dataset.character === character));
     ui.sceneGirl.classList.toggle('selected', character === 'girl');
@@ -698,35 +754,73 @@
     ui.tutorialDots.querySelectorAll('span').forEach((dot, index) => dot.classList.toggle('active', index === tutorialIndex));
     ui.tutorialNext.textContent = tutorialIndex === TUTORIAL_STEPS.length - 1 ? 'Let’s jump!' : 'Next';
   }
+  // Same order as the overlays in index.html: the later visible dialog is on top.
+  const modalScreens = [ui.end, ui.tutorial, ui.pause, ui.settings, ui.resetConfirm, ui.badges, ui.stats, ui.upgrades, ui.about, ui.privacy, ui.exitConfirm];
+  const gameFrame = document.querySelector('.game-frame');
+  const studioHomeLink = document.querySelector('.studio-home-link');
+  const focusableSelector = 'button:not([disabled]), a[href], input:not([disabled]), [tabindex]:not([tabindex="-1"])';
+  let activeModal = null, modalReturnFocus = null;
+  const modalFocusOrigins = new WeakMap();
+  function syncModalAccessibility() {
+    const nextModal = [...modalScreens].reverse().find(screen => screen && !screen.classList.contains('hidden')) || null;
+    if (nextModal !== activeModal) {
+      const closingModal = activeModal;
+      if (nextModal && !activeModal) modalReturnFocus = document.activeElement;
+      if (nextModal && document.activeElement && !nextModal.contains(document.activeElement)) modalFocusOrigins.set(nextModal, document.activeElement);
+      activeModal = nextModal;
+      const nestedReturn = closingModal && modalFocusOrigins.get(closingModal);
+      if (activeModal) {
+        const openingModal = activeModal;
+        queueMicrotask(() => {
+          if (activeModal !== openingModal) return;
+          if (nestedReturn && openingModal.contains(nestedReturn)) nestedReturn.focus();
+          else {
+            openingModal.setAttribute('tabindex', '-1');
+            openingModal.scrollTop = 0;
+            openingModal.focus({ preventScroll: true });
+          }
+        });
+      }
+      else {
+        const returnTarget = modalReturnFocus; modalReturnFocus = null;
+        if (state?.running && !state.paused) queueMicrotask(() => canvas.focus());
+        else if (returnTarget?.isConnected && !returnTarget.inert && !returnTarget.closest?.('.hidden')) queueMicrotask(() => returnTarget.focus());
+      }
+    }
+    if (gameFrame) Array.from(gameFrame.children).forEach(child => { if (child.id !== 'storage-warning') child.inert = Boolean(activeModal && child !== activeModal); });
+    if (studioHomeLink) studioHomeLink.inert = Boolean(activeModal);
+    if (!activeModal && state?.running && !state.paused && document.activeElement !== canvas) canvas.focus();
+  }
   function showTutorial() {
     setNativeGameplayActive(false);
     tutorialIndex = 0; tutorialResumesRun = Boolean(state?.running); if (state?.running) state.paused = true;
     ui.home.classList.add('hidden'); ui.end.classList.add('hidden'); ui.upgrades.classList.add('hidden'); ui.about.classList.add('hidden'); ui.badges.classList.add('hidden'); ui.stats.classList.add('hidden'); ui.settings.classList.add('hidden'); ui.pause.classList.add('hidden'); ui.gameTools.classList.add('hidden');
-    renderTutorial(); ui.tutorial.classList.remove('hidden');
+    renderTutorial(); ui.tutorial.classList.remove('hidden'); syncModalAccessibility();
   }
   function finishTutorial() {
     profile.tutorialComplete = true;
     saveProfile(); ui.tutorial.classList.add('hidden');
     if (tutorialResumesRun && state) { state.paused = false; setNativeGameplayActive(true); startAudio(); ui.gameTools.classList.remove('hidden'); }
     else showHome();
+    syncModalAccessibility();
   }
-  function openSettings(from) { setNativeGameplayActive(false); settingsReturn = from; if (from === 'pause') ui.pause.classList.add('hidden'); else ui.home.classList.add('hidden'); ui.settings.classList.remove('hidden'); }
-  function closeSettings() { ui.settings.classList.add('hidden'); if (settingsReturn === 'pause' && state?.paused) ui.pause.classList.remove('hidden'); else ui.home.classList.remove('hidden'); }
+  function openSettings(from) { setNativeGameplayActive(false); settingsReturn = from; if (from === 'pause') ui.pause.classList.add('hidden'); else ui.home.classList.add('hidden'); ui.settings.classList.remove('hidden'); syncModalAccessibility(); }
+  function closeSettings() { ui.settings.classList.add('hidden'); if (settingsReturn === 'pause' && state?.paused) ui.pause.classList.remove('hidden'); else ui.home.classList.remove('hidden'); syncModalAccessibility(); }
   function leaveRunEarly() { if (state?.running && state.paused && !state.ending) { profile.stats.leftEarly++; saveProfile(); } showHome(); }
   function restartPausedRun() { const mode = state?.mode || 'endless'; leaveRunEarly(); start(mode); }
-  function start(mode) { getAudio(); reset(mode); ui.home.classList.add('hidden'); ui.end.classList.add('hidden'); ui.end.classList.remove('visible'); ui.upgrades.classList.add('hidden'); ui.about.classList.add('hidden'); ui.privacy.classList.add('hidden'); ui.badges.classList.add('hidden'); ui.stats.classList.add('hidden'); ui.settings.classList.add('hidden'); ui.resetConfirm.classList.add('hidden'); ui.exitConfirm.classList.add('hidden'); ui.pause.classList.add('hidden'); if (!profile.tutorialComplete) return showTutorial(); setNativeGameplayActive(true); startAudio(); ui.tutorial.classList.add('hidden'); ui.gameTools.classList.remove('hidden'); }
-  function showHome() { setNativeGameplayActive(false); pointerX = null; keys.clear(); if (state) state.running = false; stopMusic(); ui.mobileHud.classList.add('hidden'); updateRecordsUI(); ui.home.classList.remove('hidden'); ui.end.classList.add('hidden'); ui.end.classList.remove('visible'); ui.upgrades.classList.add('hidden'); ui.about.classList.add('hidden'); ui.privacy.classList.add('hidden'); ui.badges.classList.add('hidden'); ui.stats.classList.add('hidden'); ui.tutorial.classList.add('hidden'); ui.settings.classList.add('hidden'); ui.resetConfirm.classList.add('hidden'); ui.exitConfirm.classList.add('hidden'); ui.pause.classList.add('hidden'); ui.gameTools.classList.add('hidden'); }
-  function showUpgrades() { setNativeGameplayActive(false); pointerX = null; keys.clear(); if (state) state.running = false; stopMusic(); updateUpgradeUI(); ui.home.classList.add('hidden'); ui.end.classList.add('hidden'); ui.upgrades.classList.remove('hidden'); ui.about.classList.add('hidden'); ui.badges.classList.add('hidden'); ui.stats.classList.add('hidden'); ui.settings.classList.add('hidden'); ui.pause.classList.add('hidden'); ui.gameTools.classList.add('hidden'); }
-  function showAbout() { setNativeGameplayActive(false); pointerX = null; keys.clear(); if (state) state.running = false; stopMusic(); ui.home.classList.add('hidden'); ui.end.classList.add('hidden'); ui.upgrades.classList.add('hidden'); ui.about.classList.remove('hidden'); ui.privacy.classList.add('hidden'); ui.badges.classList.add('hidden'); ui.stats.classList.add('hidden'); ui.settings.classList.add('hidden'); ui.pause.classList.add('hidden'); ui.gameTools.classList.add('hidden'); }
-  function showPrivacy() { setNativeGameplayActive(false); ui.about.classList.add('hidden'); ui.privacy.classList.remove('hidden'); }
-  function openExitConfirm() { ui.exitConfirm.classList.remove('hidden'); }
-  function closeExitConfirm() { ui.exitConfirm.classList.add('hidden'); }
+  function start(mode) { getAudio(); reset(mode); ui.home.classList.add('hidden'); ui.end.classList.add('hidden'); ui.end.classList.remove('visible'); ui.upgrades.classList.add('hidden'); ui.about.classList.add('hidden'); ui.privacy.classList.add('hidden'); ui.badges.classList.add('hidden'); ui.stats.classList.add('hidden'); ui.settings.classList.add('hidden'); ui.resetConfirm.classList.add('hidden'); ui.exitConfirm.classList.add('hidden'); ui.pause.classList.add('hidden'); if (!profile.tutorialComplete) return showTutorial(); setNativeGameplayActive(true); startAudio(); ui.tutorial.classList.add('hidden'); ui.gameTools.classList.remove('hidden'); syncModalAccessibility(); }
+  function showHome() { setNativeGameplayActive(false); clearInput(); if (state) state.running = false; stopMusic(); ui.mobileHud.classList.add('hidden'); updateRecordsUI(); ui.home.classList.remove('hidden'); ui.end.classList.add('hidden'); ui.end.classList.remove('visible'); ui.upgrades.classList.add('hidden'); ui.about.classList.add('hidden'); ui.privacy.classList.add('hidden'); ui.badges.classList.add('hidden'); ui.stats.classList.add('hidden'); ui.tutorial.classList.add('hidden'); ui.settings.classList.add('hidden'); ui.resetConfirm.classList.add('hidden'); ui.exitConfirm.classList.add('hidden'); ui.pause.classList.add('hidden'); ui.gameTools.classList.add('hidden'); syncModalAccessibility(); }
+  function showUpgrades() { setNativeGameplayActive(false); clearInput(); if (state) state.running = false; stopMusic(); updateUpgradeUI(); ui.home.classList.add('hidden'); ui.end.classList.add('hidden'); ui.upgrades.classList.remove('hidden'); ui.about.classList.add('hidden'); ui.badges.classList.add('hidden'); ui.stats.classList.add('hidden'); ui.settings.classList.add('hidden'); ui.pause.classList.add('hidden'); ui.gameTools.classList.add('hidden'); syncModalAccessibility(); }
+  function showAbout() { setNativeGameplayActive(false); clearInput(); if (state) state.running = false; stopMusic(); ui.home.classList.add('hidden'); ui.end.classList.add('hidden'); ui.upgrades.classList.add('hidden'); ui.about.classList.remove('hidden'); ui.privacy.classList.add('hidden'); ui.badges.classList.add('hidden'); ui.stats.classList.add('hidden'); ui.settings.classList.add('hidden'); ui.pause.classList.add('hidden'); ui.gameTools.classList.add('hidden'); syncModalAccessibility(); }
+  function showPrivacy() { setNativeGameplayActive(false); ui.about.classList.add('hidden'); ui.privacy.classList.remove('hidden'); syncModalAccessibility(); }
+  function openExitConfirm() { ui.exitConfirm.classList.remove('hidden'); syncModalAccessibility(); }
+  function closeExitConfirm() { ui.exitConfirm.classList.add('hidden'); syncModalAccessibility(); }
   function handleNativeBack() { if (!ui.exitConfirm.classList.contains('hidden')) return closeExitConfirm(); if (!ui.home.classList.contains('hidden')) return exitNativeApp(); if (state?.running && !state.paused) pauseGame(); openExitConfirm(); }
   function exitNativeApp() { const app = window.Capacitor?.Plugins?.App; if (app?.exitApp) app.exitApp(); else window.close(); }
-  function showBadges() { setNativeGameplayActive(false); renderBadges(); ui.home.classList.add('hidden'); ui.badges.classList.remove('hidden'); ui.stats.classList.add('hidden'); }
-  function showStats() { setNativeGameplayActive(false); renderStats(); ui.home.classList.add('hidden'); ui.badges.classList.add('hidden'); ui.stats.classList.remove('hidden'); }
-  function pauseGame() { if (!state?.running || state.ending) return; setNativeGameplayActive(false); pointerX = null; keys.clear(); state.paused = true; stopMusic(); ui.pause.classList.remove('hidden'); }
-  function resumeGame() { if (!state?.paused || state.ending) return; state.paused = false; setNativeGameplayActive(true); ui.pause.classList.add('hidden'); if (profile.music) startAudio(); }
+  function showBadges() { setNativeGameplayActive(false); renderBadges(); ui.home.classList.add('hidden'); ui.badges.classList.remove('hidden'); ui.stats.classList.add('hidden'); syncModalAccessibility(); }
+  function showStats() { setNativeGameplayActive(false); renderStats(); ui.home.classList.add('hidden'); ui.badges.classList.add('hidden'); ui.stats.classList.remove('hidden'); syncModalAccessibility(); }
+  function pauseGame() { if (!state?.running || state.ending) return; setNativeGameplayActive(false); clearInput(); state.paused = true; stopMusic(); ui.pause.classList.remove('hidden'); syncModalAccessibility(); }
+  function resumeGame() { if (!state?.paused || state.ending || ui.pause.classList.contains('hidden')) return; state.paused = false; setNativeGameplayActive(true); ui.pause.classList.add('hidden'); syncModalAccessibility(); if (profile.music) startAudio(); }
   function buyUpgrade(type) {
     const costs = { falcon: 8, shield: 10, powerJump: config.powerJumpCosts[profile.powerJump] };
     if (type === 'powerJump' && profile.powerJump >= 5) return updateUpgradeUI('Power Jump is already at its maximum level.');
@@ -744,10 +838,34 @@
   ui.reducedMotionToggle.addEventListener('change', () => { profile.reducedMotion = ui.reducedMotionToggle.checked; document.documentElement.classList.toggle('reduced-motion', profile.reducedMotion); saveProfile(); });
   ui.tutorialNext.addEventListener('click', () => { if (tutorialIndex < TUTORIAL_STEPS.length - 1) { tutorialIndex++; renderTutorial(); sound('ui'); } else finishTutorial(); });
   ui.tutorialSkip.addEventListener('click', finishTutorial);
-  canvas.addEventListener('pointerdown', e => { pointerX = (e.offsetX / canvas.clientWidth) * W; canvas.setPointerCapture?.(e.pointerId); });
-  canvas.addEventListener('pointermove', e => { if (e.buttons) pointerX = (e.offsetX / canvas.clientWidth) * W; });
-  canvas.addEventListener('pointerup', () => { pointerX = null; });
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') { if (state?.paused) resumeGame(); else pauseGame(); e.preventDefault(); return; } if (['ArrowLeft', 'ArrowRight'].includes(e.key)) { keys.add(e.key); e.preventDefault(); } }); document.addEventListener('keyup', e => keys.delete(e.key));
+  function canvasPointerX(event) {
+    const rect = canvas.getBoundingClientRect();
+    const scale = Math.min(rect.width / W, rect.height / H);
+    const contentWidth = W * scale, contentLeft = rect.left + (rect.width - contentWidth) / 2;
+    return Math.max(0, Math.min(W, (event.clientX - contentLeft) / scale));
+  }
+  function clearInput() { pointerX = null; keys.clear(); }
+  canvas.addEventListener('pointerdown', e => { pointerX = canvasPointerX(e); canvas.setPointerCapture?.(e.pointerId); });
+  canvas.addEventListener('pointermove', e => { if (e.buttons) pointerX = canvasPointerX(e); });
+  canvas.addEventListener('pointerup', clearInput);
+  canvas.addEventListener('pointercancel', clearInput);
+  canvas.addEventListener('lostpointercapture', clearInput);
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Tab' && activeModal) {
+      const focusable = Array.from(activeModal.querySelectorAll(focusableSelector));
+      if (focusable.length) {
+        const first = focusable[0], last = focusable[focusable.length - 1];
+        if (e.shiftKey && (document.activeElement === activeModal || document.activeElement === first || !activeModal.contains(document.activeElement))) { last.focus(); e.preventDefault(); }
+        else if (!e.shiftKey && document.activeElement === last) { first.focus(); e.preventDefault(); }
+      }
+      return;
+    }
+    if (e.key === 'Escape') { if (!ui.pause.classList.contains('hidden')) resumeGame(); else if (state?.running && !state.paused) pauseGame(); e.preventDefault(); return; }
+    if (['ArrowLeft', 'ArrowRight'].includes(e.key) && state?.running && !state.paused) { keys.add(e.key); e.preventDefault(); }
+  });
+  document.addEventListener('keyup', e => keys.delete(e.key));
+  window.addEventListener('blur', () => { const wasActive = state?.running && !state.paused; clearInput(); if (wasActive) pauseGame(); });
+  document.addEventListener('visibilitychange', () => { if (document.hidden) { const wasActive = state?.running && !state.paused; clearInput(); if (wasActive) pauseGame(); } });
   window.sevaJumpNativeBack = handleNativeBack; window.Capacitor?.Plugins?.App?.addListener?.('backButton', handleNativeBack); setNativeGameplayActive(false); applyPreferences(); setSelectedCharacter(selectedCharacter); reset(); state.running = false; updateUpgradeUI(); updateRecordsUI(); renderBadges(); renderStats(); requestAnimationFrame(loop);
   if ('serviceWorker' in navigator && location.protocol !== 'file:') window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
 })();

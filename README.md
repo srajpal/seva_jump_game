@@ -2,7 +2,7 @@
 
 **A skyward seva adventure.**
 
-Current release-candidate build: **v0.13.1**.
+Current release-candidate build: **v0.13.2**.
 
 The birds have flown away with the parshad. Choose a young Sikh boy or girl, leap from platform to platform, and bring it back in this cheerful browser game prototype.
 
@@ -10,11 +10,11 @@ Seva Jump is designed for ages 8-15, with touch-first controls, a calm gurdwara-
 
 ## Play
 
-Open **`index.html`** in a modern browser. On a phone or tablet, drag anywhere across the game to steer left and right. On a desktop, you can also use the arrow keys or on-screen controls.
+Open **`index.html`** in a modern browser. On a phone or tablet, drag across the game to steer left and right. On a desktop, drag with a mouse or use the left and right arrow keys. Press Escape to pause during gameplay.
 
 New players receive a short three-step guide after choosing their first mode. It can be replayed later from Settings.
 
-The game is self-contained: no login, ads, purchases, or network connection are needed to play locally. When opened from the published site, it also caches the game after the first successful visit so it remains playable offline.
+The game is self-contained: no login, ads, purchases, or network connection are needed to play from local files. Hosted play uses a service worker for offline caching. The original September 2026 browser audit is preserved in [ITCH_RELEASE_AUDIT.md](ITCH_RELEASE_AUDIT.md); follow the current fixes and remaining verification in [RELEASE_PROGRESS.md](RELEASE_PROGRESS.md).
 
 ## Android device build
 
@@ -80,14 +80,18 @@ The setting is gurdwara-inspired and avoids using sacred spaces or symbols as ob
 With Node.js available, run:
 
 ```powershell
+node --check game.js
 node tests\rule-checks.js
 node tests\soak-test.js
 node tests\full-run-checks.js
 node tests\endless-bird-checks.js
 node tests\hard-mode-checks.js
+node tests\power-jump-checks.js
 ```
 
 These checks verify core rules, full-mode outcomes, Challenge Mode’s 50-bowl placement, Hard Mode’s platform and bird limits, power-up/Falcon behavior, procedural platform reachability, and platform pacing.
+
+Run `npm run test:runtime` for the actual game-state and service-worker regressions, and `npm run test:package` for the release payload. Browser, offline and native test setup is in [TESTING.md](TESTING.md).
 
 ## Project structure
 
@@ -97,19 +101,27 @@ styles.css          Responsive visual design
 game.js             Canvas rendering, input, gameplay, and animations
 game-config.js      Central tuning values
 game-rules.js       Shared mode and completion rules
+sw.js               Hosted offline cache lifecycle
 assets/             Pixel-art game assets
 tests/              Rule and procedural-generation checks
 android/            Native Android wrapper
 ios/                Native iOS wrapper
 scripts/            Web asset sync script for native builds
+ARCHITECTURE.md      Runtime, packaging, and platform architecture
 ```
 
 ## Release status
 
-The feature set is frozen for the first Android release candidate. Use [RELEASE_CHECKLIST.md](RELEASE_CHECKLIST.md) for regression testing and signing, and [STORE_LISTING.md](STORE_LISTING.md) for the prepared Google Play copy and declarations.
+The feature set is frozen for the current release candidate. Use [RELEASE_CHECKLIST.md](RELEASE_CHECKLIST.md) for regression testing and signing, [STORE_LISTING.md](STORE_LISTING.md) for the prepared Google Play copy and declarations, and [ITCH_LISTING.md](ITCH_LISTING.md) for the browser listing and upload plan.
 
-Remaining launch work is external to the game code: final community/content review, store screenshots, signing credentials, store-console forms, device testing, and closed testing. Localization remains planned follow-up work.
+The September 11, 2026 itch.io audit records the problems found in v0.13.1. Work on the v0.13.2 candidate is tracked in [RELEASE_PROGRESS.md](RELEASE_PROGRESS.md). Do not treat either document as approval to publish; the release checklist still requires hosted-draft and device checks.
+
+Native-store work still includes screenshots, signing credentials, console forms, device testing, and applicable store testing. Check [RELEASE_PROGRESS.md](RELEASE_PROGRESS.md) and the platform metadata before naming a native build ready. Localization remains planned follow-up work.
 
 ## License
 
 All rights reserved for now. Please do not reuse the game artwork or code without permission.
+
+## Source and feedback
+
+Source code is available at https://github.com/srajpal/seva_jump_game. Bug reports and suggestions are welcome. No project license has been selected; public source availability is not an open-source license.

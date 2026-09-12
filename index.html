@@ -11,13 +11,13 @@
     <link rel="manifest" href="manifest.webmanifest" />
     <link rel="icon" href="assets/app-icon-bird-v1.png" type="image/png" />
     <link rel="apple-touch-icon" href="assets/app-icon-bird-v1.png" />
-    <link rel="stylesheet" href="styles.css?v=0.13.1" />
+    <link rel="stylesheet" href="styles.css?v=0.13.2" />
   </head>
   <body>
     <main class="game-shell">
-      <a class="studio-home-link" href="https://www.khalsagamestudio.com/">Back to home</a>
+      <a class="studio-home-link" href="https://www.khalsagamestudio.com/" target="_blank" rel="noopener noreferrer">Visit Khalsa Game Studio ↗</a>
       <section class="game-frame" aria-label="Seva Jump game">
-        <canvas id="game" width="450" height="800" aria-label="Seva Jump canvas"></canvas>
+        <canvas id="game" width="450" height="800" tabindex="0" aria-label="Seva Jump game. Drag or use Left and Right Arrow keys to steer. Press Escape to pause.">Seva Jump requires a browser with canvas support.</canvas>
         <div id="mobile-hud" class="mobile-hud hidden" aria-live="polite">
           <div class="mobile-hud-score"><strong id="mobile-score">Score 0</strong><span id="mobile-items">Parshad 0 · Khanda 0</span></div>
           <div class="mobile-hud-upgrades" aria-label="Owned upgrades">
@@ -57,9 +57,9 @@
             <p>More to explore</p>
             <div class="home-links"><button id="open-upgrades-button" class="secondary">Upgrades</button><button id="open-badges-button" class="secondary">Badges</button><button id="open-stats-button" class="secondary">Stats</button><button id="open-about-button" class="secondary">About &amp; Help</button><button id="open-settings-button" class="secondary">Settings</button></div>
           </section>
-          <p class="game-version" aria-label="Game version 0.13.1">v0.13.1 | Khalsa Game Studio</p>
+          <p class="game-version" aria-label="Game version 0.13.2">v0.13.2 | Khalsa Game Studio</p>
         </div>
-        <div id="end-screen" class="overlay hidden">
+        <div id="end-screen" class="overlay hidden" role="dialog" aria-modal="true" aria-labelledby="end-heading">
           <p class="eyebrow">Nice climb!</p>
           <h2 id="end-heading">Run complete</h2>
           <p id="end-score"></p>
@@ -100,6 +100,7 @@
             <label><span>Sound effects</span><input id="sound-toggle" type="checkbox" checked /></label>
             <label><span>Reduced motion</span><input id="reduced-motion-toggle" type="checkbox" /></label>
           </div>
+          <p id="audio-warning" class="setting-note hidden" role="status">Sound isn’t available in this browser. You can still play.</p>
           <p class="setting-note">Reduced Motion makes decorative effects still: character bobbing, net hovering, finish-banner floating, fireworks expansion, and interface transitions.</p>
           <button id="replay-tutorial-button" class="secondary" type="button">Replay first-run guide</button>
           <div class="reset-panel">
@@ -129,16 +130,16 @@
           <div id="stats-summary" class="stats-summary" aria-live="polite"></div>
           <h3>How runs ended</h3>
           <div id="death-breakdown" class="death-breakdown" aria-live="polite"></div>
-          <p class="stats-note">Use these numbers to follow your progress and help us keep Seva Jump fair.</p>
+          <p class="stats-note">Use these numbers to follow your progress from run to run.</p>
           <button id="close-stats-button" class="primary">Back to main screen</button>
         </div>
         <div id="badge-toast" class="badge-toast hidden" role="status" aria-live="assertive">
           <span id="badge-toast-icon" class="badge-icon" aria-hidden="true">✦</span>
           <span><strong>Badge earned!</strong><small id="badge-toast-name"></small></span>
         </div>
-        <div id="upgrades-screen" class="overlay hidden">
+        <div id="upgrades-screen" class="overlay hidden" role="dialog" aria-modal="true" aria-labelledby="upgrades-heading">
           <p class="eyebrow">Khanda tokens: <span id="wallet-count">0</span></p>
-          <h2>Upgrades</h2>
+          <h2 id="upgrades-heading">Upgrades</h2>
           <p class="upgrade-intro">Use tokens earned during runs. Power Jump is permanent; the other upgrades are used once.</p>
           <div class="upgrade-list">
             <article class="upgrade-card"><h3><img class="upgrade-icon" src="assets/falcon-save-pixel-v1.png" alt="" />Falcon Save</h3><p>Catch one fall during a run.</p><button id="buy-falcon" class="secondary">Buy · 8</button><small id="falcon-owned">Owned: 0</small></article>
@@ -148,8 +149,8 @@
           <p id="upgrade-message" class="help" aria-live="polite"></p>
           <button id="close-upgrades-button" class="primary">Back to main screen</button>
         </div>
-        <div id="about-screen" class="overlay about-screen hidden">
-          <p class="eyebrow">About Seva Jump</p>
+        <div id="about-screen" class="overlay about-screen hidden" role="dialog" aria-modal="true" aria-labelledby="about-heading">
+          <p id="about-heading" class="eyebrow">About Seva Jump</p>
           <section class="mission-card" aria-label="Game mission">
             <span class="mission-cloud" aria-hidden="true">☁</span>
             <div><strong>Your mission</strong><p>Birds have scattered the parshad. Leap through the sky, collect it, and help bring it back.</p></div>
@@ -194,11 +195,14 @@
         <div id="privacy-screen" class="overlay privacy-screen hidden" role="dialog" aria-modal="true" aria-labelledby="privacy-heading">
           <p class="eyebrow">Seva Jump</p>
           <h2 id="privacy-heading">Privacy</h2>
-          <p class="privacy-updated">Last updated: August 28, 2026</p>
+          <p class="privacy-updated">Last updated: September 11, 2026</p>
           <section class="privacy-card">
             <p>Seva Jump is free and offline-friendly. We do not collect, sell, or share personal information.</p>
             <h3>What stays on your device</h3>
             <p>Your scores, settings, upgrades, badges, and statistics are stored only on your device to remember your progress. You can erase them with Reset all progress in Settings.</p>
+            <p>Browser saves belong to this browser and site. Clearing site data can erase them. If saving is unavailable, you can still play for the current session.</p>
+            <h3>Playing on another website</h3>
+            <p>The game itself has no tracking. A website hosting the game, such as itch.io, may process information under its own privacy policy.</p>
             <h3>What we do not use</h3>
             <ul><li>No accounts or sign-in</li><li>No advertising or purchases</li><li>No analytics or tracking cookies</li><li>No collection of location, contacts, photos, microphone, or camera data</li></ul>
             <h3>Children</h3>
@@ -209,13 +213,14 @@
         <div id="exit-confirm-screen" class="overlay reset-confirm-screen hidden" role="dialog" aria-modal="true" aria-labelledby="exit-heading">
           <p class="eyebrow">Leaving Seva Jump</p>
           <h2 id="exit-heading">Close the game?</h2>
-          <p>Your progress is saved on this device. You can pick up another run later.</p>
+          <p>Your completed-run progress is saved on this device when storage is available. The current run will end.</p>
           <div class="menu-actions"><button id="confirm-exit-button" class="primary" type="button">Close app</button><button id="cancel-exit-button" class="secondary" type="button">Keep playing</button></div>
         </div>
+        <p id="storage-warning" class="storage-warning hidden" role="status" aria-live="polite"></p>
       </section>
     </main>
-    <script src="game-config.js?v=0.13.1"></script>
-    <script src="game-rules.js?v=0.13.1"></script>
-    <script src="game.js?v=0.13.1"></script>
+    <script src="game-config.js?v=0.13.2"></script>
+    <script src="game-rules.js?v=0.13.2"></script>
+    <script src="game.js?v=0.13.2"></script>
   </body>
 </html>

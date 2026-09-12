@@ -1,9 +1,15 @@
 {
   "name": "seva-jump",
-  "version": "0.13.1",
+  "version": "0.13.2",
   "private": true,
   "description": "Seva Jump Android wrapper and web build tools.",
   "scripts": {
+    "test": "node tests/rule-checks.js && node tests/full-run-checks.js && node tests/endless-bird-checks.js && node tests/hard-mode-checks.js && node tests/power-jump-checks.js && node tests/soak-test.js",
+    "itch:build": "node scripts/build-itch.mjs",
+    "test:package": "node tests/package-checks.mjs",
+    "test:runtime": "node tests/runtime-browser-checks.js && node tests/gameplay-runtime-checks.js && node tests/service-worker-checks.js",
+    "test:browser": "node tests/browser-checks.cjs",
+    "release:media": "node scripts/capture-release-media.cjs",
     "web:sync": "node scripts/sync-web.mjs",
     "android:sync": "npm run web:sync && npx cap sync android",
     "android:debug": "npm run android:sync && cd android && gradlew.bat assembleDebug"
