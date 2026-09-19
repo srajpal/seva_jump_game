@@ -76,7 +76,7 @@
     { id: 'bird-defender', icon: '◒', title: 'Bird Defender', description: 'Block 3 bird collisions.', color: '#5476a8' },
     { id: 'power-seeker', icon: '⚡', title: 'Power Seeker', description: 'Collect 5 power-ups.', color: '#b65e45' },
   ];
-  const defaultProfile = { tokens: 0, falcon: 0, shield: 0, powerJump: 0, character: 'girl', tutorialComplete: false, music: true, sound: true, reducedMotion: false, bestScores: { endless: 0, arcade: 0, challenge: 0, hard: 0 }, badges: {}, stats: { runs: 0, wins: 0, arcadeWins: 0, challengeWins: 0, leftEarly: 0, deaths: 0, fallDeaths: 0, birdDeaths: 0, challengeMisses: 0, jumps: 0, totalScore: 0, totalHeight: 0, parshad: 0, tokens: 0, powerups: 0, birdsSeen: 0, birdsBlocked: 0, falconSaves: 0, shieldsUsed: 0 } };
+  const defaultProfile = { tokens: 0, falcon: 0, shield: 0, powerJump: 0, character: 'girl', tutorialComplete: false, music: true, sound: true, reducedMotion: Boolean(window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches), bestScores: { endless: 0, arcade: 0, challenge: 0, hard: 0 }, badges: {}, stats: { runs: 0, wins: 0, arcadeWins: 0, challengeWins: 0, leftEarly: 0, deaths: 0, fallDeaths: 0, birdDeaths: 0, challengeMisses: 0, jumps: 0, totalScore: 0, totalHeight: 0, parshad: 0, tokens: 0, powerups: 0, birdsSeen: 0, birdsBlocked: 0, falconSaves: 0, shieldsUsed: 0 } };
   const profileStorageKey = 'seva-jump-profile';
   let storageAvailable = true;
   function freshProfile() { return { ...defaultProfile, bestScores: { ...defaultProfile.bestScores }, badges: {}, stats: { ...defaultProfile.stats } }; }
@@ -149,7 +149,9 @@
       const Audio = window.AudioContext || window.webkitAudioContext;
       if (!Audio) throw new Error('Audio unavailable');
       if (!audioContext) audioContext = new Audio();
-      if (audioContext.state === 'suspended') audioContext.resume()?.catch(() => {});
+      // Safari reports 'interrupted' after calls or backgrounding: resume from
+      // any non-running state, not only 'suspended'.
+      if (audioContext.state !== 'running') audioContext.resume?.()?.catch(() => {});
       return audioContext;
     } catch {
       // Sound is optional: missing devices or browser APIs must not stop play.
@@ -269,11 +271,15 @@
 
   function reset(mode = 'endless') {
     if (state?.fireworkSoundTimers) state.fireworkSoundTimers.forEach(clearTimeout);
+    clearTimeout(state?.resultTimer);
+    // Centre the start platform on the live canvas width: native tablets widen
+    // the canvas to 640, so a fixed x would leave the opening jump short.
+    const startPlatform = { x: W / 2 - 57.5, y: 700, w: 115, type: 'normal', speed: 0, dir: 1, broken: false };
     state = {
       running: true, paused: false, mode, score: 0, heightScore: 0, parshad: 0, tokens: 0, cameraY: 0,
-      background: Math.floor(Math.random() * backgroundImages.length), nextY: 610, ending: false, falconUsed: false, invincibleTimer: 0, shieldVisualTimer: 0, finishGate: null, fireworkSoundTimers: [], challengePlaced: 0, challengePlatformCount: 0, upgradeEffect: null, hitStop: null, falconRescue: null,
+      background: Math.floor(Math.random() * backgroundImages.length), nextY: 610, ending: false, falconUsed: false, invincibleTimer: 0, invincibleSource: null, shieldVisualTimer: 0, resultTimer: null, finishGate: null, fireworkSoundTimers: [], challengePlaced: 0, challengePlatformCount: 0, upgradeEffect: null, hitStop: null, falconRescue: null,
       player: { x: W / 2, y: 650, vx: 0, vy: -config.baseJumpVelocity * rules.powerJumpMultiplier(profile.powerJump), w: 31, h: 48, character: selectedCharacter, facing: 1 },
-      platforms: [{ x: 170, y: 700, w: 115, type: 'normal' }], lastPlatform: { x: 170, y: 700, w: 115 }, collectibles: [], enemies: [], powerups: [], particles: [],
+      platforms: [startPlatform], lastPlatform: startPlatform, collectibles: [], enemies: [], powerups: [], particles: [],
       message: mode === 'challenge' ? `Challenge · collect all ${config.challengeParshadTarget} parshad` : mode === 'arcade' ? `Arcade · reach ${config.arcadeTargetScore}` : mode === 'hard' ? 'Hard Mode · fragile routes ahead' : 'Endless Run · Keep climbing', messageTimer: 3,
     };
     while (state.nextY > -900) addPlatform();
@@ -430,7 +436,7 @@
     if (state.mode === 'challenge' && completed) awardBadge('challenge-complete');
     profile.tokens += state.tokens; saveProfile(); updateUpgradeUI(); updateRecordsUI();
     const resultDelay = completed ? config.victorySceneDurationMs : 2800;
-    setTimeout(() => {
+    state.resultTimer = setTimeout(() => {
       setNativeGameplayActive(false);
       const challenge = state.mode === 'challenge';
       ui.endHeading.textContent = completed ? (challenge ? 'Challenge complete!' : 'Arcade complete!') : (challenge && (reason === 'finish' || reason === 'challenge-incomplete') ? 'Challenge progress' : 'Run complete');
@@ -446,6 +452,13 @@
   }
   function triggerBirdHit(bird) {
     if (state.hitStop || state.ending) return;
+    if (state.invincibleTimer > 0 && state.invincibleSource !== 'nishan') {
+      // Dhal Shield and Falcon grace periods already announced themselves:
+      // brush the bird aside without another hit-stop or a Nishan message.
+      bird.hit = true; burst(bird.x, bird.y, '#f4ca4a', 8); sound('shield');
+      state.message = state.invincibleSource === 'falcon' ? 'The falcon kept you safe!' : 'Dhal Shield is still protecting you!'; state.messageTimer = 1.5;
+      return;
+    }
     state.hitStop = { bird, type: state.invincibleTimer > 0 ? 'nishan' : profile.shield > 0 ? 'shield' : 'loss', started: lastTime, resolvesAt: lastTime + (profile.reducedMotion ? 750 : 1000) };
     state.message = state.hitStop.type === 'loss' ? 'BIRD HIT!' : 'BIRD BLOCKED!';
     state.messageTimer = 1.1;
@@ -460,7 +473,7 @@
       state.message = 'Nishan boost protected you!'; state.messageTimer = 2;
     } else if (hit.type === 'shield') {
       profile.stats.birdsBlocked++; profile.stats.shieldsUsed++; if (profile.stats.birdsBlocked >= 3) awardBadge('bird-defender'); sound('shield');
-      profile.shield--; state.invincibleTimer = 4; state.shieldVisualTimer = 4; state.upgradeEffect = { type: 'shield', started: lastTime }; saveProfile(); updateUpgradeUI(); state.message = 'Dhal Shield activated! You are protected for 4 seconds.'; state.messageTimer = 2;
+      profile.shield--; state.invincibleTimer = 4; state.invincibleSource = 'shield'; state.shieldVisualTimer = 4; state.upgradeEffect = { type: 'shield', started: lastTime }; saveProfile(); updateUpgradeUI(); state.message = 'Dhal Shield activated! You are protected for 4 seconds.'; state.messageTimer = 2;
     } else { finish(false, 'bird'); return true; }
     return false;
   }
@@ -481,7 +494,7 @@
     const carry = (progress - .55) / .45, targetX = rescue.platform.x + rescue.platform.w / 2, targetY = rescue.platform.y - p.h / 2;
     p.x = rescue.pickupX + (targetX - rescue.pickupX) * carry; p.y = rescue.pickupY + (targetY - rescue.pickupY) * carry;
     if (progress < 1) return true;
-    p.x = targetX; p.y = targetY; p.vx = 0; p.vy = -config.baseJumpVelocity * rules.powerJumpMultiplier(profile.powerJump); state.invincibleTimer = Math.max(state.invincibleTimer, 1.2); state.falconRescue = null;
+    p.x = targetX; p.y = targetY; p.vx = 0; p.vy = -config.baseJumpVelocity * rules.powerJumpMultiplier(profile.powerJump); if (state.invincibleTimer < 1.2) { state.invincibleTimer = 1.2; state.invincibleSource = 'falcon'; } state.falconRescue = null;
     state.message = 'Back in the sky!'; state.messageTimer = 1.4;
     return false;
   }
@@ -490,7 +503,7 @@
     if (state.falconRescue && updateFalconRescue()) return;
     if (state.hitStop) { if (resolveBirdHit()) return; if (state.hitStop) return; }
     const p = state.player;
-    if (state.invincibleTimer > 0) state.invincibleTimer = Math.max(0, state.invincibleTimer - dt);
+    if (state.invincibleTimer > 0) { state.invincibleTimer = Math.max(0, state.invincibleTimer - dt); if (!state.invincibleTimer) state.invincibleSource = null; }
     if (state.shieldVisualTimer > 0) state.shieldVisualTimer = Math.max(0, state.shieldVisualTimer - dt);
     const keyboard = (keys.has('ArrowRight') ? 1 : 0) - (keys.has('ArrowLeft') ? 1 : 0);
     if (pointerX !== null) {
@@ -547,7 +560,7 @@
     state.platforms = state.platforms.filter(o => o.y < state.cameraY + H + 100 && !o.broken);
     for (const c of state.collectibles) if (!c.taken && collide(p, c, c.challengeBowl ? 86 : 27)) { c.taken = true; if (c.type === 'token') { state.tokens++; profile.stats.tokens++; burst(c.x, c.y, '#f5cd57', 9); sound('token'); if (profile.stats.tokens >= 10) awardBadge('tokens-10'); } else { state.parshad++; profile.stats.parshad++; state.score += 3; burst(c.x, c.y, '#fff1a5', 8); sound('collect'); if (profile.stats.parshad >= 50) awardBadge('parshad-50'); } }
     state.collectibles = state.collectibles.filter(c => !c.taken && c.y < state.cameraY + H + 100);
-    for (const power of state.powerups) if (!power.taken && collide(p, power, 30)) { power.taken = true; profile.stats.powerups++; burst(power.x, power.y, power.type === 'kara' ? '#f5cb58' : '#f1815a', 14); if (profile.stats.powerups >= 5) awardBadge('power-seeker'); sound('boost'); if (power.type === 'nishan') state.invincibleTimer = 5; p.vy = rules.boostVelocity(power.type, profile.powerJump); state.message = power.type === 'kara' ? 'Kara boost · one higher jump!' : 'Nishan boost · one jump + protection!'; state.messageTimer = 2; }
+    for (const power of state.powerups) if (!power.taken && collide(p, power, 30)) { power.taken = true; profile.stats.powerups++; burst(power.x, power.y, power.type === 'kara' ? '#f5cb58' : '#f1815a', 14); if (profile.stats.powerups >= 5) awardBadge('power-seeker'); sound('boost'); if (power.type === 'nishan') { state.invincibleTimer = 5; state.invincibleSource = 'nishan'; } p.vy = rules.boostVelocity(power.type, profile.powerJump); state.message = power.type === 'kara' ? 'Kara boost · one higher jump!' : 'Nishan boost · one jump + protection!'; state.messageTimer = 2; }
     state.powerups = state.powerups.filter(o => !o.taken && o.y < state.cameraY + H + 100);
     for (const bird of state.enemies) { if (bird.hit) continue; bird.x += bird.vx * dt; if (bird.x < 20 || bird.x > W - 20) bird.vx *= -1; if (collide(p, bird, 28)) triggerBirdHit(bird); }
     state.enemies = state.enemies.filter(o => o.y < state.cameraY + H + 100 && !o.hit);
@@ -623,8 +636,12 @@
   }
   // Native tablets can report mouse-like pointer capabilities even though they
   // use the same full-screen HUD as phones.
-  const usesMobileHud = () => Boolean(nativePlatform) || window.matchMedia?.('(hover: none) and (pointer: coarse)').matches;
-  function updateMobileHud() { if (!usesMobileHud() || !state?.running) { ui.mobileHud.classList.add('hidden'); return; } const name = state.mode === 'arcade' ? 'ARCADE' : state.mode === 'challenge' ? 'CHALLENGE' : state.mode === 'hard' ? 'HARD' : 'ENDLESS'; const detail = state.mode === 'challenge' ? `${state.parshad}/${config.challengeParshadTarget}` : state.mode === 'arcade' ? `${Math.floor(state.score)}/${config.arcadeTargetScore}` : 'CLIMB'; ui.mobileScore.textContent = `Score ${Math.floor(state.score)}`; ui.mobileItems.textContent = `Parshad ${state.parshad} · Khanda ${state.tokens}`; ui.mobileFalcon.textContent = profile.falcon; ui.mobileShield.textContent = profile.shield; ui.mobilePower.textContent = profile.powerJump; ui.mobileMode.textContent = `${name} · ${detail}`; ui.mobileHud.classList.remove('hidden'); }
+  const coarsePointerQuery = window.matchMedia?.('(hover: none) and (pointer: coarse)');
+  const usesMobileHud = () => Boolean(nativePlatform) || Boolean(coarsePointerQuery?.matches);
+  // The HUD refreshes every frame, so only write to the DOM when a value changes.
+  const hudText = new Map();
+  function setHudText(element, value) { const text = String(value); if (hudText.get(element) === text) return; hudText.set(element, text); element.textContent = text; }
+  function updateMobileHud() { if (!usesMobileHud() || !state?.running) { if (!ui.mobileHud.classList.contains('hidden')) ui.mobileHud.classList.add('hidden'); return; } const name = state.mode === 'arcade' ? 'ARCADE' : state.mode === 'challenge' ? 'CHALLENGE' : state.mode === 'hard' ? 'HARD' : 'ENDLESS'; const detail = state.mode === 'challenge' ? `${state.parshad}/${config.challengeParshadTarget}` : state.mode === 'arcade' ? `${Math.floor(state.score)}/${config.arcadeTargetScore}` : 'CLIMB'; setHudText(ui.mobileScore, `Score ${Math.floor(state.score)}`); setHudText(ui.mobileItems, `Parshad ${state.parshad} · Khanda ${state.tokens}`); setHudText(ui.mobileFalcon, profile.falcon); setHudText(ui.mobileShield, profile.shield); setHudText(ui.mobilePower, profile.powerJump); setHudText(ui.mobileMode, `${name} · ${detail}`); if (ui.mobileHud.classList.contains('hidden')) ui.mobileHud.classList.remove('hidden'); }
   function drawUpgradeEffect() {
     const effect = state.upgradeEffect;
     if (!effect) return;
@@ -820,7 +837,7 @@
   function showBadges() { setNativeGameplayActive(false); renderBadges(); ui.home.classList.add('hidden'); ui.badges.classList.remove('hidden'); ui.stats.classList.add('hidden'); syncModalAccessibility(); }
   function showStats() { setNativeGameplayActive(false); renderStats(); ui.home.classList.add('hidden'); ui.badges.classList.add('hidden'); ui.stats.classList.remove('hidden'); syncModalAccessibility(); }
   function pauseGame() { if (!state?.running || state.ending) return; setNativeGameplayActive(false); clearInput(); state.paused = true; stopMusic(); ui.pause.classList.remove('hidden'); syncModalAccessibility(); }
-  function resumeGame() { if (!state?.paused || state.ending || ui.pause.classList.contains('hidden')) return; state.paused = false; setNativeGameplayActive(true); ui.pause.classList.add('hidden'); syncModalAccessibility(); if (profile.music) startAudio(); }
+  function resumeGame() { if (!state?.paused || state.ending || ui.pause.classList.contains('hidden')) return; state.paused = false; setNativeGameplayActive(true); ui.pause.classList.add('hidden'); syncModalAccessibility(); getAudio(); if (profile.music) setMusic(); }
   function buyUpgrade(type) {
     const costs = { falcon: 8, shield: 10, powerJump: config.powerJumpCosts[profile.powerJump] };
     if (type === 'powerJump' && profile.powerJump >= 5) return updateUpgradeUI('Power Jump is already at its maximum level.');

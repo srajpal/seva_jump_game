@@ -15,7 +15,7 @@ const runtimeHookSource = `globalThis.__SEVA_RUNTIME_HOOKS__ = {
 const config = require('../game-config.js');
 const rules = require('../game-rules.js');
 
-function makeRuntime(storage = {}) {
+function makeRuntime(storage = {}, options = {}) {
   const elements = new Map(), documentListeners = {}, windowListeners = {};
   const document = {
     activeElement: null, hidden: false, documentElement: element('html'),
@@ -54,7 +54,8 @@ function makeRuntime(storage = {}) {
   const gameFrame = document.querySelector('.game-frame');
   Object.defineProperty(gameFrame, 'children', { get: () => Array.from(elements.entries()).filter(([key]) => key.startsWith('#') && (key.endsWith('-screen') || ['#game', '#game-tools', '#mobile-hud'].includes(key))).map(([, value]) => value) });
   const localStorage = { getItem: storage.getItem || (() => storage.value ?? null), setItem: storage.setItem || ((key, value) => { storage.value = value; }), removeItem: storage.removeItem || (() => { delete storage.value; }) };
-  const window = { innerWidth: 450, innerHeight: 800, matchMedia: () => ({ matches: false }), addEventListener(type, handler) { windowListeners[type] = handler; }, close() {} };
+  const window = { innerWidth: options.innerWidth ?? 450, innerHeight: options.innerHeight ?? 800, matchMedia: () => ({ matches: false }), addEventListener(type, handler) { windowListeners[type] = handler; }, close() {} };
+  if (options.native) window.Capacitor = { isNativePlatform: () => true, getPlatform: () => 'android', Plugins: {} };
   const context = { console, globalThis: null, window, document, navigator: { userAgent: '' }, location: { protocol: 'file:' }, localStorage, Image: class { set src(value) { this._src = value; } }, SEVA_CONFIG: config, SEVA_RULES: rules, requestAnimationFrame() {}, setTimeout: () => 1, clearTimeout() {}, clearInterval() {}, queueMicrotask, Math, Date, Number, Object, Array, Set, JSON };
   context.globalThis = context; window.window = window; window.document = document;
   const instrumentedSource = gameSource.replace('  window.sevaJumpNativeBack = handleNativeBack;', `  ${runtimeHookSource}\n  window.sevaJumpNativeBack = handleNativeBack;`);

@@ -18,7 +18,7 @@
       <a class="studio-home-link" href="https://www.khalsagamestudio.com/" target="_blank" rel="noopener noreferrer">Visit Khalsa Game Studio ↗</a>
       <section class="game-frame" aria-label="Seva Jump game">
         <canvas id="game" width="450" height="800" tabindex="0" aria-label="Seva Jump game. Drag or use Left and Right Arrow keys to steer. Press Escape to pause.">Seva Jump requires a browser with canvas support.</canvas>
-        <div id="mobile-hud" class="mobile-hud hidden" aria-live="polite">
+        <div id="mobile-hud" class="mobile-hud hidden">
           <div class="mobile-hud-score"><strong id="mobile-score">Score 0</strong><span id="mobile-items">Parshad 0 · Khanda 0</span></div>
           <div class="mobile-hud-upgrades" aria-label="Owned upgrades">
             <span><img src="assets/falcon-save-pixel-v1.png" alt="Falcon Save" /><b id="mobile-falcon">0</b></span>
@@ -47,10 +47,10 @@
             <p class="character-prompt">Tap a character to choose your jumper</p>
           </div>
           <div class="mode-actions" aria-label="Choose game mode">
-            <button id="endless-button" class="mode-button" data-mode="endless" aria-pressed="false"><span>Endless Run</span><small>Climb as far as you can</small></button>
-            <button id="arcade-button" class="mode-button" data-mode="arcade" aria-pressed="false"><span>Arcade Mode</span><small>Reach 1,000 to complete the run</small></button>
-            <button id="challenge-button" class="challenge-button" data-mode="challenge" aria-pressed="false"><span>Challenge Mode</span><small>Collect all 50 parshad bowls</small></button>
-            <button id="hard-button" class="hard-mode-button" data-mode="hard" aria-pressed="false"><span>Hard Mode</span><small>Small, shifting, breakable routes</small></button>
+            <button id="endless-button" class="mode-button" data-mode="endless"><span>Endless Run</span><small>Climb as far as you can</small></button>
+            <button id="arcade-button" class="mode-button" data-mode="arcade"><span>Arcade Mode</span><small>Reach 1,000 to complete the run</small></button>
+            <button id="challenge-button" class="challenge-button" data-mode="challenge"><span>Challenge Mode</span><small>Collect all 50 parshad bowls</small></button>
+            <button id="hard-button" class="hard-mode-button" data-mode="hard"><span>Hard Mode</span><small>Small, shifting, breakable routes</small></button>
           </div>
           <p class="help mode-help">Choose a mode to start your skyward seva adventure.</p>
           <section class="home-utilities" aria-label="More game options">
