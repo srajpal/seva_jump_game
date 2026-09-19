@@ -29,12 +29,12 @@ Source: [review comment](https://github.com/srajpal/seva_jump_game/pull/9#issuec
 
 Source: [review comment](https://github.com/srajpal/seva_jump_game/pull/10#issuecomment-5745538128).
 
-- [x] Addressed with [issue #6](https://github.com/srajpal/seva_jump_game/issues/6):
+- [x] Implemented in [PR #14](https://github.com/srajpal/seva_jump_game/pull/14):
   missed bowl identities survive culling, and a recovered bowl clears only its
   own miss. Regression tests cover a 40 ms falling pickup followed by Falcon,
   both alone and with another genuine miss. Config comments document the net
   offset (52 px), pickup reach (86 px), and unchanged warning margin (60 px).
-- [x] Addressed with [issue #6](https://github.com/srajpal/seva_jump_game/issues/6):
+- [x] Implemented in [PR #14](https://github.com/srajpal/seva_jump_game/pull/14):
   warning placement now checks the warning text itself. Later Falcon/bird
   messages stay off the mobile canvas and use desktop y=120. Tests cover both.
 - [ ] Put browser checks in CI when a deliberate browser/runtime setup is chosen.
