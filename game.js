@@ -279,7 +279,7 @@
       running: true, paused: false, mode, score: 0, heightScore: 0, parshad: 0, tokens: 0, cameraY: 0,
       background: Math.floor(Math.random() * backgroundImages.length), nextY: 610, ending: false, falconUsed: false, invincibleTimer: 0, invincibleSource: null, shieldVisualTimer: 0, resultTimer: null, finishGate: null, fireworkSoundTimers: [], challengePlaced: 0, challengePlatformCount: 0, upgradeEffect: null, hitStop: null, falconRescue: null,
       player: { x: W / 2, y: 650, vx: 0, vy: -config.baseJumpVelocity * rules.powerJumpMultiplier(profile.powerJump), w: 31, h: 48, character: selectedCharacter, facing: 1 },
-      platforms: [startPlatform], lastPlatform: startPlatform, collectibles: [], enemies: [], powerups: [], particles: [],
+      platforms: [startPlatform], lastPlatform: startPlatform, collectibles: [], enemies: [], powerups: [], particles: [], challengeMissed: false,
       message: mode === 'challenge' ? `Challenge · collect all ${config.challengeParshadTarget} parshad` : mode === 'arcade' ? `Arcade · reach ${config.arcadeTargetScore}` : mode === 'hard' ? 'Hard Mode · fragile routes ahead' : 'Endless Run · Keep climbing', messageTimer: 3,
     };
     while (state.nextY > -900) addPlatform();
@@ -290,7 +290,8 @@
     const hard = rules.isHard(state.mode);
     const level = arcade || hard ? levelForScore(state.score) : 1;
     const endlessDifficulty = rules.endlessDifficulty(state.score);
-    const challengeBowlPlatform = state.mode === 'challenge' && state.challengePlaced < config.challengeParshadTarget && (state.challengePlatformCount + 1) % 3 === 0;
+    const challengeBowlPlatform = state.mode === 'challenge' && rules.isChallengeBowlRow(state.challengePlaced, state.challengePlatformCount + 1);
+    const belowChallengeBowl = state.mode === 'challenge' && rules.isChallengeBowlRow(state.challengePlaced, state.challengePlatformCount + 2);
     let type = 'normal';
     if (hard) {
       type = r < config.hardMovingChance ? 'moving' : 'break';
@@ -304,7 +305,7 @@
       else if (r < .18 + endlessDifficulty * .14) type = 'break';
       else if (r < .38 + endlessDifficulty * .18) type = 'moving';
     }
-    if (challengeBowlPlatform) type = 'normal';
+    if (challengeBowlPlatform || (belowChallengeBowl && type === 'spring')) type = 'normal';
     const hardWidthRange = type === 'moving' ? config.hardMovingPlatformWidthRange : config.hardBreakPlatformWidthRange;
     const w = challengeBowlPlatform ? 128 : hard ? hardWidthRange[0] + Math.random() * (hardWidthRange[1] - hardWidthRange[0]) : type === 'break' ? 70 : 96 + Math.random() * 44;
     // Keep each new platform inside the normal jump arc of the preceding one.
@@ -353,8 +354,8 @@
       if (challengeBowlPlatform) { state.collectibles.push({ x: x + w / 2, y: platform.y - 26, type: 'parshad', challengeBowl: true }); state.challengePlaced++; }
       else if (Math.random() < .14) state.collectibles.push({ x: x + w / 2, y: platform.y - 37, type: 'token' });
     } else if (Math.random() < .53) state.collectibles.push({ x: x + w / 2, y: platform.y - 37, type: Math.random() < .16 ? 'token' : 'parshad' });
-    if (level >= 3 && Math.random() < .055) state.powerups.push({ x: x + w / 2, y: platform.y - 60, type: 'kara' });
-    if (level >= 4 && Math.random() < .04) state.powerups.push({ x: x + w / 2, y: platform.y - 60, type: 'nishan' });
+    if (state.mode !== 'challenge' && level >= 3 && Math.random() < .055) state.powerups.push({ x: x + w / 2, y: platform.y - 60, type: 'kara' });
+    if (state.mode !== 'challenge' && level >= 4 && Math.random() < .04) state.powerups.push({ x: x + w / 2, y: platform.y - 60, type: 'nishan' });
     const birdChance = state.mode === 'challenge'
       ? (state.score >= config.challengeBirdStartScore ? config.challengeBirdChance : 0)
       : arcade ? (state.score >= config.arcadeBirdStartScore ? .18 : 0)
@@ -542,7 +543,7 @@
     if (rules.isArcadeLike(state.mode)) {
       // A Challenge run with missed bowls reaches its course end directly,
       // rather than showing a victory banner that the player cannot earn.
-      if (state.mode === 'challenge' && !rules.didWin('challenge', state.parshad) && state.score >= config.arcadeTargetScore - config.finishBannerLeadScore) {
+      if (rules.shouldEndIncompleteChallenge(state.mode, state.score, state.parshad)) {
         finish(false, 'challenge-incomplete');
         return;
       }
@@ -559,6 +560,12 @@
     while (state.nextY > state.cameraY - 900 && (!state.finishGate || state.nextY > state.finishGate.y)) addPlatform();
     state.platforms = state.platforms.filter(o => o.y < state.cameraY + H + 100 && !o.broken);
     for (const c of state.collectibles) if (!c.taken && collide(p, c, c.challengeBowl ? 86 : 27)) { c.taken = true; if (c.type === 'token') { state.tokens++; profile.stats.tokens++; burst(c.x, c.y, '#f5cd57', 9); sound('token'); if (profile.stats.tokens >= 10) awardBadge('tokens-10'); } else { state.parshad++; profile.stats.parshad++; state.score += 3; burst(c.x, c.y, '#fff1a5', 8); sound('collect'); if (profile.stats.parshad >= 50) awardBadge('parshad-50'); } }
+    if (state.mode === 'challenge' && !state.challengeMissed && state.collectibles.some(c => c.challengeBowl && !c.taken && c.y > state.cameraY + H + config.challengeMissedBowlMargin)) {
+      state.challengeMissed = true;
+      state.message = `A bowl was missed - restart to collect all ${config.challengeParshadTarget}`;
+      state.messageTimer = config.challengeMissedMessageDuration;
+      sound('loss');
+    }
     state.collectibles = state.collectibles.filter(c => !c.taken && c.y < state.cameraY + H + 100);
     for (const power of state.powerups) if (!power.taken && collide(p, power, 30)) { power.taken = true; profile.stats.powerups++; burst(power.x, power.y, power.type === 'kara' ? '#f5cb58' : '#f1815a', 14); if (profile.stats.powerups >= 5) awardBadge('power-seeker'); sound('boost'); if (power.type === 'nishan') { state.invincibleTimer = 5; state.invincibleSource = 'nishan'; } p.vy = rules.boostVelocity(power.type, profile.powerJump); state.message = power.type === 'kara' ? 'Kara boost · one higher jump!' : 'Nishan boost · one jump + protection!'; state.messageTimer = 2; }
     state.powerups = state.powerups.filter(o => !o.taken && o.y < state.cameraY + H + 100);
@@ -641,7 +648,7 @@
   // The HUD refreshes every frame, so only write to the DOM when a value changes.
   const hudText = new Map();
   function setHudText(element, value) { const text = String(value); if (hudText.get(element) === text) return; hudText.set(element, text); element.textContent = text; }
-  function updateMobileHud() { if (!usesMobileHud() || !state?.running) { if (!ui.mobileHud.classList.contains('hidden')) ui.mobileHud.classList.add('hidden'); return; } const name = state.mode === 'arcade' ? 'ARCADE' : state.mode === 'challenge' ? 'CHALLENGE' : state.mode === 'hard' ? 'HARD' : 'ENDLESS'; const detail = state.mode === 'challenge' ? `${state.parshad}/${config.challengeParshadTarget}` : state.mode === 'arcade' ? `${Math.floor(state.score)}/${config.arcadeTargetScore}` : 'CLIMB'; setHudText(ui.mobileScore, `Score ${Math.floor(state.score)}`); setHudText(ui.mobileItems, `Parshad ${state.parshad} · Khanda ${state.tokens}`); setHudText(ui.mobileFalcon, profile.falcon); setHudText(ui.mobileShield, profile.shield); setHudText(ui.mobilePower, profile.powerJump); setHudText(ui.mobileMode, `${name} · ${detail}`); if (ui.mobileHud.classList.contains('hidden')) ui.mobileHud.classList.remove('hidden'); }
+  function updateMobileHud() { if (!usesMobileHud() || !state?.running) { if (!ui.mobileHud.classList.contains('hidden')) ui.mobileHud.classList.add('hidden'); return; } const name = state.mode === 'arcade' ? 'ARCADE' : state.mode === 'challenge' ? 'CHALLENGE' : state.mode === 'hard' ? 'HARD' : 'ENDLESS'; const detail = state.mode === 'challenge' ? `${state.parshad}/${config.challengeParshadTarget}${state.challengeMissed ? " · MISSED" : ""}` : state.mode === 'arcade' ? `${Math.floor(state.score)}/${config.arcadeTargetScore}` : 'CLIMB'; setHudText(ui.mobileScore, `Score ${Math.floor(state.score)}`); setHudText(ui.mobileItems, `Parshad ${state.parshad} · Khanda ${state.tokens}`); setHudText(ui.mobileFalcon, profile.falcon); setHudText(ui.mobileShield, profile.shield); setHudText(ui.mobilePower, profile.powerJump); setHudText(ui.mobileMode, `${name} · ${detail}`); if (ui.mobileHud.classList.contains('hidden')) ui.mobileHud.classList.remove('hidden'); }
   function drawUpgradeEffect() {
     const effect = state.upgradeEffect;
     if (!effect) return;
@@ -733,20 +740,24 @@
     }
     drawFalconRescue();
     if (state.running || state.ending) {
-      updateMobileHud(); if (usesMobileHud()) { drawUpgradeEffect(); drawLossTransition(); drawWinTransition(); return; }
+      updateMobileHud(); if (usesMobileHud()) { if (state.challengeMissed) drawRunMessage(); drawUpgradeEffect(); drawLossTransition(); drawWinTransition(); return; }
       ctx.fillStyle = '#24483f'; ctx.font = 'bold 18px "Trebuchet MS"'; ctx.textAlign = 'left'; ctx.fillText(`Score ${Math.floor(state.score)}`, 18, 31); ctx.font = 'bold 13px "Trebuchet MS"'; ctx.fillText(`Parshad ${state.parshad}  ·  Khanda ${state.tokens}`, 18, 52);
       drawUpgradeStatus();
       const modeName = state.mode === 'arcade' ? 'ARCADE MODE' : state.mode === 'challenge' ? 'CHALLENGE MODE' : state.mode === 'hard' ? 'HARD MODE' : 'ENDLESS RUN';
-      const modeDetail = state.mode === 'arcade' ? `${Math.floor(state.score)} / ${config.arcadeTargetScore}` : state.mode === 'challenge' ? `${state.parshad} / ${config.challengeParshadTarget} BOWLS` : 'KEEP CLIMBING';
-      ctx.fillStyle = '#fff8e9e8'; ctx.fillRect(W / 2 - 80, H - 55, 160, 38);
+      const modeDetail = state.mode === 'arcade' ? `${Math.floor(state.score)} / ${config.arcadeTargetScore}` : state.mode === 'challenge' ? `${state.parshad} / ${config.challengeParshadTarget}${state.challengeMissed ? " · MISSED" : " BOWLS"}` : 'KEEP CLIMBING';
+      const modeWidth = state.mode === 'challenge' && state.challengeMissed ? 280 : 160;
+      ctx.fillStyle = '#fff8e9e8'; ctx.fillRect((W - modeWidth) / 2, H - 55, modeWidth, 38);
       ctx.strokeStyle = state.mode === 'challenge' ? '#b56b2e' : state.mode === 'arcade' ? '#d56d39' : state.mode === 'hard' ? '#9c4825' : '#527165'; ctx.lineWidth = 2;
-      ctx.strokeRect(W / 2 - 80, H - 55, 160, 38);
+      ctx.strokeRect((W - modeWidth) / 2, H - 55, modeWidth, 38);
       ctx.textAlign = 'center'; ctx.fillStyle = '#24483f'; ctx.font = 'bold 11px "Trebuchet MS"'; ctx.fillText(`${modeName} · ${modeDetail}`, W / 2, H - 31);
-      if (state.messageTimer > 0) { ctx.textAlign = 'center'; ctx.fillStyle = '#24483f'; ctx.font = 'bold 15px "Trebuchet MS"'; ctx.fillText(state.message, W / 2, 120); }
+      drawRunMessage();
     }
     drawUpgradeEffect();
     drawLossTransition();
     drawWinTransition();
+  }
+  function drawRunMessage() {
+    if (state.messageTimer > 0) { ctx.textAlign = 'center'; ctx.fillStyle = '#24483f'; ctx.font = 'bold 15px "Trebuchet MS"'; ctx.fillText(state.message, W / 2, state.challengeMissed ? 180 : 120); }
   }
   function loop(time) { const dt = Math.min(.04, (time - lastTime) / 1000 || 0); lastTime = time; update(dt); draw(); requestAnimationFrame(loop); }
   function setSelectedCharacter(character, persist = true) {

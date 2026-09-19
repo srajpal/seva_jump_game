@@ -46,6 +46,8 @@ const SEVA_CONFIG = {
   birdPlatformClearance: 76,
   arcadeTargetScore: 1000,
   challengeParshadTarget: 50,
+  challengeMissedBowlMargin: 60,
+  challengeMissedMessageDuration: 3,
   arcadeBirdStartScore: 500,
   // Challenge introduces birds earlier than Arcade, but keeps them at least
   // one screen apart so each encounter remains readable.
