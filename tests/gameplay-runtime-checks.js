@@ -12,6 +12,10 @@ function cleanState(runtime, mode = 'endless') {
   return state;
 }
 
+function advanceUpdates(runtime, seconds) {
+  for (let remaining = seconds; remaining > 1e-9; remaining -= .04) runtime.hooks.update(Math.min(.04, remaining));
+}
+
 const runtime = makeRuntime({ value: JSON.stringify({ tutorialComplete: true, music: false, sound: false, reducedMotion: true }) });
 
 // Ordinary downward contact lands and increments the real jump counter.
@@ -123,13 +127,92 @@ runtime.hooks.update(0);
 assert.equal(state.player.vy, rules.boostVelocity('kara', runtime.hooks.profile.powerJump));
 assert.equal(runtime.hooks.profile.stats.powerups, 1);
 
+// A long pause must freeze a rescue in the middle of its carry, including the
+// flash; resume must not teleport the player or expire the effect.
+for (const reducedMotion of [false, true]) {
+  const pausedRuntime = makeRuntime({ value: JSON.stringify({ tutorialComplete: true }) });
+  const pausedState = cleanState(pausedRuntime);
+  pausedRuntime.hooks.profile.reducedMotion = reducedMotion;
+  pausedRuntime.hooks.profile.falcon = 1;
+  Object.assign(pausedState.player, { x: 220, y: 760, vx: 0, vy: 500 });
+  let clock = 2000;
+  pausedRuntime.hooks.setLastTime(clock);
+  pausedRuntime.hooks.triggerFalconSave();
+  const frames = reducedMotion ? 10 : 17;
+  for (let frame = 0; frame < frames; frame++) {
+    clock += 40; pausedRuntime.hooks.setLastTime(clock); pausedRuntime.hooks.update(.04);
+  }
+  const rescue = pausedState.falconRescue, flash = pausedState.upgradeEffect;
+  const before = { x: pausedState.player.x, y: pausedState.player.y, rescue: rescue.elapsed, flash: flash.elapsed };
+  assert.ok(pausedState.player.y < 760, 'rescue reached its carry stage before pausing');
+  pausedRuntime.hooks.pauseGame();
+  pausedRuntime.hooks.setLastTime(clock + 60000);
+  pausedRuntime.hooks.update(.04);
+  pausedRuntime.hooks.resumeGame();
+  pausedRuntime.hooks.update(0);
+  assert.equal(pausedState.falconRescue, rescue, 'resuming must not instantly finish the paused Falcon rescue');
+  assert.deepEqual({ x: pausedState.player.x, y: pausedState.player.y, rescue: rescue.elapsed, flash: flash.elapsed }, before);
+  assert.equal(pausedState.upgradeEffect, flash, 'the flash survives the pause');
+  for (let frame = 0; frame < 12; frame++) pausedRuntime.hooks.update(.04);
+  assert.equal(pausedState.falconRescue, null, 'carry completes after its remaining active time');
+  assert.equal(pausedRuntime.hooks.profile.stats.falconSaves, 1);
+}
+
+// All hit-stop outcomes wait for active time, including after a long pause.
+for (const type of ['shield', 'nishan', 'loss']) {
+  const hitRuntime = makeRuntime({ value: JSON.stringify({ tutorialComplete: true }) });
+  const hitState = cleanState(hitRuntime);
+  hitRuntime.hooks.profile.shield = type === 'shield' ? 1 : 0;
+  if (type === 'nishan') { hitState.invincibleTimer = 5; hitState.invincibleSource = 'nishan'; }
+  Object.assign(hitState.player, { x: 200, y: 300, vx: 0, vy: 0 });
+  hitRuntime.hooks.triggerBirdHit({ x: 200, y: 300, hit: false });
+  const hit = hitState.hitStop;
+  advanceUpdates(hitRuntime, .28);
+  hitRuntime.hooks.pauseGame();
+  hitRuntime.hooks.setLastTime(60000);
+  hitRuntime.hooks.update(.04);
+  hitRuntime.hooks.resumeGame();
+  hitRuntime.hooks.update(0);
+  assert.equal(hitState.hitStop, hit, `${type}: pause must not resolve a bird hit`);
+  assert.equal(hit.elapsed, 280);
+  advanceUpdates(hitRuntime, .48);
+  assert.equal(hitState.hitStop, null);
+  if (type === 'loss') assert.equal(hitState.endReason, 'bird');
+  else assert.equal(hitRuntime.hooks.profile.stats.birdsBlocked, 1);
+  if (type === 'shield') {
+    assert.equal(hitRuntime.hooks.profile.shield, 0);
+    const flash = hitState.upgradeEffect;
+    hitRuntime.hooks.pauseGame();
+    hitRuntime.hooks.setLastTime(120000);
+    hitRuntime.hooks.draw(); hitRuntime.hooks.draw();
+    assert.equal(hitState.upgradeEffect, flash, 'rendering cannot expire a paused upgrade flash');
+    assert.equal(flash.elapsed, 0);
+    hitRuntime.hooks.resumeGame();
+    // Keep the character in place while the flash runs to its active duration.
+    for (let frame = 0; frame < 24; frame++) {
+      Object.assign(hitState.player, { y: 300, vy: 0 });
+      hitRuntime.hooks.update(.04);
+    }
+    assert.equal(hitState.upgradeEffect, null);
+  }
+}
+
+// Ending scenes advance flashes without resuming the player's physics.
+state = cleanState(runtime);
+state.upgradeEffect = { type: 'falcon', elapsed: 0, duration: config.falconFlashDurationMs };
+runtime.hooks.finish(false, 'fall');
+const endingY = state.player.y;
+advanceUpdates(runtime, config.falconFlashDurationMs / 1000 + .04);
+assert.equal(state.upgradeEffect, null, 'flashes still expire during the end-of-run animation');
+assert.equal(state.player.y, endingY, 'ending frames must not advance gameplay physics');
+
 // Exercise delayed shield resolution and its persisted counters.
 state = cleanState(runtime); runtime.hooks.profile.shield = 1;
 Object.assign(state.player, { x: 200, y: 300, vx: 0, vy: 0 });
 state.enemies = [{ x: 200, y: 300, vx: 0, hit: false }];
 runtime.hooks.setLastTime(1000); runtime.hooks.update(0);
 assert.equal(state.hitStop.type, 'shield');
-runtime.hooks.setLastTime(1800); runtime.hooks.update(0);
+advanceUpdates(runtime, .76);
 assert.equal(runtime.hooks.profile.shield, 0);
 assert.equal(runtime.hooks.profile.stats.shieldsUsed, 1);
 assert.equal(runtime.hooks.profile.stats.birdsBlocked, 1);
@@ -162,7 +245,7 @@ assert.ok(state.falconRescue);
 assert.equal(runtime.hooks.profile.falcon, 0);
 assert.equal(runtime.hooks.profile.stats.falconSaves, 1);
 assert.equal(state.falconUsed, true);
-runtime.hooks.setLastTime(2700); runtime.hooks.update(0);
+advanceUpdates(runtime, .68);
 assert.equal(state.falconRescue, null);
 assert.ok(state.player.vy < 0);
 

@@ -14,11 +14,11 @@ Seva Jump is a browser game packaged for Android and iOS. The browser source is 
 
 ## Runtime flow
 
-`game.js` loads the saved profile, applies its settings and character choice, builds an initial run state, and starts a `requestAnimationFrame` loop. Each frame updates active gameplay and redraws the canvas. Menu screens are HTML overlays above the canvas; Menu functions show and hide overlays; `syncModalAccessibility()` follows the visible dialog, manages focus and makes background controls inert.
+`game.js` loads the saved profile, applies its settings and character choice, builds an initial run state, and starts a `requestAnimationFrame` loop. Active gameplay and end-of-run animations redraw each frame. Menus and paused scenes redraw once when marked dirty, including after late sprite loads, and then keep their canvas frame. Menu screens are HTML overlays above the canvas; menu functions show and hide overlays; `syncModalAccessibility()` follows the visible dialog, manages focus and makes background controls inert.
 
 `reset(mode)` creates a run state containing the player, platforms, collectibles, birds, effects, camera position, score, and mode progress. Platform creation reads tuning from `game-config.js` and decisions from `game-rules.js`. Arcade and Challenge add a finish runway. Endless and Hard continue until the player loses or leaves.
 
-The renderer draws the backdrop, platforms, collectibles, hazards, player, effects, and transitions from the current state. The mobile HUD is HTML so it remains legible over the portrait canvas.
+The renderer draws the backdrop, platforms, collectibles, hazards, player, effects, and transitions from the current state. Bowl and token glow canvases are baked when their sprites load and reused without per-frame shadow blur. The mobile HUD is HTML so it remains legible over the portrait canvas. Bird hit-stop, Falcon carry, and upgrade flashes accumulate active update time; pausing freezes their progress rather than counting wall-clock time.
 
 ## Input and lifecycle
 
@@ -30,7 +30,7 @@ Opening Settings from a paused run keeps the run paused. Leaving or restarting a
 
 One profile is stored under `seva-jump-profile` in `localStorage`. It contains scores, upgrades, badges, statistics, preferences, tutorial completion, and the character choice. Reads are normalized before use. If browser storage is blocked or fails, the game keeps an in-memory profile for the current session and shows a warning. Reset removes the stored profile when possible and always resets the in-memory profile.
 
-Music and sound effects are generated at runtime with the Web Audio API. Playback begins after player interaction, follows the sound settings, stops on pause and menus, and resumes with gameplay when music is enabled. If Web Audio is unavailable, the game disables the sound controls, shows a short notice, and continues silently. No audio files or streaming service are required.
+Music and sound effects are generated at runtime with the Web Audio API. Noise buffers are cached by duration for the current audio context; each playback still creates its own source and filters. Playback begins after player interaction, follows the sound settings, stops on pause and menus, and resumes with gameplay when music is enabled. If Web Audio is unavailable, the game disables the sound controls, shows a short notice, and continues silently. No audio files or streaming service are required.
 
 ## Hosted offline lifecycle
 

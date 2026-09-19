@@ -14,6 +14,7 @@
   const W = canvas.width, H = canvas.height;
   const config = globalThis.SEVA_CONFIG;
   const rules = globalThis.SEVA_RULES;
+  let menuDirty = true, menuVisible = true;
   const ui = {
     home: document.querySelector('#home-screen'), end: document.querySelector('#end-screen'), upgrades: document.querySelector('#upgrades-screen'), about: document.querySelector('#about-screen'), tutorial: document.querySelector('#tutorial-screen'), tutorialIcon: document.querySelector('#tutorial-icon'), tutorialStep: document.querySelector('#tutorial-step'), tutorialHeading: document.querySelector('#tutorial-heading'), tutorialCopy: document.querySelector('#tutorial-copy'), tutorialDots: document.querySelector('#tutorial-dots'), tutorialNext: document.querySelector('#tutorial-next-button'), tutorialSkip: document.querySelector('#tutorial-skip-button'), pause: document.querySelector('#pause-screen'), gameTools: document.querySelector('#game-tools'), mobileHud: document.querySelector('#mobile-hud'), mobileScore: document.querySelector('#mobile-score'), mobileItems: document.querySelector('#mobile-items'), mobileMode: document.querySelector('#mobile-mode'), mobileFalcon: document.querySelector('#mobile-falcon'), mobileShield: document.querySelector('#mobile-shield'), mobilePower: document.querySelector('#mobile-power'),
     score: document.querySelector('#end-score'), endHeading: document.querySelector('#end-heading'), endBest: document.querySelector('#end-best'), runBreakdown: document.querySelector('#run-breakdown'), endGoal: document.querySelector('#end-goal'), homeRecords: document.querySelector('#home-records'), endless: document.querySelector('#endless-button'), arcade: document.querySelector('#arcade-button'), challenge: document.querySelector('#challenge-button'), hard: document.querySelector('#hard-button'), modeChoices: document.querySelectorAll('.mode-actions button'),
@@ -47,9 +48,18 @@
   const movingPlatformSprite = new Image();
   movingPlatformSprite.src = 'assets/platform-moving-pixel-v1.png';
   const platformSprites = { normal: platformSprite, spring: springPlatformSprite, break: breakPlatformSprite, moving: movingPlatformSprite };
+  const collectibleGlows = {};
+  function glowSprite(sprite, color, w, h) {
+    const buffer = document.createElement('canvas'); buffer.width = w + 24; buffer.height = h + 24;
+    const glow = buffer.getContext('2d'); glow.imageSmoothingEnabled = false; glow.shadowColor = color; glow.shadowBlur = 8;
+    glow.drawImage(sprite, 12, 12, w, h);
+    return buffer;
+  }
   const parshadSprite = new Image();
+  parshadSprite.onload = () => { collectibleGlows.parshad = glowSprite(parshadSprite, '#ffd45c', 54, 38); menuDirty = true; };
   parshadSprite.src = 'assets/parshad-bowl-pixel-v3.png';
   const khandaTokenSprite = new Image();
+  khandaTokenSprite.onload = () => { collectibleGlows.token = glowSprite(khandaTokenSprite, '#65d8ff', 38, 38); menuDirty = true; };
   khandaTokenSprite.src = 'assets/khanda-token-pixel-v3.png';
   const birdSprites = {};
   [['pigeon', 'assets/bird-pigeon-flap-pixel-v1.png'], ['sparrow', 'assets/bird-sparrow-flap-pixel-v1.png'], ['swift', 'assets/bird-swift-flap-pixel-v1.png']].forEach(([type, src]) => { const image = new Image(); image.src = src; birdSprites[type] = image; });
@@ -64,6 +74,9 @@
   falconSaveSprite.src = 'assets/falcon-save-pixel-v1.png';
   const finishBannerSprite = new Image();
   finishBannerSprite.src = 'assets/finish-banner-hover-pixel-v1.png';
+  // An idle menu needs one fresh frame when an asynchronously loaded sprite
+  // replaces a fallback. Keep the normal frame loop idle after that repaint.
+  [...backgroundImages, ...Object.values(playerSprites).flatMap(sprites => Object.values(sprites)), ...Object.values(netLandingSprites), ...Object.values(platformSprites), ...Object.values(birdSprites), ...Object.values(powerupSprites), catchNetSprite, dhalShieldSprite, falconSaveSprite, finishBannerSprite].forEach(sprite => sprite.addEventListener('load', () => { menuDirty = true; }));
   const BADGES = [
     { id: 'first-run', icon: '✦', title: 'First Leap', description: 'Finish your first run.', color: '#d56d39' },
     { id: 'sky-starter', icon: '☁', title: 'Sky Starter', description: 'Reach 100 points.', color: '#4e98c7' },
@@ -125,6 +138,7 @@
   let profile = loadProfile();
   let state, selectedCharacter = profile.character === 'boy' ? 'boy' : 'girl', settingsReturn = 'home', pointerX = null, keys = new Set(), lastTime = 0, tutorialIndex = 0, tutorialResumesRun = false;
   let audioContext, musicTimer = null, musicVoices = [], badgeQueue = [], badgeToastTimer = null;
+  const noiseBuffers = new Map();
 
   function applyPreferences() {
     ui.musicToggle.checked = profile.music;
@@ -148,7 +162,7 @@
     try {
       const Audio = window.AudioContext || window.webkitAudioContext;
       if (!Audio) throw new Error('Audio unavailable');
-      if (!audioContext) audioContext = new Audio();
+      if (!audioContext) { audioContext = new Audio(); noiseBuffers.clear(); }
       // Safari reports 'interrupted' after calls or backgrounding: resume from
       // any non-running state, not only 'suspended'.
       if (audioContext.state !== 'running') audioContext.resume?.()?.catch(() => {});
@@ -171,8 +185,15 @@
   }
   function noise(duration, options = {}) {
     if (!ui.soundToggle.checked || !audioContext) return;
-    const audio = audioContext, frames = Math.ceil(audio.sampleRate * duration), buffer = audio.createBuffer(1, frames, audio.sampleRate), samples = buffer.getChannelData(0);
-    for (let i = 0; i < frames; i++) samples[i] = (Math.random() * 2 - 1) * (1 - i / frames);
+    const audio = audioContext;
+    let buffer = noiseBuffers.get(duration);
+    if (!buffer) {
+      const frames = Math.ceil(audio.sampleRate * duration);
+      buffer = audio.createBuffer(1, frames, audio.sampleRate);
+      const samples = buffer.getChannelData(0);
+      for (let i = 0; i < frames; i++) samples[i] = (Math.random() * 2 - 1) * (1 - i / frames);
+      noiseBuffers.set(duration, buffer);
+    }
     const source = audio.createBufferSource(), filter = audio.createBiquadFilter(), gain = audio.createGain(), now = audio.currentTime;
     source.buffer = buffer; filter.type = options.filter || 'bandpass'; filter.frequency.value = options.frequency || 900; filter.Q.value = .8;
     gain.gain.setValueAtTime(options.volume ?? .025, now); gain.gain.exponentialRampToValueAtTime(.001, now + duration);
@@ -413,6 +434,7 @@
   function collide(a, b, range = 20) { return Math.abs(a.x - b.x) < range && Math.abs(a.y - b.y) < range; }
   function finish(completed = false, reason = 'loss') {
     if (state.ending) return;
+    menuVisible = false;
     state.ending = true; state.running = false; state.completed = completed; state.endReason = reason; state.winStarted = lastTime;
     ui.pause.classList.add('hidden'); ui.gameTools.classList.add('hidden');
     stopMusic();
@@ -438,6 +460,7 @@
     profile.tokens += state.tokens; saveProfile(); updateUpgradeUI(); updateRecordsUI();
     const resultDelay = completed ? config.victorySceneDurationMs : 2800;
     state.resultTimer = setTimeout(() => {
+      menuVisible = true; menuDirty = true;
       setNativeGameplayActive(false);
       const challenge = state.mode === 'challenge';
       ui.endHeading.textContent = completed ? (challenge ? 'Challenge complete!' : 'Arcade complete!') : (challenge && (reason === 'finish' || reason === 'challenge-incomplete') ? 'Challenge progress' : 'Run complete');
@@ -460,21 +483,23 @@
       state.message = state.invincibleSource === 'falcon' ? 'The falcon kept you safe!' : 'Dhal Shield is still protecting you!'; state.messageTimer = 1.5;
       return;
     }
-    state.hitStop = { bird, type: state.invincibleTimer > 0 ? 'nishan' : profile.shield > 0 ? 'shield' : 'loss', started: lastTime, resolvesAt: lastTime + (profile.reducedMotion ? 750 : 1000) };
+    state.hitStop = { bird, type: state.invincibleTimer > 0 ? 'nishan' : profile.shield > 0 ? 'shield' : 'loss', elapsed: 0, duration: profile.reducedMotion ? config.reducedMotionBirdHitDurationMs : config.birdHitDurationMs };
     state.message = state.hitStop.type === 'loss' ? 'BIRD HIT!' : 'BIRD BLOCKED!';
     state.messageTimer = 1.1;
     sound('hit');
   }
-  function resolveBirdHit() {
+  function resolveBirdHit(dt = 0) {
     const hit = state.hitStop;
-    if (!hit || lastTime < hit.resolvesAt) return false;
+    if (!hit) return false;
+    hit.elapsed += dt * 1000;
+    if (hit.elapsed < hit.duration) return false;
     state.hitStop = null; hit.bird.hit = true;
     if (hit.type === 'nishan') {
       profile.stats.birdsBlocked++; if (profile.stats.birdsBlocked >= 3) awardBadge('bird-defender'); sound('shield');
       state.message = 'Nishan boost protected you!'; state.messageTimer = 2;
     } else if (hit.type === 'shield') {
       profile.stats.birdsBlocked++; profile.stats.shieldsUsed++; if (profile.stats.birdsBlocked >= 3) awardBadge('bird-defender'); sound('shield');
-      profile.shield--; state.invincibleTimer = 4; state.invincibleSource = 'shield'; state.shieldVisualTimer = 4; state.upgradeEffect = { type: 'shield', started: lastTime }; saveProfile(); updateUpgradeUI(); state.message = 'Dhal Shield activated! You are protected for 4 seconds.'; state.messageTimer = 2;
+      profile.shield--; state.invincibleTimer = 4; state.invincibleSource = 'shield'; state.shieldVisualTimer = 4; state.upgradeEffect = { type: 'shield', elapsed: 0, duration: config.shieldFlashDurationMs }; saveProfile(); updateUpgradeUI(); state.message = 'Dhal Shield activated! You are protected for 4 seconds.'; state.messageTimer = 2;
     } else { finish(false, 'bird'); return true; }
     return false;
   }
@@ -483,14 +508,15 @@
     const platformX = Math.max(12, Math.min(W - platformW - 12, p.x - platformW / 2));
     const platform = { x: platformX, y: platformY, w: platformW, type: 'normal', speed: 0, dir: 1, broken: false, rescuePlatform: true };
     state.platforms.push(platform);
-    state.falconRescue = { started: lastTime, duration: profile.reducedMotion ? 650 : 1100, pickupX: p.x, pickupY: p.y, platform };
+    state.falconRescue = { elapsed: 0, duration: profile.reducedMotion ? config.reducedMotionFalconCarryDurationMs : config.falconCarryDurationMs, pickupX: p.x, pickupY: p.y, platform };
     p.vx = 0; p.vy = 0; profile.falcon--; profile.stats.falconSaves++; state.falconUsed = true;
-    state.upgradeEffect = { type: 'falcon', started: lastTime }; saveProfile(); updateUpgradeUI(); state.message = 'FALCON SAVE!'; state.messageTimer = 1.2; sound('save');
+    state.upgradeEffect = { type: 'falcon', elapsed: 0, duration: config.falconFlashDurationMs }; saveProfile(); updateUpgradeUI(); state.message = 'FALCON SAVE!'; state.messageTimer = 1.2; sound('save');
   }
-  function updateFalconRescue() {
+  function updateFalconRescue(dt = 0) {
     const rescue = state.falconRescue;
     if (!rescue) return false;
-    const elapsed = lastTime - rescue.started, progress = Math.min(1, elapsed / rescue.duration), p = state.player;
+    rescue.elapsed += dt * 1000;
+    const progress = Math.min(1, rescue.elapsed / rescue.duration), p = state.player;
     if (progress < .55) { p.x = rescue.pickupX; p.y = rescue.pickupY; return true; }
     const carry = (progress - .55) / .45, targetX = rescue.platform.x + rescue.platform.w / 2, targetY = rescue.platform.y - p.h / 2;
     p.x = rescue.pickupX + (targetX - rescue.pickupX) * carry; p.y = rescue.pickupY + (targetY - rescue.pickupY) * carry;
@@ -500,9 +526,14 @@
     return false;
   }
   function update(dt) {
-    if (!state.running || state.paused) return;
-    if (state.falconRescue && updateFalconRescue()) return;
-    if (state.hitStop) { if (resolveBirdHit()) return; if (state.hitStop) return; }
+    if (state.paused || (!state.running && !state.ending)) return;
+    if (state.upgradeEffect) {
+      state.upgradeEffect.elapsed += dt * 1000;
+      if (state.upgradeEffect.elapsed >= state.upgradeEffect.duration) state.upgradeEffect = null;
+    }
+    if (!state.running) return;
+    if (state.falconRescue && updateFalconRescue(dt)) return;
+    if (state.hitStop) { if (resolveBirdHit(dt)) return; if (state.hitStop) return; }
     const p = state.player;
     if (state.invincibleTimer > 0) { state.invincibleTimer = Math.max(0, state.invincibleTimer - dt); if (!state.invincibleTimer) state.invincibleSource = null; }
     if (state.shieldVisualTimer > 0) state.shieldVisualTimer = Math.max(0, state.shieldVisualTimer - dt);
@@ -652,10 +683,7 @@
   function drawUpgradeEffect() {
     const effect = state.upgradeEffect;
     if (!effect) return;
-    const age = lastTime - effect.started;
-    const duration = effect.type === 'falcon' ? 1100 : 950;
-    if (age > duration) { state.upgradeEffect = null; return; }
-    const alpha = Math.max(0, 1 - age / duration);
+    const alpha = Math.max(0, 1 - effect.elapsed / effect.duration);
     const icon = effect.type === 'falcon' ? falconSaveSprite : dhalShieldSprite;
     const title = effect.type === 'falcon' ? 'FALCON SAVE!' : 'DHAL SHIELD!';
     ctx.save(); ctx.globalAlpha = alpha * .26; ctx.fillStyle = effect.type === 'falcon' ? '#f3b84e' : '#6ca0b5'; ctx.fillRect(0, 0, W, H); ctx.globalAlpha = alpha;
@@ -665,7 +693,7 @@
   function drawFalconRescue() {
     const rescue = state.falconRescue;
     if (!rescue) return;
-    const progress = Math.min(1, (lastTime - rescue.started) / rescue.duration), pickupScreenY = worldToScreen(rescue.pickupY), targetX = rescue.platform.x + rescue.platform.w / 2, targetY = worldToScreen(rescue.platform.y - 48);
+    const progress = Math.min(1, rescue.elapsed / rescue.duration), pickupScreenY = worldToScreen(rescue.pickupY), targetX = rescue.platform.x + rescue.platform.w / 2, targetY = worldToScreen(rescue.platform.y - 48);
     let x, y;
     if (progress < .55) { const t = progress / .55; x = W + 68 + (rescue.pickupX - (W + 68)) * t; y = 54 + (pickupScreenY - 54) * t; }
     else { const t = (progress - .55) / .45; x = rescue.pickupX + (targetX - rescue.pickupX) * t; y = pickupScreenY + (targetY - pickupScreenY) * t; }
@@ -711,7 +739,16 @@
       else { ctx.fillStyle = plat.type === 'break' ? '#b48d66' : plat.type === 'spring' ? '#7c5c9c' : '#477e55'; ctx.fillRect(plat.x, y, plat.w, 13); }
     }
     for (const particle of state.particles) { const alpha = Math.max(0, particle.life / particle.maxLife); ctx.save(); ctx.globalAlpha = alpha; ctx.fillStyle = particle.color; ctx.fillRect(Math.round(particle.x - particle.size / 2), Math.round(worldToScreen(particle.y) - particle.size / 2), particle.size, particle.size); ctx.restore(); }
-    for (const c of state.collectibles) { const y = worldToScreen(c.y); ctx.save(); ctx.translate(c.x, y); const glowPulse = profile.reducedMotion ? 0 : Math.sin(lastTime / 180) * 1.5; ctx.shadowColor = c.type === 'token' ? '#65d8ff' : '#ffd45c'; ctx.shadowBlur = 7 + glowPulse; if (c.type === 'token' && khandaTokenSprite.complete && khandaTokenSprite.naturalWidth) { ctx.drawImage(khandaTokenSprite, -19, -19, 38, 38); } else if (c.type === 'token') { ctx.fillStyle = '#e3a721'; ctx.beginPath(); ctx.arc(0, 0, 12, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = '#fff4b2'; ctx.font = 'bold 14px sans-serif'; ctx.textAlign = 'center'; ctx.fillText('✦', 0, 5); } else if (parshadSprite.complete && parshadSprite.naturalWidth) { ctx.drawImage(parshadSprite, -27, -19, 54, 38); } else { ctx.shadowColor = '#fff3a6'; ctx.shadowBlur = 16; ctx.fillStyle = '#f6c879'; ctx.beginPath(); ctx.ellipse(0, 4, 15, 7, 0, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = '#fff0ae'; ctx.beginPath(); ctx.arc(-5, -4, 5, 0, Math.PI * 2); ctx.arc(4, -4, 5, 0, Math.PI * 2); ctx.fill(); } ctx.restore(); }
+    for (const c of state.collectibles) {
+      const y = worldToScreen(c.y); ctx.save(); ctx.translate(c.x, y);
+      const glow = collectibleGlows[c.type];
+      if (glow) ctx.drawImage(glow, -glow.width / 2, -glow.height / 2);
+      else if (c.type === 'token' && khandaTokenSprite.complete && khandaTokenSprite.naturalWidth) ctx.drawImage(khandaTokenSprite, -19, -19, 38, 38);
+      else if (c.type === 'token') { ctx.fillStyle = '#e3a721'; ctx.beginPath(); ctx.arc(0, 0, 12, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = '#fff4b2'; ctx.font = 'bold 14px sans-serif'; ctx.textAlign = 'center'; ctx.fillText('✦', 0, 5); }
+      else if (parshadSprite.complete && parshadSprite.naturalWidth) ctx.drawImage(parshadSprite, -27, -19, 54, 38);
+      else { ctx.fillStyle = '#f6c879'; ctx.beginPath(); ctx.ellipse(0, 4, 15, 7, 0, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = '#fff0ae'; ctx.beginPath(); ctx.arc(-5, -4, 5, 0, Math.PI * 2); ctx.arc(4, -4, 5, 0, Math.PI * 2); ctx.fill(); }
+      ctx.restore();
+    }
     for (const o of state.powerups) { const y = worldToScreen(o.y); const sprite = powerupSprites[o.type]; if (sprite.complete && sprite.naturalWidth) ctx.drawImage(sprite, o.x - 25, y - 25, 50, 50); else { ctx.fillStyle = o.type === 'kara' ? '#d6a740' : '#ed7353'; ctx.beginPath(); ctx.arc(o.x, y, 15, 0, Math.PI * 2); ctx.fill(); } }
     for (const b of state.enemies) { const y = worldToScreen(b.y); const birdSprite = birdSprites[b.type] || birdSprites.pigeon; const frame = profile.reducedMotion ? 1 : Math.floor((lastTime / 100 + b.flapOffset) % 3); const isHit = state.hitStop?.bird === b; if (birdSprite.complete && birdSprite.naturalWidth) { const frameWidth = birdSprite.naturalWidth / 3; ctx.save(); ctx.translate(b.x, y); if (isHit && !profile.reducedMotion) ctx.globalAlpha = Math.floor(lastTime / 85) % 2 ? .34 : 1; if (b.vx < 0) ctx.scale(-1, 1); ctx.drawImage(birdSprite, frame * frameWidth, 0, frameWidth, birdSprite.naturalHeight, -35, -28, 70, 56); ctx.restore(); } else { ctx.fillStyle = '#42546c'; ctx.beginPath(); ctx.ellipse(b.x, y, 19, 11, 0, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = '#1f344a'; ctx.beginPath(); ctx.moveTo(b.x - 4, y); ctx.lineTo(b.x - 31, y - 15); ctx.lineTo(b.x - 19, y + 9); ctx.fill(); ctx.fillStyle = '#f2ba4a'; ctx.beginPath(); ctx.moveTo(b.x + 18, y); ctx.lineTo(b.x + 30, y + 3); ctx.lineTo(b.x + 18, y + 6); ctx.fill(); } if (isHit) { ctx.save(); ctx.fillStyle = state.hitStop.type === 'loss' ? '#e45d43' : '#f4ca4a'; ctx.font = '900 28px "Trebuchet MS"'; ctx.textAlign = 'center'; ctx.fillText('✦', b.x - 24, y - 28); ctx.fillText('✦', b.x + 25, y - 17); ctx.restore(); } }
     drawCatchNet();
@@ -759,7 +796,13 @@
   function drawRunMessage() {
     if (state.messageTimer > 0) { ctx.textAlign = 'center'; ctx.fillStyle = '#24483f'; ctx.font = 'bold 15px "Trebuchet MS"'; ctx.fillText(state.message, W / 2, state.challengeMissed ? 180 : 120); }
   }
-  function loop(time) { const dt = Math.min(.04, (time - lastTime) / 1000 || 0); lastTime = time; update(dt); draw(); requestAnimationFrame(loop); }
+  function loop(time) {
+    const dt = Math.min(.04, (time - lastTime) / 1000 || 0); lastTime = time;
+    const active = !menuVisible && !state?.paused && (state?.running || state?.ending || state?.falconRescue);
+    if (active) update(dt);
+    if (active || menuDirty) { draw(); menuDirty = false; }
+    requestAnimationFrame(loop);
+  }
   function setSelectedCharacter(character, persist = true) {
     selectedCharacter = character;
     profile.character = character;
@@ -819,7 +862,7 @@
     if (studioHomeLink) studioHomeLink.inert = Boolean(activeModal);
     if (!activeModal && state?.running && !state.paused && document.activeElement !== canvas) canvas.focus();
   }
-  function showTutorial() {
+  function showTutorial() { menuVisible = true; menuDirty = true;
     setNativeGameplayActive(false);
     tutorialIndex = 0; tutorialResumesRun = Boolean(state?.running); if (state?.running) state.paused = true;
     ui.home.classList.add('hidden'); ui.end.classList.add('hidden'); ui.upgrades.classList.add('hidden'); ui.about.classList.add('hidden'); ui.badges.classList.add('hidden'); ui.stats.classList.add('hidden'); ui.settings.classList.add('hidden'); ui.pause.classList.add('hidden'); ui.gameTools.classList.add('hidden');
@@ -828,27 +871,27 @@
   function finishTutorial() {
     profile.tutorialComplete = true;
     saveProfile(); ui.tutorial.classList.add('hidden');
-    if (tutorialResumesRun && state) { state.paused = false; setNativeGameplayActive(true); startAudio(); ui.gameTools.classList.remove('hidden'); }
+    if (tutorialResumesRun && state) { menuVisible = false; menuDirty = true; state.paused = false; setNativeGameplayActive(true); startAudio(); ui.gameTools.classList.remove('hidden'); }
     else showHome();
     syncModalAccessibility();
   }
-  function openSettings(from) { setNativeGameplayActive(false); settingsReturn = from; if (from === 'pause') ui.pause.classList.add('hidden'); else ui.home.classList.add('hidden'); ui.settings.classList.remove('hidden'); syncModalAccessibility(); }
-  function closeSettings() { ui.settings.classList.add('hidden'); if (settingsReturn === 'pause' && state?.paused) ui.pause.classList.remove('hidden'); else ui.home.classList.remove('hidden'); syncModalAccessibility(); }
+  function openSettings(from) { menuVisible = true; menuDirty = true; setNativeGameplayActive(false); settingsReturn = from; if (from === 'pause') ui.pause.classList.add('hidden'); else ui.home.classList.add('hidden'); ui.settings.classList.remove('hidden'); syncModalAccessibility(); }
+  function closeSettings() { menuDirty = true; ui.settings.classList.add('hidden'); if (settingsReturn === 'pause' && state?.paused) ui.pause.classList.remove('hidden'); else ui.home.classList.remove('hidden'); syncModalAccessibility(); }
   function leaveRunEarly() { if (state?.running && state.paused && !state.ending) { profile.stats.leftEarly++; saveProfile(); } showHome(); }
   function restartPausedRun() { const mode = state?.mode || 'endless'; leaveRunEarly(); start(mode); }
-  function start(mode) { getAudio(); reset(mode); ui.home.classList.add('hidden'); ui.end.classList.add('hidden'); ui.end.classList.remove('visible'); ui.upgrades.classList.add('hidden'); ui.about.classList.add('hidden'); ui.privacy.classList.add('hidden'); ui.badges.classList.add('hidden'); ui.stats.classList.add('hidden'); ui.settings.classList.add('hidden'); ui.resetConfirm.classList.add('hidden'); ui.exitConfirm.classList.add('hidden'); ui.pause.classList.add('hidden'); if (!profile.tutorialComplete) return showTutorial(); setNativeGameplayActive(true); startAudio(); ui.tutorial.classList.add('hidden'); ui.gameTools.classList.remove('hidden'); syncModalAccessibility(); }
-  function showHome() { setNativeGameplayActive(false); clearInput(); if (state) state.running = false; stopMusic(); ui.mobileHud.classList.add('hidden'); updateRecordsUI(); ui.home.classList.remove('hidden'); ui.end.classList.add('hidden'); ui.end.classList.remove('visible'); ui.upgrades.classList.add('hidden'); ui.about.classList.add('hidden'); ui.privacy.classList.add('hidden'); ui.badges.classList.add('hidden'); ui.stats.classList.add('hidden'); ui.tutorial.classList.add('hidden'); ui.settings.classList.add('hidden'); ui.resetConfirm.classList.add('hidden'); ui.exitConfirm.classList.add('hidden'); ui.pause.classList.add('hidden'); ui.gameTools.classList.add('hidden'); syncModalAccessibility(); }
-  function showUpgrades() { setNativeGameplayActive(false); clearInput(); if (state) state.running = false; stopMusic(); updateUpgradeUI(); ui.home.classList.add('hidden'); ui.end.classList.add('hidden'); ui.upgrades.classList.remove('hidden'); ui.about.classList.add('hidden'); ui.badges.classList.add('hidden'); ui.stats.classList.add('hidden'); ui.settings.classList.add('hidden'); ui.pause.classList.add('hidden'); ui.gameTools.classList.add('hidden'); syncModalAccessibility(); }
-  function showAbout() { setNativeGameplayActive(false); clearInput(); if (state) state.running = false; stopMusic(); ui.home.classList.add('hidden'); ui.end.classList.add('hidden'); ui.upgrades.classList.add('hidden'); ui.about.classList.remove('hidden'); ui.privacy.classList.add('hidden'); ui.badges.classList.add('hidden'); ui.stats.classList.add('hidden'); ui.settings.classList.add('hidden'); ui.pause.classList.add('hidden'); ui.gameTools.classList.add('hidden'); syncModalAccessibility(); }
-  function showPrivacy() { setNativeGameplayActive(false); ui.about.classList.add('hidden'); ui.privacy.classList.remove('hidden'); syncModalAccessibility(); }
+  function start(mode) { menuVisible = false; menuDirty = true; getAudio(); reset(mode); ui.home.classList.add('hidden'); ui.end.classList.add('hidden'); ui.end.classList.remove('visible'); ui.upgrades.classList.add('hidden'); ui.about.classList.add('hidden'); ui.privacy.classList.add('hidden'); ui.badges.classList.add('hidden'); ui.stats.classList.add('hidden'); ui.settings.classList.add('hidden'); ui.resetConfirm.classList.add('hidden'); ui.exitConfirm.classList.add('hidden'); ui.pause.classList.add('hidden'); if (!profile.tutorialComplete) return showTutorial(); setNativeGameplayActive(true); startAudio(); ui.tutorial.classList.add('hidden'); ui.gameTools.classList.remove('hidden'); syncModalAccessibility(); }
+  function showHome() { menuVisible = true; menuDirty = true; setNativeGameplayActive(false); clearInput(); if (state) state.running = false; stopMusic(); ui.mobileHud.classList.add('hidden'); updateRecordsUI(); ui.home.classList.remove('hidden'); ui.end.classList.add('hidden'); ui.end.classList.remove('visible'); ui.upgrades.classList.add('hidden'); ui.about.classList.add('hidden'); ui.privacy.classList.add('hidden'); ui.badges.classList.add('hidden'); ui.stats.classList.add('hidden'); ui.tutorial.classList.add('hidden'); ui.settings.classList.add('hidden'); ui.resetConfirm.classList.add('hidden'); ui.exitConfirm.classList.add('hidden'); ui.pause.classList.add('hidden'); ui.gameTools.classList.add('hidden'); syncModalAccessibility(); }
+  function showUpgrades() { menuVisible = true; menuDirty = true; setNativeGameplayActive(false); clearInput(); if (state) state.running = false; stopMusic(); updateUpgradeUI(); ui.home.classList.add('hidden'); ui.end.classList.add('hidden'); ui.upgrades.classList.remove('hidden'); ui.about.classList.add('hidden'); ui.badges.classList.add('hidden'); ui.stats.classList.add('hidden'); ui.settings.classList.add('hidden'); ui.pause.classList.add('hidden'); ui.gameTools.classList.add('hidden'); syncModalAccessibility(); }
+  function showAbout() { menuVisible = true; menuDirty = true; setNativeGameplayActive(false); clearInput(); if (state) state.running = false; stopMusic(); ui.home.classList.add('hidden'); ui.end.classList.add('hidden'); ui.upgrades.classList.add('hidden'); ui.about.classList.remove('hidden'); ui.privacy.classList.add('hidden'); ui.badges.classList.add('hidden'); ui.stats.classList.add('hidden'); ui.settings.classList.add('hidden'); ui.pause.classList.add('hidden'); ui.gameTools.classList.add('hidden'); syncModalAccessibility(); }
+  function showPrivacy() { menuVisible = true; menuDirty = true; setNativeGameplayActive(false); ui.about.classList.add('hidden'); ui.privacy.classList.remove('hidden'); syncModalAccessibility(); }
   function openExitConfirm() { ui.exitConfirm.classList.remove('hidden'); syncModalAccessibility(); }
   function closeExitConfirm() { ui.exitConfirm.classList.add('hidden'); syncModalAccessibility(); }
   function handleNativeBack() { if (!ui.exitConfirm.classList.contains('hidden')) return closeExitConfirm(); if (!ui.home.classList.contains('hidden')) return exitNativeApp(); if (state?.running && !state.paused) pauseGame(); openExitConfirm(); }
   function exitNativeApp() { const app = window.Capacitor?.Plugins?.App; if (app?.exitApp) app.exitApp(); else window.close(); }
-  function showBadges() { setNativeGameplayActive(false); renderBadges(); ui.home.classList.add('hidden'); ui.badges.classList.remove('hidden'); ui.stats.classList.add('hidden'); syncModalAccessibility(); }
-  function showStats() { setNativeGameplayActive(false); renderStats(); ui.home.classList.add('hidden'); ui.badges.classList.add('hidden'); ui.stats.classList.remove('hidden'); syncModalAccessibility(); }
-  function pauseGame() { if (!state?.running || state.ending) return; setNativeGameplayActive(false); clearInput(); state.paused = true; stopMusic(); ui.pause.classList.remove('hidden'); syncModalAccessibility(); }
-  function resumeGame() { if (!state?.paused || state.ending || ui.pause.classList.contains('hidden')) return; state.paused = false; setNativeGameplayActive(true); ui.pause.classList.add('hidden'); syncModalAccessibility(); getAudio(); if (profile.music) setMusic(); }
+  function showBadges() { menuVisible = true; menuDirty = true; setNativeGameplayActive(false); renderBadges(); ui.home.classList.add('hidden'); ui.badges.classList.remove('hidden'); ui.stats.classList.add('hidden'); syncModalAccessibility(); }
+  function showStats() { menuVisible = true; menuDirty = true; setNativeGameplayActive(false); renderStats(); ui.home.classList.add('hidden'); ui.badges.classList.add('hidden'); ui.stats.classList.remove('hidden'); syncModalAccessibility(); }
+  function pauseGame() { if (!state?.running || state.ending) return; menuDirty = true; setNativeGameplayActive(false); clearInput(); state.paused = true; stopMusic(); ui.pause.classList.remove('hidden'); syncModalAccessibility(); }
+  function resumeGame() { if (!state?.paused || state.ending || ui.pause.classList.contains('hidden')) return; menuVisible = false; menuDirty = true; state.paused = false; setNativeGameplayActive(true); ui.pause.classList.add('hidden'); syncModalAccessibility(); getAudio(); if (profile.music) setMusic(); }
   function buyUpgrade(type) {
     const costs = { falcon: 8, shield: 10, powerJump: config.powerJumpCosts[profile.powerJump] };
     if (type === 'powerJump' && profile.powerJump >= 5) return updateUpgradeUI('Power Jump is already at its maximum level.');
@@ -863,7 +906,7 @@
   ui.pauseButton.addEventListener('click', pauseGame); ui.resume.addEventListener('click', resumeGame); ui.pauseRestart.addEventListener('click', restartPausedRun); ui.pauseHome.addEventListener('click', leaveRunEarly);
   ui.musicToggle.addEventListener('change', () => { profile.music = ui.musicToggle.checked; saveProfile(); if (profile.music && !state?.paused) startAudio(); else setMusic(); });
   ui.soundToggle.addEventListener('change', () => { profile.sound = ui.soundToggle.checked; saveProfile(); });
-  ui.reducedMotionToggle.addEventListener('change', () => { profile.reducedMotion = ui.reducedMotionToggle.checked; document.documentElement.classList.toggle('reduced-motion', profile.reducedMotion); saveProfile(); });
+  ui.reducedMotionToggle.addEventListener('change', () => { menuDirty = true; profile.reducedMotion = ui.reducedMotionToggle.checked; document.documentElement.classList.toggle('reduced-motion', profile.reducedMotion); saveProfile(); });
   ui.tutorialNext.addEventListener('click', () => { if (tutorialIndex < TUTORIAL_STEPS.length - 1) { tutorialIndex++; renderTutorial(); sound('ui'); } else finishTutorial(); });
   ui.tutorialSkip.addEventListener('click', finishTutorial);
   function canvasPointerX(event) {

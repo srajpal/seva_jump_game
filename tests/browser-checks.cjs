@@ -30,6 +30,20 @@ const server = http.createServer((req, res) => {
   });
 });
 const check = (name, details = {}) => { reports.push({ name, passed: true, ...details }); console.log(`PASS ${name}`); };
+async function canvasWork(page) {
+  return page.evaluate(async () => {
+    const frame = () => new Promise(resolve => requestAnimationFrame(resolve));
+    await frame(); await frame(); // Allow a requested menu repaint to settle.
+    const prototype = CanvasRenderingContext2D.prototype;
+    const drawImage = prototype.drawImage, shadowBlur = Object.getOwnPropertyDescriptor(prototype, 'shadowBlur');
+    let images = 0, shadows = 0;
+    prototype.drawImage = function(...args) { images++; return drawImage.apply(this, args); };
+    Object.defineProperty(prototype, 'shadowBlur', { ...shadowBlur, set(value) { shadows++; shadowBlur.set.call(this, value); } });
+    try { for (let i = 0; i < 12; i++) await frame(); }
+    finally { prototype.drawImage = drawImage; Object.defineProperty(prototype, 'shadowBlur', shadowBlur); }
+    return { images, shadows };
+  });
+}
 (async () => {
   await new Promise(resolve => server.listen(0, '0.0.0.0', resolve));
   const origin = `http://127.0.0.1:${server.address().port}`;
@@ -47,15 +61,22 @@ const check = (name, details = {}) => { reports.push({ name, passed: true, ...de
       assert(layout.titleTop >= layout.homeTop, `${name}: home title is not clipped above scroll area`);
       assert(layout.canvasBottom <= height + 1, `${name}: complete canvas fits`);
       await page.screenshot({ path: path.join(output, `${name}-home.png`) });
+      assert.equal((await canvasWork(page)).images, 0, `${name}: Home stops drawing images after its initial frame`);
       for (const menu of ['upgrades','badges','stats','about','settings']) {
         await page.locator(`#open-${menu}-button`).click();
         assert(await page.locator(`#${menu}-screen`).isVisible());
         assert.equal(await page.locator(`#${menu}-screen`).evaluate(el=>el.scrollTop),0, `${menu} opens at the top`);
+        assert.equal((await canvasWork(page)).images, 0, `${name}: ${menu} does not redraw continuously`);
         await page.locator(`#close-${menu}-button`).click();
       }
       await page.locator('#endless-button').click(); await page.keyboard.press('Escape');
       assert(await page.evaluate(() => __qa.state.paused && !document.querySelector('#tutorial-screen').classList.contains('hidden')), `tutorial stays paused: ${JSON.stringify(errors)}`);
       await page.locator('#tutorial-skip-button').click();
+      const activeCanvas = await canvasWork(page);
+      assert.ok(activeCanvas.images > 0, `${name}: active gameplay still renders`);
+      assert.equal(activeCanvas.shadows, 0, `${name}: active frames never assign shadowBlur`);
+      await page.screenshot({ path: path.join(output, `${name}-cached-glows.png`) });
+      check(`idle canvas and cached collectible glow: ${name}`, activeCanvas);
       await page.locator('#pause-button').click(); await page.locator('#pause-settings-button').click(); await page.keyboard.press('Escape');
       assert(await page.evaluate(() => __qa.state.paused && !document.querySelector('#settings-screen').classList.contains('hidden')));
       await page.locator('#close-settings-button').focus(); await page.keyboard.press('Tab');
@@ -101,6 +122,15 @@ const check = (name, details = {}) => { reports.push({ name, passed: true, ...de
       await page.locator('#pause-button').click();
       await page.locator('#pause-home-button').click();
       check(`Challenge missed-bowl warning and restart: ${name}`);
+      if (name === 'desktop') {
+        await page.locator('#endless-button').click();
+        await page.evaluate(() => __qa.finish(false, 'fall'));
+        await page.locator('#end-screen').waitFor({ state: 'visible' });
+        assert.equal((await canvasWork(page)).images, 0, 'the result menu stops drawing after the loss animation');
+        await page.locator('#end-home-button').click();
+        assert.equal((await canvasWork(page)).images, 0, 'returning Home after a result stays idle');
+        check('result menu and return Home stop drawing');
+      }
       await page.locator('.scene-boy').click(); await page.locator('#open-settings-button').click();
       await page.locator('#reset-progress-button').click(); await page.locator('#confirm-reset-button').click();
       assert(await page.evaluate(() => __qa.profile.character==='girl' && document.querySelector('.scene-girl').getAttribute('aria-pressed')==='true'));
