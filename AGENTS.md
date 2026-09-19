@@ -21,6 +21,8 @@ Read `README.md` for game behaviour/build context. Use `RELEASE_CHECKLIST.md` fo
 
 `ARCHITECTURE.md` describes the current runtime and build structure. `RELEASE_PROGRESS.md` tracks the current candidate; keep completed audit history separate from current status.
 
+When continuing after a PR review, read its comments and maintain `REVIEW_FOLLOWUPS.md` with deferred actionable improvements, source links, and resolution status. Keep those follow-ups separate from the active issue unless explicitly included in its scope.
+
 There is no formatter or lint script. At minimum, syntax-check changed JavaScript and run the targeted Node check. Run the full suite for gameplay/configuration changes or before a release:
 
 ```powershell
