@@ -77,6 +77,19 @@ function makeRuntime(storage = {}, options = {}) {
 }
 
 async function run() {
+  // Prices in both UI labels and purchase deductions follow config changes.
+  const savedCosts = [config.falconCost, config.shieldCost];
+  try {
+    config.falconCost = 17; config.shieldCost = 23;
+    const shop = makeRuntime({ value: JSON.stringify({ tokens: 100, music: false, sound: false }) });
+    assert.equal(shop.elements.get('#buy-falcon').textContent, 'Buy · 17');
+    assert.equal(shop.elements.get('#buy-shield').textContent, 'Buy · 23');
+    shop.elements.get('#buy-falcon').listeners.click();
+    shop.elements.get('#buy-shield').listeners.click();
+    assert.equal(shop.hooks.profile.tokens, 60);
+    assert.equal(shop.hooks.profile.falcon, 1);
+    assert.equal(shop.hooks.profile.shield, 1);
+  } finally { [config.falconCost, config.shieldCost] = savedCosts; }
   let framesDrawn = 0;
   const drawnImages = [];
   const rendering = makeRuntime({ value: JSON.stringify({ tutorialComplete: true, music: false, sound: false }) }, { drawingContext: {

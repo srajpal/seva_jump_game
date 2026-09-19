@@ -14,6 +14,8 @@ npm run test:package
 
 `npm test` runs the rule and power-jump checks plus seeded soak, full-run, bird, and Hard Mode checks that call the actual `game.js` generator through the DOM harness. These inspect generated platforms, collectibles, birds, and finish runways on both 450- and 640-wide canvases; platform-odds boundary probes catch unintended balance drift. `test:runtime` exercises saves, menus, input, platform collision, boosts, rescue, and repeated-run results; it also tests the service worker. Test-only inspection hooks and random sources stay in the harness, never the production file. Package checks validate references, versions, filenames and ZIP contents. GitHub Actions runs the commands above on every push and pull request with Node 22, without installing npm dependencies.
 
+The soak also compares observed collectible, token, boost, and Arcade-bird rates with config using a 4% relative tolerance over eligible generated rows. Boost sampling uses Arcade score bands; Endless has no level-gated boosts and Challenge disables them. Package checks compare all displayed/cache web versions and Android/iOS marketing versions with `package.json`, including both Xcode build configurations.
+
 ## Browser checks
 
 `tests/browser-checks.cjs` uses Playwright as an optional development tool. It is not part of the shipped game. Set `PLAYWRIGHT_MODULE` to your installed Playwright module directory, or install Playwright locally so Node can resolve it. Edge is the default test browser.

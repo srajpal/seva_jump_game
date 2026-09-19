@@ -1,44 +1,75 @@
 const assert = require('node:assert/strict');
 const config = require('../game-config.js');
+const rules = require('../game-rules.js');
 const { makeRuntime } = require('./runtime-browser-checks.js');
 const { sizes, makeGenerator, addRow, checkOpening, collectRow } = require('./generator-helpers.js');
 
 const RUNS = 1000, STEPS = 350;
 let landings = 0;
+function frequency(name, hits, trials, expected) {
+  assert.ok(trials > 10000, name + ': enough eligible rows');
+  const observed = hits / trials;
+  assert.ok(Math.abs(observed - expected) <= expected * .04, name + ': observed ' + observed.toFixed(5) + ', config ' + expected);
+  console.log(name + ': ' + hits + '/' + trials + ' = ' + observed.toFixed(5) + ' (config ' + expected + ')');
+}
 for (const size of sizes) {
   const runtime = makeGenerator(size, 0x5e7a + size.width);
-  for (const mode of ['endless', 'arcade']) {
+  for (const mode of ['endless', 'arcade', 'challenge']) {
+    const counts = { rows: 0, items: 0, tokens: 0, tokenRows: 0, karaRows: 0, kara: 0, nishanRows: 0, nishan: 0, birdRows: 0, birds: 0 };
     for (let run = 0; run < RUNS; run++) {
       runtime.hooks.reset(mode);
       checkOpening(runtime);
       const state = runtime.hooks.state;
       for (let step = 0; step < STEPS; step++) {
+        const score = state.score;
         const generated = addRow(runtime);
+        if (mode === 'challenge') {
+          if (!generated.items.some(item => item.challengeBowl)) counts.tokenRows++;
+          counts.tokens += generated.items.filter(item => item.type === 'token').length;
+          assert.equal(generated.powerups.length, 0);
+        } else {
+          counts.rows++;
+          counts.items += generated.items.length;
+          counts.tokens += generated.items.filter(item => item.type === 'token').length;
+          if (mode === 'arcade' && score >= config.tierThresholds[1]) counts.karaRows++;
+          if (mode === 'arcade' && score >= config.tierThresholds[2]) counts.nishanRows++;
+          counts.kara += generated.powerups.filter(item => item.type === 'kara').length;
+          counts.nishan += generated.powerups.filter(item => item.type === 'nishan').length;
+          if (mode === 'arcade' && score >= config.arcadeBirdStartScore) { counts.birdRows++; counts.birds += generated.birds.length; }
+        }
         collectRow(state, generated.platform, generated.items);
         landings++;
       }
       assert.ok(state.score > config.endlessDifficultyScore, 'soak reaches capped late-game difficulty');
     }
+    const label = mode + '/' + size.width;
+    if (mode === 'challenge') frequency(label + ' token rows', counts.tokens, counts.tokenRows, config.challengeTokenChance);
+    else {
+      frequency(label + ' collectible rows', counts.items, counts.rows, config.collectibleChance);
+      frequency(label + ' token share', counts.tokens, counts.items, config.tokenShare);
+      if (mode === 'arcade') {
+        frequency(label + ' Kara', counts.kara, counts.karaRows, config.powerupChances.kara);
+        frequency(label + ' Nishan', counts.nishan, counts.nishanRows, config.powerupChances.nishan);
+        frequency(label + ' bird rows', counts.birds, counts.birdRows, config.arcadeBirdChance);
+      } else assert.equal(counts.kara + counts.nishan, 0, 'Endless has no level-gated boosts');
+    }
   }
-  console.log(`Soaked ${RUNS} Endless and ${RUNS} Arcade routes on the ${size.width}-wide canvas.`);
+  console.log(`Soaked ${RUNS} routes per mode on the ${size.width}-wide canvas.`);
 }
 
-// Fixed balance contracts, not another generator: probe both sides of the
-// shipped type thresholds using the real addPlatform. Even a small odds edit
-// must deliberately update these expectations. All other draws remain seeded.
+// Probe the real generator against config-derived boundaries. Config tuning
+// changes expectations, while a generator/config mismatch still fails.
 let nextRoll;
-const runtime = makeRuntime({}, { random: () => {
-  const roll = nextRoll;
-  nextRoll = undefined;
-  return roll ?? .99;
-} });
+const runtime = makeRuntime({}, { random: () => { const roll = nextRoll; nextRoll = undefined; return roll ?? .99; } });
+const mix = config.arcadePlatformMix;
 const contracts = [
-  ['arcade', 0, [[.09, 'spring', 'moving'], [.55, 'moving', 'normal']]],
-  ['arcade', 250, [[.09, 'spring', 'break'], [.31, 'break', 'moving'], [.55, 'moving', 'normal']]],
-  ['arcade', 1000, [[.09, 'spring', 'break'], [.38, 'break', 'moving'], [.55, 'moving', 'normal']]],
-  ['challenge', 1000, [[.09, 'spring', 'break'], [.48, 'break', 'moving'], [.55, 'moving', 'normal']]],
-  ['endless', 0, [[.10, 'spring', 'break'], [.18, 'break', 'moving'], [.38, 'moving', 'normal']]],
-  ['endless', 1500, [[.13, 'spring', 'break'], [.32, 'break', 'moving'], [.56, 'moving', 'normal']]],
+  ['arcade', 0, [[mix.spring, 'spring', 'moving'], [mix.moving, 'moving', 'normal']]],
+  ...[250, 1000].map(score => ['arcade', score, [[mix.spring, 'spring', 'break'], [mix.spring + rules.arcadeBreakChance(score), 'break', 'moving'], [mix.moving, 'moving', 'normal']]]),
+  ['challenge', 1000, [[mix.spring, 'spring', 'break'], [mix.spring + rules.challengeBreakChance(1000), 'break', 'moving'], [mix.moving, 'moving', 'normal']]],
+  ...[0, config.endlessDifficultyScore].map(score => {
+    const cutoffs = rules.endlessPlatformCutoffs(score);
+    return ['endless', score, [[cutoffs.spring, 'spring', 'break'], [cutoffs.break, 'break', 'moving'], [cutoffs.moving, 'moving', 'normal']]];
+  }),
 ];
 let probes = 0;
 for (const [mode, score, boundaries] of contracts) {
