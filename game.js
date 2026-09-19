@@ -10,11 +10,19 @@
   const nativeTablet = Boolean(nativePlatform) && Math.min(window.innerWidth, window.innerHeight) >= 700;
   if (nativeTablet) canvas.width = 640;
   const ctx = canvas.getContext('2d');
+  if (!ctx) {
+    const warning = document.querySelector('#canvas-warning');
+    warning.textContent = 'This browser cannot draw the game. Try reopening it in a browser with canvas support.';
+    warning.classList.remove('hidden');
+    document.querySelectorAll('.mode-actions button').forEach(button => { button.disabled = true; });
+    return;
+  }
   ctx.imageSmoothingEnabled = false;
   const W = canvas.width, H = canvas.height;
   const config = globalThis.SEVA_CONFIG;
   const rules = globalThis.SEVA_RULES;
   let menuDirty = true, menuVisible = true;
+  let gamepadSteer = 0, gamepadButtons = { a: false, pause: false }, gamepadFocused = true;
   const ui = {
     home: document.querySelector('#home-screen'), end: document.querySelector('#end-screen'), upgrades: document.querySelector('#upgrades-screen'), about: document.querySelector('#about-screen'), tutorial: document.querySelector('#tutorial-screen'), tutorialIcon: document.querySelector('#tutorial-icon'), tutorialStep: document.querySelector('#tutorial-step'), tutorialHeading: document.querySelector('#tutorial-heading'), tutorialCopy: document.querySelector('#tutorial-copy'), tutorialDots: document.querySelector('#tutorial-dots'), tutorialNext: document.querySelector('#tutorial-next-button'), tutorialSkip: document.querySelector('#tutorial-skip-button'), pause: document.querySelector('#pause-screen'), gameTools: document.querySelector('#game-tools'), mobileHud: document.querySelector('#mobile-hud'), mobileScore: document.querySelector('#mobile-score'), mobileItems: document.querySelector('#mobile-items'), mobileMode: document.querySelector('#mobile-mode'), mobileFalcon: document.querySelector('#mobile-falcon'), mobileShield: document.querySelector('#mobile-shield'), mobilePower: document.querySelector('#mobile-power'),
     score: document.querySelector('#end-score'), endHeading: document.querySelector('#end-heading'), endBest: document.querySelector('#end-best'), runBreakdown: document.querySelector('#run-breakdown'), endGoal: document.querySelector('#end-goal'), homeRecords: document.querySelector('#home-records'), endless: document.querySelector('#endless-button'), arcade: document.querySelector('#arcade-button'), challenge: document.querySelector('#challenge-button'), hard: document.querySelector('#hard-button'), modeChoices: document.querySelectorAll('.mode-actions button'),
@@ -138,6 +146,7 @@
   let profile = loadProfile();
   let state, selectedCharacter = profile.character === 'boy' ? 'boy' : 'girl', settingsReturn = 'home', pointerX = null, keys = new Set(), lastTime = 0, tutorialIndex = 0, tutorialResumesRun = false;
   let audioContext, musicTimer = null, musicVoices = [], badgeQueue = [], badgeToastTimer = null;
+  let nextMusicPhraseTime = 0;
   const noiseBuffers = new Map();
 
   function applyPreferences() {
@@ -216,9 +225,9 @@
     else if (type === 'firework') { noise(.28, { filter: 'lowpass', frequency: 360, volume: .05 }); tone(180, .16, { slide: 85, wave: 'sawtooth', volume: .027 }); setTimeout(() => noise(.16, { frequency: 1350, volume: .023 }), 115); }
     else if (type === 'loss') { tone(260, .3, { slide: 110, wave: 'sine', volume: .042 }); noise(.12, { frequency: 230, volume: .014 }); }
   }
-  function playMusicPhrase() {
+  function playMusicPhrase(startTime) {
     if (!audioContext || !ui.musicToggle.checked) return;
-    const audio = audioContext, now = audio.currentTime, beat = .5;
+    const audio = audioContext, now = startTime, beat = config.musicBeatSeconds;
     const music = state?.mode === 'challenge' ? [392, 440, 494, 523, 494, 440, 392, 330] : state?.mode === 'arcade' ? [392, 440, 523, 587, 523, 440, 494, 523] : [392, 440, 523, 440, 349, 392, 440, 494];
     const bass = state?.mode === 'challenge' ? [196, 196, 220, 220] : [196, 175, 196, 220];
     music.forEach((note, i) => {
@@ -233,11 +242,22 @@
     });
   }
   function setMusic() {
-    clearInterval(musicTimer); musicTimer = null;
-    if (!ui.musicToggle.checked || !audioContext) return;
-    playMusicPhrase(); musicTimer = setInterval(playMusicPhrase, 8 * .5 * 1000);
+    stopMusic();
+    if (!ui.musicToggle.checked || !audioContext || !state?.running || state.paused || menuVisible) return;
+    nextMusicPhraseTime = audioContext.currentTime + config.musicStartDelaySeconds;
+    scheduleMusic();
   }
-  function stopMusic() { clearInterval(musicTimer); musicTimer = null; musicVoices.forEach(voice => { try { voice.stop(); } catch {} }); musicVoices = []; }
+  function scheduleMusic() {
+    if (!audioContext || !ui.musicToggle.checked || !state?.running || state.paused || menuVisible) return;
+    // A delayed callback must not queue a burst of notes in the past.
+    if (nextMusicPhraseTime < audioContext.currentTime) nextMusicPhraseTime = audioContext.currentTime + config.musicStartDelaySeconds;
+    while (nextMusicPhraseTime < audioContext.currentTime + config.musicLookaheadSeconds) {
+      playMusicPhrase(nextMusicPhraseTime);
+      nextMusicPhraseTime += config.musicBeatSeconds * 8;
+    }
+    musicTimer = setTimeout(scheduleMusic, config.musicSchedulerIntervalMs);
+  }
+  function stopMusic() { clearTimeout(musicTimer); musicTimer = null; musicVoices.forEach(voice => { try { voice.stop(); } catch {} }); musicVoices = []; }
   function startAudio() { getAudio(); setMusic(); }
 
   function updateUpgradeUI(message = '') {
@@ -261,7 +281,7 @@
   function renderStats() {
     const s = profile.stats, averageScore = s.runs ? Math.round(s.totalScore / s.runs) : 0;
     ui.statsSummary.innerHTML = [
-      ['Runs', s.runs], ['Jumps', s.jumps], ['Best Endless', profile.bestScores.endless], ['Best Arcade', profile.bestScores.arcade], ['Best Hard', profile.bestScores.hard],
+      ['Runs', s.runs], ['Jumps', s.jumps], ['Best Endless', profile.bestScores.endless], ['Best Arcade', profile.bestScores.arcade], ['Best Challenge', profile.bestScores.challenge], ['Best Hard', profile.bestScores.hard],
       ['Average score', averageScore], ['Height climbed', s.totalHeight], ['Parshad', s.parshad], ['Khanda earned', s.tokens],
       ['Boosts collected', s.powerups], ['Birds seen', s.birdsSeen], ['Birds blocked', s.birdsBlocked],
     ].map(([label, value]) => `<article><strong>${rules.formatStat(value)}</strong><span>${label}</span></article>`).join('');
@@ -300,7 +320,7 @@
       running: true, paused: false, mode, score: 0, heightScore: 0, parshad: 0, tokens: 0, cameraY: 0,
       background: Math.floor(Math.random() * backgroundImages.length), nextY: 610, ending: false, falconUsed: false, invincibleTimer: 0, invincibleSource: null, shieldVisualTimer: 0, resultTimer: null, finishGate: null, fireworkSoundTimers: [], challengePlaced: 0, challengePlatformCount: 0, upgradeEffect: null, hitStop: null, falconRescue: null,
       player: { x: W / 2, y: 650, vx: 0, vy: -config.baseJumpVelocity * rules.powerJumpMultiplier(profile.powerJump), w: 31, h: 48, character: selectedCharacter, facing: 1 },
-      platforms: [startPlatform], lastPlatform: startPlatform, collectibles: [], enemies: [], powerups: [], particles: [], challengeMissed: false,
+      platforms: [startPlatform], lastPlatform: startPlatform, collectibles: [], enemies: [], powerups: [], particles: [], challengeMissed: false, missedBowls: new Set(), challengeWarningShown: false,
       message: mode === 'challenge' ? `Challenge · collect all ${config.challengeParshadTarget} parshad` : mode === 'arcade' ? `Arcade · reach ${config.arcadeTargetScore}` : mode === 'hard' ? 'Hard Mode · fragile routes ahead' : 'Endless Run · Keep climbing', messageTimer: 3,
     };
     while (state.nextY > -900) addPlatform();
@@ -377,11 +397,17 @@
     } else if (Math.random() < .53) state.collectibles.push({ x: x + w / 2, y: platform.y - 37, type: Math.random() < .16 ? 'token' : 'parshad' });
     if (state.mode !== 'challenge' && level >= 3 && Math.random() < .055) state.powerups.push({ x: x + w / 2, y: platform.y - 60, type: 'kara' });
     if (state.mode !== 'challenge' && level >= 4 && Math.random() < .04) state.powerups.push({ x: x + w / 2, y: platform.y - 60, type: 'nishan' });
+    // Plan the next row first so birds spawn halfway between landing heights.
+    const earlyGap = config.verticalGapRanges[0], lateGap = config.verticalGapRanges[1];
+    const [minGap, maxGap] = arcade ? config.verticalGapRanges[level === 1 ? 0 : 1] : hard ? lateGap : [earlyGap[0] + (lateGap[0] - earlyGap[0]) * endlessDifficulty, earlyGap[1] + (lateGap[1] - earlyGap[1]) * endlessDifficulty];
+    const requestedGap = minGap + Math.random() * (maxGap - minGap) + (arcade ? config.arcadeGapBonus : 0);
+    const verticalGap = Math.min(requestedGap, rules.maxDefaultPlatformGap());
+    state.nextY -= verticalGap;
     const birdChance = state.mode === 'challenge'
       ? (state.score >= config.challengeBirdStartScore ? config.challengeBirdChance : 0)
       : arcade ? (state.score >= config.arcadeBirdStartScore ? .18 : 0)
         : hard ? rules.hardBirdChance(state.score) : rules.endlessBirdChance(state.score);
-    const candidateBirdY = platform.y - 90;
+    const candidateBirdY = (platform.y + state.nextY) / 2;
     const activeBirdYs = state.enemies.filter(bird => !bird.hit).map(bird => bird.y);
     const birdSpacingIsSafe = hard ? rules.canSpawnHardBird(activeBirdYs, candidateBirdY, H)
       : state.mode === 'challenge' ? rules.canSpawnChallengeBird(activeBirdYs, candidateBirdY) : true;
@@ -391,15 +417,7 @@
       const birdX = Math.random() < .5 && leftLimit > 25 ? 25 + Math.random() * (leftLimit - 25) : rightLimit < W - 25 ? rightLimit + Math.random() * (W - 25 - rightLimit) : platformCenter < W / 2 ? W - 25 : 25;
       const challengeSpeedBonus = state.mode === 'challenge' ? config.challengeBirdSpeedBonus : 0;
       state.enemies.push({ x: birdX, y: candidateBirdY, vx: (Math.random() < .5 ? -1 : 1) * (60 + Math.random() * 45 + endlessDifficulty * 35 + (hard ? 12 : 0) + challengeSpeedBonus), type: types[Math.floor(Math.random() * types.length)], flapOffset: Math.random() * Math.PI * 2 });
-      profile.stats.birdsSeen++;
     }
-    // A normal jump reaches about 128 pixels. Endless ramps continuously;
-    // Arcade steps through its planned score bands.
-    const earlyGap = config.verticalGapRanges[0], lateGap = config.verticalGapRanges[1];
-    const [minGap, maxGap] = arcade ? config.verticalGapRanges[level === 1 ? 0 : 1] : hard ? lateGap : [earlyGap[0] + (lateGap[0] - earlyGap[0]) * endlessDifficulty, earlyGap[1] + (lateGap[1] - earlyGap[1]) * endlessDifficulty];
-    const requestedGap = minGap + Math.random() * (maxGap - minGap) + (arcade ? config.arcadeGapBonus : 0);
-    const verticalGap = Math.min(requestedGap, rules.maxDefaultPlatformGap());
-    state.nextY -= verticalGap;
   }
   function burst(x, y, color, count = 6) {
     if (profile.reducedMotion) return;
@@ -538,11 +556,12 @@
     if (state.invincibleTimer > 0) { state.invincibleTimer = Math.max(0, state.invincibleTimer - dt); if (!state.invincibleTimer) state.invincibleSource = null; }
     if (state.shieldVisualTimer > 0) state.shieldVisualTimer = Math.max(0, state.shieldVisualTimer - dt);
     const keyboard = (keys.has('ArrowRight') ? 1 : 0) - (keys.has('ArrowLeft') ? 1 : 0);
-    if (pointerX !== null) {
+    const steering = keyboard || gamepadSteer;
+    if (pointerX !== null && !gamepadSteer) {
       const desiredVelocity = Math.max(-config.pointerMaxHorizontalSpeed, Math.min(config.pointerMaxHorizontalSpeed, (pointerX - p.x) * config.pointerSteeringGain));
       p.vx += (desiredVelocity - p.vx) * Math.min(1, config.pointerSteeringResponse * dt);
     } else {
-      p.vx += keyboard * config.keyboardAcceleration * dt;
+      p.vx += steering * config.keyboardAcceleration * dt;
       p.vx *= Math.pow(.0007, dt);
     }
     p.vx = Math.max(-config.maxHorizontalSpeed, Math.min(config.maxHorizontalSpeed, p.vx));
@@ -551,6 +570,7 @@
     const previousBottom = p.y + p.h / 2;
     p.x = Math.max(p.w / 2, Math.min(W - p.w / 2, p.x)); p.vy += config.gravity * dt; p.y += p.vy * dt;
     for (const plat of state.platforms) {
+      if (plat.broken) { plat.breakElapsed += dt; continue; }
       if (plat.type === 'moving') { plat.x += plat.dir * plat.speed * dt; if (plat.x < 6 || plat.x + plat.w > W - 6) plat.dir *= -1; }
       const top = plat.y;
       if (!plat.broken && p.vy > 0 && previousBottom <= top && p.y + p.h / 2 >= top && p.x + p.w / 2 > plat.x && p.x - p.w / 2 < plat.x + plat.w) {
@@ -561,7 +581,7 @@
         const landingColor = plat.type === 'spring' ? '#d5a5ff' : plat.type === 'break' ? '#c49464' : '#f7efd7';
         burst(p.x, top, landingColor, plat.type === 'spring' ? 26 : plat.type === 'break' ? 20 : 16);
         burst(p.x, top, '#fff9e8', plat.type === 'spring' ? 9 : 6);
-        if (plat.type === 'break') plat.broken = true;
+        if (plat.type === 'break') { plat.broken = true; plat.breakElapsed = 0; }
       }
     }
     const targetCamera = Math.min(state.cameraY, p.y - H * .38);
@@ -589,13 +609,21 @@
       }
     }
     while (state.nextY > state.cameraY - 900 && (!state.finishGate || state.nextY > state.finishGate.y)) addPlatform();
-    state.platforms = state.platforms.filter(o => o.y < state.cameraY + H + 100 && !o.broken);
+    state.platforms = state.platforms.filter(o => o.y < state.cameraY + H + 100 && (!o.broken || o.breakElapsed < config.breakCrumbleDuration));
     for (const c of state.collectibles) if (!c.taken && collide(p, c, c.challengeBowl ? 86 : 27)) { c.taken = true; if (c.type === 'token') { state.tokens++; profile.stats.tokens++; burst(c.x, c.y, '#f5cd57', 9); sound('token'); if (profile.stats.tokens >= 10) awardBadge('tokens-10'); } else { state.parshad++; profile.stats.parshad++; state.score += 3; burst(c.x, c.y, '#fff1a5', 8); sound('collect'); if (profile.stats.parshad >= 50) awardBadge('parshad-50'); } }
-    if (state.mode === 'challenge' && !state.challengeMissed && state.collectibles.some(c => c.challengeBowl && !c.taken && c.y > state.cameraY + H + config.challengeMissedBowlMargin)) {
-      state.challengeMissed = true;
-      state.message = `A bowl was missed - restart to collect all ${config.challengeParshadTarget}`;
-      state.messageTimer = config.challengeMissedMessageDuration;
-      sound('loss');
+    if (state.mode === 'challenge') {
+      // Keep missed bowl identities after offscreen culling; recovering one
+      // must not erase a different bowl that is still missing.
+      for (const bowl of state.missedBowls) if (bowl.taken) state.missedBowls.delete(bowl);
+      for (const bowl of state.collectibles) if (bowl.challengeBowl && !bowl.taken && bowl.y > state.cameraY + H + config.challengeMissedBowlMargin) state.missedBowls.add(bowl);
+      state.challengeMissed = state.missedBowls.size > 0;
+      if (!state.challengeMissed && isMissedBowlMessage()) state.messageTimer = 0;
+      if (state.challengeMissed && !state.challengeWarningShown) {
+        state.challengeWarningShown = true;
+        state.message = `A bowl was missed - restart to collect all ${config.challengeParshadTarget}`;
+        state.messageTimer = config.challengeMissedMessageDuration;
+        sound('loss');
+      }
     }
     state.collectibles = state.collectibles.filter(c => !c.taken && c.y < state.cameraY + H + 100);
     for (const power of state.powerups) if (!power.taken && collide(p, power, 30)) { power.taken = true; profile.stats.powerups++; burst(power.x, power.y, power.type === 'kara' ? '#f5cb58' : '#f1815a', 14); if (profile.stats.powerups >= 5) awardBadge('power-seeker'); sound('boost'); if (power.type === 'nishan') { state.invincibleTimer = 5; state.invincibleSource = 'nishan'; } p.vy = rules.boostVelocity(power.type, profile.powerJump); state.message = power.type === 'kara' ? 'Kara boost · one higher jump!' : 'Nishan boost · one jump + protection!'; state.messageTimer = 2; }
@@ -734,9 +762,16 @@
     drawFireworks();
     if (state.finishGate && !state.finishGate.broken) { const gateY = worldToScreen(state.finishGate.y) + (profile.reducedMotion ? 0 : Math.sin(lastTime / 220) * 3); if (finishBannerSprite.complete && finishBannerSprite.naturalWidth) ctx.drawImage(finishBannerSprite, -16, gateY - 72, W + 32, 185); ctx.fillStyle = '#fff9e8'; ctx.font = 'bold 16px "Trebuchet MS"'; ctx.textAlign = 'center'; ctx.fillText('FINISH', W / 2, gateY + 2); }
     for (const plat of state.platforms) { const y = worldToScreen(plat.y); if (y < -30 || y > H + 40) continue;
+      ctx.save();
+      if (plat.broken) {
+        const progress = Math.min(1, plat.breakElapsed / config.breakCrumbleDuration);
+        ctx.globalAlpha = 1 - progress;
+        if (!profile.reducedMotion) ctx.translate(0, progress * progress * config.breakCrumbleFallDistance);
+      }
       const sprite = platformSprites[plat.type] || platformSprite;
       if (sprite.complete && sprite.naturalWidth) ctx.drawImage(sprite, plat.x, y - 22, plat.w, 50);
       else { ctx.fillStyle = plat.type === 'break' ? '#b48d66' : plat.type === 'spring' ? '#7c5c9c' : '#477e55'; ctx.fillRect(plat.x, y, plat.w, 13); }
+      ctx.restore();
     }
     for (const particle of state.particles) { const alpha = Math.max(0, particle.life / particle.maxLife); ctx.save(); ctx.globalAlpha = alpha; ctx.fillStyle = particle.color; ctx.fillRect(Math.round(particle.x - particle.size / 2), Math.round(worldToScreen(particle.y) - particle.size / 2), particle.size, particle.size); ctx.restore(); }
     for (const c of state.collectibles) {
@@ -750,7 +785,7 @@
       ctx.restore();
     }
     for (const o of state.powerups) { const y = worldToScreen(o.y); const sprite = powerupSprites[o.type]; if (sprite.complete && sprite.naturalWidth) ctx.drawImage(sprite, o.x - 25, y - 25, 50, 50); else { ctx.fillStyle = o.type === 'kara' ? '#d6a740' : '#ed7353'; ctx.beginPath(); ctx.arc(o.x, y, 15, 0, Math.PI * 2); ctx.fill(); } }
-    for (const b of state.enemies) { const y = worldToScreen(b.y); const birdSprite = birdSprites[b.type] || birdSprites.pigeon; const frame = profile.reducedMotion ? 1 : Math.floor((lastTime / 100 + b.flapOffset) % 3); const isHit = state.hitStop?.bird === b; if (birdSprite.complete && birdSprite.naturalWidth) { const frameWidth = birdSprite.naturalWidth / 3; ctx.save(); ctx.translate(b.x, y); if (isHit && !profile.reducedMotion) ctx.globalAlpha = Math.floor(lastTime / 85) % 2 ? .34 : 1; if (b.vx < 0) ctx.scale(-1, 1); ctx.drawImage(birdSprite, frame * frameWidth, 0, frameWidth, birdSprite.naturalHeight, -35, -28, 70, 56); ctx.restore(); } else { ctx.fillStyle = '#42546c'; ctx.beginPath(); ctx.ellipse(b.x, y, 19, 11, 0, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = '#1f344a'; ctx.beginPath(); ctx.moveTo(b.x - 4, y); ctx.lineTo(b.x - 31, y - 15); ctx.lineTo(b.x - 19, y + 9); ctx.fill(); ctx.fillStyle = '#f2ba4a'; ctx.beginPath(); ctx.moveTo(b.x + 18, y); ctx.lineTo(b.x + 30, y + 3); ctx.lineTo(b.x + 18, y + 6); ctx.fill(); } if (isHit) { ctx.save(); ctx.fillStyle = state.hitStop.type === 'loss' ? '#e45d43' : '#f4ca4a'; ctx.font = '900 28px "Trebuchet MS"'; ctx.textAlign = 'center'; ctx.fillText('✦', b.x - 24, y - 28); ctx.fillText('✦', b.x + 25, y - 17); ctx.restore(); } }
+    for (const b of state.enemies) { const y = worldToScreen(b.y); if (y < -28 || y > H + 28) continue; if (!b.seen && state.running && !state.paused && !menuVisible) { b.seen = true; profile.stats.birdsSeen++; } const birdSprite = birdSprites[b.type] || birdSprites.pigeon; const frame = profile.reducedMotion ? 1 : Math.floor((lastTime / 100 + b.flapOffset) % 3); const isHit = state.hitStop?.bird === b; if (birdSprite.complete && birdSprite.naturalWidth) { const frameWidth = birdSprite.naturalWidth / 3; ctx.save(); ctx.translate(b.x, y); if (isHit && !profile.reducedMotion) ctx.globalAlpha = Math.floor(lastTime / 85) % 2 ? .34 : 1; if (b.vx < 0) ctx.scale(-1, 1); ctx.drawImage(birdSprite, frame * frameWidth, 0, frameWidth, birdSprite.naturalHeight, -35, -28, 70, 56); ctx.restore(); } else { ctx.fillStyle = '#42546c'; ctx.beginPath(); ctx.ellipse(b.x, y, 19, 11, 0, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = '#1f344a'; ctx.beginPath(); ctx.moveTo(b.x - 4, y); ctx.lineTo(b.x - 31, y - 15); ctx.lineTo(b.x - 19, y + 9); ctx.fill(); ctx.fillStyle = '#f2ba4a'; ctx.beginPath(); ctx.moveTo(b.x + 18, y); ctx.lineTo(b.x + 30, y + 3); ctx.lineTo(b.x + 18, y + 6); ctx.fill(); } if (isHit) { ctx.save(); ctx.fillStyle = state.hitStop.type === 'loss' ? '#e45d43' : '#f4ca4a'; ctx.font = '900 28px "Trebuchet MS"'; ctx.textAlign = 'center'; ctx.fillText('✦', b.x - 24, y - 28); ctx.fillText('✦', b.x + 25, y - 17); ctx.restore(); } }
     drawCatchNet();
     const p = state.player, py = worldToScreen(p.y);
     const isNetLanding = state.ending && !state.completed && (state.endReason === 'fall' || state.endReason === 'bird');
@@ -777,7 +812,7 @@
     }
     drawFalconRescue();
     if (state.running || state.ending) {
-      updateMobileHud(); if (usesMobileHud()) { if (state.challengeMissed) drawRunMessage(); drawUpgradeEffect(); drawLossTransition(); drawWinTransition(); return; }
+      updateMobileHud(); if (usesMobileHud()) { if (isMissedBowlMessage()) drawRunMessage(); drawUpgradeEffect(); drawLossTransition(); drawWinTransition(); return; }
       ctx.fillStyle = '#24483f'; ctx.font = 'bold 18px "Trebuchet MS"'; ctx.textAlign = 'left'; ctx.fillText(`Score ${Math.floor(state.score)}`, 18, 31); ctx.font = 'bold 13px "Trebuchet MS"'; ctx.fillText(`Parshad ${state.parshad}  ·  Khanda ${state.tokens}`, 18, 52);
       drawUpgradeStatus();
       const modeName = state.mode === 'arcade' ? 'ARCADE MODE' : state.mode === 'challenge' ? 'CHALLENGE MODE' : state.mode === 'hard' ? 'HARD MODE' : 'ENDLESS RUN';
@@ -793,11 +828,13 @@
     drawLossTransition();
     drawWinTransition();
   }
+  function isMissedBowlMessage() { return state.message === `A bowl was missed - restart to collect all ${config.challengeParshadTarget}`; }
   function drawRunMessage() {
-    if (state.messageTimer > 0) { ctx.textAlign = 'center'; ctx.fillStyle = '#24483f'; ctx.font = 'bold 15px "Trebuchet MS"'; ctx.fillText(state.message, W / 2, state.challengeMissed ? 180 : 120); }
+    if (state.messageTimer > 0) { ctx.textAlign = 'center'; ctx.fillStyle = '#24483f'; ctx.font = 'bold 15px "Trebuchet MS"'; ctx.fillText(state.message, W / 2, isMissedBowlMessage() ? 180 : 120); }
   }
   function loop(time) {
     const dt = Math.min(.04, (time - lastTime) / 1000 || 0); lastTime = time;
+    pollGamepad();
     const active = !menuVisible && !state?.paused && (state?.running || state?.ending || state?.falconRescue);
     if (active) update(dt);
     if (active || menuDirty) { draw(); menuDirty = false; }
@@ -828,6 +865,19 @@
   // Same order as the overlays in index.html: the later visible dialog is on top.
   const modalScreens = [ui.end, ui.tutorial, ui.pause, ui.settings, ui.resetConfirm, ui.badges, ui.stats, ui.upgrades, ui.about, ui.privacy, ui.exitConfirm];
   const gameFrame = document.querySelector('.game-frame');
+  const fullscreenButton = document.querySelector('#fullscreen-button');
+  if (!nativePlatform && gameFrame.requestFullscreen && document.fullscreenEnabled) fullscreenButton.classList.remove('hidden');
+  fullscreenButton.addEventListener('click', async () => {
+    try {
+      if (document.fullscreenElement) await document.exitFullscreen();
+      else await gameFrame.requestFullscreen();
+      canvas.focus();
+    } catch { fullscreenButton.title = 'Fullscreen is unavailable in this browser or embed'; }
+  });
+  document.addEventListener('fullscreenchange', () => {
+    const label = document.fullscreenElement ? 'Exit fullscreen' : 'Enter fullscreen';
+    fullscreenButton.setAttribute('aria-label', label); fullscreenButton.title = label;
+  });
   const studioHomeLink = document.querySelector('.studio-home-link');
   const focusableSelector = 'button:not([disabled]), a[href], input:not([disabled]), [tabindex]:not([tabindex="-1"])';
   let activeModal = null, modalReturnFocus = null;
@@ -915,7 +965,26 @@
     const contentWidth = W * scale, contentLeft = rect.left + (rect.width - contentWidth) / 2;
     return Math.max(0, Math.min(W, (event.clientX - contentLeft) / scale));
   }
-  function clearInput() { pointerX = null; keys.clear(); }
+  function clearInput() { pointerX = null; keys.clear(); gamepadSteer = 0; }
+  function steeringKey(key) { return key.toLowerCase() === 'a' ? 'ArrowLeft' : key.toLowerCase() === 'd' ? 'ArrowRight' : key; }
+  function pollGamepad() {
+    let pads;
+    try { pads = navigator.getGamepads?.() || []; }
+    catch { gamepadSteer = 0; return; } // Some embeds deny the gamepad permission.
+    const pad = Array.from(pads).find(pad => pad?.connected && pad.mapping === 'standard');
+    const a = Boolean(pad?.buttons[0]?.pressed);
+    const pause = Boolean(pad?.buttons[1]?.pressed || pad?.buttons[9]?.pressed);
+    const previous = gamepadButtons;
+    gamepadButtons = { a, pause };
+    gamepadSteer = 0;
+    if (!gamepadFocused || document.hidden || !pad) return;
+    if (pause && !previous.pause && state?.running && !state.paused) pauseGame();
+    else if (a && !previous.a) {
+      if (activeModal === ui.pause) resumeGame();
+      else if (!activeModal && !ui.home.classList.contains('hidden')) start('endless');
+    }
+    if (state?.running && !state.paused && !menuVisible) gamepadSteer = rules.gamepadSteering(pad.axes[0], pad.buttons[14]?.pressed, pad.buttons[15]?.pressed);
+  }
   canvas.addEventListener('pointerdown', e => { pointerX = canvasPointerX(e); canvas.setPointerCapture?.(e.pointerId); });
   canvas.addEventListener('pointermove', e => { if (e.buttons) pointerX = canvasPointerX(e); });
   canvas.addEventListener('pointerup', clearInput);
@@ -932,10 +1001,13 @@
       return;
     }
     if (e.key === 'Escape') { if (!ui.pause.classList.contains('hidden')) resumeGame(); else if (state?.running && !state.paused) pauseGame(); e.preventDefault(); return; }
-    if (['ArrowLeft', 'ArrowRight'].includes(e.key) && state?.running && !state.paused) { keys.add(e.key); e.preventDefault(); }
+    if (['Enter', ' '].includes(e.key) && !e.repeat && !activeModal && !ui.home.classList.contains('hidden') && !e.target?.closest?.('button, a, input, select, textarea')) { e.preventDefault(); start('endless'); return; }
+    const key = steeringKey(e.key);
+    if (['ArrowLeft', 'ArrowRight'].includes(key) && state?.running && !state.paused) { keys.add(key); e.preventDefault(); }
   });
-  document.addEventListener('keyup', e => keys.delete(e.key));
-  window.addEventListener('blur', () => { const wasActive = state?.running && !state.paused; clearInput(); if (wasActive) pauseGame(); });
+  document.addEventListener('keyup', e => keys.delete(steeringKey(e.key)));
+  window.addEventListener('blur', () => { gamepadFocused = false; const wasActive = state?.running && !state.paused; clearInput(); if (wasActive) pauseGame(); });
+  window.addEventListener('focus', () => { gamepadFocused = true; });
   document.addEventListener('visibilitychange', () => { if (document.hidden) { const wasActive = state?.running && !state.paused; clearInput(); if (wasActive) pauseGame(); } });
   window.sevaJumpNativeBack = handleNativeBack; window.Capacitor?.Plugins?.App?.addListener?.('backButton', handleNativeBack); setNativeGameplayActive(false); applyPreferences(); setSelectedCharacter(selectedCharacter); reset(); state.running = false; updateUpgradeUI(); updateRecordsUI(); renderBadges(); renderStats(); requestAnimationFrame(loop);
   if ('serviceWorker' in navigator && location.protocol !== 'file:') window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));

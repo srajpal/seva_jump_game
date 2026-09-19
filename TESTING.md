@@ -16,6 +16,13 @@ npm run test:package
 
 ## Browser checks
 
+Issue #6 coverage includes keyboard and standard gamepad edges, deadzone and
+disconnect handling, audio-clock scheduling under timer jitter, null canvas
+fallback, breakable platform lifetime/collision, first-visible bird counts, and
+lag-frame Challenge bowl recovery with Falcon. Generator checks assert birds
+spawn midway between adjacent rows. Package checks keep the iOS asset folder
+aligned with the runtime allowlist.
+
 `tests/browser-checks.cjs` uses Playwright as an optional development tool. It is not part of the shipped game. Set `PLAYWRIGHT_MODULE` to your installed Playwright module directory, or install Playwright locally so Node can resolve it. Edge is the default test browser.
 
 ```powershell

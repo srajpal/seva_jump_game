@@ -17,6 +17,13 @@ const SEVA_CONFIG = {
   pointerSteeringGain: 9,
   pointerSteeringResponse: 18,
   keyboardAcceleration: 1500,
+  gamepadDeadzone: .18,
+  breakCrumbleDuration: .3,
+  breakCrumbleFallDistance: 36,
+  musicBeatSeconds: .5,
+  musicLookaheadSeconds: .2,
+  musicStartDelaySeconds: .05,
+  musicSchedulerIntervalMs: 50,
   // Arcade has authored score bands; Endless instead uses a continuous curve.
   tierThresholds: [100, 250, 450, 700],
   horizontalShifts: [72, 94, 116, 136, 136],
@@ -46,6 +53,9 @@ const SEVA_CONFIG = {
   birdPlatformClearance: 76,
   arcadeTargetScore: 1000,
   challengeParshadTarget: 50,
+  // Net is H - 52 and bowl pickup reach is 86: normally unreachable at H + 34.
+  // A 40 ms falling frame can overshoot the net before Falcon rescue, so track
+  // recovered misses even beyond this extra warning margin.
   challengeMissedBowlMargin: 60,
   challengeMissedMessageDuration: 3,
   arcadeBirdStartScore: 500,

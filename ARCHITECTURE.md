@@ -8,7 +8,7 @@ Seva Jump is a browser game packaged for Android and iOS. The browser source is 
 - `styles.css` lays out the portrait canvas, responsive menus, safe areas, and reduced-motion presentation. The canvas is 450 × 800 in browsers and 640 × 800 on native tablets.
 - `game.js` owns runtime state, course generation, collision handling, input, audio, persistence, menu flow, and canvas drawing.
 - `game-config.js` contains gameplay tuning. `game-rules.js` contains shared calculations that the Node checks can exercise without a browser.
-- `assets/` contains the pixel art used at runtime.
+- `assets/` contains only the pixel art used at runtime. Unused source variants live in `design/`, excluded from web, Android, and iOS packages.
 - `sw.js` caches the hosted web release. `manifest.webmanifest` describes the installable web app.
 - `scripts/web-files.mjs` is the allowlist shared by native sync and itch.io packaging. `tests/` contains rule, runtime, service-worker, and package checks.
 
@@ -22,7 +22,7 @@ The renderer draws the backdrop, platforms, collectibles, hazards, player, effec
 
 ## Input and lifecycle
 
-Pointer input maps screen coordinates into the current canvas size, including letterboxing, and steers toward the pointer position. Left and Right Arrow keys provide keyboard steering. Escape and the pause button pause a run. Losing focus or hiding the page also pauses active gameplay and clears held input.
+Pointer input maps screen coordinates into the current canvas size, including letterboxing, and steers toward the pointer position. A/D and Left/Right Arrow keys provide keyboard steering. Enter/Space starts Endless from Home unless a control has focus. Standard gamepads are polled each animation frame, including menus and pause: stick/D-pad steer, A starts/resumes, and B/Start pauses on a fresh press. Escape and the pause button pause a run. Losing focus or hiding the page also pauses active gameplay and clears held input. Desktop fullscreen targets the game frame so HTML controls remain available alongside the canvas.
 
 Opening Settings from a paused run keeps the run paused. Leaving or restarting a paused run records that the player left early. Android Back opens the exit confirmation away from the home screen; Back on the home screen exits through Capacitor's App plugin. The Android bridge also switches system bars between menu and gameplay presentation.
 
@@ -30,7 +30,7 @@ Opening Settings from a paused run keeps the run paused. Leaving or restarting a
 
 One profile is stored under `seva-jump-profile` in `localStorage`. It contains scores, upgrades, badges, statistics, preferences, tutorial completion, and the character choice. Reads are normalized before use. If browser storage is blocked or fails, the game keeps an in-memory profile for the current session and shows a warning. Reset removes the stored profile when possible and always resets the in-memory profile.
 
-Music and sound effects are generated at runtime with the Web Audio API. Noise buffers are cached by duration for the current audio context; each playback still creates its own source and filters. Playback begins after player interaction, follows the sound settings, stops on pause and menus, and resumes with gameplay when music is enabled. If Web Audio is unavailable, the game disables the sound controls, shows a short notice, and continues silently. No audio files or streaming service are required.
+Music and sound effects are generated at runtime with the Web Audio API. Music phrases use the audio clock and a short lookahead scheduler so timer jitter does not accumulate between phrases. Noise buffers are cached by duration for the current audio context; each playback still creates its own source and filters. Playback begins after player interaction, follows the sound settings, stops on pause and menus, and resumes with gameplay when music is enabled. If Web Audio is unavailable, the game disables the sound controls, shows a short notice, and continues silently. No audio files or streaming service are required.
 
 ## Hosted offline lifecycle
 

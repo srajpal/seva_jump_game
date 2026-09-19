@@ -10,7 +10,9 @@ Seva Jump is designed for ages 8-15, with touch-first controls, a calm gurdwara-
 
 ## Play
 
-Open **`index.html`** in a modern browser. On a phone or tablet, drag across the game to steer left and right. On a desktop, drag with a mouse or use the left and right arrow keys. Press Escape to pause during gameplay.
+Open **`index.html`** in a modern browser. On a phone or tablet, drag across the game to steer left and right. On a desktop, drag with a mouse or steer with A/D or the left and right arrow keys. Enter or Space starts Endless from Home when a button or other control is not focused. Press Escape to pause; the ⛶ button toggles fullscreen during play where supported.
+
+Standard gamepads use the left stick or D-pad to steer, A to start Endless from Home or resume, and B or Start to pause. Breakable platforms stop supporting the player immediately after landing, then fall and fade over 0.3 seconds (fade only with reduced motion). Birds spawn between platform rows; “Birds seen” counts their first appearance during play.
 
 New players receive a short three-step guide after choosing their first mode. It can be replayed later from Settings.
 

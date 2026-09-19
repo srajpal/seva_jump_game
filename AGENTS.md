@@ -8,7 +8,7 @@ SevaJump is a free, offline-first, touch-friendly vertical jumping game for ages
 
 - `index.html`, `styles.css`, and `game.js` are the game shell, responsive UI, canvas gameplay, input, and rendering.
 - `game-config.js` contains gameplay tuning. Keep shared behavioural calculations in `game-rules.js` so tests can exercise them.
-- `assets/` contains source pixel-art assets. Do not overwrite assets or add generated variants unless the task requires them.
+- `assets/` contains runtime pixel art; `design/` preserves unused source variants outside shipped bundles. Keep `assets/` aligned with `scripts/web-files.mjs` because iOS packages that entire folder. Do not overwrite assets or add generated variants unless the task requires them.
 - `tests/` contains standalone Node checks; extend the most relevant check when changing rules, procedural generation, or balance.
 - `android/` is the Capacitor wrapper. `android/app/src/main/java/org/sevajump/game/MainActivity.java` owns Android system bars, insets, and immersive-gameplay integration.
 - `ios/SevaJump.xcodeproj` packages the web source directly. Build and test with Xcode on iPhone and iPad; there is no separate iOS web sync step.

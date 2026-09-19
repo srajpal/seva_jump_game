@@ -3,6 +3,12 @@ const RULE_CONFIG = typeof module !== 'undefined' ? require('./game-config.js') 
 const SEVA_RULES = {
   isArcadeLike(mode) { return mode === 'arcade' || mode === 'challenge'; },
   isHard(mode) { return mode === 'hard'; },
+  gamepadSteering(axis, left, right) {
+    if (left || right) return Number(Boolean(right)) - Number(Boolean(left));
+    const value = Number.isFinite(axis) ? Math.max(-1, Math.min(1, axis)) : 0;
+    const magnitude = Math.max(0, (Math.abs(value) - RULE_CONFIG.gamepadDeadzone) / (1 - RULE_CONFIG.gamepadDeadzone));
+    return Math.sign(value) * magnitude;
+  },
   endlessDifficulty(score) {
     return Math.max(0, Math.min(1, score / RULE_CONFIG.endlessDifficultyScore));
   },

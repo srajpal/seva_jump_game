@@ -27,6 +27,40 @@ assert.equal(state.player.y, 500 - state.player.h / 2);
 assert.ok(state.player.vy < 0);
 assert.equal(runtime.hooks.profile.stats.jumps, 1);
 
+// Broken platforms linger visually but cannot bounce the player a second time.
+for (const reducedMotion of [false, true]) {
+  state = cleanState(runtime); runtime.hooks.profile.reducedMotion = reducedMotion;
+  const platform = { x: 150, y: 500, w: 150, type: 'break', speed: 0, dir: 1, broken: false };
+  state.platforms = [platform];
+  Object.assign(state.player, { x: 225, y: 470, vy: 100, vx: 0 });
+  const jumps = runtime.hooks.profile.stats.jumps;
+  runtime.hooks.update(.04);
+  assert.equal(platform.broken, true); assert.equal(platform.breakElapsed, 0);
+  assert.equal(state.platforms.includes(platform), true, 'landing does not remove the crumble image');
+  Object.assign(state.player, { x: 225, y: 475, vy: 700, vx: 0 });
+  runtime.hooks.update(.04);
+  assert.equal(runtime.hooks.profile.stats.jumps, jumps + 1, 'a crumbling platform is no longer solid');
+  Object.assign(state.player, { y: 400, vy: 0 });
+  advanceUpdates(runtime, config.breakCrumbleDuration - .08);
+  assert.equal(state.platforms.includes(platform), true);
+  advanceUpdates(runtime, .05);
+  assert.equal(state.platforms.includes(platform), false, 'crumble expires after the configured duration');
+}
+
+runtime.hooks.start('endless');
+state = runtime.hooks.state;
+assert.equal(runtime.hooks.profile.stats.birdsSeen, 0, 'generating a course never counts birds as seen');
+state.cameraY = 0;
+const bird = { x: 225, y: -900, vx: 60, type: 'pigeon', flapOffset: 0 };
+state.enemies = [bird]; runtime.hooks.draw(); assert.equal(runtime.hooks.profile.stats.birdsSeen, 0);
+bird.y = 300; runtime.hooks.draw(); runtime.hooks.draw();
+assert.equal(runtime.hooks.profile.stats.birdsSeen, 1, 'a bird counts once when first visible');
+bird.y = -900; runtime.hooks.draw(); bird.y = 300; runtime.hooks.draw();
+assert.equal(runtime.hooks.profile.stats.birdsSeen, 1, 're-entering view does not count twice');
+const hiddenBird = { ...bird, seen: false }; state.enemies.push(hiddenBird);
+runtime.hooks.pauseGame(); runtime.hooks.draw(); assert.equal(runtime.hooks.profile.stats.birdsSeen, 1);
+runtime.hooks.showHome(); runtime.hooks.draw(); assert.equal(runtime.hooks.profile.stats.birdsSeen, 1, 'menu backgrounds do not count sightings');
+
 // A fast descent at the real 40 ms frame cap still lands when the player's
 // path crosses a platform. A final-position 25 px band misses this case.
 state = cleanState(runtime);
@@ -118,6 +152,38 @@ state = cleanState(missedRuntime, 'challenge');
 missedRuntime.hooks.updateMobileHud();
 assert.equal(state.challengeMissed, false, 'restarting clears the missed-bowl flag');
 assert.equal(missedRuntime.elements.get('#mobile-mode').textContent, 'CHALLENGE · 0/50');
+
+// A 40 ms frame can pick up a warned bowl before the net triggers Falcon.
+// Another missed bowl, including one already culled, must remain in the HUD.
+for (const otherMiss of [false, true]) {
+  state = cleanState(missedRuntime, 'challenge');
+  missedRuntime.hooks.profile.falcon = 1;
+  state.cameraY = 0;
+  Object.assign(state.player, { x: 225, y: 400, vy: 0 });
+  const recoverable = { x: 225, y: 861, type: 'parshad', challengeBowl: true };
+  state.collectibles = [recoverable];
+  if (otherMiss) state.collectibles.push({ x: 25, y: 950, type: 'parshad', challengeBowl: true });
+  missedRuntime.hooks.update(0); assert.equal(state.challengeMissed, true);
+  Object.assign(state.player, { y: 747, vy: 1000 });
+  missedRuntime.hooks.update(.04);
+  assert.equal(recoverable.taken, true, 'lag frame recovers the previously warned bowl');
+  assert.ok(state.falconRescue, 'the same frame triggers Falcon rescue');
+  assert.equal(state.challengeMissed, otherMiss);
+  missedRuntime.hooks.updateMobileHud();
+  assert.equal(missedRuntime.elements.get('#mobile-mode').textContent.includes('MISSED'), otherMiss);
+}
+for (const native of [false, true]) {
+  const painted = [];
+  const messages = makeRuntime({}, { native, drawingContext: { fillText(text, x, y) { painted.push({ text, y }); } } });
+  state = cleanState(messages, 'challenge'); state.challengeMissed = true;
+  for (const message of ['A bowl was missed - restart to collect all 50', 'FALCON SAVE!', 'Back in the sky!', 'Bird hit!']) {
+    state.message = message; state.messageTimer = 2; painted.length = 0; messages.hooks.draw();
+    const item = painted.find(item => item.text === message);
+    if (message.startsWith('A bowl')) assert.equal(item?.y, 180);
+    else if (native) assert.equal(item, undefined, 'later messages stay off the mobile canvas');
+    else assert.equal(item?.y, 120, 'desktop messages keep their normal position after a miss');
+  }
+}
 
 // Exercise actual boost collection.
 state = cleanState(runtime);

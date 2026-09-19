@@ -17,7 +17,8 @@
     <main class="game-shell">
       <a class="studio-home-link" href="https://www.khalsagamestudio.com/" target="_blank" rel="noopener noreferrer">Visit Khalsa Game Studio ↗</a>
       <section class="game-frame" aria-label="Seva Jump game">
-        <canvas id="game" width="450" height="800" tabindex="0" aria-label="Seva Jump game. Drag or use Left and Right Arrow keys to steer. Press Escape to pause.">Seva Jump requires a browser with canvas support.</canvas>
+        <canvas id="game" width="450" height="800" tabindex="0" aria-label="Seva Jump game. Drag or use A/D or Left and Right Arrow keys to steer. Press Escape to pause.">Seva Jump requires a browser with canvas support.</canvas>
+        <p id="canvas-warning" class="storage-warning hidden" role="alert"></p>
         <div id="mobile-hud" class="mobile-hud hidden">
           <div class="mobile-hud-score"><strong id="mobile-score">Score 0</strong><span id="mobile-items">Parshad 0 · Khanda 0</span></div>
           <div class="mobile-hud-upgrades" aria-label="Owned upgrades">
@@ -28,6 +29,7 @@
           <span id="mobile-mode" class="mobile-hud-mode">ENDLESS</span>
         </div>
         <div id="game-tools" class="game-tools hidden">
+          <button id="fullscreen-button" class="game-tool desktop-fullscreen hidden" type="button" aria-label="Enter fullscreen" title="Enter fullscreen">⛶</button>
           <button id="pause-button" class="game-tool" type="button" aria-label="Pause game" title="Pause game">Ⅱ</button>
         </div>
         <div id="home-screen" class="overlay home-screen">
@@ -38,7 +40,7 @@
               <span class="story-icon" aria-hidden="true">✦</span>
               <p><strong>Help!</strong> The birds have stolen all the parshad. You have to help get it back.</p>
             </div>
-            <p id="home-records" class="home-records" aria-live="polite">Best scores · Endless 0 · Arcade 0 · Challenge 0</p>
+            <p id="home-records" class="home-records" aria-live="polite">Best · Endless 0 · Arcade 0 · Challenge 0 · Hard 0</p>
             <div class="home-scene" aria-label="Choose your character">
               <img class="scene-bowl" src="assets/parshad-bowl-pixel-v3.png" alt="" />
               <button class="scene-girl scene-character selected" data-character="girl" type="button" aria-label="Play as the young Sikh girl" aria-pressed="true"><img src="assets/player-girl-pixel-v1.png" alt="" /></button>
@@ -171,7 +173,8 @@
           <section class="control-card" aria-labelledby="controls-heading">
             <h3 id="controls-heading"><span aria-hidden="true">↔</span> How to play</h3>
             <div><strong>Phone or tablet</strong><p>Drag anywhere across the game to guide your jumper left and right.</p></div>
-            <div><strong>Desktop</strong><p>Drag with a mouse or use the left and right arrow keys. Press Escape to pause.</p></div>
+            <div><strong>Desktop</strong><p>Drag with a mouse or steer with A/D or the arrow keys. Enter or Space starts Endless from Home; focused buttons keep their usual action. Escape pauses. Use ⛶ during play for fullscreen.</p></div>
+            <div><strong>Controller</strong><p>Use a standard gamepad's left stick or D-pad to steer. A starts Endless from Home or resumes a paused run. B or Start pauses.</p></div>
           </section>
           <section class="comfort-card"><span aria-hidden="true">◌</span><p><strong>Reduced Motion</strong> keeps gameplay the same while making decorative movement still, including character bobbing, hovering, fireworks, and transitions.</p></section>
           <h3 class="about-subhead"><span aria-hidden="true">✦</span> Sikh terms</h3>

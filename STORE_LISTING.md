@@ -21,7 +21,7 @@ Four ways to play:
 - Challenge Mode: recover all 50 parshad bowls before reaching the finish.
 - Hard Mode: tackle smaller moving and breakable platforms with earlier bird encounters.
 
-The About & Help section explains the controls, game items, accessibility settings, and Sikh terms used in the adventure. Progress, preferences, upgrades, badges, and statistics stay locally on your device and can be erased from Settings.
+The About & Help section explains the controls, game items, accessibility settings, and Sikh terms used in the adventure. Progress, preferences, upgrades, badges, and statistics stay locally on your device and can be erased from Settings. Android backup is disabled, so progress is not restored after uninstalling and reinstalling the app.
 
 ## Suggested Play Console declarations
 
