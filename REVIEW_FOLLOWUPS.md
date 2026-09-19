@@ -43,6 +43,14 @@ Source: [review comment](https://github.com/srajpal/seva_jump_game/pull/10#issue
 
 ## Verification still needed
 
+- [ ] Review CI action/runtime maintenance separately from gameplay changes.
+  [PR #11's passing CI run](https://github.com/srajpal/seva_jump_game/actions/runs/35472242185)
+  warns that `actions/checkout@v4` and `actions/setup-node@v4` target deprecated
+  Node 20 action runtimes and are being forced onto Node 24; the project's test
+  runtime remains Node 22. The runner also announces an `ubuntu-latest` migration
+  to Ubuntu 26 beginning October 19, 2026. Verify action upgrades and runner
+  compatibility in the same pass as the duplicate-CI follow-up.
+
 - [ ] Verify the Challenge changes on actual Android phone and tablet devices;
   no device was connected during PR #10. Browser viewport checks do not replace
   native testing. Track release readiness in `RELEASE_PROGRESS.md`.
