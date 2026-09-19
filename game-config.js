@@ -32,6 +32,19 @@ const SEVA_CONFIG = {
   // platform route reachable without relying on boosts or perfect timing.
   safeDefaultPlatformGap: 96,
   doublePlatformChance: .24,
+  // Cumulative platform-roll cutoffs; Arcade break odds come from its score curve.
+  arcadePlatformMix: { spring: .09, moving: .55 },
+  endlessPlatformMix: {
+    spring: { base: .10, increase: .03 },
+    break: { base: .18, increase: .14 },
+    moving: { base: .38, increase: .18 },
+  },
+  collectibleChance: .53,
+  tokenShare: .16,
+  challengeTokenChance: .14,
+  powerupChances: { kara: .055, nishan: .04 },
+  arcadeBirdChance: .18,
+  birdSpeed: { base: 60, randomRange: 45, difficultyBonus: 35, hardBonus: 12 },
   endlessDifficultyScore: 1500,
   endlessHorizontalShiftRange: [72, 136],
   endlessBirdStartScore: 160,
@@ -87,6 +100,8 @@ const SEVA_CONFIG = {
   arcadeMovingPlatformSpeedRange: [54, 104],
   // Rounded up from the previous prices: each level is 50% more expensive.
   powerJumpCosts: [15, 23, 38, 53, 68],
+  falconCost: 8,
+  shieldCost: 10,
 };
 
 globalThis.SEVA_CONFIG = SEVA_CONFIG;

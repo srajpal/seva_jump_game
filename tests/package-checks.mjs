@@ -37,10 +37,24 @@ for (const match of html.matchAll(/(?:src|href)="([^"#]+)"/g)) {
   if (/^https?:/.test(match[1])) continue;
   assert(names.includes(match[1].split('?')[0]), `Packaged HTML dependency: ${match[1]}`);
 }
-assert(html.includes(`v${pkg.version}`));
+const visibleVersion = html.match(/class="game-version"\s+aria-label="Game version ([^"]+)">v([^ |<]+)/);
+assert.ok(visibleVersion, 'Visible and accessible game version labels exist');
+assert.equal(visibleVersion[1], pkg.version, 'Accessible web version');
+assert.equal(visibleVersion[2], pkg.version, 'Visible web version');
+assert.ok([...html.matchAll(/\?v=([^"']+)/g)].length >= 4, 'Versioned web references exist');
 for (const match of html.matchAll(/\?v=([^"']+)/g)) assert.equal(match[1], pkg.version);
 const worker = entries.find(e => e.name === 'sw.js').data.toString();
-assert(worker.includes(`'${pkg.version}'`), 'Worker cache must match candidate version');
+assert.equal(worker.match(/const RELEASE_VERSION = '([^']+)'/)?.[1], pkg.version, 'Worker cache must match candidate version');
+for (const [file, pattern, minimum] of [
+  ['android/app/build.gradle', /\bversionName\s+"([^"]+)"/g, 1],
+  ['ios/SevaJump/App/Info.plist', /<key>CFBundleShortVersionString<\/key>\s*<string>([^<]+)<\/string>/g, 1],
+  ['ios/SevaJump.xcodeproj/project.pbxproj', /\bMARKETING_VERSION\s*=\s*"?([^";\s]+)"?\s*;/g, 2],
+]) {
+  const source = await readFile(new URL('../' + file, import.meta.url), 'utf8');
+  const versions = [...source.matchAll(pattern)];
+  assert.ok(versions.length >= minimum, `${file}: native version declarations exist`);
+  for (const match of versions) assert.equal(match[1], pkg.version, `${file}: version must match package.json`);
+}
 for (const match of worker.matchAll(/'\.\/([^']+)'/g)) assert(names.includes(match[1]), `Packaged precache file: ${match[1]}`);
 const manifest = JSON.parse(entries.find(e => e.name === 'manifest.webmanifest').data);
 for (const icon of manifest.icons) assert(names.includes(icon.src));
