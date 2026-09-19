@@ -49,10 +49,17 @@ const SEVA_RULES = {
   isBelowFinishBanner(platformY, bannerY) {
     return platformY > bannerY;
   },
+  isChallengeBowlRow(placed, rowNumber) {
+    return placed < RULE_CONFIG.challengeParshadTarget && rowNumber % 3 === 0;
+  },
   shouldComplete(mode, score, parshad) {
-    if (mode === 'arcade') return score >= RULE_CONFIG.arcadeTargetScore;
-    if (mode === 'challenge') return score >= RULE_CONFIG.arcadeTargetScore && parshad >= RULE_CONFIG.challengeParshadTarget;
-    return false;
+    return this.isArcadeLike(mode) && score >= RULE_CONFIG.arcadeTargetScore && this.didWin(mode, parshad);
+  },
+  shouldEndIncompleteChallenge(mode, score, parshad) {
+    // Missing bowls still ends the course at the start of the finish section;
+    // it never grants a finish banner or a win for partial completion.
+    return mode === 'challenge' && !this.didWin(mode, parshad)
+      && score >= RULE_CONFIG.arcadeTargetScore - RULE_CONFIG.finishBannerLeadScore;
   },
   didWin(mode, parshad) {
     return mode !== 'challenge' || parshad >= RULE_CONFIG.challengeParshadTarget;

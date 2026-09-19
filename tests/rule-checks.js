@@ -14,6 +14,12 @@ assert.equal(rules.shouldComplete('challenge', config.arcadeTargetScore, config.
 assert.equal(rules.didWin('challenge', config.challengeParshadTarget - 1), false);
 assert.equal(rules.didWin('challenge', config.challengeParshadTarget), true);
 assert.equal(rules.didWin('arcade', 0), true);
+const challengeCutoff = config.arcadeTargetScore - config.finishBannerLeadScore;
+for (const score of [challengeCutoff - 1, challengeCutoff, config.arcadeTargetScore]) {
+  assert.equal(rules.shouldEndIncompleteChallenge('challenge', score, config.challengeParshadTarget - 1), score >= challengeCutoff, 'incomplete Challenge ends at the finish-section cutoff');
+  assert.equal(rules.shouldEndIncompleteChallenge('challenge', score, config.challengeParshadTarget), false, 'all bowls retain the banner finish');
+  for (const mode of ['arcade', 'endless', 'hard']) assert.equal(rules.shouldEndIncompleteChallenge(mode, score, 0), false);
+}
 assert.equal(rules.isArcadeLike('arcade'), true);
 assert.equal(rules.isArcadeLike('challenge'), true);
 assert.equal(rules.isArcadeLike('endless'), false);
@@ -45,8 +51,13 @@ assert.equal(config.powerJumpCosts.reduce((sum, cost) => sum + cost, 0), 197, 'P
 // Challenge placement: one bowl every third generated platform, then no more.
 let placed = 0;
 for (let platform = 1; platform <= 220; platform++) {
-  if (placed < config.challengeParshadTarget && platform % 3 === 0) placed++;
+  if (rules.isChallengeBowlRow(placed, platform)) placed++;
 }
+assert.equal(rules.isChallengeBowlRow(0, 1), false);
+assert.equal(rules.isChallengeBowlRow(0, 2), false);
+assert.equal(rules.isChallengeBowlRow(0, 3), true);
+assert.equal(rules.isChallengeBowlRow(config.challengeParshadTarget - 1, 150), true);
+assert.equal(rules.isChallengeBowlRow(config.challengeParshadTarget, 153), false);
 assert.equal(placed, config.challengeParshadTarget, 'Challenge must contain exactly the requested number of bowls.');
 assert.equal(config.challengeParshadTarget * 3, 150, 'All Challenge bowls should appear before the finish section.');
 assert(config.arcadeMovingPlatformSpeedRange[1] <= 110, 'Arcade platform speed cap should remain manageable.');

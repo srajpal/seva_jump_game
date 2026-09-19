@@ -24,7 +24,7 @@ const server = http.createServer((req, res) => {
   if (!file.startsWith(root + path.sep)) { res.writeHead(403); return res.end(); }
   fs.readFile(file, (error, data) => {
     if (error) { res.writeHead(404); return res.end(); }
-    if (inspect && path.basename(file) === 'game.js') data = data.toString().replace(/\}\)\(\);\s*$/, 'window.__qa={get state(){return state},get profile(){return profile},get pointer(){return pointerX},get keys(){return [...keys]},update,finish,triggerBirdHit,resolveBirdHit,triggerFalconSave,set time(t){lastTime=t}};})();');
+    if (inspect && path.basename(file) === 'game.js') data = data.toString().replace(/\}\)\(\);\s*$/, 'window.__qa={get state(){return state},get profile(){return profile},get pointer(){return pointerX},get keys(){return [...keys]},update,draw,finish,triggerBirdHit,resolveBirdHit,triggerFalconSave,set time(t){lastTime=t}};})();');
     res.setHeader('Content-Type', mime[path.extname(file)] || 'application/octet-stream');
     res.end(data);
   });
@@ -69,6 +69,38 @@ const check = (name, details = {}) => { reports.push({ name, passed: true, ...de
       await page.keyboard.down('ArrowRight'); await page.evaluate(() => window.dispatchEvent(new Event('blur'))); await page.keyboard.up('ArrowRight');
       assert(await page.evaluate(() => __qa.state.paused && __qa.keys.length===0 && __qa.pointer===null));
       await page.locator('#pause-home-button').click();
+      await page.locator('#challenge-button').click();
+      const missedBowl = await page.evaluate(() => {
+        const state = __qa.state, canvas = document.querySelector('canvas'), context = canvas.getContext('2d');
+        Object.assign(state, { cameraY: 0, score: 100, parshad: 6, nextY: -10000, platforms: [], enemies: [], powerups: [] });
+        Object.assign(state.player, { x: canvas.width / 2, y: 400, vx: 0, vy: 0 });
+        state.collectibles = [{ x: 100, y: canvas.height + 61, type: 'parshad', challengeBowl: true }];
+        __qa.update(0);
+        state.paused = true; // Freeze the controlled scene for visual review.
+        const painted = [], fillText = context.fillText;
+        context.fillText = function(text, x, y, ...rest) { painted.push({ text, x, y, width: this.measureText(text).width }); return fillText.call(this, text, x, y, ...rest); };
+        try { __qa.draw(); } finally { context.fillText = fillText; }
+        const warning = painted.find(item => item.text === state.message);
+        const rect = canvas.getBoundingClientRect(), scale = Math.min(rect.width / canvas.width, rect.height / canvas.height);
+        const warningTop = rect.top + (rect.height - canvas.height * scale) / 2 + (warning.y - 15) * scale;
+        return { missed: state.challengeMissed, warning, warningTop, pauseBottom: document.querySelector('#pause-button').getBoundingClientRect().bottom, canvasWidth: canvas.width, mobile: matchMedia('(pointer: coarse)').matches, painted };
+      });
+      assert.equal(missedBowl.missed, true);
+      assert.equal(missedBowl.warning?.text, 'A bowl was missed - restart to collect all 50');
+      assert.ok(missedBowl.warningTop > missedBowl.pauseBottom, `${name}: missed-bowl warning clears the pause button`);
+      assert.ok(missedBowl.warning.x - missedBowl.warning.width / 2 >= 0 && missedBowl.warning.x + missedBowl.warning.width / 2 <= missedBowl.canvasWidth, `${name}: missed-bowl warning fits the canvas`);
+      if (missedBowl.mobile) {
+        assert.equal(await page.locator('#mobile-mode').textContent(), 'CHALLENGE · 6/50 · MISSED');
+        const badge = await page.locator('#mobile-mode').boundingBox();
+        assert.ok(badge && badge.x >= 0 && badge.x + badge.width <= width, `${name}: missed-bowl HUD fits`);
+      } else assert.ok(missedBowl.painted.some(item => item.text.includes('6 / 50 · MISSED')));
+      await page.screenshot({ path: path.join(output, `${name}-challenge-missed.png`) });
+      await page.locator('#pause-button').click();
+      await page.locator('#pause-restart-button').click();
+      assert.equal(await page.evaluate(() => __qa.state.challengeMissed), false, 'Restart run clears missed-bowl feedback');
+      await page.locator('#pause-button').click();
+      await page.locator('#pause-home-button').click();
+      check(`Challenge missed-bowl warning and restart: ${name}`);
       await page.locator('.scene-boy').click(); await page.locator('#open-settings-button').click();
       await page.locator('#reset-progress-button').click(); await page.locator('#confirm-reset-button').click();
       assert(await page.evaluate(() => __qa.profile.character==='girl' && document.querySelector('.scene-girl').getAttribute('aria-pressed')==='true'));

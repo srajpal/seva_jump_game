@@ -7,7 +7,8 @@ const root = path.resolve(__dirname, '..');
 const gameSource = fs.readFileSync(path.join(root, 'game.js'), 'utf8');
 const runtimeHookSource = `globalThis.__SEVA_RUNTIME_HOOKS__ = {
   normalizeProfile, saveProfile, removeSavedProfile, resetAllProgress, canvasPointerX,
-  start, reset, addPlatform, update, finish, triggerBirdHit, resolveBirdHit, triggerFalconSave, updateFalconRescue,
+  start, reset, addPlatform, update, updateMobileHud, finish, triggerBirdHit, resolveBirdHit, triggerFalconSave, updateFalconRescue,
+  observeSounds(observer) { const playSound = sound; sound = type => { observer(type); playSound(type); }; },
   pauseGame, resumeGame, openSettings, closeSettings, requestResetProgress, cancelResetProgress,
   setLastTime(value) { lastTime = value; },
   get profile() { return profile; }, get state() { return state; }, get pointerX() { return pointerX; }, get keys() { return keys; },
