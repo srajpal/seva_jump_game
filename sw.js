@@ -1,4 +1,4 @@
-const RELEASE_VERSION = '0.13.2';
+const RELEASE_VERSION = '1.0.0';
 const SCOPE_URL = new URL(self.registration.scope);
 const SCOPE_KEY = encodeURIComponent(SCOPE_URL.pathname);
 const CACHE_PREFIX = `seva-jump-${SCOPE_KEY}-`;

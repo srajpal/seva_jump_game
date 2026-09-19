@@ -2,7 +2,7 @@
 
 **A skyward seva adventure.**
 
-Current release-candidate build: **v0.13.2**.
+Current release-candidate build: **v1.0.0** (native build 38). The published itch.io version remains 0.13.2 until a new upload is approved.
 
 The birds have flown away with the parshad. Choose a young Sikh boy or girl, leap from platform to platform, and bring it back in this cheerful browser game prototype.
 

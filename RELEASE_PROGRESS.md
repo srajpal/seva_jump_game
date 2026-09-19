@@ -1,4 +1,25 @@
-# itch.io release progress
+# Seva Jump release progress
+
+## 1.0.0 candidate - September 19, 2026
+
+- Owner requested promotion to 1.0.0 for the first Google Play release. Web display/query strings, service-worker cache, npm metadata and lockfile, Android versionName, and iOS marketing/Info.plist versions are aligned at 1.0.0. Android versionCode and iOS bundle build are 38. This does not publish an update or certify store readiness.
+- All six gameplay/rule suites, all three runtime/service-worker suites, JavaScript syntax checks for game.js and sw.js, and package checks passed. Updated version-specific service-worker expectations and browser/native evidence output paths for this candidate.
+- Capacitor sync and Android debug build passed with Android Studio's bundled Java after retrying outside the restricted sandbox. Debug APK: `android/app/build/outputs/apk/debug/app-debug.apk`. No signed release AAB, new device run, or iOS build was completed in this version-only pass.
+- Historical 0.13.2 artifacts, checksums and launch records below remain unchanged. The API 36 migration, signing, native QA and store submissions remain open.
+- Alternative Android distribution assessment and proposed priorities are in `ANDROID_DISTRIBUTION.md`. No license change or additional store registration is authorized by this research.
+
+## Google Play preparation - September 18, 2026
+
+Status: **not ready for Google Play submission**. The published browser baseline remains 0.13.2 (Android versionCode 37), commit `1b8af0b`.
+
+- Checked the signed-in Khalsa Game Studio developer account in Play Console. Policy status says **Account closed**, dated September 12, 2024, because the account was not being used. The console explicitly directs the owner to create a new developer account to publish. This is an inactivity closure; do not describe it as a policy-violation ban. No replacement account or app has been created, and no Android release has been uploaded.
+- Owner selected a **personal** developer account. The official signup URL redirects the currently signed-in studio Google account back to its closed account's policy page; replacement Google account selection is pending. No registration fee has been paid or agreement accepted. A new personal account requires at least 12 testers continuously opted into a closed test for 14 days before applying for production access. See [account requirements](https://support.google.com/googleplay/android-developer/answer/13628312), [testing requirements](https://support.google.com/googleplay/android-developer/answer/14151465), and the researched recruitment plan in `PLAY_TESTING_PLAN.md`.
+- Android currently compiles and targets API 35. Google's [current submission requirement](https://support.google.com/googleplay/android-developer/answer/11926878) is API 36 for new mobile apps from August 31, 2026. Upgrade the Android toolchain/target and verify Android 16 behavior, especially portrait/tablet layout and Back handling, before preparing the upload candidate. This migration has not been performed.
+- Re-ran JavaScript syntax checks for game.js and sw.js, all six rule/procedural suites, all three runtime/service-worker suites, and package checks successfully. The soak test covered 3.5 million generated landings. This is baseline source/package evidence, not signed Android artifact validation.
+- Verified the public [privacy policy](https://srajpal.github.io/seva_jump_game/privacy.html) loads in the browser. Final store contact details and declarations still need review.
+- Existing release-media files are browser/itch assets. Google Play icon, feature graphic, native phone screenshots, and final tablet coverage remain open. No new signed AAB was produced; release signing is not configured in app/build.gradle.
+
+Next sequence: establish the replacement account and complete verification; migrate and test the Android target; align the next candidate's versions; finish native device QA and Play assets/declarations; securely configure an upload key outside the repository; build and validate the signed AAB; upload to internal testing, then satisfy the account's closed-testing/production requirements. Preserve the published itch build and its historical evidence below.
 
 Candidate: **0.13.2**, September 11, 2026. This is the current record; `ITCH_RELEASE_AUDIT.md` preserves the original 0.13.1 findings.
 

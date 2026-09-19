@@ -32,7 +32,7 @@ Optional settings:
 - `TEST_WEB_ROOT`: an extracted release folder; default is the project source.
 - `SKIP_OFFLINE=1`: skip only the offline test, explicitly recorded as not run. Never use this to claim an offline pass.
 
-The suite starts its own local server and closes it afterward. It checks six viewport sizes, menu focus and scrolling, pause, pointer mapping, storage denial, reset, a local cross-origin iframe, and actual first-visit offline play. Screenshots and JSON results are written to ignored `screenshots/release-0.13.2/<engine>/`. Browser emulation is not a physical-device test; WebKit on Windows is not iPhone Safari.
+The suite starts its own local server and closes it afterward. It checks six viewport sizes, menu focus and scrolling, pause, pointer mapping, storage denial, reset, a local cross-origin iframe, and actual first-visit offline play. Screenshots and JSON results are written to ignored `screenshots/release-1.0.0/<engine>/`. Browser emulation is not a physical-device test; WebKit on Windows is not iPhone Safari.
 
 ## Release artifact
 

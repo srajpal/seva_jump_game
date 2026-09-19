@@ -2,7 +2,7 @@
 
 Use this checklist for every release candidate. Do not create or commit an upload keystore, passwords, or `keystore.properties`.
 
-Checkmarks record evidence for the current 0.13.2 work. Rerun applicable checks after any source change and against the exact artifact proposed for upload. [ITCH_RELEASE_AUDIT.md](ITCH_RELEASE_AUDIT.md) preserves the original 0.13.1 findings; current status is in [RELEASE_PROGRESS.md](RELEASE_PROGRESS.md).
+Current candidate: **1.0.0, native build 38**. Existing checkmarks record the historical 0.13.2 work unless newer evidence is explicitly dated. Rerun applicable checks after any source change and against the exact artifact proposed for upload. [ITCH_RELEASE_AUDIT.md](ITCH_RELEASE_AUDIT.md) preserves the original 0.13.1 findings; current status is in [RELEASE_PROGRESS.md](RELEASE_PROGRESS.md).
 
 ## itch.io browser release
 
@@ -46,15 +46,18 @@ Google Play and iOS signing/store-console tasks below do not block a browser-onl
 ## Google Play preparation
 
 - [ ] Confirm the permanent application ID: `org.sevajump.game`.
-- [ ] Create the app in Play Console and complete developer verification.
+- [ ] Create a replacement developer account and complete verification: the old Khalsa Game Studio account was confirmed closed for inactivity on September 18, 2026. Then create the app in Play Console.
+- [ ] Upgrade compile/target SDK from API 35 to API 36 with a compatible Android toolchain and verify Android 16 behavior. New mobile submissions require API 36 from August 31, 2026; see https://support.google.com/googleplay/android-developer/answer/11926878.
 - [ ] Create and securely back up a separate upload key; never store it in this repository.
 - [ ] Enroll in Play App Signing and build a signed Android App Bundle (`.aab`).
-- [ ] Publish the privacy policy at `https://srajpal.github.io/seva_jump_game/privacy.html`.
+- [ ] Decide cross-store signing before distribution: use a consistent application ID and compatible signing identity for updates. An upload key is not the Play app signing key. See `ANDROID_DISTRIBUTION.md`.
+- [x] Publish the privacy policy at `https://srajpal.github.io/seva_jump_game/privacy.html` (public page verified September 18, 2026; final contact/declaration review remains).
 - [ ] Complete Data safety as no data collected or shared, after verifying every included SDK.
 - [ ] Complete target audience, content rating, ads, app access, and government-app declarations accurately.
 - [ ] Capture at least four portrait phone screenshots: home, active play, upgrades/badges, and a victory scene.
 - [ ] Prepare a 512 × 512 Play icon and 1024 × 500 feature graphic.
 - [ ] Upload to Internal testing first, then Closed testing; review the pre-launch report before production.
+- [ ] If using a new personal developer account, complete the required closed test with at least 12 continuously opted-in testers for 14 days, then apply for production access. See https://support.google.com/googleplay/android-developer/answer/14151465.
 
 ## Build verification
 
