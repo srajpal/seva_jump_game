@@ -10,12 +10,12 @@ follow-ups here rather than relying on task history.
 
 Source: [review comment](https://github.com/srajpal/seva_jump_game/pull/9#issuecomment-5745429146).
 
-- [ ] With issue #5, cover collectible, token, boost, and Arcade-bird odds with
+- [x] Implemented with issue #5: cover collectible, token, boost, and Arcade-bird odds with
   seeded frequency contracts. The review's `.16` to `.30` token-share mutation
   was not caught by the platform-type boundary probes. Exercise eligible modes
   and score bands: Endless stays at level 1, so it cannot test level-3/4 boosts;
   Challenge intentionally has no boosts after PR #10.
-- [ ] Derive config-dependent platform threshold expectations from shared rules
+- [x] Implemented with issue #5: derive config-dependent platform threshold expectations from shared rules
   while retaining independent checks for the literals being guarded. Intentional
   config tuning should not require manually recomputing `.31/.38/.48/.56`.
 - [ ] Avoid duplicate CI runs for PR branches: consider pushes to `main` plus
@@ -40,6 +40,14 @@ Source: [review comment](https://github.com/srajpal/seva_jump_game/pull/10#issue
   The reviewer could reproduce the Node checks but could not independently run
   the optional browser suite. Keep reported local browser evidence distinct from
   CI evidence.
+
+## PR #11 — rendering and effects
+
+Source: [review comment](https://github.com/srajpal/seva_jump_game/pull/11#issuecomment-5745706216).
+
+- [ ] If repeated noise effects sound too repetitive in playtesting, cache two
+  or three pre-rolled buffers per duration and rotate them. This is optional;
+  first establish whether the repetition is audible on target devices.
 
 ## Verification still needed
 

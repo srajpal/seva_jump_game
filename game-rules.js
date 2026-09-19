@@ -6,6 +6,19 @@ const SEVA_RULES = {
   endlessDifficulty(score) {
     return Math.max(0, Math.min(1, score / RULE_CONFIG.endlessDifficultyScore));
   },
+  endlessPlatformCutoffs(score) {
+    const difficulty = this.endlessDifficulty(score), mix = RULE_CONFIG.endlessPlatformMix;
+    return {
+      spring: mix.spring.base + difficulty * mix.spring.increase,
+      break: mix.break.base + difficulty * mix.break.increase,
+      moving: mix.moving.base + difficulty * mix.moving.increase,
+    };
+  },
+  birdSpeed(mode, score, roll) {
+    const speed = RULE_CONFIG.birdSpeed;
+    return speed.base + roll * speed.randomRange + this.endlessDifficulty(score) * speed.difficultyBonus
+      + (this.isHard(mode) ? speed.hardBonus : 0) + (mode === 'challenge' ? RULE_CONFIG.challengeBirdSpeedBonus : 0);
+  },
   maxDefaultPlatformGap() {
     const normalApex = RULE_CONFIG.baseJumpVelocity ** 2 / (2 * RULE_CONFIG.gravity);
     return Math.min(RULE_CONFIG.safeDefaultPlatformGap, normalApex * .8);

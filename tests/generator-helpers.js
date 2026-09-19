@@ -52,11 +52,11 @@ function checkRow(runtime, previous, row, birds) {
 
 function addRow(runtime) {
   const state = runtime.hooks.state, previous = state.lastPlatform;
-  const platformCount = state.platforms.length, birdCount = state.enemies.length, itemCount = state.collectibles.length;
+  const platformCount = state.platforms.length, birdCount = state.enemies.length, itemCount = state.collectibles.length, powerupCount = state.powerups.length;
   runtime.hooks.addPlatform();
   const row = state.platforms.slice(platformCount), birds = state.enemies.slice(birdCount);
   const time = checkRow(runtime, previous, row, birds);
-  return { platform: row[0], row, birds, items: state.collectibles.slice(itemCount), time };
+  return { platform: row[0], row, birds, items: state.collectibles.slice(itemCount), powerups: state.powerups.slice(powerupCount), time };
 }
 
 function checkOpening(runtime) {

@@ -244,6 +244,8 @@
     ui.wallet.textContent = profile.tokens;
     ui.falconOwned.textContent = `Owned: ${profile.falcon}`;
     ui.shieldOwned.textContent = `Owned: ${profile.shield}`;
+    ui.buyFalcon.textContent = `Buy · ${config.falconCost}`;
+    ui.buyShield.textContent = `Buy · ${config.shieldCost}`;
     ui.powerOwned.textContent = `Level: ${profile.powerJump} / 5`;
     ui.buyPower.textContent = profile.powerJump >= 5 ? 'Max level' : `Buy · ${config.powerJumpCosts[profile.powerJump]}`;
     ui.buyPower.disabled = profile.powerJump >= 5;
@@ -317,14 +319,15 @@
     if (hard) {
       type = r < config.hardMovingChance ? 'moving' : 'break';
     } else if (arcade) {
-      if (r < .09) type = 'spring';
-      else if (level >= 2 && r < .09 + (state.mode === 'challenge' ? rules.challengeBreakChance(state.score) : rules.arcadeBreakChance(state.score))) type = 'break';
-      else if (r < .55) type = 'moving';
+      if (r < config.arcadePlatformMix.spring) type = 'spring';
+      else if (level >= 2 && r < config.arcadePlatformMix.spring + (state.mode === 'challenge' ? rules.challengeBreakChance(state.score) : rules.arcadeBreakChance(state.score))) type = 'break';
+      else if (r < config.arcadePlatformMix.moving) type = 'moving';
     } else {
       // Endless has no tiers: its platform mix gradually becomes more varied.
-      if (r < .10 + endlessDifficulty * .03) type = 'spring';
-      else if (r < .18 + endlessDifficulty * .14) type = 'break';
-      else if (r < .38 + endlessDifficulty * .18) type = 'moving';
+      const mix = rules.endlessPlatformCutoffs(state.score);
+      if (r < mix.spring) type = 'spring';
+      else if (r < mix.break) type = 'break';
+      else if (r < mix.moving) type = 'moving';
     }
     if (challengeBowlPlatform || (belowChallengeBowl && type === 'spring')) type = 'normal';
     const hardWidthRange = type === 'moving' ? config.hardMovingPlatformWidthRange : config.hardBreakPlatformWidthRange;
@@ -373,13 +376,13 @@
       // route. Missing even one means the finish banner cannot be won.
       state.challengePlatformCount++;
       if (challengeBowlPlatform) { state.collectibles.push({ x: x + w / 2, y: platform.y - 26, type: 'parshad', challengeBowl: true }); state.challengePlaced++; }
-      else if (Math.random() < .14) state.collectibles.push({ x: x + w / 2, y: platform.y - 37, type: 'token' });
-    } else if (Math.random() < .53) state.collectibles.push({ x: x + w / 2, y: platform.y - 37, type: Math.random() < .16 ? 'token' : 'parshad' });
-    if (state.mode !== 'challenge' && level >= 3 && Math.random() < .055) state.powerups.push({ x: x + w / 2, y: platform.y - 60, type: 'kara' });
-    if (state.mode !== 'challenge' && level >= 4 && Math.random() < .04) state.powerups.push({ x: x + w / 2, y: platform.y - 60, type: 'nishan' });
+      else if (Math.random() < config.challengeTokenChance) state.collectibles.push({ x: x + w / 2, y: platform.y - 37, type: 'token' });
+    } else if (Math.random() < config.collectibleChance) state.collectibles.push({ x: x + w / 2, y: platform.y - 37, type: Math.random() < config.tokenShare ? 'token' : 'parshad' });
+    if (state.mode !== 'challenge' && level >= 3 && Math.random() < config.powerupChances.kara) state.powerups.push({ x: x + w / 2, y: platform.y - 60, type: 'kara' });
+    if (state.mode !== 'challenge' && level >= 4 && Math.random() < config.powerupChances.nishan) state.powerups.push({ x: x + w / 2, y: platform.y - 60, type: 'nishan' });
     const birdChance = state.mode === 'challenge'
       ? (state.score >= config.challengeBirdStartScore ? config.challengeBirdChance : 0)
-      : arcade ? (state.score >= config.arcadeBirdStartScore ? .18 : 0)
+      : arcade ? (state.score >= config.arcadeBirdStartScore ? config.arcadeBirdChance : 0)
         : hard ? rules.hardBirdChance(state.score) : rules.endlessBirdChance(state.score);
     const candidateBirdY = platform.y - 90;
     const activeBirdYs = state.enemies.filter(bird => !bird.hit).map(bird => bird.y);
@@ -389,8 +392,7 @@
       const types = ['pigeon', 'sparrow', 'swift'], platformCenter = x + w / 2, clearance = config.birdPlatformClearance;
       const leftLimit = Math.max(25, platformCenter - clearance), rightLimit = Math.min(W - 25, platformCenter + clearance);
       const birdX = Math.random() < .5 && leftLimit > 25 ? 25 + Math.random() * (leftLimit - 25) : rightLimit < W - 25 ? rightLimit + Math.random() * (W - 25 - rightLimit) : platformCenter < W / 2 ? W - 25 : 25;
-      const challengeSpeedBonus = state.mode === 'challenge' ? config.challengeBirdSpeedBonus : 0;
-      state.enemies.push({ x: birdX, y: candidateBirdY, vx: (Math.random() < .5 ? -1 : 1) * (60 + Math.random() * 45 + endlessDifficulty * 35 + (hard ? 12 : 0) + challengeSpeedBonus), type: types[Math.floor(Math.random() * types.length)], flapOffset: Math.random() * Math.PI * 2 });
+      state.enemies.push({ x: birdX, y: candidateBirdY, vx: (Math.random() < .5 ? -1 : 1) * rules.birdSpeed(state.mode, state.score, Math.random()), type: types[Math.floor(Math.random() * types.length)], flapOffset: Math.random() * Math.PI * 2 });
       profile.stats.birdsSeen++;
     }
     // A normal jump reaches about 128 pixels. Endless ramps continuously;
@@ -893,7 +895,7 @@
   function pauseGame() { if (!state?.running || state.ending) return; menuDirty = true; setNativeGameplayActive(false); clearInput(); state.paused = true; stopMusic(); ui.pause.classList.remove('hidden'); syncModalAccessibility(); }
   function resumeGame() { if (!state?.paused || state.ending || ui.pause.classList.contains('hidden')) return; menuVisible = false; menuDirty = true; state.paused = false; setNativeGameplayActive(true); ui.pause.classList.add('hidden'); syncModalAccessibility(); getAudio(); if (profile.music) setMusic(); }
   function buyUpgrade(type) {
-    const costs = { falcon: 8, shield: 10, powerJump: config.powerJumpCosts[profile.powerJump] };
+    const costs = { falcon: config.falconCost, shield: config.shieldCost, powerJump: config.powerJumpCosts[profile.powerJump] };
     if (type === 'powerJump' && profile.powerJump >= 5) return updateUpgradeUI('Power Jump is already at its maximum level.');
     const cost = costs[type];
     if (profile.tokens < cost) return updateUpgradeUI(`You need ${cost - profile.tokens} more Khanda tokens.`);
