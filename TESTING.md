@@ -12,7 +12,7 @@ npm run test:runtime
 npm run test:package
 ```
 
-`npm test` runs the six original rule/procedural simulations. `test:runtime` exercises the actual game code with a small DOM harness, including saves, menus, input, platform collision, boosts, rescue, and repeated-run results; it also tests the service worker. Test-only inspection hooks are inserted into an in-memory copy, never the production file. Package checks validate references, versions, filenames and ZIP contents.
+`npm test` runs the rule and power-jump checks plus seeded soak, full-run, bird, and Hard Mode checks that call the actual `game.js` generator through the DOM harness. These inspect generated platforms, collectibles, birds, and finish runways on both 450- and 640-wide canvases; platform-odds boundary probes catch unintended balance drift. `test:runtime` exercises saves, menus, input, platform collision, boosts, rescue, and repeated-run results; it also tests the service worker. Test-only inspection hooks and random sources stay in the harness, never the production file. Package checks validate references, versions, filenames and ZIP contents. GitHub Actions runs the commands above on every push and pull request with Node 22, without installing npm dependencies.
 
 ## Browser checks
 
