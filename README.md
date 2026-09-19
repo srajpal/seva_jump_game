@@ -61,7 +61,7 @@ sync step for iOS.
 | **Challenge Mode** | Reach the finish with every one of the 50 parshad bowls collected. |
 | **Hard Mode** | Keep climbing on small moving and breakable platforms while earlier birds remain limited to one per screen. |
 
-Challenge Mode warns once when an uncollected bowl scrolls out of reach and keeps **MISSED** beside the bowl count until the next run. You can restart from the pause menu or continue practicing; an incomplete run still ends at score 972, before the finish banner. Challenge courses omit Kara and Nishan boosts and spring platforms immediately below bowl rows so those jumps cannot skip the next bowl.
+Challenge Mode warns once when an uncollected bowl scrolls out of reach and keeps **MISSED** beside the bowl count while any missed bowl remains uncollected. A last-moment pickup before Falcon rescue clears that bowl's miss without clearing other misses. You can restart from the pause menu or continue practicing; an incomplete run still ends at score 972, before the finish banner. Challenge courses omit Kara and Nishan boosts and spring platforms immediately below bowl rows so those jumps cannot skip the next bowl.
 
 ## Collectibles, platforms, and boosts
 

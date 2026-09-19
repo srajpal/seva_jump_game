@@ -16,14 +16,14 @@ npm run test:package
 
 The soak also compares observed collectible, token, boost, and Arcade-bird rates with config using a 4% relative tolerance over eligible generated rows. Boost sampling uses Arcade score bands; Endless has no level-gated boosts and Challenge disables them. Package checks compare all displayed/cache web versions and Android/iOS marketing versions with `package.json`, including both Xcode build configurations.
 
-## Browser checks
-
-Issue #6 coverage includes keyboard and standard gamepad edges, deadzone and
+Runtime coverage includes keyboard and standard gamepad edges, deadzone and
 disconnect handling, audio-clock scheduling under timer jitter, null canvas
 fallback, breakable platform lifetime/collision, first-visible bird counts, and
 lag-frame Challenge bowl recovery with Falcon. Generator checks assert birds
 spawn midway between adjacent rows. Package checks keep the iOS asset folder
 aligned with the runtime allowlist.
+
+## Browser checks
 
 `tests/browser-checks.cjs` uses Playwright as an optional development tool. It is not part of the shipped game. Set `PLAYWRIGHT_MODULE` to your installed Playwright module directory, or install Playwright locally so Node can resolve it. Edge is the default test browser.
 

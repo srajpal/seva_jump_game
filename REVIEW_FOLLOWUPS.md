@@ -1,8 +1,8 @@
 # Review follow-ups
 
-Deferred improvements from merged PR reviews. These are open investigation or
-implementation tasks, not completed fixes or additional scope for the current
-issue. Preserve the source link and record the resolving PR when closing an item.
+Findings from PR reviews, including deferred work and linked resolutions.
+Unchecked items are open investigation or implementation tasks. Preserve the
+source link and record the resolving PR when closing an item.
 When continuing work after a review, read new PR comments and append actionable
 follow-ups here rather than relying on task history. GitHub issues are the source
 of truth for scheduled work; this file is a linked review index. When resolving an
@@ -29,15 +29,14 @@ Source: [review comment](https://github.com/srajpal/seva_jump_game/pull/9#issuec
 
 Source: [review comment](https://github.com/srajpal/seva_jump_game/pull/10#issuecomment-5745538128).
 
-- [x] Addressed with [issue #6](https://github.com/srajpal/seva_jump_game/issues/6): reproduce a lag-frame pickup of a previously missed bowl followed by Falcon
-  rescue. `MISSED` can then remain visible despite a winnable run. Track which
-  bowls were missed so recovering one does not clear other genuine misses, and
-  test a 40 ms falling frame plus rescue. Document the net offset (52 px), bowl
-  pickup range (86 px), and warning margin (60 px) before changing that margin.
-- [x] Addressed with [issue #6](https://github.com/srajpal/seva_jump_game/issues/6): scope mobile warning drawing and the desktop y=180 position to the missed-
-  bowl message itself. The current flag also changes rendering of later Falcon
-  and bird messages. Consider an explicit message kind and test subsequent
-  messages after the warning expires.
+- [x] Addressed with [issue #6](https://github.com/srajpal/seva_jump_game/issues/6):
+  missed bowl identities survive culling, and a recovered bowl clears only its
+  own miss. Regression tests cover a 40 ms falling pickup followed by Falcon,
+  both alone and with another genuine miss. Config comments document the net
+  offset (52 px), pickup reach (86 px), and unchanged warning margin (60 px).
+- [x] Addressed with [issue #6](https://github.com/srajpal/seva_jump_game/issues/6):
+  warning placement now checks the warning text itself. Later Falcon/bird
+  messages stay off the mobile canvas and use desktop y=120. Tests cover both.
 - [ ] Put browser checks in CI when a deliberate browser/runtime setup is chosen.
   The reviewer could reproduce the Node checks but could not independently run
   the optional browser suite. Keep reported local browser evidence distinct from
@@ -69,6 +68,17 @@ Source: [review comment](https://github.com/srajpal/seva_jump_game/pull/12#issue
   it. Track the remaining item in [issue #6](https://github.com/srajpal/seva_jump_game/issues/6).
 
 ## Verification still needed
+
+- [ ] Investigate the intermittent Android reload error `Cannot read properties
+  of null (reading 'style')` observed during issue #6's tablet smoke run.
+  `MainActivity.publishInsets()` injects `document.documentElement.style` without
+  a document-readiness guard; this wrapper code is unchanged by issue #6. A
+  subsequent phone/tablet WebView smoke run passed. Retest inset publication at
+  startup/reload and preserve safe areas before fixing the lifecycle race.
+- [ ] Repeat native visual QA on stable devices: issue #6's headless emulators
+  passed WebView flows but device captures included a black phone surface and a
+  tablet System UI timeout. Canvas exports contained gameplay, but those captures
+  cannot establish complete device-level visual correctness.
 
 - [ ] Review CI action/runtime maintenance separately from gameplay changes.
   [PR #11's passing CI run](https://github.com/srajpal/seva_jump_game/actions/runs/35472242185)
