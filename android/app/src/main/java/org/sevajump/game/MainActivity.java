@@ -1,6 +1,5 @@
 package org.sevajump.game;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
@@ -12,28 +11,37 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
 
 import com.getcapacitor.BridgeActivity;
+import com.getcapacitor.WebViewListener;
 
 public class MainActivity extends BridgeActivity {
     private WebView gameWebView;
     private boolean immersiveRequested;
+    private Insets latestInsets = Insets.NONE;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
-        getWindow().setStatusBarColor(Color.TRANSPARENT);
-        getWindow().setNavigationBarColor(Color.TRANSPARENT);
 
         gameWebView = getBridge().getWebView();
         gameWebView.addJavascriptInterface(new GameWindowBridge(), "SevaJumpAndroid");
+        getBridge().addWebViewListener(new WebViewListener() {
+            @Override
+            public void onPageLoaded(WebView view) {
+                // A reload replaces the root element even when native insets do not change.
+                publishInsets(latestInsets);
+                ViewCompat.requestApplyInsets(view);
+            }
+        });
         ViewCompat.setOnApplyWindowInsetsListener(gameWebView, (view, windowInsets) -> {
             Insets safeInsets = windowInsets.getInsets(
                 WindowInsetsCompat.Type.systemBars()
                     | WindowInsetsCompat.Type.displayCutout()
                     | WindowInsetsCompat.Type.systemGestures()
             );
-            publishInsets(safeInsets);
+            latestInsets = safeInsets;
+            publishInsets(latestInsets);
             return windowInsets;
         });
         ViewCompat.requestApplyInsets(gameWebView);
@@ -46,10 +54,12 @@ public class MainActivity extends BridgeActivity {
         int right = Math.round(insets.right / density);
         int bottom = Math.round(insets.bottom / density);
         int left = Math.round(insets.left / density);
-        String script = "document.documentElement.style.setProperty('--android-safe-top','" + top + "px');"
-            + "document.documentElement.style.setProperty('--android-safe-right','" + right + "px');"
-            + "document.documentElement.style.setProperty('--android-safe-bottom','" + bottom + "px');"
-            + "document.documentElement.style.setProperty('--android-safe-left','" + left + "px');";
+        // Insets can arrive before the new document has a root. onPageLoaded republishes them.
+        String script = "(() => { const root = document.documentElement; if (!root) return;"
+            + "root.style.setProperty('--android-safe-top','" + top + "px');"
+            + "root.style.setProperty('--android-safe-right','" + right + "px');"
+            + "root.style.setProperty('--android-safe-bottom','" + bottom + "px');"
+            + "root.style.setProperty('--android-safe-left','" + left + "px'); })();";
         gameWebView.post(() -> gameWebView.evaluateJavascript(script, null));
     }
 
@@ -76,8 +86,8 @@ public class MainActivity extends BridgeActivity {
     private final class GameWindowBridge {
         @JavascriptInterface
         public void setGameplayActive(boolean active) {
-            immersiveRequested = active;
             runOnUiThread(() -> {
+                immersiveRequested = active;
                 if (active) hideSystemBars();
                 else showSystemBars();
             });

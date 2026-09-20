@@ -2,7 +2,7 @@
 
 **A skyward seva adventure.**
 
-Current release-candidate build: **v1.0.0** (native build 38). The published itch.io version remains 0.13.2 until a new upload is approved.
+Current release-candidate build: **v1.0.1** (Android build 39; iOS build 38). The published itch.io version remains 0.13.2 until a new upload is approved.
 
 The birds have flown away with the parshad. Choose a young Sikh boy or girl, leap from platform to platform, and bring it back in this cheerful browser game prototype.
 
@@ -20,12 +20,14 @@ The game is self-contained: no login, ads, purchases, or network connection are 
 
 ## Android device build
 
-The project now includes a Capacitor Android wrapper for direct device testing. With Android Studio, Java 21, and the Android SDK installed, run:
+The project now includes a Capacitor Android wrapper for direct device testing. With Node 22+, Android Studio Otter 2025.2.1 or newer, Java 21, and Android SDK 36 installed, run:
 
 ```powershell
 npm install
 npm run android:debug
 ```
+
+Capacitor 8 targets Android 16 (API 36) and requires Android 7.0 (API 24) or newer.
 
 The debug APK is written to `android\app\build\outputs\apk\debug\app-debug.apk`. With USB debugging enabled on a connected Android device, install it with:
 

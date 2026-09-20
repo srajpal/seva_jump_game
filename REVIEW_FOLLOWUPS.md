@@ -58,8 +58,9 @@ Source: [review comment](https://github.com/srajpal/seva_jump_game/pull/12#issue
   adds Endless boosts, replace the current zero-boost assertion with frequency
   contracts at the new Endless score bands. The current assertion records today's
   behavior, not a permanent balance requirement.
-- [ ] Consider cross-checking Android `versionCode` and iOS `CFBundleVersion`,
-  since README currently describes one shared native build number.
+- [x] [PR #15](https://github.com/srajpal/seva_jump_game/pull/15) makes README/checklist build numbers explicit per platform:
+  Android build 39 and iOS build 38. Do not require equality for independent
+  native release trains; the shared marketing-version checks remain in place.
 
 ## PR #14 — bird fairness and controls
 
@@ -93,19 +94,17 @@ Source: [review comment](https://github.com/srajpal/seva_jump_game/pull/14#issue
 
 ## Verification still needed
 
-- [ ] Investigate the intermittent Android reload error `Cannot read properties
-  of null (reading 'style')` observed during issue #6's tablet smoke run.
-  `MainActivity.publishInsets()` injects `document.documentElement.style` without
-  a document-readiness guard; this wrapper code is unchanged by issue #6. A
-  subsequent phone/tablet WebView smoke run passed. Retest inset publication at
-  startup/reload and preserve safe areas before fixing the lifecycle race. Track
-  with [issue #1's Android verification](https://github.com/srajpal/seva_jump_game/issues/1),
-  as requested in the PR #14 review; consider guarding document readiness or
-  deferring publication until the page finishes loading.
-- [ ] Repeat native visual QA on stable devices: issue #6's headless emulators
-  passed WebView flows but device captures included a black phone surface and a
-  tablet System UI timeout. Canvas exports contained gameplay, but those captures
-  cannot establish complete device-level visual correctness.
+- [x] Implemented in [PR #15](https://github.com/srajpal/seva_jump_game/pull/15) for [issue #1](https://github.com/srajpal/seva_jump_game/issues/1):
+  guard the document root in `MainActivity.publishInsets()` and republish retained
+  insets after page load. Repeated Android 15/16 phone/tablet reloads pass with
+  nonempty safe-area values and no page errors. The strengthened native smoke
+  check also catches stale cached candidates and HUD/Pause overlap. See the
+  current migration evidence in `RELEASE_PROGRESS.md`.
+- [x] Repeated emulator visual QA in [PR #15](https://github.com/srajpal/seva_jump_game/pull/15): usable Android 15/16 phone
+  and tablet device captures were reviewed, including gesture and three-button
+  bars. Android 16 initially showed System UI/service ANRs during first boot;
+  settled runs passed. Physical-device and sustained-performance checks remain
+  separate release gates in `RELEASE_PROGRESS.md`.
 
 - [ ] Review CI action/runtime maintenance separately from gameplay changes.
   [PR #11's passing CI run](https://github.com/srajpal/seva_jump_game/actions/runs/35472242185)
@@ -118,3 +117,7 @@ Source: [review comment](https://github.com/srajpal/seva_jump_game/pull/14#issue
 - [ ] Verify the Challenge changes on actual Android phone and tablet devices;
   no device was connected during PR #10. Browser viewport checks do not replace
   native testing. Track release readiness in `RELEASE_PROGRESS.md`.
+
+## Issue #1 — Capacitor 8 migration
+
+- [ ] Track the Capacitor CLI 8.5.2 development-only `xcode -> uuid` advisory [GHSA-w5hq-g745-h8pq](https://github.com/advisories/GHSA-w5hq-g745-h8pq). The September 19 install reports three moderate dependency entries from this one chain. It is not packaged in the Android app. Recheck upstream releases; do not apply an untested major UUID override or downgrade the CLI as part of this Android migration.

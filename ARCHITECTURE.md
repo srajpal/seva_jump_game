@@ -38,7 +38,7 @@ On HTTP or HTTPS, `game.js` registers `sw.js` after page load. The service worke
 
 ## Builds and native wrappers
 
-`npm run web:sync` recreates generated `www/` from the web-file allowlist. `npm run android:debug` runs that sync, updates the Capacitor Android project, and builds a debug APK. The Android wrapper lives under `android/`; `MainActivity.java` publishes system insets to CSS and controls immersive system bars.
+`npm run web:sync` recreates generated `www/` from the web-file allowlist. `npm run android:debug` runs that sync, updates the Capacitor Android project, and builds a debug APK. The Android wrapper lives under `android/`; `MainActivity.java` publishes system insets to CSS and controls immersive system bars. Capacitor 8 SystemBars inset handling is disabled so it does not add a second layer of native padding. Insets are guarded until a document root exists and republished after page loads. The manifest declares the game category to preserve portrait orientation under Android 16 large-screen rules.
 
 `npm run itch:build` creates a ZIP that is deterministic for the same input files and Node/zlib version from the same allowlist, plus a SHA-256 file and JSON manifest in `dist/`. Package checks verify the curated payload and its references.
 
