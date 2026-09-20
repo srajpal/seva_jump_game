@@ -7,8 +7,12 @@
 //
 // Usage: node scripts/autopilot.js [runsPerMode] [capSeconds] [flag,flag]
 //        [--modes=endless,arcade] [--seed=N] [--json=out.json] [--quiet]
+//        [--motion] [--startScore=N]
 // The third argument sets config.experiments.<flag> = true before the runtime
-// is created so flagged behaviour can be compared per run.
+// is created so flagged behaviour can be compared per run. --motion plays with
+// Reduced Motion off (the default profile keeps it on to skip particles).
+// --startScore=N lifts the whole opening world by N * 18 px so the run begins
+// at height score N and the generator sees late-game scores from the first row.
 const fs = require('node:fs');
 const path = require('node:path');
 const { makeRuntime } = require(path.resolve(__dirname, '../tests/runtime-browser-checks.js'));
@@ -20,12 +24,14 @@ const RUNS = Number(positional[0] || 40), CAP = Number(positional[1] || 240), DT
 const MODES = (option('modes') || 'endless,arcade,challenge,hard').split(',').filter(Boolean);
 const SEED = Number(option('seed') || 0xa11ce);
 const QUIET = process.argv.includes('--quiet');
+const MOTION = process.argv.includes('--motion');
+const START_SCORE = Number(option('startScore') || 0);
 config.experiments = config.experiments || {};
 for (const flag of (positional[2] || '').split(',').filter(Boolean)) config.experiments[flag] = true;
 
 let seed = SEED >>> 0;
 const random = () => { seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0; return seed / 2 ** 32; };
-const runtime = makeRuntime({ value: JSON.stringify({ tutorialComplete: true, music: false, sound: false, reducedMotion: true }) }, { random });
+const runtime = makeRuntime({ value: JSON.stringify({ tutorialComplete: true, music: false, sound: false, reducedMotion: !MOTION }) }, { random });
 const { hooks } = runtime, canvas = runtime.elements.get('#game');
 const scale = 1.28, contentLeft = 96; // matches the harness' 768x1024 canvas rect
 const W = canvas.width, g = config.gravity, HALF_W = 15.5, FEET = 24, POINTER_SPEED = config.pointerMaxHorizontalSpeed;
@@ -62,13 +68,23 @@ function birdThreat(state) {
   return null;
 }
 
+function liftWorld(state, pixels) {
+  // Move the opening world up so the run starts at a late-game height score.
+  // Only differences in y matter to the game, apart from the height formula.
+  state.player.y -= pixels; state.cameraY -= pixels; state.nextY -= pixels;
+  for (const list of [state.platforms, state.collectibles, state.enemies, state.powerups]) for (const item of list) item.y -= pixels;
+}
+
 function playRun(mode) {
   hooks.reset(mode); const state = hooks.state, profile = hooks.profile;
+  if (START_SCORE > 0) liftWorld(state, START_SCORE * 18);
   const before = { jumps: profile.stats.jumps, powerups: profile.stats.powerups };
-  const seenPowerups = new WeakSet(), seenBirds = new WeakSet(), takenPowerups = new WeakSet(), platformTypes = new WeakMap();
-  let powerupsGenerated = 0, birdsGenerated = 0, nishanTaken = 0, lastNishanAt = -Infinity, postNishanFall = 0;
+  const seenPowerups = new WeakSet(), seenBirds = new WeakSet(), platformTypes = new WeakMap();
+  let powerupsGenerated = 0, birdsGenerated = 0, nishanTaken = 0, lastNishanAt = -Infinity, postNishanFall = 0, lastInvincible = 0;
   let t = 0, ms = 1000, maxHeight = 0, lastGain = 0, longestStall = 0, softLock, rescues = 0, rescueWithoutStall = 0;
-  const notePickups = () => { for (const power of state.powerups) if (power.taken && !takenPowerups.has(power)) { takenPowerups.add(power); if (power.type === 'nishan') { nishanTaken++; lastNishanAt = t; } } };
+  // A taken power-up is culled in the same update, so detect a Nishan pickup
+  // by its protection timer jumping up rather than by the object.
+  const notePickups = () => { if (state.invincibleSource === 'nishan' && state.invincibleTimer > lastInvincible) { nishanTaken++; lastNishanAt = t; } lastInvincible = state.invincibleTimer; };
   // A rescue is a platform flipping to 'spring' after the run created it, or a
   // helper step appearing; state.message lingers after its timer, so it is not
   // a reliable event source.
@@ -118,6 +134,9 @@ const flagsOn = Object.keys(config.experiments).filter(k => config.experiments[k
 const summary = { runs: RUNS, cap: CAP, seed: SEED, experiments: flagsOn, modes: {} };
 if (!QUIET) console.log('experiments on: ' + (flagsOn.join(', ') || 'none') + '   seed ' + SEED);
 for (const mode of MODES) {
+  // Each mode restarts the seed stream so a subset run (--modes=arcade)
+  // replays exactly the runs the full run would have played for that mode.
+  seed = (SEED + ['endless', 'arcade', 'challenge', 'hard'].indexOf(mode) * 0x9e3779b9) >>> 0;
   const results = []; for (let i = 0; i < RUNS; i++) results.push(playRun(mode));
   const ends = {}; for (const r of results) ends[r.ended] = (ends[r.ended] || 0) + 1;
   const wins = results.filter(r => r.completed);
