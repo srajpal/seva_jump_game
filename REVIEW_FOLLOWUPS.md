@@ -58,7 +58,7 @@ Source: [review comment](https://github.com/srajpal/seva_jump_game/pull/12#issue
   adds Endless boosts, replace the current zero-boost assertion with frequency
   contracts at the new Endless score bands. The current assertion records today's
   behavior, not a permanent balance requirement.
-- [x] Issue #1 makes README/checklist build numbers explicit per platform:
+- [x] [PR #15](https://github.com/srajpal/seva_jump_game/pull/15) makes README/checklist build numbers explicit per platform:
   Android build 39 and iOS build 38. Do not require equality for independent
   native release trains; the shared marketing-version checks remain in place.
 
@@ -94,13 +94,13 @@ Source: [review comment](https://github.com/srajpal/seva_jump_game/pull/14#issue
 
 ## Verification still needed
 
-- [x] Implemented with [issue #1's Android migration](https://github.com/srajpal/seva_jump_game/issues/1):
+- [x] Implemented in [PR #15](https://github.com/srajpal/seva_jump_game/pull/15) for [issue #1](https://github.com/srajpal/seva_jump_game/issues/1):
   guard the document root in `MainActivity.publishInsets()` and republish retained
   insets after page load. Repeated Android 15/16 phone/tablet reloads pass with
   nonempty safe-area values and no page errors. The strengthened native smoke
   check also catches stale cached candidates and HUD/Pause overlap. See the
   current migration evidence in `RELEASE_PROGRESS.md`.
-- [x] Repeated emulator visual QA during issue #1: usable Android 15/16 phone
+- [x] Repeated emulator visual QA in [PR #15](https://github.com/srajpal/seva_jump_game/pull/15): usable Android 15/16 phone
   and tablet device captures were reviewed, including gesture and three-button
   bars. Android 16 initially showed System UI/service ANRs during first boot;
   settled runs passed. Physical-device and sustained-performance checks remain
