@@ -20,6 +20,13 @@ const SEVA_CONFIG = {
   gamepadDeadzone: .18,
   breakCrumbleDuration: .3,
   breakCrumbleFallDistance: 36,
+  // Seconds without a height gain before a stranded player gets help. The
+  // platform turns into a spring, whose apex (224 px) clears the two capped
+  // gaps (192 px) a single broken row leaves. When several rows broke in a
+  // row (Hard's double-break rows) the gap is bridged by helper platforms of
+  // this width instead.
+  stallRescueSeconds: 3,
+  stallRescueRungWidth: 76,
   musicBeatSeconds: .5,
   musicLookaheadSeconds: .2,
   musicStartDelaySeconds: .05,

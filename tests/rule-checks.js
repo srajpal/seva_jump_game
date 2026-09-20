@@ -48,6 +48,47 @@ assert.equal(rules.canHaveDoublePlatform('moving'), false, 'Moving platforms mus
 assert.equal(rules.canHaveDoublePlatform('normal'), true, 'A normal platform may have a companion route.');
 assert.equal(config.powerJumpCosts.reduce((sum, cost) => sum + cost, 0), 197, 'Power Jump pricing should use the 50% higher playtest costs.');
 
+// Stall rescue: a broken row can leave the next intact platform two capped
+// gaps above the one the player keeps bouncing on, beyond one jump's apex.
+const apex = rules.jumpApex();
+assert.equal(apex, config.baseJumpVelocity ** 2 / (2 * config.gravity), 'the unboosted apex matches the physics');
+assert(rules.jumpApex(5) > apex, 'Power Jump raises the apex used for the stranded check');
+assert(config.springJumpVelocity ** 2 / (2 * config.gravity) > 2 * rules.maxDefaultPlatformGap(), 'a spring must clear two capped gaps');
+const standing = { x: 100, y: 500, w: 100, type: 'normal', broken: false };
+const brokenRow = { x: 100, y: 404, w: 70, type: 'break', broken: true };
+const farRow = { x: 100, y: 308, w: 100, type: 'normal', broken: false };
+assert.equal(rules.isStranded([farRow, standing, brokenRow], standing, apex), true, 'a double gap above a broken row strands the player');
+assert.equal(rules.isStranded([farRow, standing, { ...brokenRow, broken: false }], standing, apex), false, 'an intact row within one jump is reachable');
+assert.equal(rules.isStranded([farRow, standing, brokenRow, { x: 220, y: 404, w: 90, type: 'normal', broken: false, companion: true }], standing, apex), false, 'a surviving companion on the broken row keeps it reachable');
+assert.equal(rules.isStranded([standing, { ...farRow, y: 500 - apex }], standing, apex), false, 'a row exactly one apex above is still reachable');
+assert.equal(rules.isStranded([standing, { ...farRow, y: 500 - apex - 1 }], standing, apex), true, 'a row just beyond the apex is not');
+assert.equal(rules.isStranded([standing, { ...farRow, y: 600 }], standing, apex), true, 'rows below the standing platform do not count');
+assert.equal(rules.isStranded([farRow, standing, brokenRow], standing, rules.jumpApex(3)), true, 'Power Jump 3 (about 167 px) still cannot clear a 192 px double gap');
+assert.equal(rules.isStranded([farRow, standing, brokenRow], standing, rules.jumpApex(5)), false, 'Power Jump 5 (about 192 px) just clears the capped double gap, so no rescue');
+assert.equal(rules.nearestRowAbove([farRow, standing, brokenRow], standing), farRow, 'the nearest intact row skips broken platforms');
+assert.equal(rules.nearestRowAbove([standing, { ...farRow, y: 600 }], standing), undefined);
+const springApex = rules.jumpApex(0, config.springJumpVelocity);
+assert.equal(springApex, config.springJumpVelocity ** 2 / (2 * config.gravity));
+assert(springApex > 2 * rules.maxDefaultPlatformGap() && springApex < 3 * rules.maxDefaultPlatformGap(), 'a spring clears two capped gaps but not three');
+// Several broken rows in a row (Hard double-break rows) leave a gap no spring
+// can clear; helper steps bridge it at generated spacing, inside the canvas.
+assert.deepEqual(rules.rescueRungs(standing, { x: 100, y: 500 - 192, w: 100 }, 96, 450).map(rung => rung.y), [404], 'a double gap gets exactly one midway step');
+const tripleGap = { x: 330, y: 500 - 288, w: 100 };
+const rungs = rules.rescueRungs(standing, tripleGap, 96, 450);
+assert.equal(rungs.length, 2, 'a triple gap needs two steps');
+assert.deepEqual(rungs.map(rung => rung.y), [404, 308]);
+for (const [index, expected] of [150 + (380 - 150) / 3, 150 + 2 * (380 - 150) / 3].entries()) assert.ok(Math.abs(rungs[index].x + rungs[index].w / 2 - expected) < 1e-9, 'steps drift towards the next row');
+assert.ok(rungs.every(rung => rung.type === 'normal' && rung.helper && !rung.broken && rung.speed === 0 && rung.w === config.stallRescueRungWidth));
+const wideGap = rules.rescueRungs({ x: 0, y: 500, w: 60 }, { x: 390, y: 500 - 375, w: 60 }, rules.maxDefaultPlatformGap(), 450);
+assert.equal(wideGap.length, 3, 'a 375 px gap needs three steps at the 96 px cap');
+for (let index = 0; index < wideGap.length; index++) {
+  const below = index ? wideGap[index - 1].y : 500;
+  assert.ok(below - wideGap[index].y <= rules.maxDefaultPlatformGap(), 'each step stays within a generated gap');
+  assert.ok(wideGap[index].x >= 12 && wideGap[index].x + wideGap[index].w <= 450 - 12, 'steps stay inside the canvas margins');
+}
+assert.ok(wideGap[2].y > 500 - 375 && wideGap[2].y - (500 - 375) <= rules.maxDefaultPlatformGap(), 'the top step is within one generated gap of the intact row');
+assert.equal(rules.rescueRungs(standing, { x: 100, y: 500 - 96, w: 100 }, 96, 450).length, 0, 'a reachable row needs no steps');
+
 // Challenge placement: one bowl every third generated platform, then no more.
 let placed = 0;
 for (let platform = 1; platform <= 220; platform++) {

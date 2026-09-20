@@ -322,7 +322,9 @@
       running: true, paused: false, mode, score: 0, heightScore: 0, parshad: 0, tokens: 0, cameraY: 0,
       background: Math.floor(Math.random() * backgroundImages.length), nextY: 610, ending: false, falconUsed: false, invincibleTimer: 0, invincibleSource: null, shieldVisualTimer: 0, resultTimer: null, finishGate: null, fireworkSoundTimers: [], challengePlaced: 0, challengePlatformCount: 0, upgradeEffect: null, hitStop: null, falconRescue: null,
       player: { x: W / 2, y: 650, vx: 0, vy: -config.baseJumpVelocity * rules.powerJumpMultiplier(profile.powerJump), w: 31, h: 48, character: selectedCharacter, facing: 1 },
-      platforms: [startPlatform], lastPlatform: startPlatform, collectibles: [], enemies: [], powerups: [], particles: [], challengeMissed: false, missedBowls: new Set(), challengeWarningShown: false,
+      // The opening launch has no landing event, so the start platform counts
+      // as the first landing for the stall rescue.
+      platforms: [startPlatform], lastPlatform: startPlatform, lastLanding: startPlatform, stallTimer: 0, collectibles: [], enemies: [], powerups: [], particles: [], challengeMissed: false, missedBowls: new Set(), challengeWarningShown: false,
       message: mode === 'challenge' ? `Challenge · collect all ${config.challengeParshadTarget} parshad` : mode === 'arcade' ? `Arcade · reach ${config.arcadeTargetScore}` : mode === 'hard' ? 'Hard Mode · fragile routes ahead' : 'Endless Run · Keep climbing', messageTimer: 3,
     };
     while (state.nextY > -900) addPlatform();
@@ -542,8 +544,32 @@
     p.x = rescue.pickupX + (targetX - rescue.pickupX) * carry; p.y = rescue.pickupY + (targetY - rescue.pickupY) * carry;
     if (progress < 1) return true;
     p.x = targetX; p.y = targetY; p.vx = 0; p.vy = -config.baseJumpVelocity * rules.powerJumpMultiplier(profile.powerJump); if (state.invincibleTimer < 1.2) { state.invincibleTimer = 1.2; state.invincibleSource = 'falcon'; } state.falconRescue = null;
+    state.lastLanding = rescue.platform; // the carry launches the player from here without a landing event
     state.message = 'Back in the sky!'; state.messageTimer = 1.4;
     return false;
+  }
+  function updateStallRescue() {
+    // A broken row can leave the nearest intact platform two gaps above the
+    // one the player keeps bouncing on, and the camera never scrolls down.
+    // Once the climb has stalled, turn that platform into a spring. When even
+    // a spring cannot clear the gap (several rows broke in a row, common in
+    // Hard's double-break rows) bridge it with solid helper steps instead.
+    const standing = state.lastLanding;
+    if (state.stallTimer < config.stallRescueSeconds || state.hitStop || state.falconRescue || state.ending || state.paused) return;
+    if (!standing || standing.broken || !state.platforms.includes(standing)) return;
+    const springApex = rules.jumpApex(profile.powerJump, config.springJumpVelocity);
+    if (!rules.isStranded(state.platforms, standing, standing.type === 'spring' ? springApex : rules.jumpApex(profile.powerJump))) return;
+    const above = rules.nearestRowAbove(state.platforms, standing);
+    if (above && standing.y - above.y > springApex) {
+      const rungs = rules.rescueRungs(standing, above, rules.maxDefaultPlatformGap(), W);
+      state.platforms.push(...rungs);
+      for (const rung of rungs) burst(rung.x + rung.w / 2, rung.y, '#f7efd7', 12);
+      state.message = 'Helper platforms!'; sound('land');
+    } else if (standing.type !== 'spring') {
+      standing.type = 'spring'; standing.speed = 0;
+      state.message = 'Spring assist!'; sound('spring'); burst(standing.x + standing.w / 2, standing.y, '#d5a5ff', 26);
+    } else return;
+    state.stallTimer = 0; state.messageTimer = 1.5;
   }
   function update(dt) {
     if (state.paused || (!state.running && !state.ending)) return;
@@ -578,7 +604,7 @@
       if (!plat.broken && p.vy > 0 && previousBottom <= top && p.y + p.h / 2 >= top && p.x + p.w / 2 > plat.x && p.x - p.w / 2 < plat.x + plat.w) {
         const jumpMultiplier = rules.powerJumpMultiplier(profile.powerJump);
         p.y = top - p.h / 2; p.vy = -(plat.type === 'spring' ? config.springJumpVelocity : config.baseJumpVelocity) * jumpMultiplier;
-        profile.stats.jumps++;
+        profile.stats.jumps++; state.lastLanding = plat;
         sound(plat.type === 'break' ? 'break' : plat.type === 'spring' ? 'spring' : 'land');
         const landingColor = plat.type === 'spring' ? '#d5a5ff' : plat.type === 'break' ? '#c49464' : '#f7efd7';
         burst(p.x, top, landingColor, plat.type === 'spring' ? 26 : plat.type === 'break' ? 20 : 16);
@@ -589,7 +615,9 @@
     const targetCamera = Math.min(state.cameraY, p.y - H * .38);
     state.cameraY += (targetCamera - state.cameraY) * Math.min(1, dt * 4);
     const currentHeight = Math.max(0, Math.floor((650 - p.y) / 18));
-    if (currentHeight > state.heightScore) { state.heightScore = currentHeight; state.score = currentHeight + state.parshad * 3; }
+    state.stallTimer += dt;
+    if (currentHeight > state.heightScore) { state.heightScore = currentHeight; state.score = currentHeight + state.parshad * 3; state.stallTimer = 0; }
+    updateStallRescue();
     if (state.score >= 100) awardBadge('sky-starter');
     if (state.mode === 'endless' && state.score >= 1000) awardBadge('endless-1000');
     if (state.mode === 'endless' && state.score >= 2000) awardBadge('endless-2000');

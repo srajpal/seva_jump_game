@@ -65,10 +65,22 @@ function birdThreat(state) {
 function playRun(mode) {
   hooks.reset(mode); const state = hooks.state, profile = hooks.profile;
   const before = { jumps: profile.stats.jumps, powerups: profile.stats.powerups };
-  const seenPowerups = new WeakSet(), seenBirds = new WeakSet(), takenPowerups = new WeakSet();
+  const seenPowerups = new WeakSet(), seenBirds = new WeakSet(), takenPowerups = new WeakSet(), platformTypes = new WeakMap();
   let powerupsGenerated = 0, birdsGenerated = 0, nishanTaken = 0, lastNishanAt = -Infinity, postNishanFall = 0;
-  let t = 0, ms = 1000, maxHeight = 0, lastGain = 0, longestStall = 0, softLock, rescues = 0, lastRescueMessageAt = -Infinity, rescueWithoutStall = 0;
+  let t = 0, ms = 1000, maxHeight = 0, lastGain = 0, longestStall = 0, softLock, rescues = 0, rescueWithoutStall = 0;
   const notePickups = () => { for (const power of state.powerups) if (power.taken && !takenPowerups.has(power)) { takenPowerups.add(power); if (power.type === 'nishan') { nishanTaken++; lastNishanAt = t; } } };
+  // A rescue is a platform flipping to 'spring' after the run created it, or a
+  // helper step appearing; state.message lingers after its timer, so it is not
+  // a reliable event source.
+  const noteRescues = () => {
+    let rescued = false;
+    for (const plat of state.platforms) {
+      const previous = platformTypes.get(plat);
+      if ((previous !== undefined && previous !== 'spring' && plat.type === 'spring') || (previous === undefined && plat.helper)) rescued = true;
+      platformTypes.set(plat, plat.type);
+    }
+    return rescued;
+  };
   while (!state.ending && t < CAP) {
     const p = state.player;
     for (const power of state.powerups) if (!seenPowerups.has(power)) { seenPowerups.add(power); powerupsGenerated++; }
@@ -79,7 +91,9 @@ function playRun(mode) {
     else { const target = chooseTarget(state, stalled); if (target) steerTo(target.center); }
     ms += DT * 1000; hooks.setLastTime(ms); hooks.update(DT); t += DT;
     notePickups();
-    if (state.message === 'Spring assist!' && t - lastRescueMessageAt > 2) { rescues++; lastRescueMessageAt = t; if (!stalled) rescueWithoutStall++; }
+    // The game fires its rescue on the frame active stall time reaches the
+    // threshold, so judge the stall after this frame, not before it.
+    if (noteRescues()) { rescues++; if (!(t - lastGain >= 3 - 1e-6)) rescueWithoutStall++; }
     if (state.heightScore > maxHeight) { maxHeight = state.heightScore; lastGain = t; }
     longestStall = Math.max(longestStall, t - lastGain);
     // Classify the first long stall: is the nearest intact platform above the

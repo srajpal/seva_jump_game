@@ -25,6 +25,31 @@ const SEVA_RULES = {
     return speed.base + roll * speed.randomRange + this.endlessDifficulty(score) * speed.difficultyBonus
       + (this.isHard(mode) ? speed.hardBonus : 0) + (mode === 'challenge' ? RULE_CONFIG.challengeBirdSpeedBonus : 0);
   },
+  jumpApex(powerJump = 0, velocity = RULE_CONFIG.baseJumpVelocity) {
+    return (velocity * this.powerJumpMultiplier(powerJump)) ** 2 / (2 * RULE_CONFIG.gravity);
+  },
+  nearestRowAbove(platforms, standing) {
+    return platforms.filter(p => !p.broken && p.y < standing.y).sort((a, b) => b.y - a.y)[0];
+  },
+  // A player is stranded when the nearest intact row above the platform they
+  // keep bouncing on is farther away than one jump can reach (a broken row
+  // leaves a double gap). A surviving companion on that row keeps it reachable.
+  isStranded(platforms, standing, apex) {
+    const above = this.nearestRowAbove(platforms, standing);
+    return !above || standing.y - above.y > apex;
+  },
+  // Evenly spaced solid steps from the standing platform up to the next intact
+  // row, never farther apart than a generated gap, drifting sideways towards
+  // that row so the route reads as a staircase.
+  rescueRungs(standing, above, maxGap, canvasWidth) {
+    const gap = standing.y - above.y, count = Math.max(0, Math.ceil(gap / maxGap) - 1), w = RULE_CONFIG.stallRescueRungWidth;
+    const from = standing.x + standing.w / 2, to = above.x + above.w / 2;
+    return Array.from({ length: count }, (_, index) => {
+      const fraction = (index + 1) / (count + 1);
+      const center = Math.max(w / 2 + 12, Math.min(canvasWidth - w / 2 - 12, from + (to - from) * fraction));
+      return { x: center - w / 2, y: standing.y - gap * fraction, w, type: 'normal', speed: 0, dir: 1, broken: false, helper: true };
+    });
+  },
   maxDefaultPlatformGap() {
     const normalApex = RULE_CONFIG.baseJumpVelocity ** 2 / (2 * RULE_CONFIG.gravity);
     return Math.min(RULE_CONFIG.safeDefaultPlatformGap, normalApex * .8);
