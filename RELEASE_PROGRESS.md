@@ -8,6 +8,13 @@
 - Historical 0.13.2 artifacts, checksums and launch records below remain unchanged. The API 36 migration, signing, native QA and store submissions remain open.
 - Alternative Android distribution assessment and proposed priorities are in `ANDROID_DISTRIBUTION.md`. No license change or additional store registration is authorized by this research.
 
+## Issue #6 validation - September 19, 2026
+
+- PR #14 review correction: mid-gap bird spawning was reverted after the review's fairness regression report. The original 90 px offset and random sampling order are restored; next-platform clearance is deferred to issue #13/E4 for measured evaluation. The remaining issue #6 work stays in the PR.
+- Validated after merging PR #12: the required syntax/test/runtime/package command passed, including 2.1 million generated landings. Optional browser checks passed at all six sizes, including desktop fullscreen, keyboard input, canvas fallback, storage failures, iframe focus and offline play.
+- Capacitor sync and Android debug build passed using existing dependencies. Native WebView smoke flows passed on the phone (393 × 808 viewport, 450 × 800 canvas) and portrait tablet (800 × 1280 viewport, 640 × 800 canvas), covering menus, pause/settings/resume and Android Back handling.
+- Native visual QA is not complete. The headless emulators showed graphics failures, black captures and a tablet System UI timeout. One tablet reload also captured a null-document error consistent with the unchanged Android inset injection; later smoke runs passed. Findings are recorded in `REVIEW_FOLLOWUPS.md`. No physical-device or iOS build validation was performed. CSP remains explicitly deferred pending Capacitor/iOS compatibility checks.
+
 ## Google Play preparation - September 18, 2026
 
 Status: **not ready for Google Play submission**. The published browser baseline remains 0.13.2 (Android versionCode 37), commit `1b8af0b`.

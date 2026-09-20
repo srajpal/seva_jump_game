@@ -1,10 +1,13 @@
 import assert from 'node:assert/strict';
-import { readFile } from 'node:fs/promises';
+import { readFile, readdir } from 'node:fs/promises';
 import { inflateRawSync } from 'node:zlib';
 import { loadPayload, createZip } from '../scripts/build-itch.mjs';
 
 const entries = await loadPayload();
 const names = entries.map(e => e.name);
+assert.deepEqual((await readdir(new URL('../assets/', import.meta.url))).sort(), names.filter(name => name.startsWith('assets/')).map(name => name.slice(7)).sort(), 'iOS folder resource contains only allowlisted runtime art');
+const iosProject = await readFile(new URL('../ios/SevaJump.xcodeproj/project.pbxproj', import.meta.url), 'utf8');
+assert(!/path\s*=\s*"?\.\.\/design/.test(iosProject), 'design variants stay outside the iOS bundle');
 assert.equal(new Set(names).size, names.length, 'No duplicate paths');
 assert.equal(new Set(names.map(n => n.toLowerCase())).size, names.length, 'No case-colliding paths');
 assert(names.includes('index.html'), 'index.html must be at archive root');

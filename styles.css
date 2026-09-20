@@ -10,7 +10,13 @@ body { margin: 0; min-height: 100vh; min-height: 100dvh; display: grid; place-it
 canvas { display: block; width: 100%; height: auto; touch-action: none; }
 .overlay { position: absolute; inset: 0; z-index: 3; display: flex; flex-direction: column; justify-content: safe center; align-items: center; padding: 30px; overflow-x: hidden; overflow-y: auto; scrollbar-width: thin; background: linear-gradient(#ffffffcf, #f8f0dfdf); }
 .overlay > * { flex: 0 0 auto; }
-.game-tools { position: absolute; z-index: 2; top: 64px; right: 12px; }
+.game-tools { position: absolute; z-index: 2; top: 64px; right: 12px; display: flex; gap: 6px; }
+.game-frame:fullscreen { --fullscreen-side: max(0px, calc((100vw - 100dvh * .5625) / 2)); width: 100vw; height: 100dvh; border: 0; border-radius: 0; box-shadow: none; padding: 0 var(--fullscreen-side); background: #172b27; }
+.game-frame:fullscreen canvas { width: 100%; height: 100%; object-fit: contain; }
+.game-frame:fullscreen .overlay { left: var(--fullscreen-side); right: var(--fullscreen-side); }
+.game-frame:fullscreen .game-tools { right: calc(var(--fullscreen-side) + 12px); }
+.game-frame::backdrop { background: #172b27; }
+@media (hover: none), (pointer: coarse) { .desktop-fullscreen { display: none; } }
 .mobile-hud { display: none; }
 .game-tool { width: 42px; height: 42px; border: 2px solid #24483f; border-radius: 50%; background: #fff9eee8; color: #24483f; box-shadow: 0 3px 0 #bca582; cursor: pointer; font: 900 1.15rem/1 system-ui, sans-serif; }
 .game-tool:active { transform: translateY(2px); box-shadow: 0 1px 0 #bca582; }

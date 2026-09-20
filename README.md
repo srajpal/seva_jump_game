@@ -10,7 +10,9 @@ Seva Jump is designed for ages 8-15, with touch-first controls, a calm gurdwara-
 
 ## Play
 
-Open **`index.html`** in a modern browser. On a phone or tablet, drag across the game to steer left and right. On a desktop, drag with a mouse or use the left and right arrow keys. Press Escape to pause during gameplay.
+Open **`index.html`** in a modern browser. On a phone or tablet, drag across the game to steer left and right. On a desktop, drag with a mouse or steer with A/D or the left and right arrow keys. Enter or Space starts Endless from Home when a button or other control is not focused. Press Escape to pause; the ⛶ button toggles fullscreen during play where supported.
+
+Standard gamepads use the left stick or D-pad to steer, A to start Endless from Home or resume, and B or Start to pause. Breakable platforms stop supporting the player immediately after landing, then fall and fade over 0.3 seconds (fade only with reduced motion). “Birds seen” counts their first appearance during play.
 
 New players receive a short three-step guide after choosing their first mode. It can be replayed later from Settings.
 
@@ -59,7 +61,7 @@ sync step for iOS.
 | **Challenge Mode** | Reach the finish with every one of the 50 parshad bowls collected. |
 | **Hard Mode** | Keep climbing on small moving and breakable platforms while earlier birds remain limited to one per screen. |
 
-Challenge Mode warns once when an uncollected bowl scrolls out of reach and keeps **MISSED** beside the bowl count until the next run. You can restart from the pause menu or continue practicing; an incomplete run still ends at score 972, before the finish banner. Challenge courses omit Kara and Nishan boosts and spring platforms immediately below bowl rows so those jumps cannot skip the next bowl.
+Challenge Mode warns once when an uncollected bowl scrolls out of reach and keeps **MISSED** beside the bowl count while any missed bowl remains uncollected. A last-moment pickup before Falcon rescue clears that bowl's miss without clearing other misses. You can restart from the pause menu or continue practicing; an incomplete run still ends at score 972, before the finish banner. Challenge courses omit Kara and Nishan boosts and spring platforms immediately below bowl rows so those jumps cannot skip the next bowl.
 
 ## Collectibles, platforms, and boosts
 

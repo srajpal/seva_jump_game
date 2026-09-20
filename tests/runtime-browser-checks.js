@@ -8,7 +8,7 @@ const gameSource = fs.readFileSync(path.join(root, 'game.js'), 'utf8');
 const runtimeHookSource = `globalThis.__SEVA_RUNTIME_HOOKS__ = {
   normalizeProfile, saveProfile, removeSavedProfile, resetAllProgress, canvasPointerX,
   start, reset, addPlatform, update, draw, loop, updateMobileHud, finish, triggerBirdHit, resolveBirdHit, triggerFalconSave, updateFalconRescue,
-  showHome, showUpgrades, showAbout, showBadges, showStats, getAudio, noise,
+  showHome, showUpgrades, showAbout, showBadges, showStats, getAudio, noise, pollGamepad, setMusic,
   observeSounds(observer) { const playSound = sound; sound = type => { observer(type); playSound(type); }; },
   pauseGame, resumeGame, openSettings, closeSettings, requestResetProgress, cancelResetProgress,
   setLastTime(value) { lastTime = value; },
@@ -27,7 +27,7 @@ function makeRuntime(storage = {}, options = {}) {
         const node = element(selector);
         if (selector === '#home-screen') node.classList.remove('hidden');
         else if (selector.endsWith('-screen')) node.classList.add('hidden');
-        if (selector === '#game') Object.assign(node, { width: 450, height: 800, clientWidth: 768, clientHeight: 1024, getContext: () => drawingContext, getBoundingClientRect: () => ({ left: 0, top: 0, width: 768, height: 1024 }), setPointerCapture() {} });
+        if (selector === '#game') Object.assign(node, { width: 450, height: 800, clientWidth: 768, clientHeight: 1024, getContext: () => options.noCanvas ? null : drawingContext, getBoundingClientRect: () => ({ left: 0, top: 0, width: 768, height: 1024 }), setPointerCapture() {} });
         elements.set(selector, node);
       }
       return elements.get(selector);
@@ -68,7 +68,7 @@ function makeRuntime(storage = {}, options = {}) {
     addEventListener(type, handler) { (this.listeners[type] ??= []).push(handler); }
     load() { this.complete = true; this.naturalWidth = 96; this.naturalHeight = 96; this.onload?.(); for (const handler of this.listeners.load || []) handler(); }
   }
-  const context = { console, globalThis: null, window, document, navigator: { userAgent: '' }, location: { protocol: 'file:' }, localStorage, Image: RuntimeImage, SEVA_CONFIG: config, SEVA_RULES: rules, requestAnimationFrame() {}, setTimeout(callback) { timeouts.set(++timerId, callback); return timerId; }, clearTimeout(id) { timeouts.delete(id); }, clearInterval() {}, queueMicrotask, Math: runtimeMath, Date, Number, Object, Array, Set, JSON };
+  const context = { console, globalThis: null, window, document, navigator: { userAgent: '', getGamepads: options.getGamepads }, location: { protocol: 'file:' }, localStorage, Image: RuntimeImage, SEVA_CONFIG: config, SEVA_RULES: rules, requestAnimationFrame() {}, setTimeout(callback) { timeouts.set(++timerId, callback); return timerId; }, clearTimeout(id) { timeouts.delete(id); }, queueMicrotask, Math: runtimeMath, Date, Number, Object, Array, Set, JSON };
   context.globalThis = context; window.window = window; window.document = document;
   const instrumentedSource = gameSource.replace('  window.sevaJumpNativeBack = handleNativeBack;', `  ${runtimeHookSource}\n  window.sevaJumpNativeBack = handleNativeBack;`);
   assert.notEqual(instrumentedSource, gameSource, 'runtime test hook injection point must exist');
@@ -77,6 +77,52 @@ function makeRuntime(storage = {}, options = {}) {
 }
 
 async function run() {
+  const noCanvas = makeRuntime({}, { noCanvas: true });
+  assert.match(noCanvas.elements.get('#canvas-warning').textContent, /cannot draw the game/);
+  assert.equal(noCanvas.elements.get('#canvas-warning').classList.contains('hidden'), false);
+  for (const mode of ['endless', 'arcade', 'challenge', 'hard']) assert.equal(noCanvas.elements.get(`.mode-${mode}`).disabled, true);
+
+  const saved = { value: JSON.stringify({ tutorialComplete: true, music: false, sound: false }) };
+  const pad = { connected: true, mapping: 'standard', axes: [0], buttons: Array.from({ length: 16 }, () => ({ pressed: false })) };
+  const controls = makeRuntime(saved, { getGamepads: () => [null, pad] });
+  const key = (value, extra = {}) => controls.documentListeners.keydown({ key: value, preventDefault() {}, ...extra });
+  key('Enter', { target: { closest: () => ({}) } });
+  assert.equal(controls.hooks.state.running, false, 'focused Home buttons keep native activation');
+  key('Enter'); assert.equal(controls.hooks.state.running, true);
+  key('A'); assert.equal(controls.hooks.keys.has('ArrowLeft'), true);
+  controls.documentListeners.keyup({ key: 'a' }); assert.equal(controls.hooks.keys.size, 0);
+  key('d'); assert.equal(controls.hooks.keys.has('ArrowRight'), true);
+  controls.documentListeners.keyup({ key: 'D' }); assert.equal(controls.hooks.keys.size, 0);
+  controls.hooks.showHome(); key(' '); assert.equal(controls.hooks.state.running, true);
+  controls.hooks.showHome();
+  pad.buttons[0].pressed = true; controls.hooks.pollGamepad();
+  assert.equal(controls.hooks.state.running, true, 'A starts from Home');
+  const started = controls.hooks.state; controls.hooks.pollGamepad(); assert.equal(controls.hooks.state, started, 'held A does not restart');
+  pad.buttons[0].pressed = false; pad.axes[0] = .1; controls.hooks.pollGamepad();
+  started.player.vx = 0; controls.hooks.update(.01); assert.equal(started.player.vx, 0, 'stick deadzone prevents drift');
+  pad.axes[0] = 1; controls.hooks.pollGamepad(); controls.hooks.update(.01); assert.ok(started.player.vx > 0);
+  pad.buttons[14].pressed = true; controls.hooks.pollGamepad(); started.player.vx = 0; controls.hooks.update(.01); assert.ok(started.player.vx < 0, 'D-pad overrides stick');
+  pad.connected = false; controls.hooks.pollGamepad(); started.player.vx = 0; controls.hooks.update(.01); assert.equal(started.player.vx, 0, 'disconnect clears steering');
+  pad.connected = true; pad.buttons[14].pressed = false; pad.axes[0] = 0;
+  for (const button of [1, 9]) {
+    pad.buttons[button].pressed = true; controls.hooks.pollGamepad(); assert.equal(started.paused, true);
+    controls.hooks.pollGamepad(); assert.equal(started.paused, true, 'held pause cannot toggle');
+    pad.buttons[button].pressed = false; controls.hooks.pollGamepad();
+    controls.hooks.openSettings('pause'); pad.buttons[0].pressed = true; controls.hooks.pollGamepad();
+    assert.equal(started.paused, true, 'A cannot resume behind Settings');
+    pad.buttons[0].pressed = false; controls.hooks.pollGamepad(); controls.hooks.closeSettings();
+    pad.buttons[0].pressed = true; controls.hooks.pollGamepad(); assert.equal(started.paused, false);
+    pad.buttons[0].pressed = false; controls.hooks.pollGamepad();
+  }
+  controls.windowListeners.blur(); pad.buttons[0].pressed = true; controls.hooks.pollGamepad(); assert.equal(started.paused, true);
+  controls.windowListeners.focus(); controls.hooks.pollGamepad(); assert.equal(started.paused, true, 'background A press cannot resume on focus');
+  controls.hooks.profile.bestScores.challenge = 321; controls.hooks.showStats();
+  assert.match(controls.elements.get('#stats-summary').innerHTML, /Best Challenge/);
+  assert.match(controls.elements.get('#stats-summary').innerHTML, /321/);
+  console.log('Polish controls checks passed: canvas fallback, A/D, Home activation, gamepad steering/deadzone/disconnect/pause/modal/focus, Challenge stats.');
+  const deniedGamepad = makeRuntime(saved, { getGamepads() { throw new DOMException('Blocked by permissions policy', 'SecurityError'); } });
+  deniedGamepad.hooks.start('endless');
+  assert.doesNotThrow(() => deniedGamepad.hooks.loop(16), 'an embed denying gamepad access must still animate');
   // Prices in both UI labels and purchase deductions follow config changes.
   const savedCosts = [config.falconCost, config.shieldCost];
   try {
@@ -150,6 +196,31 @@ async function run() {
   assert.notEqual(sources[0].buffer, sources[2].buffer);
   audio.elements.get('#sound-toggle').checked = false; audio.hooks.noise(.28);
   assert.equal(buffersCreated, 2, 'muted sounds do not allocate buffers');
+  const notes = [];
+  class MusicContext extends AudioContext {
+    createOscillator() {
+      const note = { frequency: {}, connect: node => node, start(time) { this.startTime = time; }, stop(time) { this.stopTime = time; } };
+      notes.push(note); return note;
+    }
+  }
+  const music = makeRuntime({ value: JSON.stringify({ tutorialComplete: true, music: true, sound: false }) }, { AudioContext: MusicContext });
+  music.hooks.start('endless');
+  const clock = music.hooks.getAudio();
+  const tick = time => { clock.currentTime = time; const [id, callback] = [...music.timeouts].at(-1); music.timeouts.delete(id); callback(); };
+  assert.equal(notes.length, 12);
+  assert.equal(notes[0].startTime, config.musicStartDelaySeconds);
+  tick(3.81); assert.equal(notes.length, 12, 'next phrase waits until lookahead reaches it');
+  tick(3.97); assert.equal(notes.length, 24);
+  assert.equal(notes[12].startTime, config.musicStartDelaySeconds + 8 * config.musicBeatSeconds, 'callback jitter does not shift the musical clock');
+  tick(7.91); assert.equal(notes.length, 36);
+  assert.equal(notes[24].startTime, config.musicStartDelaySeconds + 16 * config.musicBeatSeconds);
+  tick(20); assert.equal(notes.length, 48, 'a long stall restarts one phrase rather than bursting missed phrases');
+  assert.equal(notes[36].startTime, 20 + config.musicStartDelaySeconds);
+  music.hooks.pauseGame(); assert.equal(music.timeouts.size, 0, 'pause clears scheduling');
+  assert.ok(notes.every(note => note.stopTime === undefined), 'pause stops all scheduled voices immediately');
+  music.hooks.resumeGame(); assert.equal(notes.length, 60);
+  music.hooks.showHome(); assert.equal(music.timeouts.size, 0);
+  console.log('Music timing checks passed: audio-clock lookahead, callback jitter, long stalls, pause/resume and Home cleanup.');
   console.log('Rendering/audio checks passed: idle menus, image-load repaint, cached glows, paused scenes, end screens, and noise-buffer reuse.');
 
   const denied = makeRuntime({ getItem() { throw new DOMException('denied', 'SecurityError'); }, setItem() { throw new DOMException('denied', 'SecurityError'); }, removeItem() { throw new DOMException('denied', 'SecurityError'); } });

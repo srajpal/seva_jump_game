@@ -77,6 +77,19 @@ async function canvasWork(page) {
       assert.equal(activeCanvas.shadows, 0, `${name}: active frames never assign shadowBlur`);
       await page.screenshot({ path: path.join(output, `${name}-cached-glows.png`) });
       check(`idle canvas and cached collectible glow: ${name}`, activeCanvas);
+      if (name === 'desktop') {
+        await page.keyboard.down('a'); assert.deepEqual(await page.evaluate(() => __qa.keys), ['ArrowLeft']); await page.keyboard.up('a');
+        await page.keyboard.down('D'); assert.deepEqual(await page.evaluate(() => __qa.keys), ['ArrowRight']); await page.keyboard.up('D');
+        await page.locator('#fullscreen-button').click();
+        await page.waitForFunction(() => document.fullscreenElement === document.querySelector('.game-frame'));
+        const fullscreen = await page.evaluate(() => { const c = document.querySelector('canvas'), r = c.getBoundingClientRect(); return { width: r.width, height: r.height, ratio: c.width / c.height }; });
+        assert.ok(Math.abs(fullscreen.width / fullscreen.height - fullscreen.ratio) < .01, 'fullscreen preserves canvas aspect ratio');
+        await page.screenshot({ path: path.join(output, 'desktop-fullscreen.png') });
+        await page.locator('#pause-button').click(); assert(await page.locator('#pause-screen').isVisible(), 'HTML controls work in fullscreen');
+        await page.locator('#resume-button').click(); await page.locator('#fullscreen-button').click();
+        await page.waitForFunction(() => !document.fullscreenElement);
+        check('A/D input and fullscreen enter/pause/resume/exit');
+      } else if (touch) assert.equal(await page.locator('#fullscreen-button').isVisible(), false);
       await page.locator('#pause-button').click(); await page.locator('#pause-settings-button').click(); await page.keyboard.press('Escape');
       assert(await page.evaluate(() => __qa.state.paused && !document.querySelector('#settings-screen').classList.contains('hidden')));
       await page.locator('#close-settings-button').focus(); await page.keyboard.press('Tab');
@@ -123,7 +136,8 @@ async function canvasWork(page) {
       await page.locator('#pause-home-button').click();
       check(`Challenge missed-bowl warning and restart: ${name}`);
       if (name === 'desktop') {
-        await page.locator('#endless-button').click();
+        await page.locator('canvas').focus(); await page.keyboard.press('Enter');
+        assert(await page.evaluate(() => __qa.state.running && __qa.state.mode === 'endless'));
         await page.evaluate(() => __qa.finish(false, 'fall'));
         await page.locator('#end-screen').waitFor({ state: 'visible' });
         assert.equal((await canvasWork(page)).images, 0, 'the result menu stops drawing after the loss animation');
@@ -145,6 +159,15 @@ async function canvasWork(page) {
       assert.deepEqual(errors, [], `${name}: no page errors`);
       check(`layout and core journeys: ${name}`, layout); await context.close();
     }
+    const fallbackContext = await browser.newContext({ serviceWorkers: 'block' });
+    await fallbackContext.addInitScript(() => { HTMLCanvasElement.prototype.getContext = () => null; });
+    const fallbackPage = await fallbackContext.newPage(), fallbackErrors = [];
+    fallbackPage.on('pageerror', error => fallbackErrors.push(error.message));
+    await fallbackPage.goto(`${origin}/game/index.html`);
+    assert(await fallbackPage.locator('#canvas-warning').isVisible());
+    assert(await fallbackPage.locator('#endless-button').isDisabled());
+    assert.deepEqual(fallbackErrors, []); check('missing canvas context shows an accessible fallback');
+    await fallbackContext.close();
     for (const denied of ['getItem','setItem','removeItem']) {
       const context = await browser.newContext({ serviceWorkers:'block' });
       await context.addInitScript(method => { Storage.prototype[method] = () => { throw new DOMException('Denied','SecurityError'); }; }, denied);
