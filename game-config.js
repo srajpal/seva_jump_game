@@ -64,6 +64,7 @@ const SEVA_CONFIG = {
   // Birds should be hazards to steer around, never sit directly above the
   // platform a player is trying to land on.
   birdPlatformClearance: 76,
+  birdSpawnOffset: 90,
   arcadeTargetScore: 1000,
   challengeParshadTarget: 50,
   // Net is H - 52 and bowl pickup reach is 86: normally unreachable at H + 34.

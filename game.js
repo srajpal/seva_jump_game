@@ -400,17 +400,11 @@
     } else if (Math.random() < config.collectibleChance) state.collectibles.push({ x: x + w / 2, y: platform.y - 37, type: Math.random() < config.tokenShare ? 'token' : 'parshad' });
     if (state.mode !== 'challenge' && level >= 3 && Math.random() < config.powerupChances.kara) state.powerups.push({ x: x + w / 2, y: platform.y - 60, type: 'kara' });
     if (state.mode !== 'challenge' && level >= 4 && Math.random() < config.powerupChances.nishan) state.powerups.push({ x: x + w / 2, y: platform.y - 60, type: 'nishan' });
-    // Plan the next row first so birds spawn halfway between landing heights.
-    const earlyGap = config.verticalGapRanges[0], lateGap = config.verticalGapRanges[1];
-    const [minGap, maxGap] = arcade ? config.verticalGapRanges[level === 1 ? 0 : 1] : hard ? lateGap : [earlyGap[0] + (lateGap[0] - earlyGap[0]) * endlessDifficulty, earlyGap[1] + (lateGap[1] - earlyGap[1]) * endlessDifficulty];
-    const requestedGap = minGap + Math.random() * (maxGap - minGap) + (arcade ? config.arcadeGapBonus : 0);
-    const verticalGap = Math.min(requestedGap, rules.maxDefaultPlatformGap());
-    state.nextY -= verticalGap;
     const birdChance = state.mode === 'challenge'
       ? (state.score >= config.challengeBirdStartScore ? config.challengeBirdChance : 0)
       : arcade ? (state.score >= config.arcadeBirdStartScore ? config.arcadeBirdChance : 0)
         : hard ? rules.hardBirdChance(state.score) : rules.endlessBirdChance(state.score);
-    const candidateBirdY = (platform.y + state.nextY) / 2;
+    const candidateBirdY = platform.y - config.birdSpawnOffset;
     const activeBirdYs = state.enemies.filter(bird => !bird.hit).map(bird => bird.y);
     const birdSpacingIsSafe = hard ? rules.canSpawnHardBird(activeBirdYs, candidateBirdY, H)
       : state.mode === 'challenge' ? rules.canSpawnChallengeBird(activeBirdYs, candidateBirdY) : true;
@@ -420,6 +414,12 @@
       const birdX = Math.random() < .5 && leftLimit > 25 ? 25 + Math.random() * (leftLimit - 25) : rightLimit < W - 25 ? rightLimit + Math.random() * (W - 25 - rightLimit) : platformCenter < W / 2 ? W - 25 : 25;
       state.enemies.push({ x: birdX, y: candidateBirdY, vx: (Math.random() < .5 ? -1 : 1) * rules.birdSpeed(state.mode, state.score, Math.random()), type: types[Math.floor(Math.random() * types.length)], flapOffset: Math.random() * Math.PI * 2 });
     }
+    // Keep gap sampling after bird generation to preserve the seeded courses.
+    const earlyGap = config.verticalGapRanges[0], lateGap = config.verticalGapRanges[1];
+    const [minGap, maxGap] = arcade ? config.verticalGapRanges[level === 1 ? 0 : 1] : hard ? lateGap : [earlyGap[0] + (lateGap[0] - earlyGap[0]) * endlessDifficulty, earlyGap[1] + (lateGap[1] - earlyGap[1]) * endlessDifficulty];
+    const requestedGap = minGap + Math.random() * (maxGap - minGap) + (arcade ? config.arcadeGapBonus : 0);
+    const verticalGap = Math.min(requestedGap, rules.maxDefaultPlatformGap());
+    state.nextY -= verticalGap;
   }
   function burst(x, y, color, count = 6) {
     if (profile.reducedMotion) return;

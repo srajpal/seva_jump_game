@@ -20,7 +20,7 @@ Runtime coverage includes keyboard and standard gamepad edges, deadzone and
 disconnect handling, audio-clock scheduling under timer jitter, null canvas
 fallback, breakable platform lifetime/collision, first-visible bird counts, and
 lag-frame Challenge bowl recovery with Falcon. Generator checks assert birds
-spawn midway between adjacent rows. Package checks keep the iOS asset folder
+use the configured spawn offset and current-platform clearance. Package checks keep the iOS asset folder
 aligned with the runtime allowlist.
 
 ## Browser checks

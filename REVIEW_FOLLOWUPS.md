@@ -61,6 +61,30 @@ Source: [review comment](https://github.com/srajpal/seva_jump_game/pull/12#issue
 - [ ] Consider cross-checking Android `versionCode` and iOS `CFBundleVersion`,
   since README currently describes one shared native build number.
 
+## PR #14 — bird fairness and controls
+
+Source: [review comment](https://github.com/srajpal/seva_jump_game/pull/14#issuecomment-5746746199).
+
+- [x] Reverted mid-gap bird spawning in PR #14. Restored the 90 px offset through
+  `config.birdSpawnOffset` and restored gap sampling after bird generation so
+  seeded courses retain the baseline random sequence. The reviewer reported
+  bird deaths per generated bird rising 111% in Arcade and 59% in Challenge with
+  mid-gap spawning; these are reviewer measurements, not independently reproduced
+  playtest results.
+- [ ] Revisit next-platform lane clearance with
+  [issue #13 / E4](https://github.com/srajpal/seva_jump_game/issues/13). Consider
+  generating a bird once both adjacent rows are known. Compare the same seeded
+  autopilot before/after (60 runs per mode, 240 s cap), count generated birds
+  directly rather than using the first-visible `birdsSeen` stat, and enforce
+  E4's no-more-than-20% increase in deaths per bird plus its human playtest gate.
+- [ ] Explain that controller A is an Endless shortcut and only standard-mapped
+  pads are supported; controller menu navigation is not implemented.
+- [ ] Address controller-start audio activation: Chromium may leave audio
+  suspended until a keyboard/pointer gesture. Consider a help hint or an audio
+  resume attempt on the next real gesture, with browser coverage.
+- [ ] Replace warning-text comparisons with an explicit message kind if message
+  copy evolves; preserve the existing mobile/desktop placement regression tests.
+
 ## Issue #6 — deferred native compatibility decision
 
 - [ ] CSP remains deferred by the user's explicit scope choice. Validate a
@@ -74,7 +98,10 @@ Source: [review comment](https://github.com/srajpal/seva_jump_game/pull/12#issue
   `MainActivity.publishInsets()` injects `document.documentElement.style` without
   a document-readiness guard; this wrapper code is unchanged by issue #6. A
   subsequent phone/tablet WebView smoke run passed. Retest inset publication at
-  startup/reload and preserve safe areas before fixing the lifecycle race.
+  startup/reload and preserve safe areas before fixing the lifecycle race. Track
+  with [issue #1's Android verification](https://github.com/srajpal/seva_jump_game/issues/1),
+  as requested in the PR #14 review; consider guarding document readiness or
+  deferring publication until the page finishes loading.
 - [ ] Repeat native visual QA on stable devices: issue #6's headless emulators
   passed WebView flows but device captures included a black phone surface and a
   tablet System UI timeout. Canvas exports contained gameplay, but those captures

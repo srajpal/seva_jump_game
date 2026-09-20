@@ -3,6 +3,21 @@ const config = require('../game-config.js');
 const { sizes, makeGenerator, addRow, checkOpening, collectRow } = require('./generator-helpers.js');
 
 const RUNS = 300, STEPS = 350;
+// Exercise a non-default offset so a hardcoded spawn height cannot silently
+// diverge from config. Shared row checks cover every mode and both canvas sizes.
+const savedOffset = config.birdSpawnOffset;
+try {
+  config.birdSpawnOffset = savedOffset + 17;
+  for (const size of sizes) for (const mode of ['endless', 'arcade', 'challenge', 'hard']) {
+    const runtime = makeGenerator(size, 0xb170 + size.width);
+    runtime.hooks.reset(mode);
+    runtime.hooks.state.score = config.arcadeTargetScore;
+    let birds = 0;
+    for (let row = 0; row < 150; row++) birds += addRow(runtime).birds.length;
+    assert.ok(birds > 0, `${mode}/${size.width}: changed-offset probe must generate birds`);
+  }
+} finally { config.birdSpawnOffset = savedOffset; }
+console.log('Bird spawn offset follows config in all four modes at both canvas sizes.');
 for (const size of sizes) {
   const runtime = makeGenerator(size, 0xb17d + size.width);
   let birds = 0, earlyBirds = 0, lateBirds = 0, earlyRows = 0, lateRows = 0;

@@ -41,8 +41,7 @@ function checkRow(runtime, previous, row, birds) {
   for (const bird of birds) {
     assert.ok(Number.isFinite(bird.x) && bird.x >= 25 && bird.x <= canvas.width - 25);
     assert.ok(Math.abs(bird.x - center) >= config.birdPlatformClearance - 1e-8, 'bird spawn clears the primary landing lane');
-    const nextRowY = state.platforms.find(item => !item.companion && item.y < platform.y)?.y ?? state.nextY;
-    assert.equal(bird.y, (platform.y + nextRowY) / 2, 'birds spawn midway between this row and the next');
+    assert.equal(bird.y, platform.y - config.birdSpawnOffset, 'birds use the configured offset above their spawning row');
     const spacing = state.mode === 'hard' ? canvas.height : state.mode === 'challenge' ? config.challengeBirdScreenSpacing : 0;
     for (const other of state.enemies) {
       if (other !== bird && !other.hit) assert.ok(Math.abs(other.y - bird.y) >= spacing, 'birds remain at least one screen apart');
@@ -64,8 +63,7 @@ function checkOpening(runtime) {
   const state = runtime.hooks.state;
   let previous = state.platforms[0];
   for (const platform of state.platforms.slice(1).filter(item => !item.companion)) {
-    const nextRowY = state.platforms.find(item => !item.companion && item.y < platform.y)?.y ?? state.nextY;
-    checkRow(runtime, previous, state.platforms.filter(item => item.y === platform.y), state.enemies.filter(bird => bird.y < platform.y && bird.y > nextRowY));
+    checkRow(runtime, previous, state.platforms.filter(item => item.y === platform.y), state.enemies.filter(bird => bird.y === platform.y - config.birdSpawnOffset));
     previous = platform;
   }
 }
