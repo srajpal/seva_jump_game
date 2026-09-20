@@ -557,10 +557,10 @@
     const standing = state.lastLanding;
     if (state.stallTimer < config.stallRescueSeconds || state.hitStop || state.falconRescue || state.ending || state.paused) return;
     if (!standing || standing.broken || !state.platforms.includes(standing)) return;
-    const springApex = rules.jumpApex(profile.powerJump, config.springJumpVelocity);
-    if (!rules.isStranded(state.platforms, standing, standing.type === 'spring' ? springApex : rules.jumpApex(profile.powerJump))) return;
+    const springReach = rules.jumpReach(profile.powerJump, config.springJumpVelocity);
+    if (!rules.isStranded(state.platforms, standing, standing.type === 'spring' ? springReach : rules.jumpReach(profile.powerJump))) return;
     const above = rules.nearestRowAbove(state.platforms, standing);
-    if (above && standing.y - above.y > springApex) {
+    if (above && standing.y - above.y > springReach) {
       const rungs = rules.rescueRungs(standing, above, rules.maxDefaultPlatformGap(), W);
       state.platforms.push(...rungs);
       for (const rung of rungs) burst(rung.x + rung.w / 2, rung.y, '#f7efd7', 12);
@@ -863,7 +863,7 @@
     if (state.messageTimer > 0) { ctx.textAlign = 'center'; ctx.fillStyle = '#24483f'; ctx.font = 'bold 15px "Trebuchet MS"'; ctx.fillText(state.message, W / 2, isMissedBowlMessage() ? 180 : 120); }
   }
   function loop(time) {
-    const dt = Math.min(.04, (time - lastTime) / 1000 || 0); lastTime = time;
+    const dt = Math.min(config.maxFrameSeconds, (time - lastTime) / 1000 || 0); lastTime = time;
     pollGamepad();
     const active = !menuVisible && !state?.paused && (state?.running || state?.ending || state?.falconRescue);
     if (active) update(dt);

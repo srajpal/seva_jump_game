@@ -5,6 +5,10 @@ const SEVA_CONFIG = {
   // Each Power Jump level adds a true 10% to jump height. Velocity uses the
   // square root of this value because height is proportional to velocity².
   powerJumpHeightBonusPerLevel: .1,
+  // Longest frame step the game loop integrates. Semi-implicit Euler (velocity
+  // first, then position) reaches velocity * step / 2 less than the analytic
+  // apex, so reachability checks use this worst case, not the analytic apex.
+  maxFrameSeconds: .04,
   karaJumpMultiplier: 1.4,
   nishanJumpMultiplier: 1.6,
   // Responsive enough for a phone drag, while still leaving time to line up
@@ -21,10 +25,10 @@ const SEVA_CONFIG = {
   breakCrumbleDuration: .3,
   breakCrumbleFallDistance: 36,
   // Seconds without a height gain before a stranded player gets help. The
-  // platform turns into a spring, whose apex (224 px) clears the two capped
-  // gaps (192 px) a single broken row leaves. When several rows broke in a
-  // row (Hard's double-break rows) the gap is bridged by helper platforms of
-  // this width instead.
+  // platform turns into a spring, whose worst-case reach (about 208 px)
+  // clears the two capped gaps (192 px) a single broken row leaves. When
+  // several rows broke in a row (Hard's double-break rows) the gap is bridged
+  // by helper platforms of this width instead.
   stallRescueSeconds: 3,
   stallRescueRungWidth: 76,
   musicBeatSeconds: .5,

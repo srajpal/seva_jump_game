@@ -121,3 +121,24 @@ Source: [review comment](https://github.com/srajpal/seva_jump_game/pull/14#issue
 ## Issue #1 — Capacitor 8 migration
 
 - [ ] Track the Capacitor CLI 8.5.2 development-only `xcode -> uuid` advisory [GHSA-w5hq-g745-h8pq](https://github.com/advisories/GHSA-w5hq-g745-h8pq). The September 19 install reports three moderate dependency entries from this one chain. It is not packaged in the Android app. Recheck upstream releases; do not apply an untested major UUID override or downgrade the CLI as part of this Android migration.
+
+## Issue #13 — E1 stall rescue review (branch `claude/exp-issue-13`)
+
+Source: adversarial review of commit e4b6860 on [issue #13](https://github.com/srajpal/seva_jump_game/issues/13).
+
+- [x] Fixed in `E1: address review round 1 (#13)`: the stranded check judged
+  reach with the analytic apex, but the semi-implicit Euler integrator climbs
+  `velocity * step / 2` less (about 6 px at 60 fps, 15 px at the 40 ms clamp),
+  so Power Jump 3-5 double gaps of 162-192 px and spring gaps just under the
+  spring apex were never rescued. `rules.jumpReach()` now judges reach at the
+  loop clamp (`config.maxFrameSeconds`); rule and runtime regressions cover the
+  band, and the Power Jump 5 autopilot shows 0 soft-locks.
+- [ ] Horizontal-reach stall in the Challenge finish runway: seed 777 shows
+  3/60 runs frozen to the 240 s cap with the next row only 92-96 px up but
+  257-293 px sideways (only a far-side companion or runway platform remains).
+  `isStranded` is a vertical test by design; consider capping companion offsets
+  in runway rows or extending the rescue to horizontal reach, then re-measure.
+- [ ] The autopilot's soft-lock classifier grades the intact platform at the
+  player's height rather than `state.lastLanding`, which under-counts the
+  horizontal case above (3 stalls, 1 flagged). Change it only together with a
+  fresh baseline, since the E1 A/B compares against the current classifier.

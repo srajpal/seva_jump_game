@@ -63,13 +63,38 @@ assert.equal(rules.isStranded([farRow, standing, brokenRow, { x: 220, y: 404, w:
 assert.equal(rules.isStranded([standing, { ...farRow, y: 500 - apex }], standing, apex), false, 'a row exactly one apex above is still reachable');
 assert.equal(rules.isStranded([standing, { ...farRow, y: 500 - apex - 1 }], standing, apex), true, 'a row just beyond the apex is not');
 assert.equal(rules.isStranded([standing, { ...farRow, y: 600 }], standing, apex), true, 'rows below the standing platform do not count');
-assert.equal(rules.isStranded([farRow, standing, brokenRow], standing, rules.jumpApex(3)), true, 'Power Jump 3 (about 167 px) still cannot clear a 192 px double gap');
-assert.equal(rules.isStranded([farRow, standing, brokenRow], standing, rules.jumpApex(5)), false, 'Power Jump 5 (about 192 px) just clears the capped double gap, so no rescue');
+assert.equal(rules.isStranded([farRow, standing, brokenRow], standing, rules.jumpReach(3)), true, 'Power Jump 3 (about 152 px reach) cannot clear a 192 px double gap');
+// Power Jump 5's analytic apex (192.2 px) looks like it just clears the capped
+// double gap, but the integrator falls short of the apex, so the game must
+// judge the gap by what a frame-stepped jump actually reaches.
+assert.equal(rules.isStranded([farRow, standing, brokenRow], standing, rules.jumpApex(5)), false, 'the analytic apex would wrongly call a 192 px gap reachable at Power Jump 5');
+assert.equal(rules.isStranded([farRow, standing, brokenRow], standing, rules.jumpReach(5)), true, 'Power Jump 5 (about 177 px reach) is stranded by the capped double gap');
+// jumpReach must never exceed what semi-implicit Euler (vy += g*dt; y += vy*dt,
+// the order update() uses) climbs, at 60 fps and at the 40 ms loop clamp, and
+// must stay within a pixel of it at the clamp so rescues are not over-eager.
+function integratedRise(velocity, step) {
+  let y = 0, vy = -velocity, top = 0;
+  while (vy < 0) { vy += config.gravity * step; y += vy * step; top = Math.min(top, y); }
+  return -top;
+}
+for (const level of [0, 1, 2, 3, 4, 5]) for (const velocity of [config.baseJumpVelocity, config.springJumpVelocity]) {
+  const launch = velocity * rules.powerJumpMultiplier(level);
+  for (const step of [1 / 60, 1 / 30, config.maxFrameSeconds]) {
+    const rise = integratedRise(launch, step), reach = rules.jumpReach(level, velocity, step);
+    assert.ok(reach <= rise + 1e-9 && rise < rules.jumpApex(level, velocity), `reach ${reach.toFixed(2)} bounds the integrated rise ${rise.toFixed(2)} (level ${level}, velocity ${velocity}, step ${step})`);
+    assert.ok(rise - reach < 1, 'the reach is within a pixel of the integrated rise');
+  }
+  assert.ok(rules.jumpReach(level, velocity) <= rules.jumpReach(level, velocity, 1 / 60), 'the default reach is the loop clamp, the worst case');
+}
+assert.ok(rules.jumpReach() > rules.maxDefaultPlatformGap(), 'every single generated gap stays reachable at the frame clamp, so no rescue fires for one');
+assert.ok(rules.jumpReach(5) < 2 * rules.maxDefaultPlatformGap(), 'even Power Jump 5 is stranded by the widest double gap');
+assert.ok(rules.jumpReach(0, config.springJumpVelocity) > 2 * rules.maxDefaultPlatformGap(), 'a converted spring still clears two capped gaps at the frame clamp');
 assert.equal(rules.nearestRowAbove([farRow, standing, brokenRow], standing), farRow, 'the nearest intact row skips broken platforms');
 assert.equal(rules.nearestRowAbove([standing, { ...farRow, y: 600 }], standing), undefined);
 const springApex = rules.jumpApex(0, config.springJumpVelocity);
 assert.equal(springApex, config.springJumpVelocity ** 2 / (2 * config.gravity));
 assert(springApex > 2 * rules.maxDefaultPlatformGap() && springApex < 3 * rules.maxDefaultPlatformGap(), 'a spring clears two capped gaps but not three');
+assert(rules.jumpReach(0, config.springJumpVelocity) > 2 * rules.maxDefaultPlatformGap(), 'the spring reach at the loop clamp still clears two capped gaps');
 // Several broken rows in a row (Hard double-break rows) leave a gap no spring
 // can clear; helper steps bridge it at generated spacing, inside the canvas.
 assert.deepEqual(rules.rescueRungs(standing, { x: 100, y: 500 - 192, w: 100 }, 96, 450).map(rung => rung.y), [404], 'a double gap gets exactly one midway step');

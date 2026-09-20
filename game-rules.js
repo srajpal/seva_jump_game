@@ -28,15 +28,23 @@ const SEVA_RULES = {
   jumpApex(powerJump = 0, velocity = RULE_CONFIG.baseJumpVelocity) {
     return (velocity * this.powerJumpMultiplier(powerJump)) ** 2 / (2 * RULE_CONFIG.gravity);
   },
+  // The height the game's semi-implicit Euler integrator (velocity first, then
+  // position) actually reaches: velocity * step / 2 short of the analytic apex,
+  // judged at the loop's longest frame step so a slow device is covered too.
+  jumpReach(powerJump = 0, velocity = RULE_CONFIG.baseJumpVelocity, step = RULE_CONFIG.maxFrameSeconds) {
+    return this.jumpApex(powerJump, velocity) - velocity * this.powerJumpMultiplier(powerJump) * step / 2;
+  },
   nearestRowAbove(platforms, standing) {
     return platforms.filter(p => !p.broken && p.y < standing.y).sort((a, b) => b.y - a.y)[0];
   },
   // A player is stranded when the nearest intact row above the platform they
   // keep bouncing on is farther away than one jump can reach (a broken row
   // leaves a double gap). A surviving companion on that row keeps it reachable.
-  isStranded(platforms, standing, apex) {
+  // Callers pass jumpReach(), not the analytic apex, because the integrator
+  // falls short of the apex by up to half a frame's velocity.
+  isStranded(platforms, standing, reach) {
     const above = this.nearestRowAbove(platforms, standing);
-    return !above || standing.y - above.y > apex;
+    return !above || standing.y - above.y > reach;
   },
   // Evenly spaced solid steps from the standing platform up to the next intact
   // row, never farther apart than a generated gap, drifting sideways towards

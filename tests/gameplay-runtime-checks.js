@@ -12,8 +12,8 @@ function cleanState(runtime, mode = 'endless') {
   return state;
 }
 
-function advanceUpdates(runtime, seconds) {
-  for (let remaining = seconds; remaining > 1e-9; remaining -= .04) runtime.hooks.update(Math.min(.04, remaining));
+function advanceUpdates(runtime, seconds, step = .04) {
+  for (let remaining = seconds; remaining > 1e-9; remaining -= step) runtime.hooks.update(Math.min(step, remaining));
 }
 
 const runtime = makeRuntime({ value: JSON.stringify({ tutorialComplete: true, music: false, sound: false, reducedMotion: true }) });
@@ -315,6 +315,63 @@ rescueRuntime.hooks.observeSounds(type => springSounds.push(type));
   advanceUpdates(rescueRuntime, 2.5);
   assert.equal(stalled.lastLanding, stalled.platforms[1], 'the spring plus steps reach the intact row');
   assert.equal(standingPlatform.type, 'spring');
+}
+
+// The spec's timing at 60 fps: 3.5 s after landing the platform is a spring
+// with its message, and about a second later the player has gained height.
+{
+  const { stalled, standingPlatform } = strandedScenario();
+  advanceUpdates(rescueRuntime, 3.5, 1 / 60);
+  assert.equal(standingPlatform.type, 'spring', 'the conversion happens within 3.5 s at 60 fps');
+  assert.equal(stalled.message, 'Spring assist!');
+  const heightBefore = stalled.heightScore;
+  advanceUpdates(rescueRuntime, 1, 1 / 60);
+  assert.ok(stalled.heightScore > heightBefore, 'the player reaches the upper row about a second later');
+}
+
+// Regression: the stranded check must use the integrator's reach, not the
+// analytic apex. Power Jump 5's apex (192.2 px) covers the widest double gap on
+// paper, but semi-implicit Euler falls about 6 px short at 60 fps and 15 px at
+// the 40 ms clamp; gaps in that band left the player bouncing forever with no
+// rescue. Aligned under the row, so horizontal reach is not a factor.
+for (const [level, gap, step] of [[5, 190, 1 / 60], [5, 192, 1 / 60], [5, 180, .04], [3, 164, 1 / 60], [4, 176, 1 / 60], [3, 158, .04]]) {
+  const { stalled, standingPlatform } = strandedScenario('endless', { x: 150, y: 500 - gap, w: 150 });
+  rescueRuntime.hooks.profile.powerJump = level;
+  const upper = stalled.platforms[1];
+  assert.equal(rules.isStranded(stalled.platforms, standingPlatform, rules.jumpApex(level)), false, `the analytic apex claims a ${gap} px gap is reachable at Power Jump ${level}`);
+  advanceUpdates(rescueRuntime, 1, step);
+  const heightBefore = stalled.heightScore;
+  advanceUpdates(rescueRuntime, 2, step);
+  assert.equal(stalled.lastLanding, standingPlatform, `the player never lands on the ${gap} px row at Power Jump ${level}`);
+  assert.equal(stalled.heightScore, heightBefore, 'no height is gained while stranded');
+  advanceUpdates(rescueRuntime, 2, step);
+  assert.equal(standingPlatform.type, 'spring', `a ${gap} px gap at Power Jump ${level} (step ${step.toFixed(4)}) is rescued`);
+  advanceUpdates(rescueRuntime, 2, step);
+  assert.equal(stalled.lastLanding, upper, 'the spring then reaches the row');
+  rescueRuntime.hooks.profile.powerJump = 0;
+}
+// The same band exists for a spring: gaps between the spring's integrated
+// reach and its analytic apex (three or four broken rows) need helper steps.
+for (const [level, gap] of [[1, 244], [0, 222], [5, 334]]) {
+  const { stalled, standingPlatform } = strandedScenario('endless', { x: 150, y: 500 - gap, w: 150 });
+  standingPlatform.type = 'spring'; rescueRuntime.hooks.profile.powerJump = level;
+  const upper = stalled.platforms[1];
+  advanceUpdates(rescueRuntime, 3, 1 / 60);
+  assert.equal(stalled.lastLanding, standingPlatform, `a spring never reaches a ${gap} px row at Power Jump ${level}`);
+  advanceUpdates(rescueRuntime, 2, 1 / 60);
+  assert.ok(stalled.platforms.some(platform => platform.helper), `a spring facing a ${gap} px gap at Power Jump ${level} gets helper steps`);
+  advanceUpdates(rescueRuntime, 4, 1 / 60);
+  assert.equal(stalled.lastLanding, upper, 'the steps then reach the row');
+  rescueRuntime.hooks.profile.powerJump = 0;
+}
+// A gap the integrator genuinely reaches at Power Jump 5 is never rescued.
+{
+  const { stalled, standingPlatform } = strandedScenario('endless', { x: 150, y: 500 - 176, w: 150 });
+  rescueRuntime.hooks.profile.powerJump = 5;
+  advanceUpdates(rescueRuntime, 5, .04);
+  assert.equal(standingPlatform.type, 'normal', 'a 176 px gap is within Power Jump 5 reach even at the frame clamp');
+  assert.equal(stalled.lastLanding, stalled.platforms[1]);
+  rescueRuntime.hooks.profile.powerJump = 0;
 }
 
 // A stranded platform that has already been culled, or that broke under the
