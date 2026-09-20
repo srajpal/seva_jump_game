@@ -1,5 +1,11 @@
 {
   "appId": "org.sevajump.game",
   "appName": "SevaJump",
-  "webDir": "www"
+  "webDir": "www",
+  "plugins": {
+    "SystemBars": {
+      "insetsHandling": "disable",
+      "style": "LIGHT"
+    }
+  }
 }

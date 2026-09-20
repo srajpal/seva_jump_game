@@ -2,7 +2,7 @@
 
 Use this checklist for every release candidate. Do not create or commit an upload keystore, passwords, or `keystore.properties`.
 
-Current candidate: **1.0.0, native build 38**. Existing checkmarks record the historical 0.13.2 work unless newer evidence is explicitly dated. Rerun applicable checks after any source change and against the exact artifact proposed for upload. [ITCH_RELEASE_AUDIT.md](ITCH_RELEASE_AUDIT.md) preserves the original 0.13.1 findings; current status is in [RELEASE_PROGRESS.md](RELEASE_PROGRESS.md).
+Current candidate: **1.0.1, Android build 39 / iOS build 38**. Existing checkmarks record the historical 0.13.2 work unless newer evidence is explicitly dated. Rerun applicable checks after any source change and against the exact artifact proposed for upload. [ITCH_RELEASE_AUDIT.md](ITCH_RELEASE_AUDIT.md) preserves the original 0.13.1 findings; current status is in [RELEASE_PROGRESS.md](RELEASE_PROGRESS.md).
 
 ## itch.io browser release
 
@@ -26,7 +26,7 @@ Google Play and iOS signing/store-console tasks below do not block a browser-onl
 - [x] Endless, Arcade, Challenge, and Hard Mode routes pass automated reachability checks.
 - [x] Challenge contains exactly 50 reachable bowls and celebrates only after all 50 are collected.
 - [x] First-run guide, settings, reset confirmation, statistics, badges, upgrades, music, and sound effects are implemented.
-- [ ] Complete Android device coverage. The Java 21 debug build and phone smoke test passed; the final tablet check remains.
+- [ ] Complete physical Android device coverage. Java 21 builds and Android 15/16 phone/tablet emulator smoke checks passed September 19, 2026; physical-device performance and full playthroughs remain.
 - [ ] Test the iOS portrait layout, touch controls, offline launch, outbound studio link, and saved progress on an iPhone and iPad.
 - [x] The app has no ads, purchases, accounts, analytics, or gameplay network dependency.
 - [x] Progress can be erased from Settings, Android cloud backup is disabled, and cleartext network traffic is disabled.
@@ -47,7 +47,8 @@ Google Play and iOS signing/store-console tasks below do not block a browser-onl
 
 - [ ] Confirm the permanent application ID: `org.sevajump.game`.
 - [ ] Create a replacement developer account and complete verification: the old Khalsa Game Studio account was confirmed closed for inactivity on September 18, 2026. Then create the app in Play Console.
-- [ ] Upgrade compile/target SDK from API 35 to API 36 with a compatible Android toolchain and verify Android 16 behavior. New mobile submissions require API 36 from August 31, 2026; see https://support.google.com/googleplay/android-developer/answer/11926878.
+- [x] Migrated compile/target SDK to API 36 with Capacitor 8, AGP 8.13.0 and Gradle 8.14.3; Android 16 phone/tablet emulator checks passed September 19, 2026.
+- [ ] Confirm the enforced target API in the verified replacement Play Console account and upload a signed AAB to verify acceptance. Local builds do not satisfy this gate. Published requirements: https://support.google.com/googleplay/android-developer/answer/11926878.
 - [ ] Create and securely back up a separate upload key; never store it in this repository.
 - [ ] Enroll in Play App Signing and build a signed Android App Bundle (`.aab`).
 - [ ] Decide cross-store signing before distribution: use a consistent application ID and compatible signing identity for updates. An upload key is not the Play app signing key. See `ANDROID_DISTRIBUTION.md`.

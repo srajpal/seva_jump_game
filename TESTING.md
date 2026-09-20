@@ -41,7 +41,7 @@ Optional settings:
 - `TEST_WEB_ROOT`: an extracted release folder; default is the project source.
 - `SKIP_OFFLINE=1`: skip only the offline test, explicitly recorded as not run. Never use this to claim an offline pass.
 
-The suite starts its own local server and closes it afterward. It checks six viewport sizes, menu focus and scrolling, pause, pointer mapping, storage denial, reset, a local cross-origin iframe, and actual first-visit offline play. Screenshots and JSON results are written to ignored `screenshots/release-1.0.0/<engine>/`. Browser emulation is not a physical-device test; WebKit on Windows is not iPhone Safari.
+The suite starts its own local server and closes it afterward. It checks six viewport sizes, menu focus and scrolling, pause, pointer mapping, storage denial, reset, a local cross-origin iframe, and actual first-visit offline play. Screenshots and JSON results are written to ignored `screenshots/release-1.0.1/<engine>/`. Browser emulation is not a physical-device test; WebKit on Windows is not iPhone Safari.
 
 ## Release artifact
 
@@ -56,7 +56,7 @@ The builder writes a ZIP plus manifest and checksum into `dist/`. Extract the ZI
 
 ## Android and iOS
 
-Android requires Java 21, the Android SDK and the installed Capacitor dependencies:
+Android uses Capacitor 8, Node 22+, Java 21, Android SDK 36, AGP 8.13.0 and Gradle 8.14.3. Use Android Studio Otter 2025.2.1+ when opening the project. The minimum device version is Android 7.0 (API 24):
 
 ```powershell
 npm run android:debug
@@ -64,7 +64,7 @@ npm run android:debug
 
 If your default Java is older, set `JAVA_HOME` for the build session to your Java 21 installation (Android Studio's bundled `jbr` is one option). Do not change the machine-wide setting just for this project.
 
-Install the debug APK on a test phone and tablet/emulator. Check portrait/safe areas, touch, pause, Settings, Android Back and local saves. `tests/native-smoke.cjs` can attach to a forwarded debug WebView using `WEBVIEW_CDP` and `DEVICE_LABEL`; it must target a test emulator, not a personal browsing session.
+Install the debug APK on a test phone and tablet/emulator. Check portrait/safe areas, touch, pause, Settings, Android Back and local saves. `tests/native-smoke.cjs` can attach to a forwarded debug WebView using `WEBVIEW_CDP`, `DEVICE_LABEL`, `ADB_SERIAL=emulator-<port>` and optionally `ADB_PATH`; it must target a test emulator, not a personal browsing session. The check repeats reloads, asserts inset publication and portrait/canvas layout, dispatches Back through ADB and an edge swipe when gesture navigation is enabled, and saves WebView/device screenshots plus window dumps under ignored `screenshots/release-1.0.1/native/`. Acknowledge Android's first-use fullscreen tutorial before collecting unobstructed captures. Run on Android 15 and 16 phone/tablet profiles. Inspect device captures and window dumps to confirm system bars show in menus and hide in gameplay; also check gesture Back, three-button navigation, cutouts, rotation and resume. Automated WebView assertions alone do not establish device visual correctness.
 
 Build iOS in Xcode and test on an iPhone/iPad. This Windows workspace cannot verify an iOS archive.
 
