@@ -12,6 +12,17 @@ const SEVA_RULES = {
   endlessDifficulty(score) {
     return Math.max(0, Math.min(1, score / RULE_CONFIG.endlessDifficultyScore));
   },
+  // Second, gentler ramp for Endless only, from the difficulty cap onwards.
+  endlessLateDifficulty(score) {
+    return Math.max(0, Math.min(1, (score - RULE_CONFIG.endlessDifficultyScore) / RULE_CONFIG.endlessLateDifficultyScore));
+  },
+  // Endless moving platforms drift from the gentle range towards Arcade's as
+  // the late ramp progresses; the Arcade range is already proven reachable.
+  endlessMovingPlatformSpeedRange(score) {
+    const late = this.endlessLateDifficulty(score);
+    const [from, to] = [RULE_CONFIG.movingPlatformSpeedRange, RULE_CONFIG.arcadeMovingPlatformSpeedRange];
+    return [from[0] + (to[0] - from[0]) * late, from[1] + (to[1] - from[1]) * late];
+  },
   endlessPlatformCutoffs(score) {
     const difficulty = this.endlessDifficulty(score), mix = RULE_CONFIG.endlessPlatformMix;
     return {
@@ -23,6 +34,7 @@ const SEVA_RULES = {
   birdSpeed(mode, score, roll) {
     const speed = RULE_CONFIG.birdSpeed;
     return speed.base + roll * speed.randomRange + this.endlessDifficulty(score) * speed.difficultyBonus
+      + (mode === 'endless' ? this.endlessLateDifficulty(score) * RULE_CONFIG.endlessLateBirdSpeedBonus : 0)
       + (this.isHard(mode) ? speed.hardBonus : 0) + (mode === 'challenge' ? RULE_CONFIG.challengeBirdSpeedBonus : 0);
   },
   jumpApex(powerJump = 0, velocity = RULE_CONFIG.baseJumpVelocity) {
@@ -99,7 +111,8 @@ const SEVA_RULES = {
   endlessBirdChance(score) {
     if (score < RULE_CONFIG.endlessBirdStartScore) return 0;
     const difficulty = this.endlessDifficulty(score);
-    const [low, high] = RULE_CONFIG.endlessBirdChanceRange;
+    const [low, cap] = RULE_CONFIG.endlessBirdChanceRange;
+    const high = cap + (RULE_CONFIG.endlessLateBirdChanceCap - cap) * this.endlessLateDifficulty(score);
     const targetChance = low + (high - low) * difficulty;
     const warmup = Math.min(1, (score - RULE_CONFIG.endlessBirdStartScore) / RULE_CONFIG.endlessBirdWarmupScore);
     return RULE_CONFIG.endlessBirdIntroChance + (targetChance - RULE_CONFIG.endlessBirdIntroChance) * warmup;

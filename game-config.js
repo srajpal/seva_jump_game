@@ -57,6 +57,12 @@ const SEVA_CONFIG = {
   arcadeBirdChance: .18,
   birdSpeed: { base: 60, randomRange: 45, difficultyBonus: 35, hardBonus: 12 },
   endlessDifficultyScore: 1500,
+  // Past the difficulty cap a gentler second ramp keeps strong Endless runs
+  // from plateauing. It only touches hazards that cannot break reachability
+  // (bird speed, bird odds, moving-platform speed), never gaps or shifts.
+  endlessLateDifficultyScore: 1500,
+  endlessLateBirdSpeedBonus: 40,
+  endlessLateBirdChanceCap: .32,
   endlessHorizontalShiftRange: [72, 136],
   endlessBirdStartScore: 160,
   endlessBirdWarmupScore: 120,

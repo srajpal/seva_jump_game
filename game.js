@@ -379,7 +379,7 @@
         const [minSpeed, maxSpeed] = config.arcadeMovingPlatformSpeedRange;
         speed = Math.min(maxSpeed, (minSpeed + (maxSpeed - minSpeed) * arcadeProgress) * (.9 + Math.random() * .2));
       } else {
-        const [minSpeed, maxSpeed] = config.movingPlatformSpeedRange;
+        const [minSpeed, maxSpeed] = rules.endlessMovingPlatformSpeedRange(state.score);
         speed = minSpeed + Math.random() * (maxSpeed - minSpeed);
       }
     }

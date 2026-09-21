@@ -32,6 +32,34 @@ assert.equal(rules.endlessDifficulty(0), 0, 'Endless difficulty should begin gen
 assert(rules.endlessDifficulty(750) > 0 && rules.endlessDifficulty(750) < 1, 'Endless difficulty should ramp continuously.');
 assert.equal(rules.endlessDifficulty(config.endlessDifficultyScore), 1, 'Endless difficulty should reach its capped late-game intensity.');
 assert.equal(rules.endlessDifficulty(100000), 1, 'Endless difficulty should remain capped at extreme scores.');
+// Late ramp: a second curve starts where the first caps and only hardens
+// hazards that cannot break reachability, in Endless alone.
+const lateStart = config.endlessDifficultyScore, lateEnd = lateStart + config.endlessLateDifficultyScore;
+assert.equal(rules.endlessLateDifficulty(0), 0, 'the late ramp is dormant before the difficulty cap');
+assert.equal(rules.endlessLateDifficulty(lateStart), 0, 'the late ramp starts at the difficulty cap');
+assert.equal(rules.endlessLateDifficulty(lateEnd), 1, 'the late ramp completes one cap-length later');
+assert.equal(rules.endlessLateDifficulty(100000), 1, 'the late ramp stays capped at extreme scores');
+for (let score = 0, previous = 0; score <= lateEnd + 500; score += 50) {
+  const late = rules.endlessLateDifficulty(score);
+  assert(late >= previous && late >= 0 && late <= 1, 'the late ramp is monotonic and clamped');
+  previous = late;
+}
+for (const roll of [0, .5, 1]) {
+  const cappedSpeed = config.birdSpeed.base + roll * config.birdSpeed.randomRange + config.birdSpeed.difficultyBonus;
+  for (const score of [0, 750, lateStart]) assert.equal(rules.birdSpeed('endless', score, roll), config.birdSpeed.base + roll * config.birdSpeed.randomRange + rules.endlessDifficulty(score) * config.birdSpeed.difficultyBonus, 'Endless bird speed is unchanged up to the cap');
+  assert.equal(rules.birdSpeed('endless', lateEnd, roll), cappedSpeed + config.endlessLateBirdSpeedBonus, 'Endless birds gain the full late bonus at the ramp end');
+  assert(rules.birdSpeed('endless', (lateStart + lateEnd) / 2, roll) > cappedSpeed && rules.birdSpeed('endless', (lateStart + lateEnd) / 2, roll) < cappedSpeed + config.endlessLateBirdSpeedBonus, 'Endless bird speed ramps between the cap and the ramp end');
+  for (const mode of ['hard', 'arcade', 'challenge']) assert.equal(rules.birdSpeed(mode, lateEnd, roll), rules.birdSpeed(mode, lateStart, roll), mode + ' bird speed ignores the Endless late ramp');
+}
+assert.equal(rules.endlessBirdChance(lateStart), config.endlessBirdChanceRange[1], 'Endless bird odds reach the original cap at the difficulty cap');
+assert.equal(rules.endlessBirdChance(lateEnd), config.endlessLateBirdChanceCap, 'Endless bird odds reach the late cap at the ramp end');
+assert(rules.endlessBirdChance((lateStart + lateEnd) / 2) > config.endlessBirdChanceRange[1] && rules.endlessBirdChance(100000) === config.endlessLateBirdChanceCap, 'Endless bird odds ramp then hold the late cap');
+assert.equal(rules.hardBirdChance(lateEnd), rules.hardBirdChance(lateStart), 'Hard bird odds ignore the Endless late ramp');
+for (const score of [0, 750, lateStart]) assert.deepEqual(rules.endlessMovingPlatformSpeedRange(score), config.movingPlatformSpeedRange, 'Endless moving speeds are unchanged up to the cap');
+assert.deepEqual(rules.endlessMovingPlatformSpeedRange(lateEnd), config.arcadeMovingPlatformSpeedRange, 'Endless moving speeds reach the Arcade range at the ramp end');
+assert.deepEqual(rules.endlessMovingPlatformSpeedRange(100000), config.arcadeMovingPlatformSpeedRange, 'Endless moving speeds never exceed the Arcade range');
+const [midMin, midMax] = rules.endlessMovingPlatformSpeedRange((lateStart + lateEnd) / 2);
+assert(midMin > config.movingPlatformSpeedRange[0] && midMin < config.arcadeMovingPlatformSpeedRange[0] && midMax > config.movingPlatformSpeedRange[1] && midMax < config.arcadeMovingPlatformSpeedRange[1], 'both ends of the Endless moving range ramp together');
 assert.equal(rules.hardBirdChance(config.hardBirdStartScore - 1), 0, 'Hard birds must not appear before their earlier intro score.');
 assert(rules.hardBirdChance(config.hardBirdStartScore) > 0, 'Hard birds should begin with a readable warmup chance.');
 assert(rules.hardBirdChance(100000) <= config.hardBirdChanceRange[1], 'Hard bird chance must remain capped.');

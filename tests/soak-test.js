@@ -56,6 +56,34 @@ for (const size of sizes) {
   console.log(`Soaked ${RUNS} routes per mode on the ${size.width}-wide canvas.`);
 }
 
+// Late-ramp probe: hold Endless at the end of its second ramp so every row is
+// generated with the fastest birds and moving platforms it can produce. The
+// row check already accounts for platform speed, so 0 unreachable landings
+// here proves the ramp never touches reachability.
+for (const size of sizes) {
+  const runtime = makeGenerator(size, 0x1a7e + size.width), lateScore = config.endlessDifficultyScore + config.endlessLateDifficultyScore;
+  let movingSpeeds = [], birdSpeeds = [], lateRows = 0;
+  for (let run = 0; run < 100; run++) {
+    runtime.hooks.reset('endless');
+    const state = runtime.hooks.state;
+    for (let step = 0; step < STEPS; step++) {
+      state.score = lateScore + step;
+      assert.ok(state.score >= lateScore, 'probe holds the late-ramp score');
+      const generated = addRow(runtime);
+      lateRows++;
+      if (generated.platform.type === 'moving') movingSpeeds.push(generated.platform.speed);
+      birdSpeeds.push(...generated.birds.map(bird => Math.abs(bird.vx)));
+      landings++;
+    }
+  }
+  const cappedBirdSpeed = config.birdSpeed.base + config.birdSpeed.randomRange + config.birdSpeed.difficultyBonus;
+  assert.ok(movingSpeeds.length > 1000 && birdSpeeds.length > 1000, 'late-ramp probe generates moving platforms and birds');
+  assert.ok(movingSpeeds.every(speed => speed >= config.movingPlatformSpeedRange[0] && speed <= config.arcadeMovingPlatformSpeedRange[1]), 'late Endless moving speeds never exceed the Arcade cap');
+  assert.ok(Math.max(...movingSpeeds) > config.movingPlatformSpeedRange[1], 'late Endless moving platforms are faster than the capped range allows');
+  assert.ok(Math.max(...birdSpeeds) > cappedBirdSpeed && Math.max(...birdSpeeds) <= cappedBirdSpeed + config.endlessLateBirdSpeedBonus, 'late Endless birds gain speed within the configured bonus');
+  console.log(`Late-ramp probe at width ${size.width}: ${lateRows} rows held at score >= ${lateScore}, moving speeds ${Math.min(...movingSpeeds).toFixed(1)}-${Math.max(...movingSpeeds).toFixed(1)}, ${birdSpeeds.length} birds up to ${Math.max(...birdSpeeds).toFixed(1)} px/s, 0 unreachable landings.`);
+}
+
 // Probe the real generator against config-derived boundaries. Config tuning
 // changes expectations, while a generator/config mismatch still fails.
 let nextRoll;
