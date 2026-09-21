@@ -57,18 +57,40 @@ assert(config.springJumpVelocity ** 2 / (2 * config.gravity) > 2 * rules.maxDefa
 const standing = { x: 100, y: 500, w: 100, type: 'normal', broken: false };
 const brokenRow = { x: 100, y: 404, w: 70, type: 'break', broken: true };
 const farRow = { x: 100, y: 308, w: 100, type: 'normal', broken: false };
-assert.equal(rules.isStranded([farRow, standing, brokenRow], standing, apex), true, 'a double gap above a broken row strands the player');
-assert.equal(rules.isStranded([farRow, standing, { ...brokenRow, broken: false }], standing, apex), false, 'an intact row within one jump is reachable');
-assert.equal(rules.isStranded([farRow, standing, brokenRow, { x: 220, y: 404, w: 90, type: 'normal', broken: false, companion: true }], standing, apex), false, 'a surviving companion on the broken row keeps it reachable');
-assert.equal(rules.isStranded([standing, { ...farRow, y: 500 - apex }], standing, apex), false, 'a row exactly one apex above is still reachable');
-assert.equal(rules.isStranded([standing, { ...farRow, y: 500 - apex - 1 }], standing, apex), true, 'a row just beyond the apex is not');
-assert.equal(rules.isStranded([standing, { ...farRow, y: 600 }], standing, apex), true, 'rows below the standing platform do not count');
-assert.equal(rules.isStranded([farRow, standing, brokenRow], standing, rules.jumpReach(3)), true, 'Power Jump 3 (about 152 px reach) cannot clear a 192 px double gap');
+// A hop is judged at the player's half width; 'reach' overrides the height.
+const hop = { powerJump: 0, halfWidth: 15.5 }, apexHop = { ...hop, reach: apex }, hopAt = level => ({ ...hop, powerJump: level });
+assert.equal(rules.isStranded([farRow, standing, brokenRow], standing, apexHop), true, 'a double gap above a broken row strands the player');
+assert.equal(rules.isStranded([farRow, standing, { ...brokenRow, broken: false }], standing, apexHop), false, 'an intact row within one jump is reachable');
+assert.equal(rules.isStranded([farRow, standing, brokenRow, { x: 220, y: 404, w: 90, type: 'normal', broken: false, companion: true }], standing, apexHop), false, 'a surviving companion on the broken row keeps it reachable');
+assert.equal(rules.isStranded([standing, { ...farRow, y: 500 - apex }], standing, apexHop), false, 'a row exactly one apex above is still reachable');
+assert.equal(rules.isStranded([standing, { ...farRow, y: 500 - apex - 1 }], standing, apexHop), true, 'a row just beyond the apex is not');
+assert.equal(rules.isStranded([standing, { ...farRow, y: 600 }], standing, apexHop), true, 'rows below the standing platform do not count');
+assert.equal(rules.isStranded([farRow, standing, brokenRow], standing, hopAt(3)), true, 'Power Jump 3 (about 152 px reach) cannot clear a 192 px double gap');
 // Power Jump 5's analytic apex (192.2 px) looks like it just clears the capped
 // double gap, but the integrator falls short of the apex, so the game must
 // judge the gap by what a frame-stepped jump actually reaches.
-assert.equal(rules.isStranded([farRow, standing, brokenRow], standing, rules.jumpApex(5)), false, 'the analytic apex would wrongly call a 192 px gap reachable at Power Jump 5');
-assert.equal(rules.isStranded([farRow, standing, brokenRow], standing, rules.jumpReach(5)), true, 'Power Jump 5 (about 177 px reach) is stranded by the capped double gap');
+assert.equal(rules.isStranded([farRow, standing, brokenRow], standing, { ...hopAt(5), reach: rules.jumpApex(5) }), false, 'the analytic apex would wrongly call a 192 px gap reachable at Power Jump 5');
+assert.equal(rules.isStranded([farRow, standing, brokenRow], standing, hopAt(5)), true, 'Power Jump 5 (about 177 px reach) is stranded by the capped double gap');
+// Sideways reach: the next row can be within jumping height yet too far for a
+// touch player at the pointer speed cap once steering ramp-up is paid. This is
+// the generator's own promise for consecutive rows, so an intact route is
+// never flagged; only a lone survivor of a broken row or a runway step is.
+const hopTime = rules.hopTime(96, hop);
+assert.ok(Math.abs(hopTime - (config.baseJumpVelocity + Math.sqrt(config.baseJumpVelocity ** 2 - 2 * config.gravity * 96)) / config.gravity) < 1e-9, 'flight time to a row 96 px up follows the launch physics');
+assert.ok(Math.abs(rules.hopTime(apex, hop) - config.baseJumpVelocity / config.gravity) < 1e-9, 'a row exactly at the apex is met at the top of the flight');
+assert.equal(rules.horizontalReach(hopTime), config.pointerMaxHorizontalSpeed * (hopTime - 1 / config.pointerSteeringResponse), 'sideways reach is the pointer cap less one steering time constant');
+assert.equal(rules.horizontalReach(0.01), 0, 'no sideways reach before steering responds');
+const ledge = { x: 37, y: 500, w: 97, type: 'normal', broken: false };
+const nearSide = { x: 260, y: 404, w: 109, type: 'normal', broken: false, speed: 0 };
+const farSide = { ...nearSide, x: 271 };
+assert.equal(rules.canHop(ledge, nearSide, hop), true, 'a row 96 px up and 229 px across is within a touch hop');
+assert.equal(rules.canHop(ledge, farSide, hop), false, 'eleven more pixels are beyond the ramp-adjusted pointer reach');
+assert.equal(rules.canHop(ledge, { ...nearSide, speed: 90 }, hop), false, 'a moving target is assumed to drift away during the flight');
+assert.equal(rules.canHop(ledge, farSide, { ...hop, velocity: config.springJumpVelocity }), true, 'a spring flight lasts long enough to cover the far row');
+assert.equal(rules.isStranded([ledge, farSide], ledge, hop), true, 'a lone far-side survivor strands a touch player');
+assert.equal(rules.isStranded([ledge, farSide], ledge, { ...hop, velocity: config.springJumpVelocity }), false, 'converting the platform to a spring makes the far row reachable');
+assert.equal(rules.isStranded([ledge, farSide, { ...nearSide, companion: true }], ledge, hop), false, 'a reachable companion keeps the row reachable');
+assert.equal(rules.isStranded([ledge, { ...farSide, y: 260 }], ledge, hop), true, 'a row far above and far across is stranded on both counts');
 // jumpReach must never exceed what semi-implicit Euler (vy += g*dt; y += vy*dt,
 // the order update() uses) climbs, at 60 fps and at the 40 ms loop clamp, and
 // must stay within a pixel of it at the clamp so rescues are not over-eager.
@@ -97,14 +119,14 @@ assert(springApex > 2 * rules.maxDefaultPlatformGap() && springApex < 3 * rules.
 assert(rules.jumpReach(0, config.springJumpVelocity) > 2 * rules.maxDefaultPlatformGap(), 'the spring reach at the loop clamp still clears two capped gaps');
 // Several broken rows in a row (Hard double-break rows) leave a gap no spring
 // can clear; helper steps bridge it at generated spacing, inside the canvas.
-assert.deepEqual(rules.rescueRungs(standing, { x: 100, y: 500 - 192, w: 100 }, 96, 450).map(rung => rung.y), [404], 'a double gap gets exactly one midway step');
+assert.deepEqual(rules.rescueRungs(standing, { x: 100, y: 500 - 192, w: 100 }, hop, 450).map(rung => rung.y), [404], 'a double gap gets exactly one midway step');
 const tripleGap = { x: 330, y: 500 - 288, w: 100 };
-const rungs = rules.rescueRungs(standing, tripleGap, 96, 450);
+const rungs = rules.rescueRungs(standing, tripleGap, hop, 450);
 assert.equal(rungs.length, 2, 'a triple gap needs two steps');
 assert.deepEqual(rungs.map(rung => rung.y), [404, 308]);
 for (const [index, expected] of [150 + (380 - 150) / 3, 150 + 2 * (380 - 150) / 3].entries()) assert.ok(Math.abs(rungs[index].x + rungs[index].w / 2 - expected) < 1e-9, 'steps drift towards the next row');
 assert.ok(rungs.every(rung => rung.type === 'normal' && rung.helper && !rung.broken && rung.speed === 0 && rung.w === config.stallRescueRungWidth));
-const wideGap = rules.rescueRungs({ x: 0, y: 500, w: 60 }, { x: 390, y: 500 - 375, w: 60 }, rules.maxDefaultPlatformGap(), 450);
+const wideGap = rules.rescueRungs({ x: 0, y: 500, w: 60 }, { x: 390, y: 500 - 375, w: 60 }, hop, 450);
 assert.equal(wideGap.length, 3, 'a 375 px gap needs three steps at the 96 px cap');
 for (let index = 0; index < wideGap.length; index++) {
   const below = index ? wideGap[index - 1].y : 500;
@@ -112,7 +134,14 @@ for (let index = 0; index < wideGap.length; index++) {
   assert.ok(wideGap[index].x >= 12 && wideGap[index].x + wideGap[index].w <= 450 - 12, 'steps stay inside the canvas margins');
 }
 assert.ok(wideGap[2].y > 500 - 375 && wideGap[2].y - (500 - 375) <= rules.maxDefaultPlatformGap(), 'the top step is within one generated gap of the intact row');
-assert.equal(rules.rescueRungs(standing, { x: 100, y: 500 - 96, w: 100 }, 96, 450).length, 0, 'a reachable row needs no steps');
+assert.equal(rules.rescueRungs(standing, { x: 100, y: 500 - 96, w: 100 }, hop, 450).length, 0, 'a reachable row needs no steps');
+// A row only one gap up but the whole canvas across gets a single midway step
+// that splits the sideways distance into two touch-sized hops.
+const sideways = rules.rescueRungs({ x: 0, y: 500, w: 60 }, { x: 390, y: 404, w: 60 }, hop, 450);
+assert.equal(sideways.length, 1, 'one step bridges a full-width sideways gap');
+assert.equal(sideways[0].y, 452);
+assert.equal(sideways[0].x + sideways[0].w / 2, 225, 'the step sits midway between the two platforms');
+assert.equal(rules.canHop({ x: 0, y: 500, w: 60 }, sideways[0], hop) && rules.canHop(sideways[0], { x: 390, y: 404, w: 60 }, hop), true, 'both hops of the bridged route are within touch reach');
 
 // Challenge placement: one bowl every third generated platform, then no more.
 let placed = 0;

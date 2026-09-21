@@ -338,7 +338,7 @@ for (const [level, gap, step] of [[5, 190, 1 / 60], [5, 192, 1 / 60], [5, 180, .
   const { stalled, standingPlatform } = strandedScenario('endless', { x: 150, y: 500 - gap, w: 150 });
   rescueRuntime.hooks.profile.powerJump = level;
   const upper = stalled.platforms[1];
-  assert.equal(rules.isStranded(stalled.platforms, standingPlatform, rules.jumpApex(level)), false, `the analytic apex claims a ${gap} px gap is reachable at Power Jump ${level}`);
+  assert.equal(rules.isStranded(stalled.platforms, standingPlatform, { powerJump: level, halfWidth: stalled.player.w / 2, reach: rules.jumpApex(level) }), false, `the analytic apex claims a ${gap} px gap is reachable at Power Jump ${level}`);
   advanceUpdates(rescueRuntime, 1, step);
   const heightBefore = stalled.heightScore;
   advanceUpdates(rescueRuntime, 2, step);
@@ -384,6 +384,74 @@ for (const [level, gap] of [[1, 244], [0, 222], [5, 334]]) {
   stalled.stallTimer = 10;
   rescueRuntime.hooks.update(.04);
   assert.equal(standingPlatform.type, 'normal', 'a culled platform is left alone');
+}
+
+// The next row can be within jumping height yet too far sideways for a touch
+// player at the pointer speed cap: the lone survivor of a row whose partner
+// broke, or a finish-runway step. The spring's longer flight covers it.
+const steer = x => rescueRuntime.elements.get('#game').listeners.pointerdown({ clientX: 96 + x * 1.28, pointerId: 1 });
+const releaseSteering = () => rescueRuntime.elements.get('#game').listeners.pointercancel();
+// A player steers for the far row from the moment they leave the platform;
+// steering mid-descent would only carry them off the ledge.
+function awaitLaunch(velocity) {
+  for (let frames = 0; rescueRuntime.hooks.state.player.vy > -velocity * .99 && frames < 120; frames++) rescueRuntime.hooks.update(1 / 60);
+  assert.ok(rescueRuntime.hooks.state.player.vy <= -velocity * .99, 'the player launched at the expected velocity');
+}
+function sidewaysScenario(upper) {
+  const { stalled, standingPlatform } = strandedScenario('arcade', upper);
+  Object.assign(standingPlatform, { x: 20, w: 100 });
+  Object.assign(stalled.player, { x: 70 });
+  releaseSteering();
+  return { stalled, standingPlatform, upper: stalled.platforms[1] };
+}
+{
+  const { stalled, standingPlatform, upper } = sidewaysScenario({ x: 300, y: 404, w: 100 });
+  advanceUpdates(rescueRuntime, 2.9, 1 / 60);
+  assert.equal(standingPlatform.type, 'normal', 'no rescue before the stall threshold');
+  assert.equal(stalled.lastLanding, standingPlatform);
+  advanceUpdates(rescueRuntime, .7, 1 / 60);
+  assert.equal(standingPlatform.type, 'spring', 'a row 96 px up but 280 px across is a stall rescue case for touch play');
+  assert.equal(stalled.message, 'Spring assist!');
+  awaitLaunch(config.springJumpVelocity);
+  steer(350);
+  advanceUpdates(rescueRuntime, 1.5, 1 / 60);
+  assert.equal(stalled.lastLanding, upper, 'the spring flight reaches the far row at the pointer speed cap');
+  releaseSteering();
+}
+// Within touch reach nothing fires, however long the player idles.
+{
+  const { stalled, standingPlatform } = sidewaysScenario({ x: 220, y: 404, w: 100 });
+  advanceUpdates(rescueRuntime, 5, 1 / 60);
+  assert.equal(standingPlatform.type, 'normal', 'a row 200 px across is within one touch hop');
+  assert.ok(stalled.stallTimer >= config.stallRescueSeconds);
+  assert.equal(stalled.platforms.length, 2);
+}
+// Beyond even a spring's sideways reach, a midway step splits the crossing.
+{
+  const { stalled, standingPlatform, upper } = sidewaysScenario({ x: 380, y: 404, w: 60 });
+  advanceUpdates(rescueRuntime, 3.6, 1 / 60);
+  assert.equal(standingPlatform.type, 'normal', 'a 340 px crossing is not answered with a spring');
+  const helpers = stalled.platforms.filter(platform => platform.helper);
+  assert.equal(helpers.length, 1, 'one helper step bridges the crossing');
+  assert.equal(helpers[0].y, 452);
+  assert.equal(helpers[0].x + helpers[0].w / 2, 240, 'the step sits midway between the platforms');
+  assert.equal(stalled.message, 'Helper platforms!');
+  awaitLaunch(config.baseJumpVelocity);
+  steer(240);
+  advanceUpdates(rescueRuntime, 1.5, 1 / 60);
+  assert.equal(stalled.lastLanding, helpers[0], 'the player reaches the helper step');
+  awaitLaunch(config.baseJumpVelocity);
+  steer(410);
+  advanceUpdates(rescueRuntime, 1.5, 1 / 60);
+  assert.equal(stalled.lastLanding, upper, 'and then the far row');
+  releaseSteering();
+}
+// A converted spring that still cannot make the crossing gets steps too.
+{
+  const { stalled, standingPlatform } = sidewaysScenario({ x: 380, y: 404, w: 60 });
+  standingPlatform.type = 'spring';
+  advanceUpdates(rescueRuntime, 3.6, 1 / 60);
+  assert.equal(stalled.platforms.filter(platform => platform.helper).length, 1, 'a spring facing a 340 px crossing gets a helper step');
 }
 
 // Exercise actual boost collection.

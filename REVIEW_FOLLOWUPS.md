@@ -133,11 +133,13 @@ Source: adversarial review of commit e4b6860 on [issue #13](https://github.com/s
   spring apex were never rescued. `rules.jumpReach()` now judges reach at the
   loop clamp (`config.maxFrameSeconds`); rule and runtime regressions cover the
   band, and the Power Jump 5 autopilot shows 0 soft-locks.
-- [ ] Horizontal-reach stall in the Challenge finish runway: seed 777 shows
-  3/60 runs frozen to the 240 s cap with the next row only 92-96 px up but
-  257-293 px sideways (only a far-side companion or runway platform remains).
-  `isStranded` is a vertical test by design; consider capping companion offsets
-  in runway rows or extending the rescue to horizontal reach, then re-measure.
+- [x] Fixed in `E1b: rescue sideways-unreachable rows (#13)`: the stranded
+  check now judges each intact platform above with the generator's own hop
+  rule (`rules.canHop`: height within the integrator reach, landing edge within
+  the pointer speed cap for the flight time, less one steering time constant),
+  so a lone far-side survivor or runway step is rescued by the spring's longer
+  flight, or by a midway helper step when even a spring cannot cross. Both
+  seeds report 0 runs stalled >20 s in every mode.
 - [ ] The autopilot's soft-lock classifier grades the intact platform at the
   player's height rather than `state.lastLanding`, which under-counts the
   horizontal case above (3 stalls, 1 flagged). Change it only together with a

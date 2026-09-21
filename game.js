@@ -550,25 +550,28 @@
   }
   function updateStallRescue() {
     // A broken row can leave the nearest intact platform two gaps above the
-    // one the player keeps bouncing on, and the camera never scrolls down.
-    // Once the climb has stalled, turn that platform into a spring. When even
-    // a spring cannot clear the gap (several rows broke in a row, common in
-    // Hard's double-break rows) bridge it with solid helper steps instead.
+    // one the player keeps bouncing on, or its only survivor too far sideways
+    // for a touch player, and the camera never scrolls down. Once the climb
+    // has stalled, turn that platform into a spring: its longer flight also
+    // covers more sideways distance. When even a spring cannot get there
+    // (several rows broke in a row, common in Hard's double-break rows)
+    // bridge the gap with solid helper steps instead.
     const standing = state.lastLanding;
     if (state.stallTimer < config.stallRescueSeconds || state.hitStop || state.falconRescue || state.ending || state.paused) return;
     if (!standing || standing.broken || !state.platforms.includes(standing)) return;
-    const springReach = rules.jumpReach(profile.powerJump, config.springJumpVelocity);
-    if (!rules.isStranded(state.platforms, standing, standing.type === 'spring' ? springReach : rules.jumpReach(profile.powerJump))) return;
-    const above = rules.nearestRowAbove(state.platforms, standing);
-    if (above && standing.y - above.y > springReach) {
-      const rungs = rules.rescueRungs(standing, above, rules.maxDefaultPlatformGap(), W);
+    const hop = { powerJump: profile.powerJump, halfWidth: state.player.w / 2 }, springHop = { ...hop, velocity: config.springJumpVelocity };
+    if (!rules.isStranded(state.platforms, standing, standing.type === 'spring' ? springHop : hop)) return;
+    if (standing.type !== 'spring' && !rules.isStranded(state.platforms, standing, springHop)) {
+      standing.type = 'spring'; standing.speed = 0;
+      state.message = 'Spring assist!'; sound('spring'); burst(standing.x + standing.w / 2, standing.y, '#d5a5ff', 26);
+    } else {
+      const above = rules.nearestRowAbove(state.platforms, standing);
+      const rungs = above ? rules.rescueRungs(standing, above, hop, W) : [];
+      if (!rungs.length) return;
       state.platforms.push(...rungs);
       for (const rung of rungs) burst(rung.x + rung.w / 2, rung.y, '#f7efd7', 12);
       state.message = 'Helper platforms!'; sound('land');
-    } else if (standing.type !== 'spring') {
-      standing.type = 'spring'; standing.speed = 0;
-      state.message = 'Spring assist!'; sound('spring'); burst(standing.x + standing.w / 2, standing.y, '#d5a5ff', 26);
-    } else return;
+    }
     state.stallTimer = 0; state.messageTimer = 1.5;
   }
   function update(dt) {

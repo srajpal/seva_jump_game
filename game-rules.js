@@ -37,26 +37,57 @@ const SEVA_RULES = {
   nearestRowAbove(platforms, standing) {
     return platforms.filter(p => !p.broken && p.y < standing.y).sort((a, b) => b.y - a.y)[0];
   },
-  // A player is stranded when the nearest intact row above the platform they
-  // keep bouncing on is farther away than one jump can reach (a broken row
-  // leaves a double gap). A surviving companion on that row keeps it reachable.
-  // Callers pass jumpReach(), not the analytic apex, because the integrator
-  // falls short of the apex by up to half a frame's velocity.
-  isStranded(platforms, standing, reach) {
-    const above = this.nearestRowAbove(platforms, standing);
-    return !above || standing.y - above.y > reach;
+  // A hop describes one bounce: the launch velocity (base unless the platform
+  // is a spring), the Power Jump level and the player's half width, which is
+  // the overlap a landing needs. hop.reach may override the integrator reach.
+  hopReach(hop) {
+    return hop.reach ?? this.jumpReach(hop.powerJump, hop.velocity ?? RULE_CONFIG.baseJumpVelocity);
+  },
+  // Seconds from launch until the feet come back down to a row 'gap' px above.
+  hopTime(gap, hop) {
+    const velocity = (hop.velocity ?? RULE_CONFIG.baseJumpVelocity) * this.powerJumpMultiplier(hop.powerJump);
+    // Callers check the height first; at exactly the apex the flight is v / g.
+    return (velocity + Math.sqrt(Math.max(0, velocity ** 2 - 2 * RULE_CONFIG.gravity * gap))) / RULE_CONFIG.gravity;
+  },
+  // Sideways distance a touch player covers in one hop: the pointer speed cap
+  // less the ramp-up the steering response costs (about one time constant).
+  horizontalReach(time) {
+    return RULE_CONFIG.pointerMaxHorizontalSpeed * Math.max(0, time - 1 / RULE_CONFIG.pointerSteeringResponse);
+  },
+  // Same reachability the generator promises for consecutive rows: the target
+  // is within the hop's height and its landing edge is within sideways reach
+  // during the flight, with a moving target assumed to drift away.
+  canHop(from, to, hop) {
+    const gap = from.y - to.y;
+    if (!(gap > 0 && gap <= this.hopReach(hop))) return false;
+    const time = this.hopTime(gap, hop);
+    const travel = Math.abs(to.x + to.w / 2 - from.x - from.w / 2) + (to.speed || 0) * time - to.w / 2 - hop.halfWidth;
+    return Math.max(0, travel) <= this.horizontalReach(time);
+  },
+  // A player is stranded when no intact platform above the one they keep
+  // bouncing on can be hopped to: a broken row leaves a double gap, or the only
+  // surviving platform of the next row sits too far sideways for a touch
+  // player. A surviving companion within reach keeps the row reachable.
+  isStranded(platforms, standing, hop) {
+    return platforms.every(p => p.broken || p.y >= standing.y || !this.canHop(standing, p, hop));
   },
   // Evenly spaced solid steps from the standing platform up to the next intact
-  // row, never farther apart than a generated gap, drifting sideways towards
-  // that row so the route reads as a staircase.
-  rescueRungs(standing, above, maxGap, canvasWidth) {
-    const gap = standing.y - above.y, count = Math.max(0, Math.ceil(gap / maxGap) - 1), w = RULE_CONFIG.stallRescueRungWidth;
+  // row, drifting sideways towards it so the route reads as a staircase: the
+  // fewest steps that keep every hop within a generated gap and within reach.
+  rescueRungs(standing, above, hop, canvasWidth) {
+    const gap = standing.y - above.y, w = RULE_CONFIG.stallRescueRungWidth, maxGap = this.maxDefaultPlatformGap();
     const from = standing.x + standing.w / 2, to = above.x + above.w / 2;
-    return Array.from({ length: count }, (_, index) => {
+    const base = { ...hop, velocity: RULE_CONFIG.baseJumpVelocity, reach: undefined };
+    const build = count => Array.from({ length: count }, (_, index) => {
       const fraction = (index + 1) / (count + 1);
       const center = Math.max(w / 2 + 12, Math.min(canvasWidth - w / 2 - 12, from + (to - from) * fraction));
       return { x: center - w / 2, y: standing.y - gap * fraction, w, type: 'normal', speed: 0, dir: 1, broken: false, helper: true };
     });
+    for (let count = 0; ; count++) {
+      const route = [standing, ...build(count), above];
+      if (gap / (count + 1) <= maxGap && route.every((step, index) => !index || this.canHop(route[index - 1], step, base))) return route.slice(1, -1);
+      if (count >= 8) return build(count);
+    }
   },
   maxDefaultPlatformGap() {
     const normalApex = RULE_CONFIG.baseJumpVelocity ** 2 / (2 * RULE_CONFIG.gravity);
