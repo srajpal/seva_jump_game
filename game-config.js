@@ -35,6 +35,19 @@ const SEVA_CONFIG = {
   musicLookaheadSeconds: .2,
   musicStartDelaySeconds: .05,
   musicSchedulerIntervalMs: 50,
+  // Each mode's 8-beat phrase: one melody note per beat over a bass note every
+  // two beats. Hard shares Endless. playMusicPhrase cycles four variants of it
+  // (as written, reversed as an answer, lifted a fifth, a syncopated octave
+  // bounce) so the loop only repeats every fourth phrase.
+  musicPhrases: {
+    endless: { melody: [392, 440, 523, 440, 349, 392, 440, 494], bass: [196, 175, 196, 220] },
+    arcade: { melody: [392, 440, 523, 587, 523, 440, 494, 523], bass: [196, 175, 196, 220] },
+    challenge: { melody: [392, 440, 494, 523, 494, 440, 392, 330], bass: [196, 196, 220, 220] },
+  },
+  musicLiftRatio: 1.5,
+  // Beat offset and length of each bounce-variant note; together they still
+  // fill exactly eight beats so the scheduler's phrase advance holds.
+  musicBounceBeats: [[0, 1.5], [1.5, .5], [2, 1], [3, 1], [4, 1.5], [5.5, .5], [6, 1], [7, 1]],
   // Arcade has authored score bands; Endless instead uses a continuous curve.
   tierThresholds: [100, 250, 450, 700],
   horizontalShifts: [72, 94, 116, 136, 136],

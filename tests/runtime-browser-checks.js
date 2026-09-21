@@ -267,11 +267,42 @@ async function run() {
   assert.equal(notes[24].startTime, config.musicStartDelaySeconds + 16 * config.musicBeatSeconds);
   tick(20); assert.equal(notes.length, 48, 'a long stall restarts one phrase rather than bursting missed phrases');
   assert.equal(notes[36].startTime, 20 + config.musicStartDelaySeconds);
+  const beat = config.musicBeatSeconds, frequencies = list => list.map(note => note.frequency.value);
+  const phraseAt = (from, index) => ({ voices: notes.slice(from + index * 12, from + index * 12 + 12), melody: frequencies(notes.slice(from + index * 12, from + index * 12 + 8)), bass: frequencies(notes.slice(from + index * 12 + 8, from + index * 12 + 12)) });
+  tick(23.9); assert.equal(notes.length, 60);
+  const phrases = [0, 1, 2, 3, 4].map(index => phraseAt(0, index));
+  assert.deepEqual(phrases[0].melody, config.musicPhrases.endless.melody, 'a run opens with the phrase as written');
+  assert.equal(new Set(phrases.slice(0, 4).map(phrase => String(phrase.melody))).size, 4, 'four consecutive phrases schedule different melodies');
+  assert.deepEqual(phrases[4].melody, phrases[0].melody, 'the fifth phrase restarts the cycle');
+  phrases.forEach((phrase, index) => {
+    const start = phrase.voices[0].startTime;
+    assert.equal(Math.min(...phrase.voices.map(note => note.startTime)), start, `phrase ${index} starts on its scheduled beat`);
+    assert.ok(Math.abs(Math.max(...phrase.voices.map(note => note.stopTime)) - start - 8 * beat) < 1e-9, `phrase ${index} spans exactly 8 beats`);
+    assert.deepEqual(phrase.bass, config.musicPhrases.endless.bass, `variant ${index} keeps the Endless bass`);
+  });
   music.hooks.pauseGame(); assert.equal(music.timeouts.size, 0, 'pause clears scheduling');
   assert.ok(notes.every(note => note.stopTime === undefined), 'pause stops all scheduled voices immediately');
-  music.hooks.resumeGame(); assert.equal(notes.length, 60);
+  music.hooks.resumeGame(); assert.equal(notes.length, 72);
+  assert.deepEqual(phraseAt(60, 0).melody, phrases[0].melody, 'resuming reopens with the phrase as written');
   music.hooks.showHome(); assert.equal(music.timeouts.size, 0);
-  console.log('Music timing checks passed: audio-clock lookahead, callback jitter, long stalls, pause/resume and Home cleanup.');
+  const variantsOf = mode => {
+    const from = notes.length, base = clock.currentTime;
+    music.hooks.start(mode); [3.9, 7.9, 11.9].forEach(offset => tick(base + offset));
+    assert.equal(notes.length, from + 48);
+    return [0, 1, 2, 3].map(index => phraseAt(from, index));
+  };
+  for (const [mode, table] of [['arcade', 'arcade'], ['challenge', 'challenge'], ['hard', 'endless']]) {
+    const variants = variantsOf(mode), source = config.musicPhrases[table];
+    assert.deepEqual(variants[0].melody, source.melody, `${mode} opens with its own phrase`);
+    assert.equal(new Set(variants.map(variant => String(variant.melody))).size, 4, `${mode} cycles four different melodies`);
+    variants.forEach(variant => {
+      assert.deepEqual(variant.bass, source.bass, `${mode} variants share the mode bass`);
+      variant.melody.forEach(note => assert.ok(source.melody.some(root => [1, config.musicLiftRatio, 2].some(ratio => Math.abs(root * ratio - note) < 1e-9)), `${mode} variants stay on the mode's notes`));
+    });
+  }
+  assert.equal(new Set(['endless', 'arcade', 'challenge'].map(mode => String(config.musicPhrases[mode].melody))).size, 3, 'modes keep distinct phrases');
+  music.hooks.showHome(); assert.equal(music.timeouts.size, 0);
+  console.log('Music timing checks passed: audio-clock lookahead, callback jitter, long stalls, four-phrase variant cycle, pause/resume and Home cleanup.');
   console.log('Rendering/audio checks passed: idle menus, image-load repaint, cached glows, paused scenes, end screens, and noise-buffer reuse.');
 
   const denied = makeRuntime({ getItem() { throw new DOMException('denied', 'SecurityError'); }, setItem() { throw new DOMException('denied', 'SecurityError'); }, removeItem() { throw new DOMException('denied', 'SecurityError'); } });

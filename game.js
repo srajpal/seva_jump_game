@@ -146,7 +146,7 @@
   let profile = loadProfile();
   let state, selectedCharacter = profile.character === 'boy' ? 'boy' : 'girl', settingsReturn = 'home', pointerX = null, keys = new Set(), lastTime = 0, tutorialIndex = 0, tutorialResumesRun = false;
   let audioContext, musicTimer = null, musicVoices = [], badgeQueue = [], badgeToastTimer = null;
-  let nextMusicPhraseTime = 0;
+  let nextMusicPhraseTime = 0, musicPhraseIndex = 0;
   const noiseBuffers = new Map();
 
   function applyPreferences() {
@@ -225,15 +225,24 @@
     else if (type === 'firework') { noise(.28, { filter: 'lowpass', frequency: 360, volume: .05 }); tone(180, .16, { slide: 85, wave: 'sawtooth', volume: .027 }); setTimeout(() => noise(.16, { frequency: 1350, volume: .023 }), 115); }
     else if (type === 'loss') { tone(260, .3, { slide: 110, wave: 'sine', volume: .042 }); noise(.12, { frequency: 230, volume: .014 }); }
   }
+  // The four variants of a mode's phrase, so consecutive phrases differ while
+  // the bass keeps the mode's character: as written, reversed as an answer,
+  // lifted a fifth, then a syncopated octave bounce leading back to the start.
+  function musicVariant(phrase, index) {
+    const { melody, bass } = phrase, straight = melody.map((_, i) => [i, 1]);
+    if (index === 1) return { melody: [...melody].reverse(), bass, beats: straight };
+    if (index === 2) return { melody: melody.map(note => note * config.musicLiftRatio), bass, beats: straight };
+    if (index === 3) return { melody: melody.map((note, i) => i % 2 ? note * 2 : note), bass, beats: config.musicBounceBeats };
+    return { melody, bass, beats: straight };
+  }
   function playMusicPhrase(startTime) {
     if (!audioContext || !ui.musicToggle.checked) return;
     const audio = audioContext, now = startTime, beat = config.musicBeatSeconds;
-    const music = state?.mode === 'challenge' ? [392, 440, 494, 523, 494, 440, 392, 330] : state?.mode === 'arcade' ? [392, 440, 523, 587, 523, 440, 494, 523] : [392, 440, 523, 440, 349, 392, 440, 494];
-    const bass = state?.mode === 'challenge' ? [196, 196, 220, 220] : [196, 175, 196, 220];
-    music.forEach((note, i) => {
-      const oscillator = audio.createOscillator(), gain = audio.createGain(), start = now + i * beat;
-      oscillator.type = 'sine'; oscillator.frequency.value = note; gain.gain.setValueAtTime(.028, start); gain.gain.exponentialRampToValueAtTime(.001, start + beat * .84);
-      oscillator.connect(gain).connect(audio.destination); oscillator.start(start); oscillator.stop(start + beat); musicVoices.push(oscillator); oscillator.onended = () => { musicVoices = musicVoices.filter(voice => voice !== oscillator); };
+    const { melody, bass, beats } = musicVariant(config.musicPhrases[state?.mode] || config.musicPhrases.endless, musicPhraseIndex++ % 4);
+    melody.forEach((note, i) => {
+      const oscillator = audio.createOscillator(), gain = audio.createGain(), start = now + beats[i][0] * beat, length = beats[i][1] * beat;
+      oscillator.type = 'sine'; oscillator.frequency.value = note; gain.gain.setValueAtTime(.028, start); gain.gain.exponentialRampToValueAtTime(.001, start + length * .84);
+      oscillator.connect(gain).connect(audio.destination); oscillator.start(start); oscillator.stop(start + length); musicVoices.push(oscillator); oscillator.onended = () => { musicVoices = musicVoices.filter(voice => voice !== oscillator); };
     });
     bass.forEach((note, i) => {
       const oscillator = audio.createOscillator(), gain = audio.createGain(), start = now + i * beat * 2;
@@ -244,7 +253,8 @@
   function setMusic() {
     stopMusic();
     if (!ui.musicToggle.checked || !audioContext || !state?.running || state.paused || menuVisible) return;
-    nextMusicPhraseTime = audioContext.currentTime + config.musicStartDelaySeconds;
+    // A run (or a resumed one) always opens with the phrase as written.
+    nextMusicPhraseTime = audioContext.currentTime + config.musicStartDelaySeconds; musicPhraseIndex = 0;
     scheduleMusic();
   }
   function scheduleMusic() {
