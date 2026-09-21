@@ -1,8 +1,16 @@
 # Seva Jump release progress
 
+## Google Play app record - September 21, 2026
+
+- The replacement personal developer account is approved and Play Console reports no policy issues.
+- Created the unpublished **SevaJump** game record with package name `org.sevajump.game`, default language English (United States), and free pricing. Play Console app ID: `4973543107979121743`.
+- Accepted the required Developer Program Policies, Play App Signing, and US export-law declarations during app creation. Google Play automatic protection remains enabled at its default setting.
+- No Android App Bundle, store listing, test release, or production submission has been uploaded or published.
+- Play Console requires a closed-testing release with at least 12 testers continuously opted in for at least 14 days before production access can be requested. Complete game-information, store-listing, artifact-signing, and release checks before starting that test.
+
 ## Issue #1 Android migration - September 19, 2026
 
-- Owner authorized the required Capacitor 8 installs and continuing local work while the replacement Play developer account is unverified. The account-specific Policy status check and Play Console acceptance remain **unchecked**. No upload has occurred.
+- Owner authorized the required Capacitor 8 installs and continuing local work while the replacement Play developer account was unverified. The September 21 Play Console status above supersedes that account-status blocker. No upload occurred during this migration work.
 - Migrated core/android/CLI to 8.5.2 and App to 8.1.1, compile/target SDK to 36, minimum SDK to 24, AGP to 8.13.0, Gradle wrapper to 8.14.3 and AndroidX versions per the [Capacitor migration guide](https://capacitorjs.com/docs/updating/8-0). Android now requires Android 7.0+. CLI builds use Java 21; this machine's older Android Studio IDE was not upgraded or used for validation.
 - Android versionCode is 39. Candidate marketing/web/cache versions advance to 1.0.1 so existing native installs receive the inset-aware phone HUD stylesheet instead of retaining the 1.0.0 service-worker cache. Matching iOS marketing metadata is aligned; its native build remains 38 until an iOS release. This is local migration validation, not an upload. Follow the version-increment/signing checklist before an upload.
 - MainActivity retains safe-area/immersive ownership, disables Capacitor's duplicate inset handler, removes deprecated bar-color calls, guards early document injection and republishes insets after reload. The manifest declares the game category for the [Android 16 large-screen orientation exemption](https://developer.android.com/about/versions/16/behavior-changes-16#adaptive-layouts); predictive Back uses Capacitor App's AndroidX dispatcher without opting out.
