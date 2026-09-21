@@ -54,10 +54,11 @@ Source: [review comment](https://github.com/srajpal/seva_jump_game/pull/11#issue
 
 Source: [review comment](https://github.com/srajpal/seva_jump_game/pull/12#issuecomment-5745862489).
 
-- [ ] When [issue #13 experiment E2](https://github.com/srajpal/seva_jump_game/issues/13)
-  adds Endless boosts, replace the current zero-boost assertion with frequency
-  contracts at the new Endless score bands. The current assertion records today's
-  behavior, not a permanent balance requirement.
+- [x] [Issue #13 experiment E2](https://github.com/srajpal/seva_jump_game/issues/13)
+  (branch `claude/exp-issue-13`, commit `E2: Endless boosts (#13)`) adds Endless
+  boosts at the Arcade score bands; `tests/soak-test.js` now holds the Endless
+  Kara/Nishan frequency contracts at those bands (and zero before them) in
+  place of the zero-boost assertion.
 - [x] [PR #15](https://github.com/srajpal/seva_jump_game/pull/15) makes README/checklist build numbers explicit per platform:
   Android build 39 and iOS build 38. Do not require equality for independent
   native release trains; the shared marketing-version checks remain in place.

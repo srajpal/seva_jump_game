@@ -333,7 +333,9 @@
     const r = Math.random();
     const arcade = rules.isArcadeLike(state.mode);
     const hard = rules.isHard(state.mode);
-    const level = arcade || hard ? levelForScore(state.score) : 1;
+    // Score bands gate Kara and Nishan in every mode; only Arcade also uses
+    // them for its sideways shifts and gap ranges.
+    const level = levelForScore(state.score);
     const endlessDifficulty = rules.endlessDifficulty(state.score);
     const challengeBowlPlatform = state.mode === 'challenge' && rules.isChallengeBowlRow(state.challengePlaced, state.challengePlatformCount + 1);
     const belowChallengeBowl = state.mode === 'challenge' && rules.isChallengeBowlRow(state.challengePlaced, state.challengePlatformCount + 2);

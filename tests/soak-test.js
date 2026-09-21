@@ -15,7 +15,7 @@ function frequency(name, hits, trials, expected) {
 for (const size of sizes) {
   const runtime = makeGenerator(size, 0x5e7a + size.width);
   for (const mode of ['endless', 'arcade', 'challenge']) {
-    const counts = { rows: 0, items: 0, tokens: 0, tokenRows: 0, karaRows: 0, kara: 0, nishanRows: 0, nishan: 0, birdRows: 0, birds: 0 };
+    const counts = { rows: 0, items: 0, tokens: 0, tokenRows: 0, karaRows: 0, kara: 0, nishanRows: 0, nishan: 0, earlyBoosts: 0, birdRows: 0, birds: 0 };
     for (let run = 0; run < RUNS; run++) {
       runtime.hooks.reset(mode);
       checkOpening(runtime);
@@ -31,10 +31,10 @@ for (const size of sizes) {
           counts.rows++;
           counts.items += generated.items.length;
           counts.tokens += generated.items.filter(item => item.type === 'token').length;
-          if (mode === 'arcade' && score >= config.tierThresholds[1]) counts.karaRows++;
-          if (mode === 'arcade' && score >= config.tierThresholds[2]) counts.nishanRows++;
-          counts.kara += generated.powerups.filter(item => item.type === 'kara').length;
-          counts.nishan += generated.powerups.filter(item => item.type === 'nishan').length;
+          // Endless and Arcade share the boost score bands.
+          const kara = generated.powerups.filter(item => item.type === 'kara').length, nishan = generated.powerups.filter(item => item.type === 'nishan').length;
+          if (score >= config.tierThresholds[1]) { counts.karaRows++; counts.kara += kara; } else counts.earlyBoosts += kara;
+          if (score >= config.tierThresholds[2]) { counts.nishanRows++; counts.nishan += nishan; } else counts.earlyBoosts += nishan;
           if (mode === 'arcade' && score >= config.arcadeBirdStartScore) { counts.birdRows++; counts.birds += generated.birds.length; }
         }
         collectRow(state, generated.platform, generated.items);
@@ -47,11 +47,10 @@ for (const size of sizes) {
     else {
       frequency(label + ' collectible rows', counts.items, counts.rows, config.collectibleChance);
       frequency(label + ' token share', counts.tokens, counts.items, config.tokenShare);
-      if (mode === 'arcade') {
-        frequency(label + ' Kara', counts.kara, counts.karaRows, config.powerupChances.kara);
-        frequency(label + ' Nishan', counts.nishan, counts.nishanRows, config.powerupChances.nishan);
-        frequency(label + ' bird rows', counts.birds, counts.birdRows, config.arcadeBirdChance);
-      } else assert.equal(counts.kara + counts.nishan, 0, 'Endless has no level-gated boosts');
+      frequency(label + ' Kara', counts.kara, counts.karaRows, config.powerupChances.kara);
+      frequency(label + ' Nishan', counts.nishan, counts.nishanRows, config.powerupChances.nishan);
+      assert.equal(counts.earlyBoosts, 0, label + ': no boosts before their score bands');
+      if (mode === 'arcade') frequency(label + ' bird rows', counts.birds, counts.birdRows, config.arcadeBirdChance);
     }
   }
   console.log(`Soaked ${RUNS} routes per mode on the ${size.width}-wide canvas.`);
