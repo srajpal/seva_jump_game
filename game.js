@@ -570,10 +570,16 @@
     // (several rows broke in a row, common in Hard's double-break rows)
     // bridge the gap with solid helper steps instead.
     const standing = state.lastLanding;
-    if (!profile.helpingHand || state.stallTimer < config.stallRescueSeconds || state.hitStop || state.falconRescue || state.ending || state.paused) return;
+    if (state.stallTimer < config.stallRescueSeconds || state.hitStop || state.falconRescue || state.ending || state.paused) return;
     if (!standing || standing.broken || !state.platforms.includes(standing)) return;
     const hop = { powerJump: profile.powerJump, halfWidth: state.player.w / 2 }, springHop = { ...hop, velocity: config.springJumpVelocity };
     if (!rules.isStranded(state.platforms, standing, standing.type === 'spring' ? springHop : hop)) return;
+    if (!profile.helpingHand || !rules.helpingHandApplies(state.mode)) {
+      // No help here: say so, then end the run rather than bounce forever.
+      if (state.stallTimer >= config.stallEndSeconds) return finish(false, 'fall');
+      if (state.message !== 'Stuck · no platform in reach') { state.message = 'Stuck · no platform in reach'; state.messageTimer = config.stallEndSeconds - config.stallRescueSeconds; }
+      return;
+    }
     if (standing.type !== 'spring' && !rules.isStranded(state.platforms, standing, springHop)) {
       standing.type = 'spring'; standing.speed = 0;
       state.message = 'Spring assist!'; sound('spring'); burst(standing.x + standing.w / 2, standing.y, '#d5a5ff', 26);

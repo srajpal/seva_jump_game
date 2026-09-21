@@ -36,6 +36,10 @@ const SEVA_CONFIG = {
   // by helper platforms of this width instead.
   stallRescueSeconds: 3,
   stallRescueRungWidth: 76,
+  // Without Helping Hand (or in Challenge and Hard, where it never applies) a
+  // stranded run is told so at stallRescueSeconds and ends here instead of
+  // bouncing forever.
+  stallEndSeconds: 6,
   musicBeatSeconds: .5,
   musicLookaheadSeconds: .2,
   musicStartDelaySeconds: .05,

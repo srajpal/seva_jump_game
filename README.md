@@ -74,7 +74,7 @@ Challenge Mode warns once when an uncollected bowl scrolls out of reach and keep
 - **Dhal Shield** blocks one bird hit when owned.
 - **Falcon Save** gives a second chance after falling.
 - **Grass, spring, moving, and wooden breakable platforms** each change how you plan your next jump.
-- **Helping Hand** (on by default, switchable in Settings) steps in when a broken row leaves the next platform out of reach, too high or too far to the side: after about three seconds without climbing, the platform you are bouncing on becomes a spring, and if even a spring cannot get there, helper platforms appear to bridge the way. Turn it off for the pure challenge.
+- **Helping Hand** (on by default, switchable in Settings; Endless and Arcade only) steps in when a broken row leaves the next platform out of reach, too high or too far to the side: after about three seconds without climbing, the platform you are bouncing on becomes a spring, and if even a spring cannot get there, helper platforms appear to bridge the way. Without it, and always in Challenge and Hard, a stuck run is warned at three seconds and ends at six.
 
 ## A note on language and setting
 

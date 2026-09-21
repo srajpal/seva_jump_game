@@ -77,6 +77,10 @@ const SEVA_RULES = {
     const travel = Math.abs(to.x + to.w / 2 - from.x - from.w / 2) + (to.speed || 0) * time - to.w / 2 - hop.halfWidth;
     return Math.max(0, travel) <= this.horizontalReach(time);
   },
+  // Helping Hand is for the open modes; Challenge and Hard are played straight.
+  helpingHandApplies(mode) {
+    return !this.isHard(mode) && mode !== 'challenge';
+  },
   // A player is stranded when no intact platform above the one they keep
   // bouncing on can be hopped to: a broken row leaves a double gap, or the only
   // surviving platform of the next row sits too far sideways for a touch

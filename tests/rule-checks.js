@@ -99,6 +99,9 @@ assert.equal(rules.isStranded([farRow, standing, brokenRow], standing, hopAt(3))
 // judge the gap by what a frame-stepped jump actually reaches.
 assert.equal(rules.isStranded([farRow, standing, brokenRow], standing, { ...hopAt(5), reach: rules.jumpApex(5) }), false, 'the analytic apex would wrongly call a 192 px gap reachable at Power Jump 5');
 assert.equal(rules.isStranded([farRow, standing, brokenRow], standing, hopAt(5)), true, 'Power Jump 5 (about 177 px reach) is stranded by the capped double gap');
+for (const mode of ['endless', 'arcade']) assert.equal(rules.helpingHandApplies(mode), true, mode + ' can use Helping Hand');
+for (const mode of ['challenge', 'hard']) assert.equal(rules.helpingHandApplies(mode), false, mode + ' is played without help');
+assert(config.stallEndSeconds > config.stallRescueSeconds, 'a stuck run is warned before it ends');
 // Sideways reach: the next row can be within jumping height yet too far for a
 // touch player at the pointer speed cap once steering ramp-up is paid. This is
 // the generator's own promise for consecutive rows, so an intact route is

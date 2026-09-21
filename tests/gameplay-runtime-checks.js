@@ -281,7 +281,7 @@ rescueRuntime.hooks.observeSounds(type => springSounds.push(type));
 // When several rows broke in a row the gap is beyond even a spring, so the
 // rescue bridges it with helper steps instead of converting the platform.
 {
-  const { stalled, standingPlatform } = strandedScenario('hard', { x: 150, y: 200, w: 150 });
+  const { stalled, standingPlatform } = strandedScenario('endless', { x: 150, y: 200, w: 150 });
   const upper = stalled.platforms[1];
   springSounds.length = 0;
   advanceUpdates(rescueRuntime, 3.6);
@@ -448,20 +448,33 @@ function sidewaysScenario(upper) {
   assert.equal(stalled.lastLanding, upper, 'and then the far row');
   releaseSteering();
 }
-// Helping Hand off: the same stranded geometry is never rescued, and the
-// preference survives a saved profile round trip while an invalid value falls
-// back to on.
-{
-  const { stalled, standingPlatform } = sidewaysScenario({ x: 300, y: 404, w: 100 });
-  rescueRuntime.hooks.profile.helpingHand = false;
-  advanceUpdates(rescueRuntime, 6, 1 / 60);
-  assert.equal(standingPlatform.type, 'normal', 'no spring while Helping Hand is off');
-  assert.equal(stalled.platforms.length, 2, 'no helper steps while Helping Hand is off');
-  rescueRuntime.hooks.profile.helpingHand = true;
-  assert.equal(rescueRuntime.hooks.normalizeProfile({ helpingHand: false }).helpingHand, false);
-  assert.equal(rescueRuntime.hooks.normalizeProfile({ helpingHand: 'no' }).helpingHand, true, 'Helping Hand defaults to on');
-  assert.equal(rescueRuntime.elements.get('#helping-hand-toggle').checked, true, 'the settings toggle reflects the default');
+// Without Helping Hand, and always in Challenge and Hard, a stranded run is
+// told so at the rescue threshold and ends at stallEndSeconds instead of
+// bouncing forever; a reachable row still never triggers either.
+const stuckCases = [['arcade', false], ['challenge', true], ['hard', true]];
+for (const [mode, helpingHand] of stuckCases) {
+  const { stalled, standingPlatform } = strandedScenario(mode);
+  rescueRuntime.hooks.profile.helpingHand = helpingHand;
+  advanceUpdates(rescueRuntime, config.stallRescueSeconds + .5, 1 / 60);
+  assert.equal(standingPlatform.type, 'normal', `${mode}: no spring`);
+  assert.equal(stalled.platforms.length, 2, `${mode}: no helper steps`);
+  assert.equal(stalled.message, 'Stuck · no platform in reach', `${mode}: the player is told`);
+  assert.equal(stalled.ending, false, `${mode}: the warning comes first`);
+  advanceUpdates(rescueRuntime, config.stallEndSeconds - config.stallRescueSeconds, 1 / 60);
+  assert.equal(stalled.ending, true, `${mode}: the stuck run ends`);
+  assert.equal(stalled.endReason, 'fall');
 }
+{
+  const { stalled, standingPlatform } = strandedScenario('hard', { x: 20, y: 410, w: 90 });
+  advanceUpdates(rescueRuntime, config.stallEndSeconds + 1, 1 / 60);
+  assert.equal(stalled.ending, false, 'a reachable row never ends a Hard run');
+  assert.notEqual(stalled.message, 'Stuck · no platform in reach');
+  assert.equal(standingPlatform.type, 'normal');
+}
+rescueRuntime.hooks.profile.helpingHand = true;
+assert.equal(rescueRuntime.hooks.normalizeProfile({ helpingHand: false }).helpingHand, false);
+assert.equal(rescueRuntime.hooks.normalizeProfile({ helpingHand: 'no' }).helpingHand, true, 'Helping Hand defaults to on');
+assert.equal(rescueRuntime.elements.get('#helping-hand-toggle').checked, true, 'the settings toggle reflects the default');
 // A converted spring that still cannot make the crossing gets steps too.
 {
   const { stalled, standingPlatform } = sidewaysScenario({ x: 380, y: 404, w: 60 });
