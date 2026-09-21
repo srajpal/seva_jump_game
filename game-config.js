@@ -16,6 +16,8 @@ const SEVA_CONFIG = {
   // leaves behind is one the generator's rows can always catch.
   nishanFlightSeconds: 1.2,
   nishanFlightSpeed: 520,
+  // A Kara collected mid-flight cannot add a jump, so it stretches the flight.
+  karaFlightExtensionSeconds: .3,
   // Responsive enough for a phone drag, while still leaving time to line up
   // on the narrower late-game platforms.
   maxHorizontalSpeed: 440,
@@ -124,10 +126,9 @@ const SEVA_CONFIG = {
   finishBannerGap: 84,
   // The backdrop walks courtyard -> sunset -> dawn as the height score passes
   // each zone, so a long climb reads as time passing. The fade runs on active
-  // time; the cloud layer drifts against the camera to give the climb depth.
+  // time.
   backdropZones: [0, 500, 1100],
   backdropFadeMs: 1200,
-  backdropCloudParallax: .04,
   victorySceneDurationMs: 5000,
   victoryFadeDurationMs: 700,
   birdHitDurationMs: 1000,

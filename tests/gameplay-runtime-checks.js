@@ -551,6 +551,22 @@ assert.equal(runtime.hooks.profile.stats.powerups, 1);
   assert.equal(hit.hitStop, null);
   assert.ok(hit.flight.remaining < midHit.remaining && hit.player.y < midHit.y, 'the flight resumes after the hit-stop');
 
+  // A Kara caught mid-flight cannot add a jump (the flight owns the velocity),
+  // so it stretches the flight instead; a second Nishan restarts it in full.
+  {
+    const extended = pickUpNishan('endless');
+    advanceUpdates(flightRuntime, .3, frame);
+    const remaining = extended.flight.remaining;
+    extended.powerups = [{ x: extended.player.x, y: extended.player.y, type: 'kara', taken: false }];
+    flightRuntime.hooks.update(frame);
+    assert.ok(Math.abs(extended.flight.remaining - (remaining - frame + config.karaFlightExtensionSeconds)) < 1e-9, 'a Kara stretches the flight by its extension');
+    assert.equal(extended.player.vy, -config.nishanFlightSpeed, 'the climb speed is untouched');
+    assert.equal(extended.message, 'Kara boost · flight extended!');
+    extended.powerups = [{ x: extended.player.x, y: extended.player.y, type: 'nishan', taken: false }];
+    flightRuntime.hooks.update(frame);
+    assert.equal(extended.flight.remaining, config.nishanFlightSeconds, 'a second Nishan restarts the full flight');
+    assert.equal(extended.invincibleTimer, 5);
+  }
   // On real Arcade courses the flight must end above a climbable route: the
   // player steers (keyboard) to the nearest intact row below, lands, and that
   // row is either not stranded or E1's rescue answers within 3.5 s.

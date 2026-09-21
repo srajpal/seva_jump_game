@@ -99,13 +99,14 @@
           <h2 id="settings-heading">Settings</h2>
           <div class="pause-settings" aria-label="Game settings">
             <label><span>Music</span><input id="music-toggle" type="checkbox" checked /></label>
+            <label><span>Music style</span><select id="music-style-select"><option value="varied">Varied</option><option value="classic">Classic</option></select></label>
             <label><span>Sound effects</span><input id="sound-toggle" type="checkbox" checked /></label>
-            <label><span>Helping Hand</span><input id="helping-hand-toggle" type="checkbox" checked /></label>
-            <label><span>Reduced motion</span><input id="reduced-motion-toggle" type="checkbox" /></label>
+            <label><span>Helping Hand<button id="helping-hand-info" class="info-button" type="button" aria-label="About Helping Hand" aria-expanded="false" aria-controls="helping-hand-note">i</button></span><input id="helping-hand-toggle" type="checkbox" checked /></label>
+            <label><span>Reduced motion<button id="reduced-motion-info" class="info-button" type="button" aria-label="About Reduced motion" aria-expanded="false" aria-controls="reduced-motion-note">i</button></span><input id="reduced-motion-toggle" type="checkbox" /></label>
           </div>
           <p id="audio-warning" class="setting-note hidden" role="status">Sound isn’t available in this browser. You can still play.</p>
-          <p class="setting-note">Helping Hand steps in when you are stuck bouncing with no platform in reach in Endless or Arcade: after about three seconds your platform turns into a spring, or helper platforms appear. Challenge and Hard never help; a stuck run there ends after a warning.</p>
-          <p class="setting-note">Reduced Motion makes decorative effects still: character bobbing, net hovering, finish-banner floating, fireworks expansion, and interface transitions.</p>
+          <p id="helping-hand-note" class="setting-note hidden">Helping Hand steps in when you are stuck bouncing with no platform in reach in Endless or Arcade: after about three seconds your platform turns into a spring, or helper platforms appear. Challenge and Hard never help; a stuck run there ends after a warning.</p>
+          <p id="reduced-motion-note" class="setting-note hidden">Reduced Motion makes decorative effects still: character bobbing, net hovering, finish-banner floating, fireworks expansion, and interface transitions.</p>
           <button id="replay-tutorial-button" class="secondary" type="button">Replay first-run guide</button>
           <div class="reset-panel">
             <strong>Reset this device</strong>

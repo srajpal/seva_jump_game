@@ -179,7 +179,8 @@ async function run() {
 
   // Backdrop progression: one backdrop draw per frame, two only mid-fade, zones
   // at the height thresholds, frozen fades under pause, and Reduced Motion
-  // switching instantly with pinned clouds. The fallback still paints a sky.
+  // switching instantly. The fallback still paints a sky; the old cloud ellipses
+  // are gone for good (they read as flat white ovals over the painted skies).
   const calls = { images: [], ellipses: [], fills: [] }, alphaStack = [];
   const backdrop = makeRuntime({ value: JSON.stringify({ tutorialComplete: true, music: false, sound: false }) }, { drawingContext: {
     globalAlpha: 1, save() { alphaStack.push(this.globalAlpha); }, restore() { this.globalAlpha = alphaStack.pop() ?? 1; },
@@ -195,11 +196,11 @@ async function run() {
   assert.deepEqual([backdrop.hooks.state.backdropZone, backdrop.hooks.state.backdropFade], [0, null], 'reset initialises the backdrop zone without a fade');
   assert.equal(backdropFrame().length, 0, 'unloaded images draw nothing');
   assert.ok(calls.fills.some(([style, x, y, w, h]) => ['#bce7ef', '#f8d9a7', '#c9e5c0'].includes(style) && x === 0 && y === 0 && w === 450 && h === 800), 'the fallback fills the whole background with a sky colour');
-  assert.equal(clouds().length, 4, 'the fallback keeps its cloud layer');
+  assert.equal(clouds().length, 0, 'no cloud ellipses over the fallback sky');
   backdrop.images.forEach(sprite => sprite.load());
   const steady = backdropFrame(), steadyTotal = calls.images.length;
   assert.deepEqual(steady, [[expectedSprite(0), 1]], 'exactly one backdrop image outside a fade');
-  assert.equal(clouds().length, 4, 'clouds are layered over the image backdrop');
+  assert.equal(clouds().length, 0, 'no cloud ellipses over the image backdrop');
   climb(config.backdropZones[1] - 1); assert.equal(backdrop.hooks.state.backdropZone, 0, 'the zone holds below its threshold');
   climb(config.backdropZones[1]); assert.equal(backdrop.hooks.state.backdropZone, 1, 'the zone changes at its threshold');
   const fading = backdropFrame();
@@ -215,13 +216,7 @@ async function run() {
   assert.equal(backdrop.hooks.state.backdropFade, null, 'the fade ends after backdropFadeMs of active time');
   assert.deepEqual(backdropFrame(), [[expectedSprite(1), 1]], 'the new zone draws alone once faded in');
   assert.equal(calls.images.length, steadyTotal, 'drawImage count returns to the steady figure');
-  backdropFrame(); const drifting = clouds();
-  backdrop.hooks.state.cameraY -= 500; backdropFrame();
-  assert.ok(Math.abs(clouds()[0][1] - drifting[0][1] - 500 * config.backdropCloudParallax) < 1e-9, 'clouds scroll at the parallax fraction of camera travel');
   backdrop.hooks.profile.reducedMotion = true;
-  backdropFrame(); const pinned = clouds();
-  backdrop.hooks.state.cameraY -= 500; backdropFrame();
-  assert.deepEqual(clouds(), pinned, 'Reduced Motion pins the clouds while the camera moves');
   climb(config.backdropZones[2]); assert.equal(backdrop.hooks.state.backdropZone, 2);
   assert.equal(backdrop.hooks.state.backdropFade, null, 'Reduced Motion switches zones without a fade');
   assert.deepEqual(backdropFrame(), [[expectedSprite(2), 1]], 'Reduced Motion draws the new zone immediately');
@@ -301,6 +296,25 @@ async function run() {
     });
   }
   assert.equal(new Set(['endless', 'arcade', 'challenge'].map(mode => String(config.musicPhrases[mode].melody))).size, 3, 'modes keep distinct phrases');
+  // The Classic style plays the phrase as written every time; the setting
+  // round-trips through the profile and falls back to Varied.
+  music.hooks.profile.musicStyle = 'classic';
+  const classic = variantsOf('endless');
+  classic.forEach((phrase, index) => assert.deepEqual(phrase.melody, config.musicPhrases.endless.melody, 'classic phrase ' + index + ' is the phrase as written'));
+  music.hooks.profile.musicStyle = 'varied';
+  assert.equal(music.hooks.normalizeProfile({ musicStyle: 'classic' }).musicStyle, 'classic');
+  assert.equal(music.hooks.normalizeProfile({ musicStyle: 'jazz' }).musicStyle, 'varied', 'unknown styles fall back to Varied');
+  music.elements.get('#music-style-select').value = 'classic'; music.elements.get('#music-style-select').listeners.change();
+  assert.equal(music.hooks.profile.musicStyle, 'classic', 'the selector saves the style');
+  // Info buttons reveal their note without flipping the checkbox they sit in.
+  const infoButton = music.elements.get('#helping-hand-info'), note = music.elements.get('#helping-hand-note'), toggle = music.elements.get('#helping-hand-toggle');
+  note.classList.add('hidden'); const checked = toggle.checked; let prevented = false;
+  infoButton.listeners.click({ preventDefault() { prevented = true; }, stopPropagation() {} });
+  assert.equal(note.classList.contains('hidden'), false, 'the note opens');
+  assert.equal(prevented, true, 'the label click is cancelled');
+  assert.equal(toggle.checked, checked);
+  infoButton.listeners.click({ preventDefault() {}, stopPropagation() {} });
+  assert.equal(note.classList.contains('hidden'), true, 'the note closes again');
   music.hooks.showHome(); assert.equal(music.timeouts.size, 0);
   console.log('Music timing checks passed: audio-clock lookahead, callback jitter, long stalls, four-phrase variant cycle, pause/resume and Home cleanup.');
   console.log('Rendering/audio checks passed: idle menus, image-load repaint, cached glows, paused scenes, end screens, and noise-buffer reuse.');
