@@ -448,6 +448,20 @@ function sidewaysScenario(upper) {
   assert.equal(stalled.lastLanding, upper, 'and then the far row');
   releaseSteering();
 }
+// Helping Hand off: the same stranded geometry is never rescued, and the
+// preference survives a saved profile round trip while an invalid value falls
+// back to on.
+{
+  const { stalled, standingPlatform } = sidewaysScenario({ x: 300, y: 404, w: 100 });
+  rescueRuntime.hooks.profile.helpingHand = false;
+  advanceUpdates(rescueRuntime, 6, 1 / 60);
+  assert.equal(standingPlatform.type, 'normal', 'no spring while Helping Hand is off');
+  assert.equal(stalled.platforms.length, 2, 'no helper steps while Helping Hand is off');
+  rescueRuntime.hooks.profile.helpingHand = true;
+  assert.equal(rescueRuntime.hooks.normalizeProfile({ helpingHand: false }).helpingHand, false);
+  assert.equal(rescueRuntime.hooks.normalizeProfile({ helpingHand: 'no' }).helpingHand, true, 'Helping Hand defaults to on');
+  assert.equal(rescueRuntime.elements.get('#helping-hand-toggle').checked, true, 'the settings toggle reflects the default');
+}
 // A converted spring that still cannot make the crossing gets steps too.
 {
   const { stalled, standingPlatform } = sidewaysScenario({ x: 380, y: 404, w: 60 });

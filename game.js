@@ -34,7 +34,7 @@
     falconOwned: document.querySelector('#falcon-owned'), shieldOwned: document.querySelector('#shield-owned'), powerOwned: document.querySelector('#power-owned'),
     buyFalcon: document.querySelector('#buy-falcon'), buyShield: document.querySelector('#buy-shield'), buyPower: document.querySelector('#buy-power'),
     openAbout: document.querySelector('#open-about-button'), closeAbout: document.querySelector('#close-about-button'), openPrivacy: document.querySelector('#open-privacy-button'), closePrivacy: document.querySelector('#close-privacy-button'), privacy: document.querySelector('#privacy-screen'), exitConfirm: document.querySelector('#exit-confirm-screen'), confirmExit: document.querySelector('#confirm-exit-button'), cancelExit: document.querySelector('#cancel-exit-button'), openSettings: document.querySelector('#open-settings-button'), closeSettings: document.querySelector('#close-settings-button'), pauseSettings: document.querySelector('#pause-settings-button'), resetProgress: document.querySelector('#reset-progress-button'), resetConfirm: document.querySelector('#reset-confirm-screen'), confirmReset: document.querySelector('#confirm-reset-button'), cancelReset: document.querySelector('#cancel-reset-button'), settings: document.querySelector('#settings-screen'), openBadges: document.querySelector('#open-badges-button'), closeBadges: document.querySelector('#close-badges-button'), badges: document.querySelector('#badges-screen'), badgeCount: document.querySelector('#badge-count'), badgeGrid: document.querySelector('#badge-grid'), badgeToast: document.querySelector('#badge-toast'), badgeToastIcon: document.querySelector('#badge-toast-icon'), badgeToastName: document.querySelector('#badge-toast-name'), openStats: document.querySelector('#open-stats-button'), closeStats: document.querySelector('#close-stats-button'), stats: document.querySelector('#stats-screen'), statsSummary: document.querySelector('#stats-summary'), deathBreakdown: document.querySelector('#death-breakdown'),
-    musicToggle: document.querySelector('#music-toggle'), soundToggle: document.querySelector('#sound-toggle'), reducedMotionToggle: document.querySelector('#reduced-motion-toggle'), replayTutorial: document.querySelector('#replay-tutorial-button'),
+    musicToggle: document.querySelector('#music-toggle'), soundToggle: document.querySelector('#sound-toggle'), reducedMotionToggle: document.querySelector('#reduced-motion-toggle'), helpingHandToggle: document.querySelector('#helping-hand-toggle'), replayTutorial: document.querySelector('#replay-tutorial-button'),
     pauseButton: document.querySelector('#pause-button'), resume: document.querySelector('#resume-button'), pauseRestart: document.querySelector('#pause-restart-button'), pauseHome: document.querySelector('#pause-home-button'),
   };
   const palette = ['#bce7ef', '#f8d9a7', '#c9e5c0', '#e5c4d6'];
@@ -97,7 +97,7 @@
     { id: 'bird-defender', icon: '◒', title: 'Bird Defender', description: 'Block 3 bird collisions.', color: '#5476a8' },
     { id: 'power-seeker', icon: '⚡', title: 'Power Seeker', description: 'Collect 5 power-ups.', color: '#b65e45' },
   ];
-  const defaultProfile = { tokens: 0, falcon: 0, shield: 0, powerJump: 0, character: 'girl', tutorialComplete: false, music: true, sound: true, reducedMotion: Boolean(window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches), bestScores: { endless: 0, arcade: 0, challenge: 0, hard: 0 }, badges: {}, stats: { runs: 0, wins: 0, arcadeWins: 0, challengeWins: 0, leftEarly: 0, deaths: 0, fallDeaths: 0, birdDeaths: 0, challengeMisses: 0, jumps: 0, totalScore: 0, totalHeight: 0, parshad: 0, tokens: 0, powerups: 0, birdsSeen: 0, birdsBlocked: 0, falconSaves: 0, shieldsUsed: 0 } };
+  const defaultProfile = { tokens: 0, falcon: 0, shield: 0, powerJump: 0, character: 'girl', tutorialComplete: false, music: true, sound: true, helpingHand: true, reducedMotion: Boolean(window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches), bestScores: { endless: 0, arcade: 0, challenge: 0, hard: 0 }, badges: {}, stats: { runs: 0, wins: 0, arcadeWins: 0, challengeWins: 0, leftEarly: 0, deaths: 0, fallDeaths: 0, birdDeaths: 0, challengeMisses: 0, jumps: 0, totalScore: 0, totalHeight: 0, parshad: 0, tokens: 0, powerups: 0, birdsSeen: 0, birdsBlocked: 0, falconSaves: 0, shieldsUsed: 0 } };
   const profileStorageKey = 'seva-jump-profile';
   let storageAvailable = true;
   function freshProfile() { return { ...defaultProfile, bestScores: { ...defaultProfile.bestScores }, badges: {}, stats: { ...defaultProfile.stats } }; }
@@ -108,7 +108,7 @@
     ['tokens', 'falcon', 'shield'].forEach(key => { normalized[key] = wholeNumber(saved[key]); });
     normalized.powerJump = wholeNumber(saved.powerJump, 5);
     normalized.character = saved.character === 'boy' ? 'boy' : 'girl';
-    ['music', 'sound', 'reducedMotion'].forEach(key => { if (typeof saved[key] === 'boolean') normalized[key] = saved[key]; });
+    ['music', 'sound', 'reducedMotion', 'helpingHand'].forEach(key => { if (typeof saved[key] === 'boolean') normalized[key] = saved[key]; });
     normalized.tutorialComplete = typeof saved.tutorialComplete === 'boolean' ? saved.tutorialComplete : Object.values(saved.tutorialModes && typeof saved.tutorialModes === 'object' ? saved.tutorialModes : {}).some(Boolean);
     Object.keys(normalized.bestScores).forEach(key => { normalized.bestScores[key] = wholeNumber(saved.bestScores?.[key]); });
     if (saved.badges && typeof saved.badges === 'object' && !Array.isArray(saved.badges)) Object.keys(saved.badges).forEach(key => { if (saved.badges[key] === true) normalized.badges[key] = true; });
@@ -153,6 +153,7 @@
     ui.musicToggle.checked = profile.music;
     ui.soundToggle.checked = profile.sound;
     ui.reducedMotionToggle.checked = profile.reducedMotion;
+    ui.helpingHandToggle.checked = profile.helpingHand;
     document.documentElement.classList.toggle('reduced-motion', profile.reducedMotion);
   }
   function requestResetProgress() { ui.settings.classList.add('hidden'); ui.resetConfirm.classList.remove('hidden'); syncModalAccessibility(); }
@@ -569,7 +570,7 @@
     // (several rows broke in a row, common in Hard's double-break rows)
     // bridge the gap with solid helper steps instead.
     const standing = state.lastLanding;
-    if (state.stallTimer < config.stallRescueSeconds || state.hitStop || state.falconRescue || state.ending || state.paused) return;
+    if (!profile.helpingHand || state.stallTimer < config.stallRescueSeconds || state.hitStop || state.falconRescue || state.ending || state.paused) return;
     if (!standing || standing.broken || !state.platforms.includes(standing)) return;
     const hop = { powerJump: profile.powerJump, halfWidth: state.player.w / 2 }, springHop = { ...hop, velocity: config.springJumpVelocity };
     if (!rules.isStranded(state.platforms, standing, standing.type === 'spring' ? springHop : hop)) return;
@@ -1025,6 +1026,7 @@
   ui.pauseButton.addEventListener('click', pauseGame); ui.resume.addEventListener('click', resumeGame); ui.pauseRestart.addEventListener('click', restartPausedRun); ui.pauseHome.addEventListener('click', leaveRunEarly);
   ui.musicToggle.addEventListener('change', () => { profile.music = ui.musicToggle.checked; saveProfile(); if (profile.music && !state?.paused) startAudio(); else setMusic(); });
   ui.soundToggle.addEventListener('change', () => { profile.sound = ui.soundToggle.checked; saveProfile(); });
+  ui.helpingHandToggle.addEventListener('change', () => { menuDirty = true; profile.helpingHand = ui.helpingHandToggle.checked; saveProfile(); });
   ui.reducedMotionToggle.addEventListener('change', () => { menuDirty = true; profile.reducedMotion = ui.reducedMotionToggle.checked; document.documentElement.classList.toggle('reduced-motion', profile.reducedMotion); saveProfile(); });
   ui.tutorialNext.addEventListener('click', () => { if (tutorialIndex < TUTORIAL_STEPS.length - 1) { tutorialIndex++; renderTutorial(); sound('ui'); } else finishTutorial(); });
   ui.tutorialSkip.addEventListener('click', finishTutorial);
