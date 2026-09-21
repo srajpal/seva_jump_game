@@ -5,8 +5,19 @@ const SEVA_CONFIG = {
   // Each Power Jump level adds a true 10% to jump height. Velocity uses the
   // square root of this value because height is proportional to velocity².
   powerJumpHeightBonusPerLevel: .1,
+  // Longest frame step the game loop integrates. Semi-implicit Euler (velocity
+  // first, then position) reaches velocity * step / 2 less than the analytic
+  // apex, so reachability checks use this worst case, not the analytic apex.
+  maxFrameSeconds: .04,
   karaJumpMultiplier: 1.4,
-  nishanJumpMultiplier: 1.6,
+  // The Nishan boost is a short guided flight rather than a stronger bounce:
+  // a steady climb at this speed with gravity off, then a natural
+  // deceleration from it. The speed sits below a normal jump so the arc it
+  // leaves behind is one the generator's rows can always catch.
+  nishanFlightSeconds: 1.2,
+  nishanFlightSpeed: 520,
+  // A Kara collected mid-flight cannot add a jump, so it stretches the flight.
+  karaFlightExtensionSeconds: .3,
   // Responsive enough for a phone drag, while still leaving time to line up
   // on the narrower late-game platforms.
   maxHorizontalSpeed: 440,
@@ -20,10 +31,34 @@ const SEVA_CONFIG = {
   gamepadDeadzone: .18,
   breakCrumbleDuration: .3,
   breakCrumbleFallDistance: 36,
+  // Seconds without a height gain before a stranded player gets help. The
+  // platform turns into a spring, whose worst-case reach (about 208 px)
+  // clears the two capped gaps (192 px) a single broken row leaves. When
+  // several rows broke in a row (Hard's double-break rows) the gap is bridged
+  // by helper platforms of this width instead.
+  stallRescueSeconds: 3,
+  stallRescueRungWidth: 76,
+  // Without Helping Hand (or in Challenge and Hard, where it never applies) a
+  // stranded run is told so at stallRescueSeconds and ends here instead of
+  // bouncing forever.
+  stallEndSeconds: 6,
   musicBeatSeconds: .5,
   musicLookaheadSeconds: .2,
   musicStartDelaySeconds: .05,
   musicSchedulerIntervalMs: 50,
+  // Each mode's 8-beat phrase: one melody note per beat over a bass note every
+  // two beats. Hard shares Endless. playMusicPhrase cycles four variants of it
+  // (as written, reversed as an answer, lifted a fifth, a syncopated octave
+  // bounce) so the loop only repeats every fourth phrase.
+  musicPhrases: {
+    endless: { melody: [392, 440, 523, 440, 349, 392, 440, 494], bass: [196, 175, 196, 220] },
+    arcade: { melody: [392, 440, 523, 587, 523, 440, 494, 523], bass: [196, 175, 196, 220] },
+    challenge: { melody: [392, 440, 494, 523, 494, 440, 392, 330], bass: [196, 196, 220, 220] },
+  },
+  musicLiftRatio: 1.5,
+  // Beat offset and length of each bounce-variant note; together they still
+  // fill exactly eight beats so the scheduler's phrase advance holds.
+  musicBounceBeats: [[0, 1.5], [1.5, .5], [2, 1], [3, 1], [4, 1.5], [5.5, .5], [6, 1], [7, 1]],
   // Arcade has authored score bands; Endless instead uses a continuous curve.
   tierThresholds: [100, 250, 450, 700],
   horizontalShifts: [72, 94, 116, 136, 136],
@@ -46,6 +81,12 @@ const SEVA_CONFIG = {
   arcadeBirdChance: .18,
   birdSpeed: { base: 60, randomRange: 45, difficultyBonus: 35, hardBonus: 12 },
   endlessDifficultyScore: 1500,
+  // Past the difficulty cap a gentler second ramp keeps strong Endless runs
+  // from plateauing. It only touches hazards that cannot break reachability
+  // (bird speed, bird odds, moving-platform speed), never gaps or shifts.
+  endlessLateDifficultyScore: 1500,
+  endlessLateBirdSpeedBonus: 40,
+  endlessLateBirdChanceCap: .32,
   endlessHorizontalShiftRange: [72, 136],
   endlessBirdStartScore: 160,
   endlessBirdWarmupScore: 120,
@@ -83,6 +124,11 @@ const SEVA_CONFIG = {
   finishRunwayGap: 96,
   finishRunwaySteps: 4,
   finishBannerGap: 84,
+  // The backdrop walks courtyard -> sunset -> dawn as the height score passes
+  // each zone, so a long climb reads as time passing. The fade runs on active
+  // time.
+  backdropZones: [0, 500, 1100],
+  backdropFadeMs: 1200,
   victorySceneDurationMs: 5000,
   victoryFadeDurationMs: 700,
   birdHitDurationMs: 1000,

@@ -12,8 +12,8 @@ function cleanState(runtime, mode = 'endless') {
   return state;
 }
 
-function advanceUpdates(runtime, seconds) {
-  for (let remaining = seconds; remaining > 1e-9; remaining -= .04) runtime.hooks.update(Math.min(.04, remaining));
+function advanceUpdates(runtime, seconds, step = .04) {
+  for (let remaining = seconds; remaining > 1e-9; remaining -= step) runtime.hooks.update(Math.min(step, remaining));
 }
 
 const runtime = makeRuntime({ value: JSON.stringify({ tutorialComplete: true, music: false, sound: false, reducedMotion: true }) });
@@ -185,6 +185,304 @@ for (const native of [false, true]) {
   }
 }
 
+// Stall rescue: bouncing on a platform whose next intact row is two gaps
+// above (a broken row in between) converts it into a spring after the stall
+// threshold, and the spring then carries the player up to the row above.
+function strandedScenario(mode = 'endless', upper = { x: 150, y: 300, w: 150 }) {
+  const stalled = cleanState(rescueRuntime, mode);
+  const standingPlatform = { x: 150, y: 500, w: 150, type: 'normal', speed: 0, dir: 1, broken: false };
+  stalled.platforms = [standingPlatform, { type: 'normal', speed: 0, dir: 1, broken: false, ...upper }];
+  Object.assign(stalled.player, { x: 225, y: 470, vy: 100, vx: 0 });
+  return { stalled, standingPlatform };
+}
+const rescueRuntime = makeRuntime({ value: JSON.stringify({ tutorialComplete: true, music: false, sound: false, reducedMotion: true }) });
+const springSounds = [];
+rescueRuntime.hooks.observeSounds(type => springSounds.push(type));
+{
+  const { stalled, standingPlatform } = strandedScenario();
+  assert.equal(stalled.lastLanding.y, 700, 'lastLanding starts as the run start platform');
+  advanceUpdates(rescueRuntime, .04);
+  assert.equal(stalled.lastLanding, standingPlatform, 'landing records the platform bounced from');
+  advanceUpdates(rescueRuntime, 2.5);
+  assert.equal(standingPlatform.type, 'normal', 'no rescue before the stall threshold');
+  const heightBefore = stalled.heightScore;
+  springSounds.length = 0;
+  advanceUpdates(rescueRuntime, 1.5);
+  assert.equal(standingPlatform.type, 'spring', 'a stranded platform becomes a spring after the stall threshold');
+  assert.equal(stalled.message, 'Spring assist!');
+  assert.ok(stalled.messageTimer > 0 && stalled.messageTimer <= 1.5);
+  assert.equal(springSounds.includes('spring'), true, 'the conversion plays the spring sound');
+  assert.equal(stalled.stallTimer < config.stallRescueSeconds, true, 'the stall timer restarts after a rescue');
+  assert.equal(stalled.heightScore, heightBefore, 'the conversion itself does not award height');
+  advanceUpdates(rescueRuntime, 1.2);
+  assert.ok(stalled.heightScore > heightBefore, 'the spring carries the player up to the row two gaps above');
+  assert.equal(stalled.lastLanding, stalled.platforms[1], 'the player lands on the upper row');
+  assert.equal(standingPlatform.type, 'spring', 'a converted platform stays a spring');
+}
+
+// A reachable row (vertically within one jump, even if the player keeps
+// missing it sideways) never triggers the rescue.
+{
+  const { stalled, standingPlatform } = strandedScenario('endless', { x: 20, y: 410, w: 90 });
+  advanceUpdates(rescueRuntime, 5);
+  assert.equal(standingPlatform.type, 'normal', 'a row within the jump apex is not a stall rescue case');
+  assert.ok(stalled.stallTimer >= config.stallRescueSeconds, 'the timer alone is not enough to convert');
+  assert.equal(stalled.platforms.every(platform => platform.type === 'normal'), true);
+}
+
+// A stranded moving platform stops so the spring stays under the player.
+{
+  const { stalled, standingPlatform } = strandedScenario();
+  Object.assign(standingPlatform, { x: 60, w: 330, type: 'moving', speed: 30 });
+  advanceUpdates(rescueRuntime, 3.6);
+  assert.equal(standingPlatform.type, 'spring');
+  assert.equal(standingPlatform.speed, 0, 'the converted platform no longer moves');
+  const x = standingPlatform.x; advanceUpdates(rescueRuntime, .4);
+  assert.equal(standingPlatform.x, x);
+  assert.ok(stalled.stallTimer < config.stallRescueSeconds);
+}
+
+// The rescue waits out a bird hit-stop and a Falcon carry, and the stall timer
+// does not accumulate during either.
+{
+  const { stalled, standingPlatform } = strandedScenario();
+  rescueRuntime.hooks.profile.shield = 1;
+  advanceUpdates(rescueRuntime, 2.9);
+  stalled.stallTimer = 10;
+  rescueRuntime.hooks.triggerBirdHit({ x: stalled.player.x, y: stalled.player.y, hit: false });
+  assert.ok(stalled.hitStop);
+  advanceUpdates(rescueRuntime, .6);
+  assert.ok(stalled.hitStop, 'the hit-stop is still running');
+  assert.equal(standingPlatform.type, 'normal', 'no rescue during a bird hit-stop');
+  assert.equal(stalled.stallTimer, 10, 'hit-stop frames do not count as stalled time');
+  advanceUpdates(rescueRuntime, .4);
+  assert.equal(stalled.hitStop, null);
+  assert.equal(standingPlatform.type, 'spring', 'the rescue resumes once play does');
+  rescueRuntime.hooks.profile.shield = 0; stalled.invincibleTimer = 0; stalled.invincibleSource = null;
+}
+{
+  const { stalled, standingPlatform } = strandedScenario();
+  rescueRuntime.hooks.profile.falcon = 1;
+  advanceUpdates(rescueRuntime, .04);
+  stalled.stallTimer = 10;
+  rescueRuntime.hooks.triggerFalconSave();
+  assert.ok(stalled.falconRescue);
+  advanceUpdates(rescueRuntime, .4);
+  assert.ok(stalled.falconRescue, 'the carry is still in progress');
+  assert.equal(standingPlatform.type, 'normal', 'no rescue during a Falcon carry');
+  assert.equal(stalled.stallTimer, 10, 'carry frames do not count as stalled time');
+  advanceUpdates(rescueRuntime, .4);
+  assert.equal(stalled.falconRescue, null);
+  assert.equal(stalled.lastLanding.rescuePlatform, true, 'the Falcon platform becomes the standing platform');
+  assert.equal(standingPlatform.type, 'normal', 'the abandoned platform is never converted');
+  rescueRuntime.hooks.profile.falcon = 0;
+}
+
+// When several rows broke in a row the gap is beyond even a spring, so the
+// rescue bridges it with helper steps instead of converting the platform.
+{
+  const { stalled, standingPlatform } = strandedScenario('endless', { x: 150, y: 200, w: 150 });
+  const upper = stalled.platforms[1];
+  springSounds.length = 0;
+  advanceUpdates(rescueRuntime, 3.6);
+  assert.equal(standingPlatform.type, 'normal', 'a 300 px gap is not answered with a spring');
+  const helpers = stalled.platforms.filter(platform => platform.helper);
+  assert.equal(helpers.length, 3, 'three steps bridge a 300 px gap at the 96 px cap');
+  assert.deepEqual(helpers.map(step => step.y), [425, 350, 275]);
+  assert.equal(stalled.message, 'Helper platforms!');
+  assert.equal(springSounds.includes('spring'), false);
+  const heightBefore = stalled.heightScore;
+  advanceUpdates(rescueRuntime, 4.5);
+  assert.ok(stalled.heightScore > heightBefore, 'the steps carry the player upward');
+  assert.equal(stalled.lastLanding, upper, 'the player reaches the intact row');
+  assert.equal(stalled.platforms.filter(platform => platform.helper).length, 3, 'no extra steps are added once the route is climbable');
+}
+
+// A platform that already is a spring only gets steps when the next row is
+// beyond the spring apex; within it, the spring is enough and nothing fires.
+{
+  const { stalled, standingPlatform } = strandedScenario('endless', { x: 20, y: 308, w: 90 });
+  standingPlatform.type = 'spring';
+  advanceUpdates(rescueRuntime, 5);
+  assert.equal(stalled.platforms.length, 2, 'a spring within reach of the next row needs no help');
+  assert.notEqual(stalled.message, 'Spring assist!');
+}
+{
+  const { stalled, standingPlatform } = strandedScenario('endless', { x: 150, y: 212, w: 150 });
+  standingPlatform.type = 'spring';
+  advanceUpdates(rescueRuntime, 3.6);
+  assert.deepEqual(stalled.platforms.filter(platform => platform.helper).map(step => step.y), [404, 308], 'a spring facing a 288 px gap gets two steps');
+  advanceUpdates(rescueRuntime, 2.5);
+  assert.equal(stalled.lastLanding, stalled.platforms[1], 'the spring plus steps reach the intact row');
+  assert.equal(standingPlatform.type, 'spring');
+}
+
+// The spec's timing at 60 fps: 3.5 s after landing the platform is a spring
+// with its message, and about a second later the player has gained height.
+{
+  const { stalled, standingPlatform } = strandedScenario();
+  advanceUpdates(rescueRuntime, 3.5, 1 / 60);
+  assert.equal(standingPlatform.type, 'spring', 'the conversion happens within 3.5 s at 60 fps');
+  assert.equal(stalled.message, 'Spring assist!');
+  const heightBefore = stalled.heightScore;
+  advanceUpdates(rescueRuntime, 1, 1 / 60);
+  assert.ok(stalled.heightScore > heightBefore, 'the player reaches the upper row about a second later');
+}
+
+// Regression: the stranded check must use the integrator's reach, not the
+// analytic apex. Power Jump 5's apex (192.2 px) covers the widest double gap on
+// paper, but semi-implicit Euler falls about 6 px short at 60 fps and 15 px at
+// the 40 ms clamp; gaps in that band left the player bouncing forever with no
+// rescue. Aligned under the row, so horizontal reach is not a factor.
+for (const [level, gap, step] of [[5, 190, 1 / 60], [5, 192, 1 / 60], [5, 180, .04], [3, 164, 1 / 60], [4, 176, 1 / 60], [3, 158, .04]]) {
+  const { stalled, standingPlatform } = strandedScenario('endless', { x: 150, y: 500 - gap, w: 150 });
+  rescueRuntime.hooks.profile.powerJump = level;
+  const upper = stalled.platforms[1];
+  assert.equal(rules.isStranded(stalled.platforms, standingPlatform, { powerJump: level, halfWidth: stalled.player.w / 2, reach: rules.jumpApex(level) }), false, `the analytic apex claims a ${gap} px gap is reachable at Power Jump ${level}`);
+  advanceUpdates(rescueRuntime, 1, step);
+  const heightBefore = stalled.heightScore;
+  advanceUpdates(rescueRuntime, 2, step);
+  assert.equal(stalled.lastLanding, standingPlatform, `the player never lands on the ${gap} px row at Power Jump ${level}`);
+  assert.equal(stalled.heightScore, heightBefore, 'no height is gained while stranded');
+  advanceUpdates(rescueRuntime, 2, step);
+  assert.equal(standingPlatform.type, 'spring', `a ${gap} px gap at Power Jump ${level} (step ${step.toFixed(4)}) is rescued`);
+  advanceUpdates(rescueRuntime, 2, step);
+  assert.equal(stalled.lastLanding, upper, 'the spring then reaches the row');
+  rescueRuntime.hooks.profile.powerJump = 0;
+}
+// The same band exists for a spring: gaps between the spring's integrated
+// reach and its analytic apex (three or four broken rows) need helper steps.
+for (const [level, gap] of [[1, 244], [0, 222], [5, 334]]) {
+  const { stalled, standingPlatform } = strandedScenario('endless', { x: 150, y: 500 - gap, w: 150 });
+  standingPlatform.type = 'spring'; rescueRuntime.hooks.profile.powerJump = level;
+  const upper = stalled.platforms[1];
+  advanceUpdates(rescueRuntime, 3, 1 / 60);
+  assert.equal(stalled.lastLanding, standingPlatform, `a spring never reaches a ${gap} px row at Power Jump ${level}`);
+  advanceUpdates(rescueRuntime, 2, 1 / 60);
+  assert.ok(stalled.platforms.some(platform => platform.helper), `a spring facing a ${gap} px gap at Power Jump ${level} gets helper steps`);
+  advanceUpdates(rescueRuntime, 4, 1 / 60);
+  assert.equal(stalled.lastLanding, upper, 'the steps then reach the row');
+  rescueRuntime.hooks.profile.powerJump = 0;
+}
+// A gap the integrator genuinely reaches at Power Jump 5 is never rescued.
+{
+  const { stalled, standingPlatform } = strandedScenario('endless', { x: 150, y: 500 - 176, w: 150 });
+  rescueRuntime.hooks.profile.powerJump = 5;
+  advanceUpdates(rescueRuntime, 5, .04);
+  assert.equal(standingPlatform.type, 'normal', 'a 176 px gap is within Power Jump 5 reach even at the frame clamp');
+  assert.equal(stalled.lastLanding, stalled.platforms[1]);
+  rescueRuntime.hooks.profile.powerJump = 0;
+}
+
+// A stranded platform that has already been culled, or that broke under the
+// player, is never converted.
+{
+  const { stalled, standingPlatform } = strandedScenario();
+  advanceUpdates(rescueRuntime, .04);
+  stalled.platforms = stalled.platforms.filter(platform => platform !== standingPlatform);
+  Object.assign(stalled.player, { y: 600, vy: 0 });
+  stalled.stallTimer = 10;
+  rescueRuntime.hooks.update(.04);
+  assert.equal(standingPlatform.type, 'normal', 'a culled platform is left alone');
+}
+
+// The next row can be within jumping height yet too far sideways for a touch
+// player at the pointer speed cap: the lone survivor of a row whose partner
+// broke, or a finish-runway step. The spring's longer flight covers it.
+// The harness letterboxes the 450 px canvas in a 768 px wide rect: scale 1.28,
+// 96 px of content offset (see getBoundingClientRect in runtime-browser-checks).
+const steer = x => rescueRuntime.elements.get('#game').listeners.pointerdown({ clientX: 96 + x * 1.28, pointerId: 1 });
+const releaseSteering = () => rescueRuntime.elements.get('#game').listeners.pointercancel();
+// A player steers for the far row from the moment they leave the platform;
+// steering mid-descent would only carry them off the ledge.
+function awaitLaunch(velocity) {
+  for (let frames = 0; rescueRuntime.hooks.state.player.vy > -velocity * .99 && frames < 120; frames++) rescueRuntime.hooks.update(1 / 60);
+  assert.ok(rescueRuntime.hooks.state.player.vy <= -velocity * .99, 'the player launched at the expected velocity');
+}
+function sidewaysScenario(upper) {
+  const { stalled, standingPlatform } = strandedScenario('arcade', upper);
+  Object.assign(standingPlatform, { x: 20, w: 100 });
+  Object.assign(stalled.player, { x: 70 });
+  releaseSteering();
+  return { stalled, standingPlatform, upper: stalled.platforms[1] };
+}
+{
+  const { stalled, standingPlatform, upper } = sidewaysScenario({ x: 300, y: 404, w: 100 });
+  advanceUpdates(rescueRuntime, 2.9, 1 / 60);
+  assert.equal(standingPlatform.type, 'normal', 'no rescue before the stall threshold');
+  assert.equal(stalled.lastLanding, standingPlatform);
+  advanceUpdates(rescueRuntime, .7, 1 / 60);
+  assert.equal(standingPlatform.type, 'spring', 'a row 96 px up but 280 px across is a stall rescue case for touch play');
+  assert.equal(stalled.message, 'Spring assist!');
+  awaitLaunch(config.springJumpVelocity);
+  steer(350);
+  advanceUpdates(rescueRuntime, 1.5, 1 / 60);
+  assert.equal(stalled.lastLanding, upper, 'the spring flight reaches the far row at the pointer speed cap');
+  releaseSteering();
+}
+// Within touch reach nothing fires, however long the player idles.
+{
+  const { stalled, standingPlatform } = sidewaysScenario({ x: 220, y: 404, w: 100 });
+  advanceUpdates(rescueRuntime, 5, 1 / 60);
+  assert.equal(standingPlatform.type, 'normal', 'a row 200 px across is within one touch hop');
+  assert.ok(stalled.stallTimer >= config.stallRescueSeconds);
+  assert.equal(stalled.platforms.length, 2);
+}
+// Beyond even a spring's sideways reach, a midway step splits the crossing.
+{
+  const { stalled, standingPlatform, upper } = sidewaysScenario({ x: 380, y: 404, w: 60 });
+  advanceUpdates(rescueRuntime, 3.6, 1 / 60);
+  assert.equal(standingPlatform.type, 'normal', 'a 340 px crossing is not answered with a spring');
+  const helpers = stalled.platforms.filter(platform => platform.helper);
+  assert.equal(helpers.length, 1, 'one helper step bridges the crossing');
+  assert.equal(helpers[0].y, 452);
+  assert.equal(helpers[0].x + helpers[0].w / 2, 240, 'the step sits midway between the platforms');
+  assert.equal(stalled.message, 'Helper platforms!');
+  awaitLaunch(config.baseJumpVelocity);
+  steer(240);
+  advanceUpdates(rescueRuntime, 1.5, 1 / 60);
+  assert.equal(stalled.lastLanding, helpers[0], 'the player reaches the helper step');
+  awaitLaunch(config.baseJumpVelocity);
+  steer(410);
+  advanceUpdates(rescueRuntime, 1.5, 1 / 60);
+  assert.equal(stalled.lastLanding, upper, 'and then the far row');
+  releaseSteering();
+}
+// Without Helping Hand, and always in Challenge and Hard, a stranded run is
+// told so at the rescue threshold and ends at stallEndSeconds instead of
+// bouncing forever; a reachable row still never triggers either.
+const stuckCases = [['arcade', false], ['challenge', true], ['hard', true]];
+for (const [mode, helpingHand] of stuckCases) {
+  const { stalled, standingPlatform } = strandedScenario(mode);
+  rescueRuntime.hooks.profile.helpingHand = helpingHand;
+  advanceUpdates(rescueRuntime, config.stallRescueSeconds + .5, 1 / 60);
+  assert.equal(standingPlatform.type, 'normal', `${mode}: no spring`);
+  assert.equal(stalled.platforms.length, 2, `${mode}: no helper steps`);
+  assert.equal(stalled.message, 'Stuck · no platform in reach', `${mode}: the player is told`);
+  assert.equal(stalled.ending, false, `${mode}: the warning comes first`);
+  advanceUpdates(rescueRuntime, config.stallEndSeconds - config.stallRescueSeconds, 1 / 60);
+  assert.equal(stalled.ending, true, `${mode}: the stuck run ends`);
+  assert.equal(stalled.endReason, 'fall');
+}
+{
+  const { stalled, standingPlatform } = strandedScenario('hard', { x: 20, y: 410, w: 90 });
+  advanceUpdates(rescueRuntime, config.stallEndSeconds + 1, 1 / 60);
+  assert.equal(stalled.ending, false, 'a reachable row never ends a Hard run');
+  assert.notEqual(stalled.message, 'Stuck · no platform in reach');
+  assert.equal(standingPlatform.type, 'normal');
+}
+rescueRuntime.hooks.profile.helpingHand = true;
+assert.equal(rescueRuntime.hooks.normalizeProfile({ helpingHand: false }).helpingHand, false);
+assert.equal(rescueRuntime.hooks.normalizeProfile({ helpingHand: 'no' }).helpingHand, true, 'Helping Hand defaults to on');
+assert.equal(rescueRuntime.elements.get('#helping-hand-toggle').checked, true, 'the settings toggle reflects the default');
+// A converted spring that still cannot make the crossing gets steps too.
+{
+  const { stalled, standingPlatform } = sidewaysScenario({ x: 380, y: 404, w: 60 });
+  standingPlatform.type = 'spring';
+  advanceUpdates(rescueRuntime, 3.6, 1 / 60);
+  assert.equal(stalled.platforms.filter(platform => platform.helper).length, 1, 'a spring facing a 340 px crossing gets a helper step');
+}
+
 // Exercise actual boost collection.
 state = cleanState(runtime);
 Object.assign(state.player, { x: 200, y: 300, vx: 0, vy: 0 });
@@ -192,6 +490,110 @@ state.powerups = [{ x: 200, y: 300, type: 'kara', taken: false }];
 runtime.hooks.update(0);
 assert.equal(state.player.vy, rules.boostVelocity('kara', runtime.hooks.profile.powerJump));
 assert.equal(runtime.hooks.profile.stats.powerups, 1);
+
+// Nishan is a guided flight: a steady climb at nishanFlightSpeed with gravity
+// off for nishanFlightSeconds, after which the climb speed decays normally.
+// Only active frames advance it, so a pause or a Nishan hit-stop freezes it.
+{
+  let seed = 0xe6;
+  const random = () => { seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0; return seed / 2 ** 32; };
+  const flightRuntime = makeRuntime({ value: JSON.stringify({ tutorialComplete: true, music: false, sound: false, reducedMotion: true }) }, { random });
+  const H = flightRuntime.elements.get('#game').height, frame = 1 / 60, frames = Math.round(config.nishanFlightSeconds * 60);
+  const feetOf = player => player.y + player.h / 2;
+  // A real course, with the pickup placed where the player already is.
+  const pickUpNishan = (mode, position = { x: 225, y: 650, vx: 0, vy: 0 }) => {
+    flightRuntime.hooks.reset(mode); const flying = flightRuntime.hooks.state;
+    Object.assign(flying.player, position);
+    flying.powerups = [{ x: flying.player.x, y: flying.player.y, type: 'nishan', taken: false }];
+    flightRuntime.hooks.update(0);
+    return flying;
+  };
+  const flying = pickUpNishan('endless');
+  assert.equal(flying.flight?.remaining, config.nishanFlightSeconds, 'the pickup starts a full-length flight');
+  assert.equal(flying.player.vy, -config.nishanFlightSpeed, 'the pickup frame already shows the climb');
+  assert.equal(flying.message, 'Nishan boost · guided flight + protection!');
+  let expectedRemaining = config.nishanFlightSeconds;
+  for (let n = 1; n <= frames; n++) {
+    assert.ok(flying.flight?.remaining > 0, `still flying before frame ${n}`);
+    flightRuntime.hooks.update(frame);
+    expectedRemaining -= frame;
+    assert.equal(flying.player.vy, -config.nishanFlightSpeed, `the climb speed is constant on frame ${n}`);
+    assert.equal(flying.invincibleSource, 'nishan', `protection holds on frame ${n}`);
+    if (expectedRemaining > 0) assert.equal(flying.flight.remaining, expectedRemaining, `frame ${n} counts down by its step`);
+    else assert.equal(flying.flight, null, `the flight ends on the frame remaining reaches 0 (frame ${n})`);
+  }
+  assert.equal(flying.flight, null, 'the flight is over after nishanFlightSeconds of active frames');
+  assert.ok(Math.abs((650 - flying.player.y) - rules.nishanFlightHeight()) <= config.nishanFlightSpeed * frame, `the climb covers ${rules.nishanFlightHeight()} px within a frame (got ${650 - flying.player.y})`);
+  assert.ok(flying.platforms.some(plat => !plat.broken && plat.y >= feetOf(flying.player) && plat.y <= feetOf(flying.player) + H), 'an intact platform lies below the feet within a screen at flight end');
+  flightRuntime.hooks.update(frame);
+  assert.equal(flying.player.vy, -config.nishanFlightSpeed + config.gravity * frame, 'gravity resumes the frame after the flight ends');
+  assert.equal(flying.invincibleSource, 'nishan', 'the 5 s protection outlasts the flight');
+
+  const paused = pickUpNishan('endless');
+  advanceUpdates(flightRuntime, .5, frame);
+  const midPause = { remaining: paused.flight.remaining, y: paused.player.y };
+  flightRuntime.hooks.pauseGame();
+  advanceUpdates(flightRuntime, 1, frame);
+  assert.deepEqual({ remaining: paused.flight.remaining, y: paused.player.y }, midPause, 'a pause freezes the flight and the player');
+  flightRuntime.hooks.resumeGame();
+  flightRuntime.hooks.update(frame);
+  assert.ok(paused.flight.remaining < midPause.remaining && paused.player.y < midPause.y, 'the flight continues after the pause');
+
+  const hit = pickUpNishan('endless');
+  advanceUpdates(flightRuntime, .5, frame);
+  const midHit = { remaining: hit.flight.remaining, y: hit.player.y };
+  flightRuntime.hooks.triggerBirdHit({ x: hit.player.x, y: hit.player.y, hit: false });
+  assert.equal(hit.hitStop?.type, 'nishan', 'a bird mid-flight is a protected hit');
+  advanceUpdates(flightRuntime, .5, frame);
+  assert.ok(hit.hitStop, 'the hit-stop is still running');
+  assert.deepEqual({ remaining: hit.flight.remaining, y: hit.player.y }, midHit, 'a Nishan hit-stop freezes the flight');
+  advanceUpdates(flightRuntime, .3, frame);
+  assert.equal(hit.hitStop, null);
+  assert.ok(hit.flight.remaining < midHit.remaining && hit.player.y < midHit.y, 'the flight resumes after the hit-stop');
+
+  // A Kara caught mid-flight cannot add a jump (the flight owns the velocity),
+  // so it stretches the flight instead; a second Nishan restarts it in full.
+  {
+    const extended = pickUpNishan('endless');
+    advanceUpdates(flightRuntime, .3, frame);
+    const remaining = extended.flight.remaining;
+    extended.powerups = [{ x: extended.player.x, y: extended.player.y, type: 'kara', taken: false }];
+    flightRuntime.hooks.update(frame);
+    assert.ok(Math.abs(extended.flight.remaining - (remaining - frame + config.karaFlightExtensionSeconds)) < 1e-9, 'a Kara stretches the flight by its extension');
+    assert.equal(extended.player.vy, -config.nishanFlightSpeed, 'the climb speed is untouched');
+    assert.equal(extended.message, 'Kara boost · flight extended!');
+    extended.powerups = [{ x: extended.player.x, y: extended.player.y, type: 'nishan', taken: false }];
+    flightRuntime.hooks.update(frame);
+    assert.equal(extended.flight.remaining, config.nishanFlightSeconds, 'a second Nishan restarts the full flight');
+    assert.equal(extended.invincibleTimer, 5);
+  }
+  // On real Arcade courses the flight must end above a climbable route: the
+  // player steers (keyboard) to the nearest intact row below, lands, and that
+  // row is either not stranded or E1's rescue answers within 3.5 s.
+  const keys = flightRuntime.hooks.keys;
+  const steerTowards = (player, x) => { keys.clear(); if (x > player.x + 4) keys.add('ArrowRight'); else if (x < player.x - 4) keys.add('ArrowLeft'); };
+  for (let course = 0; course < 12; course++) {
+    const run = pickUpNishan('arcade', { x: 225, y: 650, vx: 0, vy: -config.baseJumpVelocity });
+    const start = run.platforms[0];
+    while (run.flight) flightRuntime.hooks.update(frame);
+    const flightEndFeet = feetOf(run.player);
+    assert.ok(run.platforms.some(plat => !plat.broken && plat.y >= flightEndFeet && plat.y <= flightEndFeet + H), `course ${course}: a platform lies within a screen below the flight's end`);
+    let landed = null;
+    for (let t = 0; t < 5 && !landed && !run.ending; t += frame) {
+      const below = run.platforms.filter(plat => !plat.broken && plat.y >= feetOf(run.player)).sort((a, b) => a.y - b.y)[0];
+      if (below) steerTowards(run.player, below.x + below.w / 2);
+      flightRuntime.hooks.update(frame);
+      if (run.lastLanding !== start && !run.lastLanding.broken) landed = run.lastLanding;
+    }
+    keys.clear();
+    assert.ok(landed, `course ${course}: the player lands on an intact row after the flight`);
+    assert.ok(landed.y < start.y, `course ${course}: the landing row is above the start`);
+    if (rules.isStranded(run.platforms, landed, { powerJump: flightRuntime.hooks.profile.powerJump, halfWidth: run.player.w / 2 })) {
+      advanceUpdates(flightRuntime, 3.5, frame);
+      assert.ok(landed.type === 'spring' || run.platforms.some(plat => plat.helper), `course ${course}: a stranded landing row is rescued within 3.5 s`);
+    }
+  }
+}
 
 // A long pause must freeze a rescue in the middle of its carry, including the
 // flash; resume must not teleport the player or expire the effect.

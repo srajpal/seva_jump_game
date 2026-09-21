@@ -99,11 +99,14 @@
           <h2 id="settings-heading">Settings</h2>
           <div class="pause-settings" aria-label="Game settings">
             <label><span>Music</span><input id="music-toggle" type="checkbox" checked /></label>
+            <label><span>Music style<button id="music-preview-button" class="info-button play-button" type="button" aria-label="Play a sample of this music style">▶</button></span><select id="music-style-select"><option value="varied">Varied</option><option value="classic">Classic</option></select></label>
             <label><span>Sound effects</span><input id="sound-toggle" type="checkbox" checked /></label>
-            <label><span>Reduced motion</span><input id="reduced-motion-toggle" type="checkbox" /></label>
+            <label><span>Helping Hand<button id="helping-hand-info" class="info-button" type="button" aria-label="About Helping Hand" aria-haspopup="dialog">i</button></span><input id="helping-hand-toggle" type="checkbox" checked /></label>
+            <label><span>Reduced motion<button id="reduced-motion-info" class="info-button" type="button" aria-label="About Reduced motion" aria-haspopup="dialog">i</button></span><input id="reduced-motion-toggle" type="checkbox" /></label>
           </div>
           <p id="audio-warning" class="setting-note hidden" role="status">Sound isn’t available in this browser. You can still play.</p>
-          <p class="setting-note">Reduced Motion makes decorative effects still: character bobbing, net hovering, finish-banner floating, fireworks expansion, and interface transitions.</p>
+          <p id="helping-hand-note" class="setting-note hidden">Helping Hand steps in when you are stuck bouncing with no platform in reach in Endless or Arcade: after about three seconds your platform turns into a spring, or helper platforms appear. Challenge and Hard never help; a stuck run there ends after a warning.</p>
+          <p id="reduced-motion-note" class="setting-note hidden">Reduced Motion makes decorative effects still: character bobbing, net hovering, finish-banner floating, fireworks expansion, and interface transitions.</p>
           <button id="replay-tutorial-button" class="secondary" type="button">Replay first-run guide</button>
           <div class="reset-panel">
             <strong>Reset this device</strong>
@@ -111,6 +114,12 @@
             <button id="reset-progress-button" class="danger-button" type="button">Reset all progress</button>
           </div>
           <button id="close-settings-button" class="primary">Back</button>
+        </div>
+        <div id="info-screen" class="overlay info-screen hidden" role="dialog" aria-modal="true" aria-labelledby="info-heading">
+          <p class="eyebrow">Settings</p>
+          <h2 id="info-heading">Setting</h2>
+          <p id="info-body"></p>
+          <button id="close-info-button" class="primary" type="button">Got it</button>
         </div>
         <div id="reset-confirm-screen" class="overlay reset-confirm-screen hidden" role="dialog" aria-modal="true" aria-labelledby="reset-confirm-heading">
           <p class="eyebrow">Confirm reset</p>
@@ -164,7 +173,7 @@
             <article class="guide-card" role="listitem"><img src="assets/khanda-token-pixel-v3.png" alt="" /><span><strong>Khanda token</strong><small>Spend these in Upgrades.</small></span></article>
             <article class="guide-card" role="listitem"><img src="assets/platform-spring-pixel-v1.png" alt="" /><span><strong>Platforms</strong><small>Grass is steady; spring launches, moving shifts, and wood breaks.</small></span></article>
             <article class="guide-card" role="listitem"><img src="assets/powerup-kara-pixel-v1.png" alt="" /><span><strong>Kara boost</strong><small>Gives one higher jump.</small></span></article>
-            <article class="guide-card" role="listitem"><img src="assets/powerup-nishan-pixel-v1.png" alt="" /><span><strong>Nishan boost</strong><small>One stronger jump plus 5 seconds of bird protection.</small></span></article>
+            <article class="guide-card" role="listitem"><img src="assets/powerup-nishan-pixel-v1.png" alt="" /><span><strong>Nishan boost</strong><small>A short guided flight you steer, plus 5 seconds of bird protection.</small></span></article>
             <article class="guide-card" role="listitem"><img src="assets/falcon-save-pixel-v1.png" alt="" /><span><strong>Falcon Save</strong><small>Catches one fall during a run.</small></span></article>
             <article class="guide-card" role="listitem"><img src="assets/dhal-shield-pixel-v1.png" alt="" /><span><strong>Dhal Shield</strong><small>Blocks one bird collision.</small></span></article>
             <article class="guide-card bird-guide" role="listitem"><span class="guide-symbol" aria-hidden="true">🕊</span><span><strong>Birds</strong><small>Avoid them unless you are protected.</small></span></article>
