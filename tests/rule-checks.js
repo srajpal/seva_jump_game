@@ -206,8 +206,9 @@ assert.equal(rules.backdropZone(-5), 0, 'A negative height score stays in the fi
 assert.equal(rules.backdropZone(100000), config.backdropZones.length - 1, 'Extreme heights stay on the last backdrop.');
 assert(rules.boostVelocity('kara') < -config.baseJumpVelocity, 'Kara must provide a higher immediate jump.');
 assert(Math.abs(rules.boostVelocity('kara')) <= config.baseJumpVelocity * 1.5, 'Kara must remain below its one-jump safety cap.');
-assert(rules.boostVelocity('nishan') < rules.boostVelocity('kara'), 'Nishan should be stronger than Kara.');
-assert(Math.abs(rules.boostVelocity('nishan')) <= config.baseJumpVelocity * 1.75, 'Nishan must remain below its one-jump safety cap.');
+assert.equal(rules.boostVelocity('nishan'), -config.baseJumpVelocity, 'Nishan is a guided flight, so the bounce rule has no Nishan branch.');
+assert(rules.nishanFlightHeight() > rules.jumpApex(0, config.baseJumpVelocity * config.karaJumpMultiplier), 'Nishan\'s flight must climb higher than a Kara jump.');
+assert(config.nishanFlightSpeed <= config.baseJumpVelocity, 'The arc a Nishan flight ends in must be no taller than a normal jump so the next row can catch it.');
 assert.equal(rules.canUseFalconSave(1, false), true, 'An owned unused Falcon Save should activate.');
 assert.equal(rules.canUseFalconSave(0, false), false, 'Falcon Save should not activate when none are owned.');
 assert.equal(rules.canUseFalconSave(1, true), false, 'Only one Falcon Save can activate in a run.');

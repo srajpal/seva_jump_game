@@ -10,7 +10,12 @@ const SEVA_CONFIG = {
   // apex, so reachability checks use this worst case, not the analytic apex.
   maxFrameSeconds: .04,
   karaJumpMultiplier: 1.4,
-  nishanJumpMultiplier: 1.6,
+  // The Nishan boost is a short guided flight rather than a stronger bounce:
+  // a steady climb at this speed with gravity off, then a natural
+  // deceleration from it. The speed sits below a normal jump so the arc it
+  // leaves behind is one the generator's rows can always catch.
+  nishanFlightSeconds: 1.2,
+  nishanFlightSpeed: 520,
   // Responsive enough for a phone drag, while still leaving time to line up
   // on the narrower late-game platforms.
   maxHorizontalSpeed: 440,

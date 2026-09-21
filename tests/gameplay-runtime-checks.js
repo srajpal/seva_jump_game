@@ -462,6 +462,94 @@ runtime.hooks.update(0);
 assert.equal(state.player.vy, rules.boostVelocity('kara', runtime.hooks.profile.powerJump));
 assert.equal(runtime.hooks.profile.stats.powerups, 1);
 
+// Nishan is a guided flight: a steady climb at nishanFlightSpeed with gravity
+// off for nishanFlightSeconds, after which the climb speed decays normally.
+// Only active frames advance it, so a pause or a Nishan hit-stop freezes it.
+{
+  let seed = 0xe6;
+  const random = () => { seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0; return seed / 2 ** 32; };
+  const flightRuntime = makeRuntime({ value: JSON.stringify({ tutorialComplete: true, music: false, sound: false, reducedMotion: true }) }, { random });
+  const H = flightRuntime.elements.get('#game').height, frame = 1 / 60, frames = Math.round(config.nishanFlightSeconds * 60);
+  const feetOf = player => player.y + player.h / 2;
+  // A real course, with the pickup placed where the player already is.
+  const pickUpNishan = (mode, position = { x: 225, y: 650, vx: 0, vy: 0 }) => {
+    flightRuntime.hooks.reset(mode); const flying = flightRuntime.hooks.state;
+    Object.assign(flying.player, position);
+    flying.powerups = [{ x: flying.player.x, y: flying.player.y, type: 'nishan', taken: false }];
+    flightRuntime.hooks.update(0);
+    return flying;
+  };
+  const flying = pickUpNishan('endless');
+  assert.equal(flying.flight?.remaining, config.nishanFlightSeconds, 'the pickup starts a full-length flight');
+  assert.equal(flying.player.vy, -config.nishanFlightSpeed, 'the pickup frame already shows the climb');
+  assert.equal(flying.message, 'Nishan boost · guided flight + protection!');
+  let expectedRemaining = config.nishanFlightSeconds;
+  for (let n = 1; n <= frames; n++) {
+    assert.ok(flying.flight?.remaining > 0, `still flying before frame ${n}`);
+    flightRuntime.hooks.update(frame);
+    expectedRemaining -= frame;
+    assert.equal(flying.player.vy, -config.nishanFlightSpeed, `the climb speed is constant on frame ${n}`);
+    assert.equal(flying.invincibleSource, 'nishan', `protection holds on frame ${n}`);
+    if (expectedRemaining > 0) assert.equal(flying.flight.remaining, expectedRemaining, `frame ${n} counts down by its step`);
+    else assert.equal(flying.flight, null, `the flight ends on the frame remaining reaches 0 (frame ${n})`);
+  }
+  assert.equal(flying.flight, null, 'the flight is over after nishanFlightSeconds of active frames');
+  assert.ok(Math.abs((650 - flying.player.y) - rules.nishanFlightHeight()) <= config.nishanFlightSpeed * frame, `the climb covers ${rules.nishanFlightHeight()} px within a frame (got ${650 - flying.player.y})`);
+  assert.ok(flying.platforms.some(plat => !plat.broken && plat.y >= feetOf(flying.player) && plat.y <= feetOf(flying.player) + H), 'an intact platform lies below the feet within a screen at flight end');
+  flightRuntime.hooks.update(frame);
+  assert.equal(flying.player.vy, -config.nishanFlightSpeed + config.gravity * frame, 'gravity resumes the frame after the flight ends');
+  assert.equal(flying.invincibleSource, 'nishan', 'the 5 s protection outlasts the flight');
+
+  const paused = pickUpNishan('endless');
+  advanceUpdates(flightRuntime, .5, frame);
+  const midPause = { remaining: paused.flight.remaining, y: paused.player.y };
+  flightRuntime.hooks.pauseGame();
+  advanceUpdates(flightRuntime, 1, frame);
+  assert.deepEqual({ remaining: paused.flight.remaining, y: paused.player.y }, midPause, 'a pause freezes the flight and the player');
+  flightRuntime.hooks.resumeGame();
+  flightRuntime.hooks.update(frame);
+  assert.ok(paused.flight.remaining < midPause.remaining && paused.player.y < midPause.y, 'the flight continues after the pause');
+
+  const hit = pickUpNishan('endless');
+  advanceUpdates(flightRuntime, .5, frame);
+  const midHit = { remaining: hit.flight.remaining, y: hit.player.y };
+  flightRuntime.hooks.triggerBirdHit({ x: hit.player.x, y: hit.player.y, hit: false });
+  assert.equal(hit.hitStop?.type, 'nishan', 'a bird mid-flight is a protected hit');
+  advanceUpdates(flightRuntime, .5, frame);
+  assert.ok(hit.hitStop, 'the hit-stop is still running');
+  assert.deepEqual({ remaining: hit.flight.remaining, y: hit.player.y }, midHit, 'a Nishan hit-stop freezes the flight');
+  advanceUpdates(flightRuntime, .3, frame);
+  assert.equal(hit.hitStop, null);
+  assert.ok(hit.flight.remaining < midHit.remaining && hit.player.y < midHit.y, 'the flight resumes after the hit-stop');
+
+  // On real Arcade courses the flight must end above a climbable route: the
+  // player steers (keyboard) to the nearest intact row below, lands, and that
+  // row is either not stranded or E1's rescue answers within 3.5 s.
+  const keys = flightRuntime.hooks.keys;
+  const steerTowards = (player, x) => { keys.clear(); if (x > player.x + 4) keys.add('ArrowRight'); else if (x < player.x - 4) keys.add('ArrowLeft'); };
+  for (let course = 0; course < 12; course++) {
+    const run = pickUpNishan('arcade', { x: 225, y: 650, vx: 0, vy: -config.baseJumpVelocity });
+    const start = run.platforms[0];
+    while (run.flight) flightRuntime.hooks.update(frame);
+    const flightEndFeet = feetOf(run.player);
+    assert.ok(run.platforms.some(plat => !plat.broken && plat.y >= flightEndFeet && plat.y <= flightEndFeet + H), `course ${course}: a platform lies within a screen below the flight's end`);
+    let landed = null;
+    for (let t = 0; t < 5 && !landed && !run.ending; t += frame) {
+      const below = run.platforms.filter(plat => !plat.broken && plat.y >= feetOf(run.player)).sort((a, b) => a.y - b.y)[0];
+      if (below) steerTowards(run.player, below.x + below.w / 2);
+      flightRuntime.hooks.update(frame);
+      if (run.lastLanding !== start && !run.lastLanding.broken) landed = run.lastLanding;
+    }
+    keys.clear();
+    assert.ok(landed, `course ${course}: the player lands on an intact row after the flight`);
+    assert.ok(landed.y < start.y, `course ${course}: the landing row is above the start`);
+    if (rules.isStranded(run.platforms, landed, { powerJump: flightRuntime.hooks.profile.powerJump, halfWidth: run.player.w / 2 })) {
+      advanceUpdates(flightRuntime, 3.5, frame);
+      assert.ok(landed.type === 'spring' || run.platforms.some(plat => plat.helper), `course ${course}: a stranded landing row is rescued within 3.5 s`);
+    }
+  }
+}
+
 // A long pause must freeze a rescue in the middle of its carry, including the
 // flash; resume must not teleport the player or expire the effect.
 for (const reducedMotion of [false, true]) {

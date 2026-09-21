@@ -70,7 +70,7 @@ Challenge Mode warns once when an uncollected bowl scrolls out of reach and keep
 - **Parshad bowls** add to your score. In Challenge Mode, every bowl counts.
 - **Khanda tokens** are used for the upgrade shop.
 - **Kara boost** gives one higher jump.
-- **Nishan boost** gives one stronger jump and brief protection from birds.
+- **Nishan boost** launches a short guided flight: about 1.2 seconds of steady climbing that you steer as you go, plus brief protection from birds.
 - **Dhal Shield** blocks one bird hit when owned.
 - **Falcon Save** gives a second chance after falling.
 - **Grass, spring, moving, and wooden breakable platforms** each change how you plan your next jump.

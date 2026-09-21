@@ -168,9 +168,16 @@ const SEVA_RULES = {
     const level = Math.max(0, Math.min(5, Number(powerJump) || 0));
     return Math.sqrt(1 + level * RULE_CONFIG.powerJumpHeightBonusPerLevel);
   },
+  // Kara is the only boost that is still a single higher jump; Nishan starts
+  // a guided flight instead (see nishanFlightHeight), so any other type is an
+  // ordinary jump here.
   boostVelocity(type, powerJump = 0) {
-    const multiplier = type === 'kara' ? RULE_CONFIG.karaJumpMultiplier : RULE_CONFIG.nishanJumpMultiplier;
+    const multiplier = type === 'kara' ? RULE_CONFIG.karaJumpMultiplier : 1;
     return -RULE_CONFIG.baseJumpVelocity * multiplier * this.powerJumpMultiplier(powerJump);
+  },
+  // The steady climb of a Nishan flight, before the coasting arc it ends in.
+  nishanFlightHeight() {
+    return RULE_CONFIG.nishanFlightSpeed * RULE_CONFIG.nishanFlightSeconds;
   },
   canUseFalconSave(owned, alreadyUsed) {
     return owned > 0 && !alreadyUsed;

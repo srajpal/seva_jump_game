@@ -330,7 +330,7 @@
     const startPlatform = { x: W / 2 - 57.5, y: 700, w: 115, type: 'normal', speed: 0, dir: 1, broken: false };
     state = {
       running: true, paused: false, mode, score: 0, heightScore: 0, parshad: 0, tokens: 0, cameraY: 0,
-      background: Math.floor(Math.random() * backgroundImages.length), backdropZone: 0, backdropFade: null, nextY: 610, ending: false, falconUsed: false, invincibleTimer: 0, invincibleSource: null, shieldVisualTimer: 0, resultTimer: null, finishGate: null, fireworkSoundTimers: [], challengePlaced: 0, challengePlatformCount: 0, upgradeEffect: null, hitStop: null, falconRescue: null,
+      background: Math.floor(Math.random() * backgroundImages.length), backdropZone: 0, backdropFade: null, nextY: 610, ending: false, falconUsed: false, invincibleTimer: 0, invincibleSource: null, shieldVisualTimer: 0, resultTimer: null, finishGate: null, fireworkSoundTimers: [], challengePlaced: 0, challengePlatformCount: 0, upgradeEffect: null, hitStop: null, falconRescue: null, flight: null,
       player: { x: W / 2, y: 650, vx: 0, vy: -config.baseJumpVelocity * rules.powerJumpMultiplier(profile.powerJump), w: 31, h: 48, character: selectedCharacter, facing: 1 },
       // The opening launch has no landing event, so the start platform counts
       // as the first landing for the stall rescue.
@@ -620,7 +620,13 @@
     if (Math.abs(p.vx) > 22) p.facing = Math.sign(p.vx);
     p.x += p.vx * dt;
     const previousBottom = p.y + p.h / 2;
-    p.x = Math.max(p.w / 2, Math.min(W - p.w / 2, p.x)); p.vy += config.gravity * dt; p.y += p.vy * dt;
+    p.x = Math.max(p.w / 2, Math.min(W - p.w / 2, p.x));
+    // A Nishan flight holds a steady climb with gravity off; it only advances
+    // here, so a pause or a bird hit-stop freezes it and it resumes after.
+    // Once it ends the climb speed simply decays under normal gravity.
+    if (state.flight) { p.vy = -config.nishanFlightSpeed; state.flight.remaining -= dt; if (state.flight.remaining <= 0) state.flight = null; }
+    else p.vy += config.gravity * dt;
+    p.y += p.vy * dt;
     for (const plat of state.platforms) {
       if (plat.broken) { plat.breakElapsed += dt; continue; }
       if (plat.type === 'moving') { plat.x += plat.dir * plat.speed * dt; if (plat.x < 6 || plat.x + plat.w > W - 6) plat.dir *= -1; }
@@ -680,7 +686,7 @@
       }
     }
     state.collectibles = state.collectibles.filter(c => !c.taken && c.y < state.cameraY + H + 100);
-    for (const power of state.powerups) if (!power.taken && collide(p, power, 30)) { power.taken = true; profile.stats.powerups++; burst(power.x, power.y, power.type === 'kara' ? '#f5cb58' : '#f1815a', 14); if (profile.stats.powerups >= 5) awardBadge('power-seeker'); sound('boost'); if (power.type === 'nishan') { state.invincibleTimer = 5; state.invincibleSource = 'nishan'; } p.vy = rules.boostVelocity(power.type, profile.powerJump); state.message = power.type === 'kara' ? 'Kara boost · one higher jump!' : 'Nishan boost · one jump + protection!'; state.messageTimer = 2; }
+    for (const power of state.powerups) if (!power.taken && collide(p, power, 30)) { power.taken = true; profile.stats.powerups++; burst(power.x, power.y, power.type === 'kara' ? '#f5cb58' : '#f1815a', 14); if (profile.stats.powerups >= 5) awardBadge('power-seeker'); sound('boost'); if (power.type === 'nishan') { state.invincibleTimer = 5; state.invincibleSource = 'nishan'; state.flight = { remaining: config.nishanFlightSeconds }; p.vy = -config.nishanFlightSpeed; } else p.vy = rules.boostVelocity(power.type, profile.powerJump); state.message = power.type === 'kara' ? 'Kara boost · one higher jump!' : 'Nishan boost · guided flight + protection!'; state.messageTimer = 2; }
     state.powerups = state.powerups.filter(o => !o.taken && o.y < state.cameraY + H + 100);
     for (const bird of state.enemies) { if (bird.hit) continue; bird.x += bird.vx * dt; if (bird.x < 20 || bird.x > W - 20) bird.vx *= -1; if (collide(p, bird, 28)) triggerBirdHit(bird); }
     state.enemies = state.enemies.filter(o => o.y < state.cameraY + H + 100 && !o.hit);
