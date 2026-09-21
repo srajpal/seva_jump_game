@@ -177,6 +177,57 @@ async function run() {
   rendering.hooks.triggerFalconSave(); rendering.hooks.pauseGame(); rendering.hooks.showHome(); frame(); idle();
   assert.equal(rendering.hooks.state.falconRescue.elapsed, 0, 'an abandoned rescue must not animate behind Home');
 
+  // Backdrop progression: one backdrop draw per frame, two only mid-fade, zones
+  // at the height thresholds, frozen fades under pause, and Reduced Motion
+  // switching instantly with pinned clouds. The fallback still paints a sky.
+  const calls = { images: [], ellipses: [], fills: [] }, alphaStack = [];
+  const backdrop = makeRuntime({ value: JSON.stringify({ tutorialComplete: true, music: false, sound: false }) }, { drawingContext: {
+    globalAlpha: 1, save() { alphaStack.push(this.globalAlpha); }, restore() { this.globalAlpha = alphaStack.pop() ?? 1; },
+    drawImage(sprite) { calls.images.push([sprite, this.globalAlpha]); }, ellipse(x, y) { calls.ellipses.push([this.fillStyle, x, y]); }, fillRect(x, y, w, h) { calls.fills.push([this.fillStyle, x, y, w, h]); },
+  } });
+  backdrop.hooks.start('endless');
+  const backdropFrame = () => { calls.images.length = 0; calls.ellipses.length = 0; calls.fills.length = 0; backdrop.hooks.draw(); return calls.images.filter(([sprite]) => /gurdwara/.test(sprite._src)); };
+  const clouds = () => calls.ellipses.filter(([style]) => style === '#ffffffbb');
+  const backdropSprites = ['courtyard', 'sunset', 'dawn'].map(name => backdrop.images.find(sprite => sprite._src.includes(name)));
+  const expectedSprite = zone => backdropSprites[(backdrop.hooks.state.background + zone) % 3];
+  // A resting player keeps the scene stable while active time advances.
+  const climb = (height, dt = .1) => { const current = backdrop.hooks.state; current.heightScore = Math.max(current.heightScore, height); current.player.y = 650; current.player.vy = 0; backdrop.hooks.update(dt); };
+  assert.deepEqual([backdrop.hooks.state.backdropZone, backdrop.hooks.state.backdropFade], [0, null], 'reset initialises the backdrop zone without a fade');
+  assert.equal(backdropFrame().length, 0, 'unloaded images draw nothing');
+  assert.ok(calls.fills.some(([style, x, y, w, h]) => ['#bce7ef', '#f8d9a7', '#c9e5c0'].includes(style) && x === 0 && y === 0 && w === 450 && h === 800), 'the fallback fills the whole background with a sky colour');
+  assert.equal(clouds().length, 4, 'the fallback keeps its cloud layer');
+  backdrop.images.forEach(sprite => sprite.load());
+  const steady = backdropFrame(), steadyTotal = calls.images.length;
+  assert.deepEqual(steady, [[expectedSprite(0), 1]], 'exactly one backdrop image outside a fade');
+  assert.equal(clouds().length, 4, 'clouds are layered over the image backdrop');
+  climb(config.backdropZones[1] - 1); assert.equal(backdrop.hooks.state.backdropZone, 0, 'the zone holds below its threshold');
+  climb(config.backdropZones[1]); assert.equal(backdrop.hooks.state.backdropZone, 1, 'the zone changes at its threshold');
+  const fading = backdropFrame();
+  assert.equal(calls.images.length, steadyTotal + 1, 'a fade frame costs exactly one extra drawImage');
+  assert.deepEqual(fading.map(([sprite]) => sprite), [expectedSprite(0), expectedSprite(1)], 'the fade layers the next image over the previous one');
+  assert.ok(fading[0][1] === 1 && fading[1][1] > 0 && fading[1][1] < 1, 'only the incoming image is blended mid-fade');
+  backdrop.hooks.pauseGame(); const frozen = backdrop.hooks.state.backdropFade.elapsed;
+  for (let i = 0; i < 5; i++) backdrop.hooks.update(.1);
+  assert.equal(backdrop.hooks.state.backdropFade.elapsed, frozen, 'a paused game freezes the fade');
+  assert.equal(backdropFrame().length, 2, 'the paused frame keeps its half-faded sky');
+  backdrop.hooks.resumeGame();
+  for (let elapsed = 0; elapsed < config.backdropFadeMs; elapsed += 100) climb(0);
+  assert.equal(backdrop.hooks.state.backdropFade, null, 'the fade ends after backdropFadeMs of active time');
+  assert.deepEqual(backdropFrame(), [[expectedSprite(1), 1]], 'the new zone draws alone once faded in');
+  assert.equal(calls.images.length, steadyTotal, 'drawImage count returns to the steady figure');
+  backdropFrame(); const drifting = clouds();
+  backdrop.hooks.state.cameraY -= 500; backdropFrame();
+  assert.ok(Math.abs(clouds()[0][1] - drifting[0][1] - 500 * config.backdropCloudParallax) < 1e-9, 'clouds scroll at the parallax fraction of camera travel');
+  backdrop.hooks.profile.reducedMotion = true;
+  backdropFrame(); const pinned = clouds();
+  backdrop.hooks.state.cameraY -= 500; backdropFrame();
+  assert.deepEqual(clouds(), pinned, 'Reduced Motion pins the clouds while the camera moves');
+  climb(config.backdropZones[2]); assert.equal(backdrop.hooks.state.backdropZone, 2);
+  assert.equal(backdrop.hooks.state.backdropFade, null, 'Reduced Motion switches zones without a fade');
+  assert.deepEqual(backdropFrame(), [[expectedSprite(2), 1]], 'Reduced Motion draws the new zone immediately');
+  climb(0); assert.deepEqual(backdropFrame(), [[expectedSprite(2), 1]], 'no fade frames follow a Reduced Motion switch');
+  console.log('Backdrop checks passed: zone thresholds, single-draw steady frames, one extra draw mid-fade, paused fades, Reduced Motion switch and pinned clouds, fallback sky.');
+
   let buffersCreated = 0;
   const sources = [];
   class AudioContext {

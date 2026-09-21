@@ -196,6 +196,14 @@ assert(rules.arcadeBreakChance(config.arcadeTargetScore) <= .3, 'Final Arcade br
 assert(rules.challengeBreakChance(config.arcadeTargetScore) > rules.arcadeBreakChance(config.arcadeTargetScore), 'Late Challenge should use modestly more breakables than Arcade.');
 assert(rules.challengeBreakChance(config.arcadeTargetScore) <= .4, 'Late Challenge breakables must remain below the fairness cap.');
 assert(config.victorySceneDurationMs >= 5000, 'The completed run should remain visible for at least five seconds.');
+// The backdrop steps through its three images at the height thresholds and never before.
+assert.deepEqual(config.backdropZones, [0, 500, 1100], 'Backdrop zones must start at ground level and climb in order.');
+for (const [zone, threshold] of config.backdropZones.entries()) {
+  assert.equal(rules.backdropZone(threshold), zone, 'A height score at a threshold enters that zone.');
+  if (zone) assert.equal(rules.backdropZone(threshold - 1), zone - 1, 'One point below a threshold stays in the previous zone.');
+}
+assert.equal(rules.backdropZone(-5), 0, 'A negative height score stays in the first zone.');
+assert.equal(rules.backdropZone(100000), config.backdropZones.length - 1, 'Extreme heights stay on the last backdrop.');
 assert(rules.boostVelocity('kara') < -config.baseJumpVelocity, 'Kara must provide a higher immediate jump.');
 assert(Math.abs(rules.boostVelocity('kara')) <= config.baseJumpVelocity * 1.5, 'Kara must remain below its one-jump safety cap.');
 assert(rules.boostVelocity('nishan') < rules.boostVelocity('kara'), 'Nishan should be stronger than Kara.');

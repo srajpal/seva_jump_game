@@ -100,6 +100,12 @@ const SEVA_CONFIG = {
   finishRunwayGap: 96,
   finishRunwaySteps: 4,
   finishBannerGap: 84,
+  // The backdrop walks courtyard -> sunset -> dawn as the height score passes
+  // each zone, so a long climb reads as time passing. The fade runs on active
+  // time; the cloud layer drifts against the camera to give the climb depth.
+  backdropZones: [0, 500, 1100],
+  backdropFadeMs: 1200,
+  backdropCloudParallax: .04,
   victorySceneDurationMs: 5000,
   victoryFadeDurationMs: 700,
   birdHitDurationMs: 1000,

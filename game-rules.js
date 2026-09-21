@@ -105,6 +105,10 @@ const SEVA_RULES = {
     const normalApex = RULE_CONFIG.baseJumpVelocity ** 2 / (2 * RULE_CONFIG.gravity);
     return Math.min(RULE_CONFIG.safeDefaultPlatformGap, normalApex * .8);
   },
+  // The backdrop zone a height score has climbed into: the last threshold passed.
+  backdropZone(heightScore) {
+    return Math.max(0, RULE_CONFIG.backdropZones.filter(threshold => heightScore >= threshold).length - 1);
+  },
   canHaveDoublePlatform(type) {
     return type !== 'moving';
   },

@@ -320,7 +320,7 @@
     const startPlatform = { x: W / 2 - 57.5, y: 700, w: 115, type: 'normal', speed: 0, dir: 1, broken: false };
     state = {
       running: true, paused: false, mode, score: 0, heightScore: 0, parshad: 0, tokens: 0, cameraY: 0,
-      background: Math.floor(Math.random() * backgroundImages.length), nextY: 610, ending: false, falconUsed: false, invincibleTimer: 0, invincibleSource: null, shieldVisualTimer: 0, resultTimer: null, finishGate: null, fireworkSoundTimers: [], challengePlaced: 0, challengePlatformCount: 0, upgradeEffect: null, hitStop: null, falconRescue: null,
+      background: Math.floor(Math.random() * backgroundImages.length), backdropZone: 0, backdropFade: null, nextY: 610, ending: false, falconUsed: false, invincibleTimer: 0, invincibleSource: null, shieldVisualTimer: 0, resultTimer: null, finishGate: null, fireworkSoundTimers: [], challengePlaced: 0, challengePlatformCount: 0, upgradeEffect: null, hitStop: null, falconRescue: null,
       player: { x: W / 2, y: 650, vx: 0, vy: -config.baseJumpVelocity * rules.powerJumpMultiplier(profile.powerJump), w: 31, h: 48, character: selectedCharacter, facing: 1 },
       // The opening launch has no landing event, so the start platform counts
       // as the first landing for the stall rescue.
@@ -576,8 +576,17 @@
     }
     state.stallTimer = 0; state.messageTimer = 1.5;
   }
+  function updateBackdrop(dt) {
+    // Passing a zone threshold starts a cross-fade from the previous image.
+    // Reduced Motion switches instantly; the fade only advances on active
+    // time so a paused game keeps its half-faded sky.
+    const zone = rules.backdropZone(state.heightScore);
+    if (zone !== state.backdropZone) { state.backdropFade = profile.reducedMotion ? null : { from: state.backdropZone, elapsed: 0 }; state.backdropZone = zone; }
+    if (state.backdropFade && (state.backdropFade.elapsed += dt * 1000) >= config.backdropFadeMs) state.backdropFade = null;
+  }
   function update(dt) {
     if (state.paused || (!state.running && !state.ending)) return;
+    updateBackdrop(dt);
     if (state.upgradeEffect) {
       state.upgradeEffect.elapsed += dt * 1000;
       if (state.upgradeEffect.elapsed >= state.upgradeEffect.duration) state.upgradeEffect = null;
@@ -675,29 +684,38 @@
     }
     state.messageTimer -= dt;
   }
-  function drawBackdrop() {
-    const backgroundImage = backgroundImages[state.background];
-    if (backgroundImage.complete && backgroundImage.naturalWidth) {
-      const sourceRatio = backgroundImage.naturalWidth / backgroundImage.naturalHeight;
-      const targetRatio = W / H;
-      if (targetRatio > sourceRatio) {
-        const sourceHeight = backgroundImage.naturalWidth / targetRatio;
-        const sourceY = (backgroundImage.naturalHeight - sourceHeight) / 2;
-        ctx.drawImage(backgroundImage, 0, sourceY, backgroundImage.naturalWidth, sourceHeight, 0, 0, W, H);
-      } else {
-        const sourceWidth = backgroundImage.naturalHeight * targetRatio;
-        const sourceX = (backgroundImage.naturalWidth - sourceWidth) / 2;
-        ctx.drawImage(backgroundImage, sourceX, 0, sourceWidth, backgroundImage.naturalHeight, 0, 0, W, H);
-      }
-      return;
+  // The starting zone still varies per run; each later zone steps one image on.
+  function backdropIndex(zone) { return (state.background + zone) % backgroundImages.length; }
+  function drawBackdropImage(backgroundImage) {
+    if (!backgroundImage.complete || !backgroundImage.naturalWidth) return false;
+    const sourceRatio = backgroundImage.naturalWidth / backgroundImage.naturalHeight;
+    const targetRatio = W / H;
+    if (targetRatio > sourceRatio) {
+      const sourceHeight = backgroundImage.naturalWidth / targetRatio;
+      const sourceY = (backgroundImage.naturalHeight - sourceHeight) / 2;
+      ctx.drawImage(backgroundImage, 0, sourceY, backgroundImage.naturalWidth, sourceHeight, 0, 0, W, H);
+    } else {
+      const sourceWidth = backgroundImage.naturalHeight * targetRatio;
+      const sourceX = (backgroundImage.naturalWidth - sourceWidth) / 2;
+      ctx.drawImage(backgroundImage, sourceX, 0, sourceWidth, backgroundImage.naturalHeight, 0, 0, W, H);
     }
-    ctx.fillStyle = palette[state.background]; ctx.fillRect(0, 0, W, H);
-    ctx.fillStyle = '#fff7df'; ctx.beginPath(); ctx.arc(365, 92, 42, 0, Math.PI * 2); ctx.fill();
-    ctx.fillStyle = '#7cb296'; ctx.fillRect(0, H - 100, W, 100);
-    // A distant gurdwara-inspired silhouette belongs only to the background.
-    ctx.fillStyle = '#f6e3bb'; ctx.fillRect(50, H - 185, 92, 88); ctx.fillRect(310, H - 166, 92, 69);
-    ctx.fillStyle = '#e2aa65'; [96, 356].forEach(x => { ctx.beginPath(); ctx.arc(x, H - 186, 30, Math.PI, 0); ctx.fill(); });
-    ctx.fillStyle = '#ffffffbb'; for (let i = 0; i < 4; i++) { const x = (i * 130 + 25 - state.cameraY * .04) % 520 - 50; ctx.beginPath(); ctx.ellipse(x, 130 + i * 70, 50, 15, 0, 0, Math.PI * 2); ctx.fill(); }
+    return true;
+  }
+  function drawBackdrop() {
+    const fade = state.backdropFade, index = backdropIndex(fade ? fade.from : state.backdropZone);
+    if (!drawBackdropImage(backgroundImages[index])) {
+      ctx.fillStyle = palette[index]; ctx.fillRect(0, 0, W, H);
+      ctx.fillStyle = '#fff7df'; ctx.beginPath(); ctx.arc(365, 92, 42, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#7cb296'; ctx.fillRect(0, H - 100, W, 100);
+      // A distant gurdwara-inspired silhouette belongs only to the background.
+      ctx.fillStyle = '#f6e3bb'; ctx.fillRect(50, H - 185, 92, 88); ctx.fillRect(310, H - 166, 92, 69);
+      ctx.fillStyle = '#e2aa65'; [96, 356].forEach(x => { ctx.beginPath(); ctx.arc(x, H - 186, 30, Math.PI, 0); ctx.fill(); });
+    }
+    // Mid-fade the next image is layered on top, so only fade frames cost a second draw.
+    if (fade) { ctx.save(); ctx.globalAlpha = Math.min(1, fade.elapsed / config.backdropFadeMs); drawBackdropImage(backgroundImages[backdropIndex(state.backdropZone)]); ctx.restore(); }
+    // Clouds drift against the camera so the climb has depth; Reduced Motion pins them.
+    const drift = profile.reducedMotion ? 0 : state.cameraY * config.backdropCloudParallax;
+    ctx.fillStyle = '#ffffffbb'; for (let i = 0; i < 4; i++) { const x = (i * 130 + 25 - drift) % 520 - 50; ctx.beginPath(); ctx.ellipse(x, 130 + i * 70, 50, 15, 0, 0, Math.PI * 2); ctx.fill(); }
   }
   function drawFireworks() {
     if (!state.completed) return;
