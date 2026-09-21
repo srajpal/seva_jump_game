@@ -55,7 +55,7 @@ Source: [review comment](https://github.com/srajpal/seva_jump_game/pull/11#issue
 Source: [review comment](https://github.com/srajpal/seva_jump_game/pull/12#issuecomment-5745862489).
 
 - [x] [Issue #13 experiment E2](https://github.com/srajpal/seva_jump_game/issues/13)
-  (branch `claude/exp-issue-13`, commit `E2: Endless boosts (#13)`) adds Endless
+  (branch `claude/exp-issue-13`, commit 2658f59 `E2: Endless boosts (#13)`) adds Endless
   boosts at the Arcade score bands; `tests/soak-test.js` now holds the Endless
   Kara/Nishan frequency contracts at those bands (and zero before them) in
   place of the zero-boost assertion.
@@ -73,12 +73,12 @@ Source: [review comment](https://github.com/srajpal/seva_jump_game/pull/14#issue
   bird deaths per generated bird rising 111% in Arcade and 59% in Challenge with
   mid-gap spawning; these are reviewer measurements, not independently reproduced
   playtest results.
-- [ ] Revisit next-platform lane clearance with
-  [issue #13 / E4](https://github.com/srajpal/seva_jump_game/issues/13). Consider
-  generating a bird once both adjacent rows are known. Compare the same seeded
-  autopilot before/after (60 runs per mode, 240 s cap), count generated birds
-  directly rather than using the first-visible `birdsSeen` stat, and enforce
-  E4's no-more-than-20% increase in deaths per bird plus its human playtest gate.
+- [ ] Next-platform lane clearance was implemented and measured as issue #13
+  E4b (commit 407afb0 on branch `exp/E4b`, not merged): birds placed one row
+  late so their lane clears both adjacent landing lanes. Over four seeds (60
+  runs per mode, birds counted by identity) deaths per 100 birds were flat
+  (about 7.0 both ways) with Arcade-with-motion at +21%, so it delivered no
+  fairness gain and stays out. Reopen only with a different placement idea.
 - [ ] Explain that controller A is an Endless shortcut and only standard-mapped
   pads are supported; controller menu navigation is not implemented.
 - [ ] Address controller-start audio activation: Chromium may leave audio
@@ -142,6 +142,7 @@ Source: adversarial review of commit e4b6860 on [issue #13](https://github.com/s
   flight, or by a midway helper step when even a spring cannot cross. Both
   seeds report 0 runs stalled >20 s in every mode.
 - [ ] The autopilot's soft-lock classifier grades the intact platform at the
-  player's height rather than `state.lastLanding`, which under-counts the
-  horizontal case above (3 stalls, 1 flagged). Change it only together with a
-  fresh baseline, since the E1 A/B compares against the current classifier.
+  player's height rather than `state.lastLanding`, so it under-counted the
+  sideways case before E1b (at the E1 base, seed 777 Challenge: 3 runs stalled
+  to the cap, only 1 flagged). Change it only together with a fresh baseline,
+  since the experiment A/Bs compare against the current classifier.

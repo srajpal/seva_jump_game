@@ -66,9 +66,10 @@ const SEVA_RULES = {
   horizontalReach(time) {
     return RULE_CONFIG.pointerMaxHorizontalSpeed * Math.max(0, time - 1 / RULE_CONFIG.pointerSteeringResponse);
   },
-  // Same reachability the generator promises for consecutive rows: the target
-  // is within the hop's height and its landing edge is within sideways reach
-  // during the flight, with a moving target assumed to drift away.
+  // The reachability the generator's gap and shift caps are tuned to keep,
+  // judged from the standing platform's centre: the target is within the
+  // hop's height and its landing edge is within sideways reach during the
+  // flight, with a moving target assumed to drift away.
   canHop(from, to, hop) {
     const gap = from.y - to.y;
     if (!(gap > 0 && gap <= this.hopReach(hop))) return false;

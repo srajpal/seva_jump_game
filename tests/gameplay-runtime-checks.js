@@ -389,6 +389,8 @@ for (const [level, gap] of [[1, 244], [0, 222], [5, 334]]) {
 // The next row can be within jumping height yet too far sideways for a touch
 // player at the pointer speed cap: the lone survivor of a row whose partner
 // broke, or a finish-runway step. The spring's longer flight covers it.
+// The harness letterboxes the 450 px canvas in a 768 px wide rect: scale 1.28,
+// 96 px of content offset (see getBoundingClientRect in runtime-browser-checks).
 const steer = x => rescueRuntime.elements.get('#game').listeners.pointerdown({ clientX: 96 + x * 1.28, pointerId: 1 });
 const releaseSteering = () => rescueRuntime.elements.get('#game').listeners.pointercancel();
 // A player steers for the far row from the moment they leave the platform;

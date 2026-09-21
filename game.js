@@ -578,8 +578,8 @@
       state.message = 'Spring assist!'; sound('spring'); burst(standing.x + standing.w / 2, standing.y, '#d5a5ff', 26);
     } else {
       const above = rules.nearestRowAbove(state.platforms, standing);
-      const rungs = above ? rules.rescueRungs(standing, above, hop, W) : [];
-      if (!rungs.length) return;
+      if (!above) return;
+      const rungs = rules.rescueRungs(standing, above, hop, W);
       state.platforms.push(...rungs);
       for (const rung of rungs) burst(rung.x + rung.w / 2, rung.y, '#f7efd7', 12);
       state.message = 'Helper platforms!'; sound('land');
