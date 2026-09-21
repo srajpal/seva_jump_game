@@ -34,7 +34,7 @@
     falconOwned: document.querySelector('#falcon-owned'), shieldOwned: document.querySelector('#shield-owned'), powerOwned: document.querySelector('#power-owned'),
     buyFalcon: document.querySelector('#buy-falcon'), buyShield: document.querySelector('#buy-shield'), buyPower: document.querySelector('#buy-power'),
     openAbout: document.querySelector('#open-about-button'), closeAbout: document.querySelector('#close-about-button'), openPrivacy: document.querySelector('#open-privacy-button'), closePrivacy: document.querySelector('#close-privacy-button'), privacy: document.querySelector('#privacy-screen'), exitConfirm: document.querySelector('#exit-confirm-screen'), confirmExit: document.querySelector('#confirm-exit-button'), cancelExit: document.querySelector('#cancel-exit-button'), openSettings: document.querySelector('#open-settings-button'), closeSettings: document.querySelector('#close-settings-button'), pauseSettings: document.querySelector('#pause-settings-button'), resetProgress: document.querySelector('#reset-progress-button'), resetConfirm: document.querySelector('#reset-confirm-screen'), confirmReset: document.querySelector('#confirm-reset-button'), cancelReset: document.querySelector('#cancel-reset-button'), settings: document.querySelector('#settings-screen'), openBadges: document.querySelector('#open-badges-button'), closeBadges: document.querySelector('#close-badges-button'), badges: document.querySelector('#badges-screen'), badgeCount: document.querySelector('#badge-count'), badgeGrid: document.querySelector('#badge-grid'), badgeToast: document.querySelector('#badge-toast'), badgeToastIcon: document.querySelector('#badge-toast-icon'), badgeToastName: document.querySelector('#badge-toast-name'), openStats: document.querySelector('#open-stats-button'), closeStats: document.querySelector('#close-stats-button'), stats: document.querySelector('#stats-screen'), statsSummary: document.querySelector('#stats-summary'), deathBreakdown: document.querySelector('#death-breakdown'),
-    musicToggle: document.querySelector('#music-toggle'), soundToggle: document.querySelector('#sound-toggle'), reducedMotionToggle: document.querySelector('#reduced-motion-toggle'), helpingHandToggle: document.querySelector('#helping-hand-toggle'), musicStyleSelect: document.querySelector('#music-style-select'), helpingHandInfo: document.querySelector('#helping-hand-info'), reducedMotionInfo: document.querySelector('#reduced-motion-info'), helpingHandNote: document.querySelector('#helping-hand-note'), reducedMotionNote: document.querySelector('#reduced-motion-note'), replayTutorial: document.querySelector('#replay-tutorial-button'),
+    musicToggle: document.querySelector('#music-toggle'), soundToggle: document.querySelector('#sound-toggle'), reducedMotionToggle: document.querySelector('#reduced-motion-toggle'), helpingHandToggle: document.querySelector('#helping-hand-toggle'), musicStyleSelect: document.querySelector('#music-style-select'), helpingHandInfo: document.querySelector('#helping-hand-info'), reducedMotionInfo: document.querySelector('#reduced-motion-info'), helpingHandNote: document.querySelector('#helping-hand-note'), reducedMotionNote: document.querySelector('#reduced-motion-note'), infoScreen: document.querySelector('#info-screen'), infoHeading: document.querySelector('#info-heading'), infoBody: document.querySelector('#info-body'), closeInfo: document.querySelector('#close-info-button'), musicPreview: document.querySelector('#music-preview-button'), replayTutorial: document.querySelector('#replay-tutorial-button'),
     pauseButton: document.querySelector('#pause-button'), resume: document.querySelector('#resume-button'), pauseRestart: document.querySelector('#pause-restart-button'), pauseHome: document.querySelector('#pause-home-button'),
   };
   const palette = ['#bce7ef', '#f8d9a7', '#c9e5c0', '#e5c4d6'];
@@ -159,6 +159,10 @@
     document.documentElement.classList.toggle('reduced-motion', profile.reducedMotion);
   }
   function requestResetProgress() { ui.settings.classList.add('hidden'); ui.resetConfirm.classList.remove('hidden'); syncModalAccessibility(); }
+  // Setting explanations open as a dialog over Settings, the same way the
+  // reset confirmation does, so they read well inside the native wrappers.
+  function openInfo(title, note) { menuDirty = true; ui.infoHeading.textContent = title; ui.infoBody.textContent = note.textContent; ui.settings.classList.add('hidden'); ui.infoScreen.classList.remove('hidden'); syncModalAccessibility(); }
+  function closeInfo() { menuDirty = true; ui.infoScreen.classList.add('hidden'); ui.settings.classList.remove('hidden'); syncModalAccessibility(); }
   function cancelResetProgress() { ui.resetConfirm.classList.add('hidden'); ui.settings.classList.remove('hidden'); syncModalAccessibility(); }
   function resetAllProgress() {
     ui.resetConfirm.classList.add('hidden');
@@ -238,10 +242,10 @@
     if (index === 3) return { melody: melody.map((note, i) => i % 2 ? note * 2 : note), bass, beats: config.musicBounceBeats };
     return { melody, bass, beats: straight };
   }
-  function playMusicPhrase(startTime) {
-    if (!audioContext || !ui.musicToggle.checked) return;
+  function playMusicPhrase(startTime, variant = null) {
+    if (!audioContext || (variant === null && !ui.musicToggle.checked)) return;
     const audio = audioContext, now = startTime, beat = config.musicBeatSeconds;
-    const { melody, bass, beats } = musicVariant(config.musicPhrases[state?.mode] || config.musicPhrases.endless, profile.musicStyle === 'classic' ? 0 : musicPhraseIndex++ % 4);
+    const { melody, bass, beats } = musicVariant(config.musicPhrases[state?.mode] || config.musicPhrases.endless, variant ?? (profile.musicStyle === 'classic' ? 0 : musicPhraseIndex++ % 4));
     melody.forEach((note, i) => {
       const oscillator = audio.createOscillator(), gain = audio.createGain(), start = now + beats[i][0] * beat, length = beats[i][1] * beat;
       oscillator.type = 'sine'; oscillator.frequency.value = note; gain.gain.setValueAtTime(.028, start); gain.gain.exponentialRampToValueAtTime(.001, start + length * .84);
@@ -270,6 +274,10 @@
     }
     musicTimer = setTimeout(scheduleMusic, config.musicSchedulerIntervalMs);
   }
+  // One phrase of the chosen style from Settings, even with music switched off;
+  // Varied previews rotate through the variants that differ from Classic.
+  let previewIndex = 0;
+  function previewMusic() { const audio = getAudio(); if (!audio) return; stopMusic(); playMusicPhrase(audio.currentTime + config.musicStartDelaySeconds, profile.musicStyle === 'classic' ? 0 : 1 + previewIndex++ % 3); }
   function stopMusic() { clearTimeout(musicTimer); musicTimer = null; musicVoices.forEach(voice => { try { voice.stop(); } catch {} }); musicVoices = []; }
   function startAudio() { getAudio(); setMusic(); }
 
@@ -938,7 +946,7 @@
     ui.tutorialNext.textContent = tutorialIndex === TUTORIAL_STEPS.length - 1 ? 'Let’s jump!' : 'Next';
   }
   // Same order as the overlays in index.html: the later visible dialog is on top.
-  const modalScreens = [ui.end, ui.tutorial, ui.pause, ui.settings, ui.resetConfirm, ui.badges, ui.stats, ui.upgrades, ui.about, ui.privacy, ui.exitConfirm];
+  const modalScreens = [ui.end, ui.tutorial, ui.pause, ui.settings, ui.infoScreen, ui.resetConfirm, ui.badges, ui.stats, ui.upgrades, ui.about, ui.privacy, ui.exitConfirm];
   const gameFrame = document.querySelector('.game-frame');
   const fullscreenButton = document.querySelector('#fullscreen-button');
   if (!nativePlatform && gameFrame.requestFullscreen && document.fullscreenEnabled) fullscreenButton.classList.remove('hidden');
@@ -1004,8 +1012,8 @@
   function closeSettings() { menuDirty = true; ui.settings.classList.add('hidden'); if (settingsReturn === 'pause' && state?.paused) ui.pause.classList.remove('hidden'); else ui.home.classList.remove('hidden'); syncModalAccessibility(); }
   function leaveRunEarly() { if (state?.running && state.paused && !state.ending) { profile.stats.leftEarly++; saveProfile(); } showHome(); }
   function restartPausedRun() { const mode = state?.mode || 'endless'; leaveRunEarly(); start(mode); }
-  function start(mode) { menuVisible = false; menuDirty = true; getAudio(); reset(mode); ui.home.classList.add('hidden'); ui.end.classList.add('hidden'); ui.end.classList.remove('visible'); ui.upgrades.classList.add('hidden'); ui.about.classList.add('hidden'); ui.privacy.classList.add('hidden'); ui.badges.classList.add('hidden'); ui.stats.classList.add('hidden'); ui.settings.classList.add('hidden'); ui.resetConfirm.classList.add('hidden'); ui.exitConfirm.classList.add('hidden'); ui.pause.classList.add('hidden'); if (!profile.tutorialComplete) return showTutorial(); setNativeGameplayActive(true); startAudio(); ui.tutorial.classList.add('hidden'); ui.gameTools.classList.remove('hidden'); syncModalAccessibility(); }
-  function showHome() { menuVisible = true; menuDirty = true; setNativeGameplayActive(false); clearInput(); if (state) state.running = false; stopMusic(); ui.mobileHud.classList.add('hidden'); updateRecordsUI(); ui.home.classList.remove('hidden'); ui.end.classList.add('hidden'); ui.end.classList.remove('visible'); ui.upgrades.classList.add('hidden'); ui.about.classList.add('hidden'); ui.privacy.classList.add('hidden'); ui.badges.classList.add('hidden'); ui.stats.classList.add('hidden'); ui.tutorial.classList.add('hidden'); ui.settings.classList.add('hidden'); ui.resetConfirm.classList.add('hidden'); ui.exitConfirm.classList.add('hidden'); ui.pause.classList.add('hidden'); ui.gameTools.classList.add('hidden'); syncModalAccessibility(); }
+  function start(mode) { menuVisible = false; menuDirty = true; getAudio(); reset(mode); ui.home.classList.add('hidden'); ui.end.classList.add('hidden'); ui.end.classList.remove('visible'); ui.upgrades.classList.add('hidden'); ui.about.classList.add('hidden'); ui.privacy.classList.add('hidden'); ui.badges.classList.add('hidden'); ui.stats.classList.add('hidden'); ui.settings.classList.add('hidden'); ui.resetConfirm.classList.add('hidden'); ui.infoScreen.classList.add('hidden'); ui.exitConfirm.classList.add('hidden'); ui.pause.classList.add('hidden'); if (!profile.tutorialComplete) return showTutorial(); setNativeGameplayActive(true); startAudio(); ui.tutorial.classList.add('hidden'); ui.gameTools.classList.remove('hidden'); syncModalAccessibility(); }
+  function showHome() { menuVisible = true; menuDirty = true; setNativeGameplayActive(false); clearInput(); if (state) state.running = false; stopMusic(); ui.mobileHud.classList.add('hidden'); updateRecordsUI(); ui.home.classList.remove('hidden'); ui.end.classList.add('hidden'); ui.end.classList.remove('visible'); ui.upgrades.classList.add('hidden'); ui.about.classList.add('hidden'); ui.privacy.classList.add('hidden'); ui.badges.classList.add('hidden'); ui.stats.classList.add('hidden'); ui.tutorial.classList.add('hidden'); ui.settings.classList.add('hidden'); ui.resetConfirm.classList.add('hidden'); ui.infoScreen.classList.add('hidden'); ui.exitConfirm.classList.add('hidden'); ui.pause.classList.add('hidden'); ui.gameTools.classList.add('hidden'); syncModalAccessibility(); }
   function showUpgrades() { menuVisible = true; menuDirty = true; setNativeGameplayActive(false); clearInput(); if (state) state.running = false; stopMusic(); updateUpgradeUI(); ui.home.classList.add('hidden'); ui.end.classList.add('hidden'); ui.upgrades.classList.remove('hidden'); ui.about.classList.add('hidden'); ui.badges.classList.add('hidden'); ui.stats.classList.add('hidden'); ui.settings.classList.add('hidden'); ui.pause.classList.add('hidden'); ui.gameTools.classList.add('hidden'); syncModalAccessibility(); }
   function showAbout() { menuVisible = true; menuDirty = true; setNativeGameplayActive(false); clearInput(); if (state) state.running = false; stopMusic(); ui.home.classList.add('hidden'); ui.end.classList.add('hidden'); ui.upgrades.classList.add('hidden'); ui.about.classList.remove('hidden'); ui.privacy.classList.add('hidden'); ui.badges.classList.add('hidden'); ui.stats.classList.add('hidden'); ui.settings.classList.add('hidden'); ui.pause.classList.add('hidden'); ui.gameTools.classList.add('hidden'); syncModalAccessibility(); }
   function showPrivacy() { menuVisible = true; menuDirty = true; setNativeGameplayActive(false); ui.about.classList.add('hidden'); ui.privacy.classList.remove('hidden'); syncModalAccessibility(); }
@@ -1032,9 +1040,11 @@
   ui.musicToggle.addEventListener('change', () => { profile.music = ui.musicToggle.checked; saveProfile(); if (profile.music && !state?.paused) startAudio(); else setMusic(); });
   ui.soundToggle.addEventListener('change', () => { profile.sound = ui.soundToggle.checked; saveProfile(); });
   ui.musicStyleSelect.addEventListener('change', () => { profile.musicStyle = ui.musicStyleSelect.value === 'classic' ? 'classic' : 'varied'; saveProfile(); });
-  // The info buttons sit inside their setting's label; stop the click from
-  // flipping the checkbox and reveal the note instead.
-  for (const [button, note] of [[ui.helpingHandInfo, ui.helpingHandNote], [ui.reducedMotionInfo, ui.reducedMotionNote]]) button.addEventListener('click', event => { event.preventDefault(); event.stopPropagation(); menuDirty = true; note.classList.toggle('hidden'); button.setAttribute('aria-expanded', String(!note.classList.contains('hidden'))); });
+  // The info and play buttons sit inside their setting's label; stop the
+  // click from reaching the control and open the dialog or sample instead.
+  for (const [button, title, note] of [[ui.helpingHandInfo, 'Helping Hand', ui.helpingHandNote], [ui.reducedMotionInfo, 'Reduced motion', ui.reducedMotionNote]]) button.addEventListener('click', event => { event.preventDefault(); event.stopPropagation(); openInfo(title, note); });
+  ui.musicPreview.addEventListener('click', event => { event.preventDefault(); event.stopPropagation(); previewMusic(); });
+  ui.closeInfo.addEventListener('click', closeInfo);
   ui.helpingHandToggle.addEventListener('change', () => { menuDirty = true; profile.helpingHand = ui.helpingHandToggle.checked; saveProfile(); });
   ui.reducedMotionToggle.addEventListener('change', () => { menuDirty = true; profile.reducedMotion = ui.reducedMotionToggle.checked; document.documentElement.classList.toggle('reduced-motion', profile.reducedMotion); saveProfile(); });
   ui.tutorialNext.addEventListener('click', () => { if (tutorialIndex < TUTORIAL_STEPS.length - 1) { tutorialIndex++; renderTutorial(); sound('ui'); } else finishTutorial(); });

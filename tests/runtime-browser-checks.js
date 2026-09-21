@@ -306,15 +306,35 @@ async function run() {
   assert.equal(music.hooks.normalizeProfile({ musicStyle: 'jazz' }).musicStyle, 'varied', 'unknown styles fall back to Varied');
   music.elements.get('#music-style-select').value = 'classic'; music.elements.get('#music-style-select').listeners.change();
   assert.equal(music.hooks.profile.musicStyle, 'classic', 'the selector saves the style');
-  // Info buttons reveal their note without flipping the checkbox they sit in.
+  // Info buttons open a dialog over Settings (native-friendly) without
+  // flipping the checkbox they sit in; closing it returns to Settings.
   const infoButton = music.elements.get('#helping-hand-info'), note = music.elements.get('#helping-hand-note'), toggle = music.elements.get('#helping-hand-toggle');
-  note.classList.add('hidden'); const checked = toggle.checked; let prevented = false;
+  const musicSettings = music.elements.get('#settings-screen'), infoScreen = music.elements.get('#info-screen');
+  music.hooks.openSettings('home'); const checked = toggle.checked; let prevented = false;
   infoButton.listeners.click({ preventDefault() { prevented = true; }, stopPropagation() {} });
-  assert.equal(note.classList.contains('hidden'), false, 'the note opens');
   assert.equal(prevented, true, 'the label click is cancelled');
   assert.equal(toggle.checked, checked);
-  infoButton.listeners.click({ preventDefault() {}, stopPropagation() {} });
-  assert.equal(note.classList.contains('hidden'), true, 'the note closes again');
+  assert.equal(infoScreen.classList.contains('hidden'), false, 'the dialog opens');
+  assert.equal(musicSettings.classList.contains('hidden'), true, 'Settings steps aside');
+  assert.equal(music.elements.get('#info-heading').textContent, 'Helping Hand');
+  assert.equal(music.elements.get('#info-body').textContent, note.textContent, 'the dialog carries the setting note');
+  music.elements.get('#close-info-button').listeners.click();
+  assert.equal(infoScreen.classList.contains('hidden'), true, 'the dialog closes');
+  assert.equal(musicSettings.classList.contains('hidden'), false, 'Settings returns');
+  music.hooks.showHome();
+  assert.equal(infoScreen.classList.contains('hidden'), true);
+  // The sample button plays one phrase of the chosen style from Settings, even
+  // with music switched off: Classic as written, Varied a differing variant.
+  music.hooks.profile.music = false; music.elements.get('#music-toggle').checked = false;
+  const sample = () => { const from = notes.length; music.elements.get('#music-preview-button').listeners.click({ preventDefault() {}, stopPropagation() {} }); assert.equal(notes.length, from + 12, 'a sample schedules one phrase'); return phraseAt(from, 0); };
+  music.hooks.profile.musicStyle = 'classic';
+  assert.deepEqual(sample().melody, config.musicPhrases.endless.melody, 'a Classic sample is the phrase as written');
+  music.hooks.profile.musicStyle = 'varied';
+  const varied = sample();
+  assert.notDeepEqual(varied.melody, config.musicPhrases.endless.melody, 'a Varied sample plays a differing variant');
+  assert.ok(Math.abs(varied.voices[0].startTime - (clock.currentTime + config.musicStartDelaySeconds)) < 1e-9, 'the sample starts right away');
+  assert.equal(music.timeouts.size, 0, 'a sample does not start the run scheduler');
+  music.hooks.profile.music = true; music.elements.get('#music-toggle').checked = true;
   music.hooks.showHome(); assert.equal(music.timeouts.size, 0);
   console.log('Music timing checks passed: audio-clock lookahead, callback jitter, long stalls, four-phrase variant cycle, pause/resume and Home cleanup.');
   console.log('Rendering/audio checks passed: idle menus, image-load repaint, cached glows, paused scenes, end screens, and noise-buffer reuse.');
