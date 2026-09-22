@@ -4,10 +4,14 @@
     || ['android', 'ios'].includes(window.Capacitor?.getPlatform?.())
     || /\bwv\b/.test(navigator.userAgent);
   document.documentElement.classList.toggle('native-app', Boolean(nativePlatform));
+  const androidPlatform = window.Capacitor?.getPlatform?.() === 'android'
+    || Boolean(window.SevaJumpAndroid) || /\bwv\b/.test(navigator.userAgent);
+  document.documentElement.classList.toggle('android-app', androidPlatform);
   function setNativeGameplayActive(active) {
     window.SevaJumpAndroid?.setGameplayActive?.(Boolean(active));
   }
   const nativeTablet = Boolean(nativePlatform) && Math.min(window.innerWidth, window.innerHeight) >= 700;
+  document.documentElement.classList.toggle('android-tablet', androidPlatform && nativeTablet);
   if (nativeTablet) canvas.width = 640;
   const ctx = canvas.getContext('2d');
   if (!ctx) {
@@ -630,7 +634,15 @@
     state.collectibles = state.collectibles.filter(c => !c.taken && c.y < state.cameraY + H + 100);
     for (const power of state.powerups) if (!power.taken && collide(p, power, 30)) { power.taken = true; profile.stats.powerups++; burst(power.x, power.y, power.type === 'kara' ? '#f5cb58' : '#f1815a', 14); if (profile.stats.powerups >= 5) awardBadge('power-seeker'); sound('boost'); if (power.type === 'nishan') { state.invincibleTimer = 5; state.invincibleSource = 'nishan'; } p.vy = rules.boostVelocity(power.type, profile.powerJump); state.message = power.type === 'kara' ? 'Kara boost · one higher jump!' : 'Nishan boost · one jump + protection!'; state.messageTimer = 2; }
     state.powerups = state.powerups.filter(o => !o.taken && o.y < state.cameraY + H + 100);
-    for (const bird of state.enemies) { if (bird.hit) continue; bird.x += bird.vx * dt; if (bird.x < 20 || bird.x > W - 20) bird.vx *= -1; if (collide(p, bird, 28)) triggerBirdHit(bird); }
+    for (const bird of state.enemies) {
+      if (bird.hit) continue;
+      bird.x += bird.vx * dt;
+      // Turn only outward travel: after an overshoot, shorter frames may
+      // leave the bird outside the edge while it is already flying inward.
+      if (bird.x < 20) bird.vx = Math.abs(bird.vx);
+      else if (bird.x > W - 20) bird.vx = -Math.abs(bird.vx);
+      if (collide(p, bird, 28)) triggerBirdHit(bird);
+    }
     state.enemies = state.enemies.filter(o => o.y < state.cameraY + H + 100 && !o.hit);
     for (const particle of state.particles) { particle.x += particle.vx * dt; particle.y += particle.vy * dt; particle.vy += 360 * dt; particle.life -= dt; }
     state.particles = state.particles.filter(particle => particle.life > 0);

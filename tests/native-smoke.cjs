@@ -71,6 +71,13 @@ fs.mkdirSync(output, { recursive: true });
     await page.locator('#arcade-button').click();
     if (await page.locator('#tutorial-screen').isVisible()) await page.locator('#tutorial-skip-button').click();
     await page.locator('#mobile-hud').waitFor();
+    assert(await page.evaluate(() => {
+      const frame = document.querySelector('.game-frame');
+      const canvas = document.querySelector('canvas').getBoundingClientRect();
+      const hud = document.querySelector('#mobile-hud').getBoundingClientRect();
+      return frame.scrollTop === 0 && hud.top >= 0 && canvas.top >= hud.bottom
+        && canvas.bottom <= innerHeight;
+    }), 'Canvas focus keeps the HUD visible and the whole playfield inside the viewport');
     await page.waitForFunction(() => {
       const button = document.querySelector('#pause-button').getBoundingClientRect();
       const safe = parseFloat(document.documentElement.style.getPropertyValue('--android-safe-top'));

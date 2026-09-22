@@ -18,6 +18,21 @@ function advanceUpdates(runtime, seconds) {
 
 const runtime = makeRuntime({ value: JSON.stringify({ tutorialComplete: true, music: false, sound: false, reducedMotion: true }) });
 
+// A long frame can carry a bird past an edge; shorter following frames must
+// bring it back into the playfield instead of flipping its direction in place.
+for (const size of sizes) {
+  for (const side of [-1, 1]) {
+    const edgeRuntime = makeRuntime({}, size);
+    const edgeState = cleanState(edgeRuntime);
+    const edgeBird = { x: side < 0 ? 21 : size.width - 21, y: 100, vx: side * 200, type: 'pigeon', flapOffset: 0 };
+    edgeState.enemies = [edgeBird];
+    edgeRuntime.hooks.update(.04);
+    for (let frame = 0; frame < 12; frame++) edgeRuntime.hooks.update(1 / 120);
+    assert.equal(Math.sign(edgeBird.vx), -side, 'bird keeps flying inward after an edge turn');
+    assert.ok(edgeBird.x > 30 && edgeBird.x < size.width - 30, 'bird leaves the edge at mixed frame rates');
+  }
+}
+
 // Ordinary downward contact lands and increments the real jump counter.
 let state = cleanState(runtime);
 state.platforms = [{ x: 150, y: 500, w: 150, type: 'normal', speed: 0, dir: 1, broken: false }];

@@ -43,6 +43,8 @@ Optional settings:
 
 The suite starts its own local server and closes it afterward. It checks six viewport sizes, menu focus and scrolling, pause, pointer mapping, storage denial, reset, a local cross-origin iframe, and actual first-visit offline play. Screenshots and JSON results are written to ignored `screenshots/release-1.0.1/<engine>/`. Browser emulation is not a physical-device test; WebKit on Windows is not iPhone Safari.
 
+Run `node tests/android-layout-checks.cjs` with the same Playwright setup for Android layout regressions without an APK. It simulates the Android bridge and changing safe areas at compact, large and short tablet sizes, with touch/mouse input, plus a phone. It checks the entire canvas and HUD remain visible after focus/resume, menu headings and scrolling after gameplay, and exclusion of Android styling from iOS. Captures are saved under `screenshots/android-layout/`. The test uses desktop Edge with simulated Android state; actual WebView/system-bar checks still require the native smoke test on a device or emulator.
+
 ## Release artifact
 
 ```powershell

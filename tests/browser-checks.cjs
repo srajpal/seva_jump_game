@@ -77,6 +77,26 @@ async function canvasWork(page) {
       assert.equal(activeCanvas.shadows, 0, `${name}: active frames never assign shadowBlur`);
       await page.screenshot({ path: path.join(output, `${name}-cached-glows.png`) });
       check(`idle canvas and cached collectible glow: ${name}`, activeCanvas);
+      const edgeFlight = await page.evaluate(() => {
+        const state = __qa.state;
+        state.paused = true;
+        const previous = state.enemies;
+        const bird = { x: 429, y: state.player.y - 200, vx: 200, type: 'pigeon', flapOffset: 0 };
+        state.enemies = [bird];
+        state.paused = false;
+        __qa.update(.04);
+        for (let frame = 0; frame < 12; frame++) __qa.update(1 / 120);
+        state.paused = true;
+        __qa.draw();
+        const result = { x: bird.x, vx: bird.vx };
+        state.enemies = previous;
+        document.querySelector('#badge-toast-name').textContent = 'First Leap';
+        document.querySelector('#badge-toast').classList.remove('hidden');
+        return result;
+      });
+      assert.ok(edgeFlight.x < 420 && edgeFlight.vx < 0, `${name}: pigeon flies inward after a slow edge frame`);
+      await page.screenshot({ path: path.join(output, `${name}-badge-position.png`) });
+      await page.evaluate(() => { document.querySelector('#badge-toast').classList.add('hidden'); __qa.state.paused = false; });
       if (name === 'desktop') {
         await page.keyboard.down('a'); assert.deepEqual(await page.evaluate(() => __qa.keys), ['ArrowLeft']); await page.keyboard.up('a');
         await page.keyboard.down('D'); assert.deepEqual(await page.evaluate(() => __qa.keys), ['ArrowRight']); await page.keyboard.up('D');

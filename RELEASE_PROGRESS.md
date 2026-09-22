@@ -1,5 +1,35 @@
 # Seva Jump release progress
 
+## Separate Android phone/tablet spacing - September 22, 2026
+
+- Owner preferred the original full-width phone scene while retaining the corrected tablet border. Removed the reserved 48-pixel footer only below 600 CSS pixels; the phone mode label floats at the bottom. Tablet spacing, canvas proportions, safe areas and focus-scroll protection remain unchanged. Unusually short phones still fit to height to prevent cropping.
+- Added a failing-before/passing-after phone width regression, Pixel-sized camera-cutout coverage and a short handset case. All nine Android browser layout cases and iOS exclusion passed, along with syntax/package checks. Updated web assets were synced and the separately named Android test APK built successfully with Java 21.
+- Updated **SevaJump Test** on the physical Pixel 6. Refreshed only its service-worker caches and verified local progress survived. Actual 411 × 914 viewport: canvas left 0, right 411.43, top 135, bottom 866.43; frame scroll 0. Full-width scene, visible HUD/Pause and pause/resume passed, and the native screenshot `screenshots/phone-layout/pixel-gameplay.png` was visually inspected. Left the app on Home. The original app remains separate. Tablet behavior was regression-tested in the browser; this revised APK was not reinstalled on the disconnected tablet.
+- APK: `dist/SevaJump-Test-1.0.1-phone-tablet.apk`, SHA-256 `d4fbfc1b31d9f99ce7a28e6a550fed307c5d994835ebe1b5322d43b4b83e5c52`. No iOS change or store publication.
+
+## Physical Android tablet test installation - September 22, 2026
+
+- After the owner confirmed the tablet looked better, the identical APK (hash below) was also successfully installed and launched on the connected Pixel 6 as **SevaJump Test** for phone regression testing. The original game is separate; phone gameplay validation is left to the owner.
+- Owner authorized building and installing the fixes on the connected K70 PRO. USB debugging is authorized; the tablet reports 800 × 1280 physical pixels at density 213, with a 601 × 961 WebView viewport, confirming the compact-tablet layout path.
+- Android debug build passed with Java 21. Updating the existing `org.sevajump.game` was rejected by Android because its signing certificate differs. Preserved that installation and its data; built and successfully installed a separately named **SevaJump Test**, package `org.sevajump.game.tablettest`, version `1.0.1-tablet-test` / code 39. The package suffix and label were applied through an ignored local Gradle init script and resource overlay, leaving production app metadata unchanged.
+- Test APK: `dist/SevaJump-Test-1.0.1-tablet.apk`, SHA-256 `13542207829d140ee5007541a3938aa61491c3a41ca3e283e670c624a08d28ec`. This separate app starts with its own progress. Both the bird fix and Android fitting rules are packaged; no store upload or iOS build occurred.
+- After the owner unlocked the tablet, physical-device checks passed: Android presentation loaded, frame scroll stayed at zero, the entire playfield/score/Pause remained visible, pause/resume worked, and About/Upgrades headings remained on-screen after gameplay. No JavaScript errors were observed. Native gameplay and Upgrades screenshots were visually reviewed under `screenshots/tablet-install/`; the test app was left on Home. WebView screenshot capture stalled once, so final visual verification used native device captures. Extended play and bird behavior on the physical tablet remain for the owner's testing.
+
+## Android tablet clipping fix - September 22, 2026
+
+- Reviewed all eight supplied tablet screenshots. Reproduced missing score/Pause controls and displaced menu headings in Edge with the Android bridge simulated at a 600 × 960 CSS viewport: the oversized 450 × 800 canvas caused focus to scroll the outer frame by 74 pixels, moving the entire HUD above the viewport. The user's physical device density was not measured.
+- Scoped the fix to Android: fit either canvas size between the HUD and a reserved bottom navigation area without stretching; prevent outer-frame scrolling while preserving menu scrolling; respect menu safe areas; place achievement banners below the Android HUD. Small tablets can retain their existing 450-wide gameplay rules. No iOS presentation or gameplay tuning changed.
+- Android layout regressions pass at 600 × 960 (touch and mouse), 800 × 1280 (touch and mouse), 960 × 1280, 700 × 850 and 393 × 808. They cover gameplay focus, pause/resume, Back confirmation, About/Upgrades/Badges/Stats/Settings and exclusion of Android styles from iOS. Phone/tablet gameplay and menu captures were visually inspected under `screenshots/android-layout/`. Runtime, service-worker, syntax and package checks passed; web source was synced to generated `www/`.
+- Native smoke coverage now checks outer-frame scroll and complete playfield/HUD visibility. It has not been run for this fix: the owner's prior no-device-build instruction remains in effect. No new APK, device install, iOS build or publication was performed. Actual tablet WebView confirmation remains pending; the existing itch ZIP predates this Android layout change.
+- The standard six-viewport browser suite also passed, including storage failures, iframe focus and first-visit offline play.
+
+## Web-only bird and badge fixes - September 22, 2026
+
+- Reproduced a bird stuck flickering at the screen edge when a 40 ms frame overshoots the boundary and subsequent 120 Hz frames repeatedly reverse its velocity. Edge handling now keeps an overshot bird flying inward. Regression coverage exercises both edges at 450 and 640 canvas widths, plus the pigeon in the browser suite.
+- Lowered the achievement toast from 72 to 96 CSS pixels and included the top safe-area inset. Reviewed the phone-sized web capture under `screenshots/release-1.0.1/chromium/phone-badge-position.png`.
+- JavaScript syntax, full gameplay/soak, runtime, service-worker, package, and all six Edge browser viewport checks passed, including storage denial, iframe focus and first-visit offline play. Created the local web test ZIP `dist/seva-jump-1.0.1-itch.zip` (SHA-256 `b583745d21e6a84f1554e4f834efe788a143fc35e12a0bc7abe140702a9998e9`). Browser tests used the source tree; extracted-ZIP/draft-host release validation remains pending.
+- No native sync, Android/iOS build, device installation, or publication was performed, per the owner's web-only testing request. Physical-device confirmation remains pending.
+
 ## Google Play app record - September 21, 2026
 
 - The replacement personal developer account is approved and Play Console reports no policy issues.

@@ -6,6 +6,7 @@ Seva Jump is a browser game packaged for Android and iOS. The browser source is 
 
 - `index.html` contains the canvas, menus, dialogs, HUD, help, and in-game privacy text.
 - `styles.css` lays out the portrait canvas, responsive menus, safe areas, and reduced-motion presentation. The canvas is 450 × 800 in browsers and 640 × 800 on native tablets.
+- Android presentation is scoped with `android-app`. Tablets at 600 CSS pixels wide and above fit the canvas between the HUD and a reserved bottom navigation area, including compact tablets using the narrower canvas. Phones below 600 CSS pixels omit that extra footer to prioritize a full-width scene, with a floating mode label; a height limit prevents cropping on unusually short screens. The outer game frame cannot scroll on focus; menu overlays retain their own scrolling. iOS keeps its separate presentation.
 - `game.js` owns runtime state, course generation, collision handling, input, audio, persistence, menu flow, and canvas drawing.
 - `game-config.js` contains gameplay tuning. `game-rules.js` contains shared calculations that the Node checks can exercise without a browser.
 - `assets/` contains only the pixel art used at runtime. Unused source variants live in `design/`, excluded from web, Android, and iOS packages.
