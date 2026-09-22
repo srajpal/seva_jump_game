@@ -2,6 +2,8 @@
 
 ## 1.0.2 — Android build 40
 
+Prepared September 22, 2026.
+
 Play Store update notes:
 
 - Fixed birds getting stuck and flickering at the edge of the screen.

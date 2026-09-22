@@ -63,4 +63,6 @@ npm run android:debug
 
 ## Documentation
 
+For every release, maintain `RELEASE_NOTES.md` as the cumulative version history: add the newest version first with its platform build number, preparation date, and concise player-facing update notes. Preserve older entries. Track artifact checksums, validation, and actual upload/rollout dates and status in `RELEASE_PROGRESS.md`; distinguish a prepared build from a published release. Keep version metadata aligned using the release checklist, and update the notes before building the release artifact. This is the owner's standing preference for all future releases.
+
 Update the existing authoritative document when work changes release requirements, store declarations, or durable player-facing behaviour. Update this file only for repository-wide guidance future agents will repeatedly need.
