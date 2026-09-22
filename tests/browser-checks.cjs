@@ -7,7 +7,7 @@ const http = require('node:http');
 const playwright = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
 const engine = process.env.BROWSER_ENGINE || 'chromium';
 const root = path.resolve(process.env.TEST_WEB_ROOT || path.join(__dirname, '..'));
-const output = path.resolve(__dirname, '../screenshots/release-1.0.1', engine);
+const output = path.resolve(__dirname, '../screenshots/release-1.0.2', engine);
 fs.mkdirSync(output, { recursive: true });
 const reports = [];
 const mime = { '.html': 'text/html', '.js': 'application/javascript', '.css': 'text/css', '.png': 'image/png', '.webmanifest': 'application/manifest+json' };

@@ -54,10 +54,11 @@ Source: [review comment](https://github.com/srajpal/seva_jump_game/pull/11#issue
 
 Source: [review comment](https://github.com/srajpal/seva_jump_game/pull/12#issuecomment-5745862489).
 
-- [ ] When [issue #13 experiment E2](https://github.com/srajpal/seva_jump_game/issues/13)
-  adds Endless boosts, replace the current zero-boost assertion with frequency
-  contracts at the new Endless score bands. The current assertion records today's
-  behavior, not a permanent balance requirement.
+- [x] [Issue #13 experiment E2](https://github.com/srajpal/seva_jump_game/issues/13)
+  (branch `claude/exp-issue-13`, commit 2658f59 `E2: Endless boosts (#13)`) adds Endless
+  boosts at the Arcade score bands; `tests/soak-test.js` now holds the Endless
+  Kara/Nishan frequency contracts at those bands (and zero before them) in
+  place of the zero-boost assertion.
 - [x] [PR #15](https://github.com/srajpal/seva_jump_game/pull/15) makes README/checklist build numbers explicit per platform:
   Android build 39 and iOS build 38. Do not require equality for independent
   native release trains; the shared marketing-version checks remain in place.
@@ -72,12 +73,12 @@ Source: [review comment](https://github.com/srajpal/seva_jump_game/pull/14#issue
   bird deaths per generated bird rising 111% in Arcade and 59% in Challenge with
   mid-gap spawning; these are reviewer measurements, not independently reproduced
   playtest results.
-- [ ] Revisit next-platform lane clearance with
-  [issue #13 / E4](https://github.com/srajpal/seva_jump_game/issues/13). Consider
-  generating a bird once both adjacent rows are known. Compare the same seeded
-  autopilot before/after (60 runs per mode, 240 s cap), count generated birds
-  directly rather than using the first-visible `birdsSeen` stat, and enforce
-  E4's no-more-than-20% increase in deaths per bird plus its human playtest gate.
+- [ ] Next-platform lane clearance was implemented and measured as issue #13
+  E4b (commit 407afb0 on branch `exp/E4b`, not merged): birds placed one row
+  late so their lane clears both adjacent landing lanes. Over four seeds (60
+  runs per mode, birds counted by identity) deaths per 100 birds were flat
+  (about 7.0 both ways) with Arcade-with-motion at +21%, so it delivered no
+  fairness gain and stays out. Reopen only with a different placement idea.
 - [ ] Explain that controller A is an Endless shortcut and only standard-mapped
   pads are supported; controller menu navigation is not implemented.
 - [ ] Address controller-start audio activation: Chromium may leave audio
@@ -121,3 +122,27 @@ Source: [review comment](https://github.com/srajpal/seva_jump_game/pull/14#issue
 ## Issue #1 — Capacitor 8 migration
 
 - [ ] Track the Capacitor CLI 8.5.2 development-only `xcode -> uuid` advisory [GHSA-w5hq-g745-h8pq](https://github.com/advisories/GHSA-w5hq-g745-h8pq). The September 19 install reports three moderate dependency entries from this one chain. It is not packaged in the Android app. Recheck upstream releases; do not apply an untested major UUID override or downgrade the CLI as part of this Android migration.
+
+## Issue #13 — E1 stall rescue review (branch `claude/exp-issue-13`)
+
+Source: adversarial review of commit e4b6860 on [issue #13](https://github.com/srajpal/seva_jump_game/issues/13).
+
+- [x] Fixed in `E1: address review round 1 (#13)`: the stranded check judged
+  reach with the analytic apex, but the semi-implicit Euler integrator climbs
+  `velocity * step / 2` less (about 6 px at 60 fps, 15 px at the 40 ms clamp),
+  so Power Jump 3-5 double gaps of 162-192 px and spring gaps just under the
+  spring apex were never rescued. `rules.jumpReach()` now judges reach at the
+  loop clamp (`config.maxFrameSeconds`); rule and runtime regressions cover the
+  band, and the Power Jump 5 autopilot shows 0 soft-locks.
+- [x] Fixed in `E1b: rescue sideways-unreachable rows (#13)`: the stranded
+  check now judges each intact platform above with the generator's own hop
+  rule (`rules.canHop`: height within the integrator reach, landing edge within
+  the pointer speed cap for the flight time, less one steering time constant),
+  so a lone far-side survivor or runway step is rescued by the spring's longer
+  flight, or by a midway helper step when even a spring cannot cross. Both
+  seeds report 0 runs stalled >20 s in every mode.
+- [ ] The autopilot's soft-lock classifier grades the intact platform at the
+  player's height rather than `state.lastLanding`, so it under-counted the
+  sideways case before E1b (at the E1 base, seed 777 Challenge: 3 runs stalled
+  to the cap, only 1 flagged). Change it only together with a fresh baseline,
+  since the experiment A/Bs compare against the current classifier.

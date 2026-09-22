@@ -2,7 +2,7 @@
 
 **A skyward seva adventure.**
 
-Current release-candidate build: **v1.0.1** (Android build 39; iOS build 38). The published itch.io version remains 0.13.2 until a new upload is approved.
+Current release-candidate build: **v1.0.2** (Android build 40; iOS build 38). The published itch.io version remains 0.13.2 until a new upload is approved.
 
 The birds have flown away with the parshad. Choose a young Sikh boy or girl, leap from platform to platform, and bring it back in this cheerful browser game prototype.
 
@@ -69,11 +69,12 @@ Challenge Mode warns once when an uncollected bowl scrolls out of reach and keep
 
 - **Parshad bowls** add to your score. In Challenge Mode, every bowl counts.
 - **Khanda tokens** are used for the upgrade shop.
-- **Kara boost** gives one higher jump.
-- **Nishan boost** gives one stronger jump and brief protection from birds.
+- **Kara boost** gives one higher jump, or stretches a Nishan flight if you catch one mid-air.
+- **Nishan boost** launches a short guided flight: about 1.2 seconds of steady climbing that you steer as you go, plus brief protection from birds.
 - **Dhal Shield** blocks one bird hit when owned.
 - **Falcon Save** gives a second chance after falling.
 - **Grass, spring, moving, and wooden breakable platforms** each change how you plan your next jump.
+- **Helping Hand** (on by default, switchable in Settings; Endless and Arcade only) steps in when a broken row leaves the next platform out of reach, too high or too far to the side: after about three seconds without climbing, the platform you are bouncing on becomes a spring, and if even a spring cannot get there, helper platforms appear to bridge the way. Without it, and always in Challenge and Hard, a stuck run is warned at three seconds and ends at six.
 
 ## A note on language and setting
 

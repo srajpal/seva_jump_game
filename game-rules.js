@@ -12,6 +12,17 @@ const SEVA_RULES = {
   endlessDifficulty(score) {
     return Math.max(0, Math.min(1, score / RULE_CONFIG.endlessDifficultyScore));
   },
+  // Second, gentler ramp for Endless only, from the difficulty cap onwards.
+  endlessLateDifficulty(score) {
+    return Math.max(0, Math.min(1, (score - RULE_CONFIG.endlessDifficultyScore) / RULE_CONFIG.endlessLateDifficultyScore));
+  },
+  // Endless moving platforms drift from the gentle range towards Arcade's as
+  // the late ramp progresses; the Arcade range is already proven reachable.
+  endlessMovingPlatformSpeedRange(score) {
+    const late = this.endlessLateDifficulty(score);
+    const [from, to] = [RULE_CONFIG.movingPlatformSpeedRange, RULE_CONFIG.arcadeMovingPlatformSpeedRange];
+    return [from[0] + (to[0] - from[0]) * late, from[1] + (to[1] - from[1]) * late];
+  },
   endlessPlatformCutoffs(score) {
     const difficulty = this.endlessDifficulty(score), mix = RULE_CONFIG.endlessPlatformMix;
     return {
@@ -23,11 +34,85 @@ const SEVA_RULES = {
   birdSpeed(mode, score, roll) {
     const speed = RULE_CONFIG.birdSpeed;
     return speed.base + roll * speed.randomRange + this.endlessDifficulty(score) * speed.difficultyBonus
+      + (mode === 'endless' ? this.endlessLateDifficulty(score) * RULE_CONFIG.endlessLateBirdSpeedBonus : 0)
       + (this.isHard(mode) ? speed.hardBonus : 0) + (mode === 'challenge' ? RULE_CONFIG.challengeBirdSpeedBonus : 0);
+  },
+  jumpApex(powerJump = 0, velocity = RULE_CONFIG.baseJumpVelocity) {
+    return (velocity * this.powerJumpMultiplier(powerJump)) ** 2 / (2 * RULE_CONFIG.gravity);
+  },
+  // The height the game's semi-implicit Euler integrator (velocity first, then
+  // position) actually reaches: velocity * step / 2 short of the analytic apex,
+  // judged at the loop's longest frame step so a slow device is covered too.
+  jumpReach(powerJump = 0, velocity = RULE_CONFIG.baseJumpVelocity, step = RULE_CONFIG.maxFrameSeconds) {
+    return this.jumpApex(powerJump, velocity) - velocity * this.powerJumpMultiplier(powerJump) * step / 2;
+  },
+  nearestRowAbove(platforms, standing) {
+    return platforms.filter(p => !p.broken && p.y < standing.y).sort((a, b) => b.y - a.y)[0];
+  },
+  // A hop describes one bounce: the launch velocity (base unless the platform
+  // is a spring), the Power Jump level and the player's half width, which is
+  // the overlap a landing needs. hop.reach may override the integrator reach.
+  hopReach(hop) {
+    return hop.reach ?? this.jumpReach(hop.powerJump, hop.velocity ?? RULE_CONFIG.baseJumpVelocity);
+  },
+  // Seconds from launch until the feet come back down to a row 'gap' px above.
+  hopTime(gap, hop) {
+    const velocity = (hop.velocity ?? RULE_CONFIG.baseJumpVelocity) * this.powerJumpMultiplier(hop.powerJump);
+    // Callers check the height first; at exactly the apex the flight is v / g.
+    return (velocity + Math.sqrt(Math.max(0, velocity ** 2 - 2 * RULE_CONFIG.gravity * gap))) / RULE_CONFIG.gravity;
+  },
+  // Sideways distance a touch player covers in one hop: the pointer speed cap
+  // less the ramp-up the steering response costs (about one time constant).
+  horizontalReach(time) {
+    return RULE_CONFIG.pointerMaxHorizontalSpeed * Math.max(0, time - 1 / RULE_CONFIG.pointerSteeringResponse);
+  },
+  // The reachability the generator's gap and shift caps are tuned to keep,
+  // judged from the standing platform's centre: the target is within the
+  // hop's height and its landing edge is within sideways reach during the
+  // flight, with a moving target assumed to drift away.
+  canHop(from, to, hop) {
+    const gap = from.y - to.y;
+    if (!(gap > 0 && gap <= this.hopReach(hop))) return false;
+    const time = this.hopTime(gap, hop);
+    const travel = Math.abs(to.x + to.w / 2 - from.x - from.w / 2) + (to.speed || 0) * time - to.w / 2 - hop.halfWidth;
+    return Math.max(0, travel) <= this.horizontalReach(time);
+  },
+  // Helping Hand is for the open modes; Challenge and Hard are played straight.
+  helpingHandApplies(mode) {
+    return !this.isHard(mode) && mode !== 'challenge';
+  },
+  // A player is stranded when no intact platform above the one they keep
+  // bouncing on can be hopped to: a broken row leaves a double gap, or the only
+  // surviving platform of the next row sits too far sideways for a touch
+  // player. A surviving companion within reach keeps the row reachable.
+  isStranded(platforms, standing, hop) {
+    return platforms.every(p => p.broken || p.y >= standing.y || !this.canHop(standing, p, hop));
+  },
+  // Evenly spaced solid steps from the standing platform up to the next intact
+  // row, drifting sideways towards it so the route reads as a staircase: the
+  // fewest steps that keep every hop within a generated gap and within reach.
+  rescueRungs(standing, above, hop, canvasWidth) {
+    const gap = standing.y - above.y, w = RULE_CONFIG.stallRescueRungWidth, maxGap = this.maxDefaultPlatformGap();
+    const from = standing.x + standing.w / 2, to = above.x + above.w / 2;
+    const base = { ...hop, velocity: RULE_CONFIG.baseJumpVelocity, reach: undefined };
+    const build = count => Array.from({ length: count }, (_, index) => {
+      const fraction = (index + 1) / (count + 1);
+      const center = Math.max(w / 2 + 12, Math.min(canvasWidth - w / 2 - 12, from + (to - from) * fraction));
+      return { x: center - w / 2, y: standing.y - gap * fraction, w, type: 'normal', speed: 0, dir: 1, broken: false, helper: true };
+    });
+    for (let count = 0; ; count++) {
+      const route = [standing, ...build(count), above];
+      if (gap / (count + 1) <= maxGap && route.every((step, index) => !index || this.canHop(route[index - 1], step, base))) return route.slice(1, -1);
+      if (count >= 8) return build(count);
+    }
   },
   maxDefaultPlatformGap() {
     const normalApex = RULE_CONFIG.baseJumpVelocity ** 2 / (2 * RULE_CONFIG.gravity);
     return Math.min(RULE_CONFIG.safeDefaultPlatformGap, normalApex * .8);
+  },
+  // The backdrop zone a height score has climbed into: the last threshold passed.
+  backdropZone(heightScore) {
+    return Math.max(0, RULE_CONFIG.backdropZones.filter(threshold => heightScore >= threshold).length - 1);
   },
   canHaveDoublePlatform(type) {
     return type !== 'moving';
@@ -35,7 +120,8 @@ const SEVA_RULES = {
   endlessBirdChance(score) {
     if (score < RULE_CONFIG.endlessBirdStartScore) return 0;
     const difficulty = this.endlessDifficulty(score);
-    const [low, high] = RULE_CONFIG.endlessBirdChanceRange;
+    const [low, cap] = RULE_CONFIG.endlessBirdChanceRange;
+    const high = cap + (RULE_CONFIG.endlessLateBirdChanceCap - cap) * this.endlessLateDifficulty(score);
     const targetChance = low + (high - low) * difficulty;
     const warmup = Math.min(1, (score - RULE_CONFIG.endlessBirdStartScore) / RULE_CONFIG.endlessBirdWarmupScore);
     return RULE_CONFIG.endlessBirdIntroChance + (targetChance - RULE_CONFIG.endlessBirdIntroChance) * warmup;
@@ -87,9 +173,16 @@ const SEVA_RULES = {
     const level = Math.max(0, Math.min(5, Number(powerJump) || 0));
     return Math.sqrt(1 + level * RULE_CONFIG.powerJumpHeightBonusPerLevel);
   },
+  // Kara is the only boost that is still a single higher jump; Nishan starts
+  // a guided flight instead (see nishanFlightHeight), so any other type is an
+  // ordinary jump here.
   boostVelocity(type, powerJump = 0) {
-    const multiplier = type === 'kara' ? RULE_CONFIG.karaJumpMultiplier : RULE_CONFIG.nishanJumpMultiplier;
+    const multiplier = type === 'kara' ? RULE_CONFIG.karaJumpMultiplier : 1;
     return -RULE_CONFIG.baseJumpVelocity * multiplier * this.powerJumpMultiplier(powerJump);
+  },
+  // The steady climb of a Nishan flight, before the coasting arc it ends in.
+  nishanFlightHeight() {
+    return RULE_CONFIG.nishanFlightSpeed * RULE_CONFIG.nishanFlightSeconds;
   },
   canUseFalconSave(owned, alreadyUsed) {
     return owned > 0 && !alreadyUsed;

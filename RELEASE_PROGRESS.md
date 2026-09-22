@@ -1,5 +1,14 @@
 # Seva Jump release progress
 
+## 1.0.2 / Android build 40 — September 22, 2026
+
+- Prepared on `codex/release-1.0.2`, merging current `origin/main` (`1d9c0f3`) so the existing Play build's gameplay/settings changes are retained alongside the bird-edge, achievement-banner and Android layout fixes. Included the owner's pending promotion-document updates. Added player-facing notes in `RELEASE_NOTES.md`.
+- Web/cache/npm and Android versions are 1.0.2; Android versionCode is 40. iOS marketing metadata is aligned for package consistency, while its native build stays 38; no iOS build or UI changes were made for this release.
+- All gameplay/rule suites passed (2,170,000 generated landings), plus JavaScript syntax, runtime, service-worker, package, nine Android layout cases and all six standard Edge viewport suites with actual offline, denied storage and iframe focus coverage. Physical Pixel/K70 checks above cover the fixes before integration with newer main; a smoke test of the exact Play-delivered 1.0.2 package remains pending.
+- Built the production `org.sevajump.game` release AAB with Java 21 and the existing upload-key configuration from the prior Play release worktree. No test package suffix or debug flag. JAR integrity verification passed; the signing certificate SHA-256 matches the previously signed 1.0.1 bundle (`EE:92:43:19:E8:41:FD:0C:C5:DC:B4:F9:94:02:67:0A:C8:87:CC:82:89:8A:0D:CF:D9:70:57:F9:D3:40:AB:BD`). Standard self-signed/no-timestamp verification warnings are expected for this upload key. All 33 packaged runtime source files match this checkout.
+- Upload artifact: `dist/SevaJump-1.0.2-build40-play.aab`; SHA-256 `c3292cb6b5dc008df4d6f41b9963c5d6dca995e1dd0d6de4570fd1b6c77f87c4` (sidecar included). Signing secrets, native binaries, generated web copies, screenshots and nested worktrees are excluded from Git.
+- Status: conditionally ready for Play testing, pending Console acceptance and exact Play-installed update/save/offline smoke checks. This task prepares the bundle; it does not upload, roll out, or publish a store release. The existing 1.0.1 release worktree retains prior Console/signing preparation records.
+
 ## Separate Android phone/tablet spacing - September 22, 2026
 
 - Owner preferred the original full-width phone scene while retaining the corrected tablet border. Removed the reserved 48-pixel footer only below 600 CSS pixels; the phone mode label floats at the bottom. Tablet spacing, canvas proportions, safe areas and focus-scroll protection remain unchanged. Unusually short phones still fit to height to prevent cropping.

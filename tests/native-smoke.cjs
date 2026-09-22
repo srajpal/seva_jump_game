@@ -9,7 +9,7 @@ assert(serial && /^emulator-\d+$/.test(serial), 'Set ADB_SERIAL to the test emul
 const adb = (...args) => execFileSync(process.env.ADB_PATH || 'adb', ['-s', serial, ...args], {
   maxBuffer: 32 * 1024 * 1024, timeout: 30000
 });
-const output = path.resolve(__dirname, '../screenshots/release-1.0.1/native');
+const output = path.resolve(__dirname, '../screenshots/release-1.0.2/native');
 const name = process.env.DEVICE_LABEL || serial;
 assert(/^[\w-]+$/.test(name), 'DEVICE_LABEL must be a simple filename');
 fs.mkdirSync(output, { recursive: true });

@@ -177,6 +177,52 @@ async function run() {
   rendering.hooks.triggerFalconSave(); rendering.hooks.pauseGame(); rendering.hooks.showHome(); frame(); idle();
   assert.equal(rendering.hooks.state.falconRescue.elapsed, 0, 'an abandoned rescue must not animate behind Home');
 
+  // Backdrop progression: one backdrop draw per frame, two only mid-fade, zones
+  // at the height thresholds, frozen fades under pause, and Reduced Motion
+  // switching instantly. The fallback still paints a sky; the old cloud ellipses
+  // are gone for good (they read as flat white ovals over the painted skies).
+  const calls = { images: [], ellipses: [], fills: [] }, alphaStack = [];
+  const backdrop = makeRuntime({ value: JSON.stringify({ tutorialComplete: true, music: false, sound: false }) }, { drawingContext: {
+    globalAlpha: 1, save() { alphaStack.push(this.globalAlpha); }, restore() { this.globalAlpha = alphaStack.pop() ?? 1; },
+    drawImage(sprite) { calls.images.push([sprite, this.globalAlpha]); }, ellipse(x, y) { calls.ellipses.push([this.fillStyle, x, y]); }, fillRect(x, y, w, h) { calls.fills.push([this.fillStyle, x, y, w, h]); },
+  } });
+  backdrop.hooks.start('endless');
+  const backdropFrame = () => { calls.images.length = 0; calls.ellipses.length = 0; calls.fills.length = 0; backdrop.hooks.draw(); return calls.images.filter(([sprite]) => /gurdwara/.test(sprite._src)); };
+  const clouds = () => calls.ellipses.filter(([style]) => style === '#ffffffbb');
+  const backdropSprites = ['courtyard', 'sunset', 'dawn'].map(name => backdrop.images.find(sprite => sprite._src.includes(name)));
+  const expectedSprite = zone => backdropSprites[(backdrop.hooks.state.background + zone) % 3];
+  // A resting player keeps the scene stable while active time advances.
+  const climb = (height, dt = .1) => { const current = backdrop.hooks.state; current.heightScore = Math.max(current.heightScore, height); current.player.y = 650; current.player.vy = 0; backdrop.hooks.update(dt); };
+  assert.deepEqual([backdrop.hooks.state.backdropZone, backdrop.hooks.state.backdropFade], [0, null], 'reset initialises the backdrop zone without a fade');
+  assert.equal(backdropFrame().length, 0, 'unloaded images draw nothing');
+  assert.ok(calls.fills.some(([style, x, y, w, h]) => ['#bce7ef', '#f8d9a7', '#c9e5c0'].includes(style) && x === 0 && y === 0 && w === 450 && h === 800), 'the fallback fills the whole background with a sky colour');
+  assert.equal(clouds().length, 0, 'no cloud ellipses over the fallback sky');
+  backdrop.images.forEach(sprite => sprite.load());
+  const steady = backdropFrame(), steadyTotal = calls.images.length;
+  assert.deepEqual(steady, [[expectedSprite(0), 1]], 'exactly one backdrop image outside a fade');
+  assert.equal(clouds().length, 0, 'no cloud ellipses over the image backdrop');
+  climb(config.backdropZones[1] - 1); assert.equal(backdrop.hooks.state.backdropZone, 0, 'the zone holds below its threshold');
+  climb(config.backdropZones[1]); assert.equal(backdrop.hooks.state.backdropZone, 1, 'the zone changes at its threshold');
+  const fading = backdropFrame();
+  assert.equal(calls.images.length, steadyTotal + 1, 'a fade frame costs exactly one extra drawImage');
+  assert.deepEqual(fading.map(([sprite]) => sprite), [expectedSprite(0), expectedSprite(1)], 'the fade layers the next image over the previous one');
+  assert.ok(fading[0][1] === 1 && fading[1][1] > 0 && fading[1][1] < 1, 'only the incoming image is blended mid-fade');
+  backdrop.hooks.pauseGame(); const frozen = backdrop.hooks.state.backdropFade.elapsed;
+  for (let i = 0; i < 5; i++) backdrop.hooks.update(.1);
+  assert.equal(backdrop.hooks.state.backdropFade.elapsed, frozen, 'a paused game freezes the fade');
+  assert.equal(backdropFrame().length, 2, 'the paused frame keeps its half-faded sky');
+  backdrop.hooks.resumeGame();
+  for (let elapsed = 0; elapsed < config.backdropFadeMs; elapsed += 100) climb(0);
+  assert.equal(backdrop.hooks.state.backdropFade, null, 'the fade ends after backdropFadeMs of active time');
+  assert.deepEqual(backdropFrame(), [[expectedSprite(1), 1]], 'the new zone draws alone once faded in');
+  assert.equal(calls.images.length, steadyTotal, 'drawImage count returns to the steady figure');
+  backdrop.hooks.profile.reducedMotion = true;
+  climb(config.backdropZones[2]); assert.equal(backdrop.hooks.state.backdropZone, 2);
+  assert.equal(backdrop.hooks.state.backdropFade, null, 'Reduced Motion switches zones without a fade');
+  assert.deepEqual(backdropFrame(), [[expectedSprite(2), 1]], 'Reduced Motion draws the new zone immediately');
+  climb(0); assert.deepEqual(backdropFrame(), [[expectedSprite(2), 1]], 'no fade frames follow a Reduced Motion switch');
+  console.log('Backdrop checks passed: zone thresholds, single-draw steady frames, one extra draw mid-fade, paused fades, Reduced Motion switch and pinned clouds, fallback sky.');
+
   let buffersCreated = 0;
   const sources = [];
   class AudioContext {
@@ -216,11 +262,81 @@ async function run() {
   assert.equal(notes[24].startTime, config.musicStartDelaySeconds + 16 * config.musicBeatSeconds);
   tick(20); assert.equal(notes.length, 48, 'a long stall restarts one phrase rather than bursting missed phrases');
   assert.equal(notes[36].startTime, 20 + config.musicStartDelaySeconds);
+  const beat = config.musicBeatSeconds, frequencies = list => list.map(note => note.frequency.value);
+  const phraseAt = (from, index) => ({ voices: notes.slice(from + index * 12, from + index * 12 + 12), melody: frequencies(notes.slice(from + index * 12, from + index * 12 + 8)), bass: frequencies(notes.slice(from + index * 12 + 8, from + index * 12 + 12)) });
+  tick(23.9); assert.equal(notes.length, 60);
+  const phrases = [0, 1, 2, 3, 4].map(index => phraseAt(0, index));
+  assert.deepEqual(phrases[0].melody, config.musicPhrases.endless.melody, 'a run opens with the phrase as written');
+  assert.equal(new Set(phrases.slice(0, 4).map(phrase => String(phrase.melody))).size, 4, 'four consecutive phrases schedule different melodies');
+  assert.deepEqual(phrases[4].melody, phrases[0].melody, 'the fifth phrase restarts the cycle');
+  phrases.forEach((phrase, index) => {
+    const start = phrase.voices[0].startTime;
+    assert.equal(Math.min(...phrase.voices.map(note => note.startTime)), start, `phrase ${index} starts on its scheduled beat`);
+    assert.ok(Math.abs(Math.max(...phrase.voices.map(note => note.stopTime)) - start - 8 * beat) < 1e-9, `phrase ${index} spans exactly 8 beats`);
+    assert.deepEqual(phrase.bass, config.musicPhrases.endless.bass, `variant ${index} keeps the Endless bass`);
+  });
   music.hooks.pauseGame(); assert.equal(music.timeouts.size, 0, 'pause clears scheduling');
   assert.ok(notes.every(note => note.stopTime === undefined), 'pause stops all scheduled voices immediately');
-  music.hooks.resumeGame(); assert.equal(notes.length, 60);
+  music.hooks.resumeGame(); assert.equal(notes.length, 72);
+  assert.deepEqual(phraseAt(60, 0).melody, phrases[0].melody, 'resuming reopens with the phrase as written');
   music.hooks.showHome(); assert.equal(music.timeouts.size, 0);
-  console.log('Music timing checks passed: audio-clock lookahead, callback jitter, long stalls, pause/resume and Home cleanup.');
+  const variantsOf = mode => {
+    const from = notes.length, base = clock.currentTime;
+    music.hooks.start(mode); [3.9, 7.9, 11.9].forEach(offset => tick(base + offset));
+    assert.equal(notes.length, from + 48);
+    return [0, 1, 2, 3].map(index => phraseAt(from, index));
+  };
+  for (const [mode, table] of [['arcade', 'arcade'], ['challenge', 'challenge'], ['hard', 'endless']]) {
+    const variants = variantsOf(mode), source = config.musicPhrases[table];
+    assert.deepEqual(variants[0].melody, source.melody, `${mode} opens with its own phrase`);
+    assert.equal(new Set(variants.map(variant => String(variant.melody))).size, 4, `${mode} cycles four different melodies`);
+    variants.forEach(variant => {
+      assert.deepEqual(variant.bass, source.bass, `${mode} variants share the mode bass`);
+      variant.melody.forEach(note => assert.ok(source.melody.some(root => [1, config.musicLiftRatio, 2].some(ratio => Math.abs(root * ratio - note) < 1e-9)), `${mode} variants stay on the mode's notes`));
+    });
+  }
+  assert.equal(new Set(['endless', 'arcade', 'challenge'].map(mode => String(config.musicPhrases[mode].melody))).size, 3, 'modes keep distinct phrases');
+  // The Classic style plays the phrase as written every time; the setting
+  // round-trips through the profile and falls back to Varied.
+  music.hooks.profile.musicStyle = 'classic';
+  const classic = variantsOf('endless');
+  classic.forEach((phrase, index) => assert.deepEqual(phrase.melody, config.musicPhrases.endless.melody, 'classic phrase ' + index + ' is the phrase as written'));
+  music.hooks.profile.musicStyle = 'varied';
+  assert.equal(music.hooks.normalizeProfile({ musicStyle: 'classic' }).musicStyle, 'classic');
+  assert.equal(music.hooks.normalizeProfile({ musicStyle: 'jazz' }).musicStyle, 'varied', 'unknown styles fall back to Varied');
+  music.elements.get('#music-style-select').value = 'classic'; music.elements.get('#music-style-select').listeners.change();
+  assert.equal(music.hooks.profile.musicStyle, 'classic', 'the selector saves the style');
+  // Info buttons open a dialog over Settings (native-friendly) without
+  // flipping the checkbox they sit in; closing it returns to Settings.
+  const infoButton = music.elements.get('#helping-hand-info'), note = music.elements.get('#helping-hand-note'), toggle = music.elements.get('#helping-hand-toggle');
+  const musicSettings = music.elements.get('#settings-screen'), infoScreen = music.elements.get('#info-screen');
+  music.hooks.openSettings('home'); const checked = toggle.checked; let prevented = false;
+  infoButton.listeners.click({ preventDefault() { prevented = true; }, stopPropagation() {} });
+  assert.equal(prevented, true, 'the label click is cancelled');
+  assert.equal(toggle.checked, checked);
+  assert.equal(infoScreen.classList.contains('hidden'), false, 'the dialog opens');
+  assert.equal(musicSettings.classList.contains('hidden'), true, 'Settings steps aside');
+  assert.equal(music.elements.get('#info-heading').textContent, 'Helping Hand');
+  assert.equal(music.elements.get('#info-body').textContent, note.textContent, 'the dialog carries the setting note');
+  music.elements.get('#close-info-button').listeners.click();
+  assert.equal(infoScreen.classList.contains('hidden'), true, 'the dialog closes');
+  assert.equal(musicSettings.classList.contains('hidden'), false, 'Settings returns');
+  music.hooks.showHome();
+  assert.equal(infoScreen.classList.contains('hidden'), true);
+  // The sample button plays one phrase of the chosen style from Settings, even
+  // with music switched off: Classic as written, Varied a differing variant.
+  music.hooks.profile.music = false; music.elements.get('#music-toggle').checked = false;
+  const sample = () => { const from = notes.length; music.elements.get('#music-preview-button').listeners.click({ preventDefault() {}, stopPropagation() {} }); assert.equal(notes.length, from + 12, 'a sample schedules one phrase'); return phraseAt(from, 0); };
+  music.hooks.profile.musicStyle = 'classic';
+  assert.deepEqual(sample().melody, config.musicPhrases.endless.melody, 'a Classic sample is the phrase as written');
+  music.hooks.profile.musicStyle = 'varied';
+  const varied = sample();
+  assert.notDeepEqual(varied.melody, config.musicPhrases.endless.melody, 'a Varied sample plays a differing variant');
+  assert.ok(Math.abs(varied.voices[0].startTime - (clock.currentTime + config.musicStartDelaySeconds)) < 1e-9, 'the sample starts right away');
+  assert.equal(music.timeouts.size, 0, 'a sample does not start the run scheduler');
+  music.hooks.profile.music = true; music.elements.get('#music-toggle').checked = true;
+  music.hooks.showHome(); assert.equal(music.timeouts.size, 0);
+  console.log('Music timing checks passed: audio-clock lookahead, callback jitter, long stalls, four-phrase variant cycle, pause/resume and Home cleanup.');
   console.log('Rendering/audio checks passed: idle menus, image-load repaint, cached glows, paused scenes, end screens, and noise-buffer reuse.');
 
   const denied = makeRuntime({ getItem() { throw new DOMException('denied', 'SecurityError'); }, setItem() { throw new DOMException('denied', 'SecurityError'); }, removeItem() { throw new DOMException('denied', 'SecurityError'); } });

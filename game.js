@@ -38,7 +38,7 @@
     falconOwned: document.querySelector('#falcon-owned'), shieldOwned: document.querySelector('#shield-owned'), powerOwned: document.querySelector('#power-owned'),
     buyFalcon: document.querySelector('#buy-falcon'), buyShield: document.querySelector('#buy-shield'), buyPower: document.querySelector('#buy-power'),
     openAbout: document.querySelector('#open-about-button'), closeAbout: document.querySelector('#close-about-button'), openPrivacy: document.querySelector('#open-privacy-button'), closePrivacy: document.querySelector('#close-privacy-button'), privacy: document.querySelector('#privacy-screen'), exitConfirm: document.querySelector('#exit-confirm-screen'), confirmExit: document.querySelector('#confirm-exit-button'), cancelExit: document.querySelector('#cancel-exit-button'), openSettings: document.querySelector('#open-settings-button'), closeSettings: document.querySelector('#close-settings-button'), pauseSettings: document.querySelector('#pause-settings-button'), resetProgress: document.querySelector('#reset-progress-button'), resetConfirm: document.querySelector('#reset-confirm-screen'), confirmReset: document.querySelector('#confirm-reset-button'), cancelReset: document.querySelector('#cancel-reset-button'), settings: document.querySelector('#settings-screen'), openBadges: document.querySelector('#open-badges-button'), closeBadges: document.querySelector('#close-badges-button'), badges: document.querySelector('#badges-screen'), badgeCount: document.querySelector('#badge-count'), badgeGrid: document.querySelector('#badge-grid'), badgeToast: document.querySelector('#badge-toast'), badgeToastIcon: document.querySelector('#badge-toast-icon'), badgeToastName: document.querySelector('#badge-toast-name'), openStats: document.querySelector('#open-stats-button'), closeStats: document.querySelector('#close-stats-button'), stats: document.querySelector('#stats-screen'), statsSummary: document.querySelector('#stats-summary'), deathBreakdown: document.querySelector('#death-breakdown'),
-    musicToggle: document.querySelector('#music-toggle'), soundToggle: document.querySelector('#sound-toggle'), reducedMotionToggle: document.querySelector('#reduced-motion-toggle'), replayTutorial: document.querySelector('#replay-tutorial-button'),
+    musicToggle: document.querySelector('#music-toggle'), soundToggle: document.querySelector('#sound-toggle'), reducedMotionToggle: document.querySelector('#reduced-motion-toggle'), helpingHandToggle: document.querySelector('#helping-hand-toggle'), musicStyleSelect: document.querySelector('#music-style-select'), helpingHandInfo: document.querySelector('#helping-hand-info'), reducedMotionInfo: document.querySelector('#reduced-motion-info'), helpingHandNote: document.querySelector('#helping-hand-note'), reducedMotionNote: document.querySelector('#reduced-motion-note'), infoScreen: document.querySelector('#info-screen'), infoHeading: document.querySelector('#info-heading'), infoBody: document.querySelector('#info-body'), closeInfo: document.querySelector('#close-info-button'), musicPreview: document.querySelector('#music-preview-button'), replayTutorial: document.querySelector('#replay-tutorial-button'),
     pauseButton: document.querySelector('#pause-button'), resume: document.querySelector('#resume-button'), pauseRestart: document.querySelector('#pause-restart-button'), pauseHome: document.querySelector('#pause-home-button'),
   };
   const palette = ['#bce7ef', '#f8d9a7', '#c9e5c0', '#e5c4d6'];
@@ -101,7 +101,7 @@
     { id: 'bird-defender', icon: '◒', title: 'Bird Defender', description: 'Block 3 bird collisions.', color: '#5476a8' },
     { id: 'power-seeker', icon: '⚡', title: 'Power Seeker', description: 'Collect 5 power-ups.', color: '#b65e45' },
   ];
-  const defaultProfile = { tokens: 0, falcon: 0, shield: 0, powerJump: 0, character: 'girl', tutorialComplete: false, music: true, sound: true, reducedMotion: Boolean(window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches), bestScores: { endless: 0, arcade: 0, challenge: 0, hard: 0 }, badges: {}, stats: { runs: 0, wins: 0, arcadeWins: 0, challengeWins: 0, leftEarly: 0, deaths: 0, fallDeaths: 0, birdDeaths: 0, challengeMisses: 0, jumps: 0, totalScore: 0, totalHeight: 0, parshad: 0, tokens: 0, powerups: 0, birdsSeen: 0, birdsBlocked: 0, falconSaves: 0, shieldsUsed: 0 } };
+  const defaultProfile = { tokens: 0, falcon: 0, shield: 0, powerJump: 0, character: 'girl', tutorialComplete: false, music: true, musicStyle: 'varied', sound: true, helpingHand: true, reducedMotion: Boolean(window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches), bestScores: { endless: 0, arcade: 0, challenge: 0, hard: 0 }, badges: {}, stats: { runs: 0, wins: 0, arcadeWins: 0, challengeWins: 0, leftEarly: 0, deaths: 0, fallDeaths: 0, birdDeaths: 0, challengeMisses: 0, jumps: 0, totalScore: 0, totalHeight: 0, parshad: 0, tokens: 0, powerups: 0, birdsSeen: 0, birdsBlocked: 0, falconSaves: 0, shieldsUsed: 0 } };
   const profileStorageKey = 'seva-jump-profile';
   let storageAvailable = true;
   function freshProfile() { return { ...defaultProfile, bestScores: { ...defaultProfile.bestScores }, badges: {}, stats: { ...defaultProfile.stats } }; }
@@ -112,7 +112,8 @@
     ['tokens', 'falcon', 'shield'].forEach(key => { normalized[key] = wholeNumber(saved[key]); });
     normalized.powerJump = wholeNumber(saved.powerJump, 5);
     normalized.character = saved.character === 'boy' ? 'boy' : 'girl';
-    ['music', 'sound', 'reducedMotion'].forEach(key => { if (typeof saved[key] === 'boolean') normalized[key] = saved[key]; });
+    ['music', 'sound', 'reducedMotion', 'helpingHand'].forEach(key => { if (typeof saved[key] === 'boolean') normalized[key] = saved[key]; });
+    normalized.musicStyle = saved.musicStyle === 'classic' ? 'classic' : 'varied';
     normalized.tutorialComplete = typeof saved.tutorialComplete === 'boolean' ? saved.tutorialComplete : Object.values(saved.tutorialModes && typeof saved.tutorialModes === 'object' ? saved.tutorialModes : {}).some(Boolean);
     Object.keys(normalized.bestScores).forEach(key => { normalized.bestScores[key] = wholeNumber(saved.bestScores?.[key]); });
     if (saved.badges && typeof saved.badges === 'object' && !Array.isArray(saved.badges)) Object.keys(saved.badges).forEach(key => { if (saved.badges[key] === true) normalized.badges[key] = true; });
@@ -150,16 +151,22 @@
   let profile = loadProfile();
   let state, selectedCharacter = profile.character === 'boy' ? 'boy' : 'girl', settingsReturn = 'home', pointerX = null, keys = new Set(), lastTime = 0, tutorialIndex = 0, tutorialResumesRun = false;
   let audioContext, musicTimer = null, musicVoices = [], badgeQueue = [], badgeToastTimer = null;
-  let nextMusicPhraseTime = 0;
+  let nextMusicPhraseTime = 0, musicPhraseIndex = 0;
   const noiseBuffers = new Map();
 
   function applyPreferences() {
     ui.musicToggle.checked = profile.music;
     ui.soundToggle.checked = profile.sound;
     ui.reducedMotionToggle.checked = profile.reducedMotion;
+    ui.helpingHandToggle.checked = profile.helpingHand;
+    ui.musicStyleSelect.value = profile.musicStyle;
     document.documentElement.classList.toggle('reduced-motion', profile.reducedMotion);
   }
   function requestResetProgress() { ui.settings.classList.add('hidden'); ui.resetConfirm.classList.remove('hidden'); syncModalAccessibility(); }
+  // Setting explanations open as a dialog over Settings, the same way the
+  // reset confirmation does, so they read well inside the native wrappers.
+  function openInfo(title, note) { menuDirty = true; ui.infoHeading.textContent = title; ui.infoBody.textContent = note.textContent; ui.settings.classList.add('hidden'); ui.infoScreen.classList.remove('hidden'); syncModalAccessibility(); }
+  function closeInfo() { menuDirty = true; ui.infoScreen.classList.add('hidden'); ui.settings.classList.remove('hidden'); syncModalAccessibility(); }
   function cancelResetProgress() { ui.resetConfirm.classList.add('hidden'); ui.settings.classList.remove('hidden'); syncModalAccessibility(); }
   function resetAllProgress() {
     ui.resetConfirm.classList.add('hidden');
@@ -229,15 +236,24 @@
     else if (type === 'firework') { noise(.28, { filter: 'lowpass', frequency: 360, volume: .05 }); tone(180, .16, { slide: 85, wave: 'sawtooth', volume: .027 }); setTimeout(() => noise(.16, { frequency: 1350, volume: .023 }), 115); }
     else if (type === 'loss') { tone(260, .3, { slide: 110, wave: 'sine', volume: .042 }); noise(.12, { frequency: 230, volume: .014 }); }
   }
-  function playMusicPhrase(startTime) {
-    if (!audioContext || !ui.musicToggle.checked) return;
+  // The four variants of a mode's phrase, so consecutive phrases differ while
+  // the bass keeps the mode's character: as written, reversed as an answer,
+  // lifted a fifth, then a syncopated octave bounce leading back to the start.
+  function musicVariant(phrase, index) {
+    const { melody, bass } = phrase, straight = melody.map((_, i) => [i, 1]);
+    if (index === 1) return { melody: [...melody].reverse(), bass, beats: straight };
+    if (index === 2) return { melody: melody.map(note => note * config.musicLiftRatio), bass, beats: straight };
+    if (index === 3) return { melody: melody.map((note, i) => i % 2 ? note * 2 : note), bass, beats: config.musicBounceBeats };
+    return { melody, bass, beats: straight };
+  }
+  function playMusicPhrase(startTime, variant = null) {
+    if (!audioContext || (variant === null && !ui.musicToggle.checked)) return;
     const audio = audioContext, now = startTime, beat = config.musicBeatSeconds;
-    const music = state?.mode === 'challenge' ? [392, 440, 494, 523, 494, 440, 392, 330] : state?.mode === 'arcade' ? [392, 440, 523, 587, 523, 440, 494, 523] : [392, 440, 523, 440, 349, 392, 440, 494];
-    const bass = state?.mode === 'challenge' ? [196, 196, 220, 220] : [196, 175, 196, 220];
-    music.forEach((note, i) => {
-      const oscillator = audio.createOscillator(), gain = audio.createGain(), start = now + i * beat;
-      oscillator.type = 'sine'; oscillator.frequency.value = note; gain.gain.setValueAtTime(.028, start); gain.gain.exponentialRampToValueAtTime(.001, start + beat * .84);
-      oscillator.connect(gain).connect(audio.destination); oscillator.start(start); oscillator.stop(start + beat); musicVoices.push(oscillator); oscillator.onended = () => { musicVoices = musicVoices.filter(voice => voice !== oscillator); };
+    const { melody, bass, beats } = musicVariant(config.musicPhrases[state?.mode] || config.musicPhrases.endless, variant ?? (profile.musicStyle === 'classic' ? 0 : musicPhraseIndex++ % 4));
+    melody.forEach((note, i) => {
+      const oscillator = audio.createOscillator(), gain = audio.createGain(), start = now + beats[i][0] * beat, length = beats[i][1] * beat;
+      oscillator.type = 'sine'; oscillator.frequency.value = note; gain.gain.setValueAtTime(.028, start); gain.gain.exponentialRampToValueAtTime(.001, start + length * .84);
+      oscillator.connect(gain).connect(audio.destination); oscillator.start(start); oscillator.stop(start + length); musicVoices.push(oscillator); oscillator.onended = () => { musicVoices = musicVoices.filter(voice => voice !== oscillator); };
     });
     bass.forEach((note, i) => {
       const oscillator = audio.createOscillator(), gain = audio.createGain(), start = now + i * beat * 2;
@@ -248,7 +264,8 @@
   function setMusic() {
     stopMusic();
     if (!ui.musicToggle.checked || !audioContext || !state?.running || state.paused || menuVisible) return;
-    nextMusicPhraseTime = audioContext.currentTime + config.musicStartDelaySeconds;
+    // A run (or a resumed one) always opens with the phrase as written.
+    nextMusicPhraseTime = audioContext.currentTime + config.musicStartDelaySeconds; musicPhraseIndex = 0;
     scheduleMusic();
   }
   function scheduleMusic() {
@@ -261,6 +278,10 @@
     }
     musicTimer = setTimeout(scheduleMusic, config.musicSchedulerIntervalMs);
   }
+  // One phrase of the chosen style from Settings, even with music switched off;
+  // Varied previews rotate through the variants that differ from Classic.
+  let previewIndex = 0;
+  function previewMusic() { const audio = getAudio(); if (!audio) return; stopMusic(); playMusicPhrase(audio.currentTime + config.musicStartDelaySeconds, profile.musicStyle === 'classic' ? 0 : 1 + previewIndex++ % 3); }
   function stopMusic() { clearTimeout(musicTimer); musicTimer = null; musicVoices.forEach(voice => { try { voice.stop(); } catch {} }); musicVoices = []; }
   function startAudio() { getAudio(); setMusic(); }
 
@@ -324,9 +345,11 @@
     const startPlatform = { x: W / 2 - 57.5, y: 700, w: 115, type: 'normal', speed: 0, dir: 1, broken: false };
     state = {
       running: true, paused: false, mode, score: 0, heightScore: 0, parshad: 0, tokens: 0, cameraY: 0,
-      background: Math.floor(Math.random() * backgroundImages.length), nextY: 610, ending: false, falconUsed: false, invincibleTimer: 0, invincibleSource: null, shieldVisualTimer: 0, resultTimer: null, finishGate: null, fireworkSoundTimers: [], challengePlaced: 0, challengePlatformCount: 0, upgradeEffect: null, hitStop: null, falconRescue: null,
+      background: Math.floor(Math.random() * backgroundImages.length), backdropZone: 0, backdropFade: null, nextY: 610, ending: false, falconUsed: false, invincibleTimer: 0, invincibleSource: null, shieldVisualTimer: 0, resultTimer: null, finishGate: null, fireworkSoundTimers: [], challengePlaced: 0, challengePlatformCount: 0, upgradeEffect: null, hitStop: null, falconRescue: null, flight: null,
       player: { x: W / 2, y: 650, vx: 0, vy: -config.baseJumpVelocity * rules.powerJumpMultiplier(profile.powerJump), w: 31, h: 48, character: selectedCharacter, facing: 1 },
-      platforms: [startPlatform], lastPlatform: startPlatform, collectibles: [], enemies: [], powerups: [], particles: [], challengeMissed: false, missedBowls: new Set(), challengeWarningShown: false,
+      // The opening launch has no landing event, so the start platform counts
+      // as the first landing for the stall rescue.
+      platforms: [startPlatform], lastPlatform: startPlatform, lastLanding: startPlatform, stallTimer: 0, collectibles: [], enemies: [], powerups: [], particles: [], challengeMissed: false, missedBowls: new Set(), challengeWarningShown: false,
       message: mode === 'challenge' ? `Challenge · collect all ${config.challengeParshadTarget} parshad` : mode === 'arcade' ? `Arcade · reach ${config.arcadeTargetScore}` : mode === 'hard' ? 'Hard Mode · fragile routes ahead' : 'Endless Run · Keep climbing', messageTimer: 3,
     };
     while (state.nextY > -900) addPlatform();
@@ -335,7 +358,9 @@
     const r = Math.random();
     const arcade = rules.isArcadeLike(state.mode);
     const hard = rules.isHard(state.mode);
-    const level = arcade || hard ? levelForScore(state.score) : 1;
+    // Score bands gate Kara and Nishan in every mode; only Arcade also uses
+    // them for its sideways shifts and gap ranges.
+    const level = levelForScore(state.score);
     const endlessDifficulty = rules.endlessDifficulty(state.score);
     const challengeBowlPlatform = state.mode === 'challenge' && rules.isChallengeBowlRow(state.challengePlaced, state.challengePlatformCount + 1);
     const belowChallengeBowl = state.mode === 'challenge' && rules.isChallengeBowlRow(state.challengePlaced, state.challengePlatformCount + 2);
@@ -379,7 +404,7 @@
         const [minSpeed, maxSpeed] = config.arcadeMovingPlatformSpeedRange;
         speed = Math.min(maxSpeed, (minSpeed + (maxSpeed - minSpeed) * arcadeProgress) * (.9 + Math.random() * .2));
       } else {
-        const [minSpeed, maxSpeed] = config.movingPlatformSpeedRange;
+        const [minSpeed, maxSpeed] = rules.endlessMovingPlatformSpeedRange(state.score);
         speed = minSpeed + Math.random() * (maxSpeed - minSpeed);
       }
     }
@@ -546,11 +571,53 @@
     p.x = rescue.pickupX + (targetX - rescue.pickupX) * carry; p.y = rescue.pickupY + (targetY - rescue.pickupY) * carry;
     if (progress < 1) return true;
     p.x = targetX; p.y = targetY; p.vx = 0; p.vy = -config.baseJumpVelocity * rules.powerJumpMultiplier(profile.powerJump); if (state.invincibleTimer < 1.2) { state.invincibleTimer = 1.2; state.invincibleSource = 'falcon'; } state.falconRescue = null;
+    state.lastLanding = rescue.platform; // the carry launches the player from here without a landing event
     state.message = 'Back in the sky!'; state.messageTimer = 1.4;
     return false;
   }
+  function updateStallRescue() {
+    // A broken row can leave the nearest intact platform two gaps above the
+    // one the player keeps bouncing on, or its only survivor too far sideways
+    // for a touch player, and the camera never scrolls down. Once the climb
+    // has stalled, turn that platform into a spring: its longer flight also
+    // covers more sideways distance. When even a spring cannot get there
+    // (several rows broke in a row, common in Hard's double-break rows)
+    // bridge the gap with solid helper steps instead.
+    const standing = state.lastLanding;
+    if (state.stallTimer < config.stallRescueSeconds || state.hitStop || state.falconRescue || state.ending || state.paused) return;
+    if (!standing || standing.broken || !state.platforms.includes(standing)) return;
+    const hop = { powerJump: profile.powerJump, halfWidth: state.player.w / 2 }, springHop = { ...hop, velocity: config.springJumpVelocity };
+    if (!rules.isStranded(state.platforms, standing, standing.type === 'spring' ? springHop : hop)) return;
+    if (!profile.helpingHand || !rules.helpingHandApplies(state.mode)) {
+      // No help here: say so, then end the run rather than bounce forever.
+      if (state.stallTimer >= config.stallEndSeconds) return finish(false, 'fall');
+      if (state.message !== 'Stuck · no platform in reach') { state.message = 'Stuck · no platform in reach'; state.messageTimer = config.stallEndSeconds - config.stallRescueSeconds; }
+      return;
+    }
+    if (standing.type !== 'spring' && !rules.isStranded(state.platforms, standing, springHop)) {
+      standing.type = 'spring'; standing.speed = 0;
+      state.message = 'Spring assist!'; sound('spring'); burst(standing.x + standing.w / 2, standing.y, '#d5a5ff', 26);
+    } else {
+      const above = rules.nearestRowAbove(state.platforms, standing);
+      if (!above) return;
+      const rungs = rules.rescueRungs(standing, above, hop, W);
+      state.platforms.push(...rungs);
+      for (const rung of rungs) burst(rung.x + rung.w / 2, rung.y, '#f7efd7', 12);
+      state.message = 'Helper platforms!'; sound('land');
+    }
+    state.stallTimer = 0; state.messageTimer = 1.5;
+  }
+  function updateBackdrop(dt) {
+    // Passing a zone threshold starts a cross-fade from the previous image.
+    // Reduced Motion switches instantly; the fade only advances on active
+    // time so a paused game keeps its half-faded sky.
+    const zone = rules.backdropZone(state.heightScore);
+    if (zone !== state.backdropZone) { state.backdropFade = profile.reducedMotion ? null : { from: state.backdropZone, elapsed: 0 }; state.backdropZone = zone; }
+    if (state.backdropFade && (state.backdropFade.elapsed += dt * 1000) >= config.backdropFadeMs) state.backdropFade = null;
+  }
   function update(dt) {
     if (state.paused || (!state.running && !state.ending)) return;
+    updateBackdrop(dt);
     if (state.upgradeEffect) {
       state.upgradeEffect.elapsed += dt * 1000;
       if (state.upgradeEffect.elapsed >= state.upgradeEffect.duration) state.upgradeEffect = null;
@@ -574,7 +641,13 @@
     if (Math.abs(p.vx) > 22) p.facing = Math.sign(p.vx);
     p.x += p.vx * dt;
     const previousBottom = p.y + p.h / 2;
-    p.x = Math.max(p.w / 2, Math.min(W - p.w / 2, p.x)); p.vy += config.gravity * dt; p.y += p.vy * dt;
+    p.x = Math.max(p.w / 2, Math.min(W - p.w / 2, p.x));
+    // A Nishan flight holds a steady climb with gravity off; it only advances
+    // here, so a pause or a bird hit-stop freezes it and it resumes after.
+    // Once it ends the climb speed simply decays under normal gravity.
+    if (state.flight) { p.vy = -config.nishanFlightSpeed; state.flight.remaining -= dt; if (state.flight.remaining <= 0) state.flight = null; }
+    else p.vy += config.gravity * dt;
+    p.y += p.vy * dt;
     for (const plat of state.platforms) {
       if (plat.broken) { plat.breakElapsed += dt; continue; }
       if (plat.type === 'moving') { plat.x += plat.dir * plat.speed * dt; if (plat.x < 6 || plat.x + plat.w > W - 6) plat.dir *= -1; }
@@ -582,7 +655,7 @@
       if (!plat.broken && p.vy > 0 && previousBottom <= top && p.y + p.h / 2 >= top && p.x + p.w / 2 > plat.x && p.x - p.w / 2 < plat.x + plat.w) {
         const jumpMultiplier = rules.powerJumpMultiplier(profile.powerJump);
         p.y = top - p.h / 2; p.vy = -(plat.type === 'spring' ? config.springJumpVelocity : config.baseJumpVelocity) * jumpMultiplier;
-        profile.stats.jumps++;
+        profile.stats.jumps++; state.lastLanding = plat;
         sound(plat.type === 'break' ? 'break' : plat.type === 'spring' ? 'spring' : 'land');
         const landingColor = plat.type === 'spring' ? '#d5a5ff' : plat.type === 'break' ? '#c49464' : '#f7efd7';
         burst(p.x, top, landingColor, plat.type === 'spring' ? 26 : plat.type === 'break' ? 20 : 16);
@@ -593,7 +666,9 @@
     const targetCamera = Math.min(state.cameraY, p.y - H * .38);
     state.cameraY += (targetCamera - state.cameraY) * Math.min(1, dt * 4);
     const currentHeight = Math.max(0, Math.floor((650 - p.y) / 18));
-    if (currentHeight > state.heightScore) { state.heightScore = currentHeight; state.score = currentHeight + state.parshad * 3; }
+    state.stallTimer += dt;
+    if (currentHeight > state.heightScore) { state.heightScore = currentHeight; state.score = currentHeight + state.parshad * 3; state.stallTimer = 0; }
+    updateStallRescue();
     if (state.score >= 100) awardBadge('sky-starter');
     if (state.mode === 'endless' && state.score >= 1000) awardBadge('endless-1000');
     if (state.mode === 'endless' && state.score >= 2000) awardBadge('endless-2000');
@@ -632,7 +707,7 @@
       }
     }
     state.collectibles = state.collectibles.filter(c => !c.taken && c.y < state.cameraY + H + 100);
-    for (const power of state.powerups) if (!power.taken && collide(p, power, 30)) { power.taken = true; profile.stats.powerups++; burst(power.x, power.y, power.type === 'kara' ? '#f5cb58' : '#f1815a', 14); if (profile.stats.powerups >= 5) awardBadge('power-seeker'); sound('boost'); if (power.type === 'nishan') { state.invincibleTimer = 5; state.invincibleSource = 'nishan'; } p.vy = rules.boostVelocity(power.type, profile.powerJump); state.message = power.type === 'kara' ? 'Kara boost · one higher jump!' : 'Nishan boost · one jump + protection!'; state.messageTimer = 2; }
+    for (const power of state.powerups) if (!power.taken && collide(p, power, 30)) { power.taken = true; profile.stats.powerups++; burst(power.x, power.y, power.type === 'kara' ? '#f5cb58' : '#f1815a', 14); if (profile.stats.powerups >= 5) awardBadge('power-seeker'); sound('boost'); if (power.type === 'nishan') { state.invincibleTimer = 5; state.invincibleSource = 'nishan'; state.flight = { remaining: config.nishanFlightSeconds }; p.vy = -config.nishanFlightSpeed; } else if (state.flight) state.flight.remaining += config.karaFlightExtensionSeconds; else p.vy = rules.boostVelocity(power.type, profile.powerJump); state.message = power.type === 'nishan' ? 'Nishan boost · guided flight + protection!' : state.flight ? 'Kara boost · flight extended!' : 'Kara boost · one higher jump!'; state.messageTimer = 2; }
     state.powerups = state.powerups.filter(o => !o.taken && o.y < state.cameraY + H + 100);
     for (const bird of state.enemies) {
       if (bird.hit) continue;
@@ -654,29 +729,35 @@
     }
     state.messageTimer -= dt;
   }
-  function drawBackdrop() {
-    const backgroundImage = backgroundImages[state.background];
-    if (backgroundImage.complete && backgroundImage.naturalWidth) {
-      const sourceRatio = backgroundImage.naturalWidth / backgroundImage.naturalHeight;
-      const targetRatio = W / H;
-      if (targetRatio > sourceRatio) {
-        const sourceHeight = backgroundImage.naturalWidth / targetRatio;
-        const sourceY = (backgroundImage.naturalHeight - sourceHeight) / 2;
-        ctx.drawImage(backgroundImage, 0, sourceY, backgroundImage.naturalWidth, sourceHeight, 0, 0, W, H);
-      } else {
-        const sourceWidth = backgroundImage.naturalHeight * targetRatio;
-        const sourceX = (backgroundImage.naturalWidth - sourceWidth) / 2;
-        ctx.drawImage(backgroundImage, sourceX, 0, sourceWidth, backgroundImage.naturalHeight, 0, 0, W, H);
-      }
-      return;
+  // The starting zone still varies per run; each later zone steps one image on.
+  function backdropIndex(zone) { return (state.background + zone) % backgroundImages.length; }
+  function drawBackdropImage(backgroundImage) {
+    if (!backgroundImage.complete || !backgroundImage.naturalWidth) return false;
+    const sourceRatio = backgroundImage.naturalWidth / backgroundImage.naturalHeight;
+    const targetRatio = W / H;
+    if (targetRatio > sourceRatio) {
+      const sourceHeight = backgroundImage.naturalWidth / targetRatio;
+      const sourceY = (backgroundImage.naturalHeight - sourceHeight) / 2;
+      ctx.drawImage(backgroundImage, 0, sourceY, backgroundImage.naturalWidth, sourceHeight, 0, 0, W, H);
+    } else {
+      const sourceWidth = backgroundImage.naturalHeight * targetRatio;
+      const sourceX = (backgroundImage.naturalWidth - sourceWidth) / 2;
+      ctx.drawImage(backgroundImage, sourceX, 0, sourceWidth, backgroundImage.naturalHeight, 0, 0, W, H);
     }
-    ctx.fillStyle = palette[state.background]; ctx.fillRect(0, 0, W, H);
-    ctx.fillStyle = '#fff7df'; ctx.beginPath(); ctx.arc(365, 92, 42, 0, Math.PI * 2); ctx.fill();
-    ctx.fillStyle = '#7cb296'; ctx.fillRect(0, H - 100, W, 100);
-    // A distant gurdwara-inspired silhouette belongs only to the background.
-    ctx.fillStyle = '#f6e3bb'; ctx.fillRect(50, H - 185, 92, 88); ctx.fillRect(310, H - 166, 92, 69);
-    ctx.fillStyle = '#e2aa65'; [96, 356].forEach(x => { ctx.beginPath(); ctx.arc(x, H - 186, 30, Math.PI, 0); ctx.fill(); });
-    ctx.fillStyle = '#ffffffbb'; for (let i = 0; i < 4; i++) { const x = (i * 130 + 25 - state.cameraY * .04) % 520 - 50; ctx.beginPath(); ctx.ellipse(x, 130 + i * 70, 50, 15, 0, 0, Math.PI * 2); ctx.fill(); }
+    return true;
+  }
+  function drawBackdrop() {
+    const fade = state.backdropFade, index = backdropIndex(fade ? fade.from : state.backdropZone);
+    if (!drawBackdropImage(backgroundImages[index])) {
+      ctx.fillStyle = palette[index]; ctx.fillRect(0, 0, W, H);
+      ctx.fillStyle = '#fff7df'; ctx.beginPath(); ctx.arc(365, 92, 42, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#7cb296'; ctx.fillRect(0, H - 100, W, 100);
+      // A distant gurdwara-inspired silhouette belongs only to the background.
+      ctx.fillStyle = '#f6e3bb'; ctx.fillRect(50, H - 185, 92, 88); ctx.fillRect(310, H - 166, 92, 69);
+      ctx.fillStyle = '#e2aa65'; [96, 356].forEach(x => { ctx.beginPath(); ctx.arc(x, H - 186, 30, Math.PI, 0); ctx.fill(); });
+    }
+    // Mid-fade the next image is layered on top, so only fade frames cost a second draw.
+    if (fade) { ctx.save(); ctx.globalAlpha = Math.min(1, fade.elapsed / config.backdropFadeMs); drawBackdropImage(backgroundImages[backdropIndex(state.backdropZone)]); ctx.restore(); }
   }
   function drawFireworks() {
     if (!state.completed) return;
@@ -847,7 +928,7 @@
     if (state.messageTimer > 0) { ctx.textAlign = 'center'; ctx.fillStyle = '#24483f'; ctx.font = 'bold 15px "Trebuchet MS"'; ctx.fillText(state.message, W / 2, isMissedBowlMessage() ? 180 : 120); }
   }
   function loop(time) {
-    const dt = Math.min(.04, (time - lastTime) / 1000 || 0); lastTime = time;
+    const dt = Math.min(config.maxFrameSeconds, (time - lastTime) / 1000 || 0); lastTime = time;
     pollGamepad();
     const active = !menuVisible && !state?.paused && (state?.running || state?.ending || state?.falconRescue);
     if (active) update(dt);
@@ -877,7 +958,7 @@
     ui.tutorialNext.textContent = tutorialIndex === TUTORIAL_STEPS.length - 1 ? 'Let’s jump!' : 'Next';
   }
   // Same order as the overlays in index.html: the later visible dialog is on top.
-  const modalScreens = [ui.end, ui.tutorial, ui.pause, ui.settings, ui.resetConfirm, ui.badges, ui.stats, ui.upgrades, ui.about, ui.privacy, ui.exitConfirm];
+  const modalScreens = [ui.end, ui.tutorial, ui.pause, ui.settings, ui.infoScreen, ui.resetConfirm, ui.badges, ui.stats, ui.upgrades, ui.about, ui.privacy, ui.exitConfirm];
   const gameFrame = document.querySelector('.game-frame');
   const fullscreenButton = document.querySelector('#fullscreen-button');
   if (!nativePlatform && gameFrame.requestFullscreen && document.fullscreenEnabled) fullscreenButton.classList.remove('hidden');
@@ -943,8 +1024,8 @@
   function closeSettings() { menuDirty = true; ui.settings.classList.add('hidden'); if (settingsReturn === 'pause' && state?.paused) ui.pause.classList.remove('hidden'); else ui.home.classList.remove('hidden'); syncModalAccessibility(); }
   function leaveRunEarly() { if (state?.running && state.paused && !state.ending) { profile.stats.leftEarly++; saveProfile(); } showHome(); }
   function restartPausedRun() { const mode = state?.mode || 'endless'; leaveRunEarly(); start(mode); }
-  function start(mode) { menuVisible = false; menuDirty = true; getAudio(); reset(mode); ui.home.classList.add('hidden'); ui.end.classList.add('hidden'); ui.end.classList.remove('visible'); ui.upgrades.classList.add('hidden'); ui.about.classList.add('hidden'); ui.privacy.classList.add('hidden'); ui.badges.classList.add('hidden'); ui.stats.classList.add('hidden'); ui.settings.classList.add('hidden'); ui.resetConfirm.classList.add('hidden'); ui.exitConfirm.classList.add('hidden'); ui.pause.classList.add('hidden'); if (!profile.tutorialComplete) return showTutorial(); setNativeGameplayActive(true); startAudio(); ui.tutorial.classList.add('hidden'); ui.gameTools.classList.remove('hidden'); syncModalAccessibility(); }
-  function showHome() { menuVisible = true; menuDirty = true; setNativeGameplayActive(false); clearInput(); if (state) state.running = false; stopMusic(); ui.mobileHud.classList.add('hidden'); updateRecordsUI(); ui.home.classList.remove('hidden'); ui.end.classList.add('hidden'); ui.end.classList.remove('visible'); ui.upgrades.classList.add('hidden'); ui.about.classList.add('hidden'); ui.privacy.classList.add('hidden'); ui.badges.classList.add('hidden'); ui.stats.classList.add('hidden'); ui.tutorial.classList.add('hidden'); ui.settings.classList.add('hidden'); ui.resetConfirm.classList.add('hidden'); ui.exitConfirm.classList.add('hidden'); ui.pause.classList.add('hidden'); ui.gameTools.classList.add('hidden'); syncModalAccessibility(); }
+  function start(mode) { menuVisible = false; menuDirty = true; getAudio(); reset(mode); ui.home.classList.add('hidden'); ui.end.classList.add('hidden'); ui.end.classList.remove('visible'); ui.upgrades.classList.add('hidden'); ui.about.classList.add('hidden'); ui.privacy.classList.add('hidden'); ui.badges.classList.add('hidden'); ui.stats.classList.add('hidden'); ui.settings.classList.add('hidden'); ui.resetConfirm.classList.add('hidden'); ui.infoScreen.classList.add('hidden'); ui.exitConfirm.classList.add('hidden'); ui.pause.classList.add('hidden'); if (!profile.tutorialComplete) return showTutorial(); setNativeGameplayActive(true); startAudio(); ui.tutorial.classList.add('hidden'); ui.gameTools.classList.remove('hidden'); syncModalAccessibility(); }
+  function showHome() { menuVisible = true; menuDirty = true; setNativeGameplayActive(false); clearInput(); if (state) state.running = false; stopMusic(); ui.mobileHud.classList.add('hidden'); updateRecordsUI(); ui.home.classList.remove('hidden'); ui.end.classList.add('hidden'); ui.end.classList.remove('visible'); ui.upgrades.classList.add('hidden'); ui.about.classList.add('hidden'); ui.privacy.classList.add('hidden'); ui.badges.classList.add('hidden'); ui.stats.classList.add('hidden'); ui.tutorial.classList.add('hidden'); ui.settings.classList.add('hidden'); ui.resetConfirm.classList.add('hidden'); ui.infoScreen.classList.add('hidden'); ui.exitConfirm.classList.add('hidden'); ui.pause.classList.add('hidden'); ui.gameTools.classList.add('hidden'); syncModalAccessibility(); }
   function showUpgrades() { menuVisible = true; menuDirty = true; setNativeGameplayActive(false); clearInput(); if (state) state.running = false; stopMusic(); updateUpgradeUI(); ui.home.classList.add('hidden'); ui.end.classList.add('hidden'); ui.upgrades.classList.remove('hidden'); ui.about.classList.add('hidden'); ui.badges.classList.add('hidden'); ui.stats.classList.add('hidden'); ui.settings.classList.add('hidden'); ui.pause.classList.add('hidden'); ui.gameTools.classList.add('hidden'); syncModalAccessibility(); }
   function showAbout() { menuVisible = true; menuDirty = true; setNativeGameplayActive(false); clearInput(); if (state) state.running = false; stopMusic(); ui.home.classList.add('hidden'); ui.end.classList.add('hidden'); ui.upgrades.classList.add('hidden'); ui.about.classList.remove('hidden'); ui.privacy.classList.add('hidden'); ui.badges.classList.add('hidden'); ui.stats.classList.add('hidden'); ui.settings.classList.add('hidden'); ui.pause.classList.add('hidden'); ui.gameTools.classList.add('hidden'); syncModalAccessibility(); }
   function showPrivacy() { menuVisible = true; menuDirty = true; setNativeGameplayActive(false); ui.about.classList.add('hidden'); ui.privacy.classList.remove('hidden'); syncModalAccessibility(); }
@@ -970,6 +1051,13 @@
   ui.pauseButton.addEventListener('click', pauseGame); ui.resume.addEventListener('click', resumeGame); ui.pauseRestart.addEventListener('click', restartPausedRun); ui.pauseHome.addEventListener('click', leaveRunEarly);
   ui.musicToggle.addEventListener('change', () => { profile.music = ui.musicToggle.checked; saveProfile(); if (profile.music && !state?.paused) startAudio(); else setMusic(); });
   ui.soundToggle.addEventListener('change', () => { profile.sound = ui.soundToggle.checked; saveProfile(); });
+  ui.musicStyleSelect.addEventListener('change', () => { profile.musicStyle = ui.musicStyleSelect.value === 'classic' ? 'classic' : 'varied'; saveProfile(); });
+  // The info and play buttons sit inside their setting's label; stop the
+  // click from reaching the control and open the dialog or sample instead.
+  for (const [button, title, note] of [[ui.helpingHandInfo, 'Helping Hand', ui.helpingHandNote], [ui.reducedMotionInfo, 'Reduced motion', ui.reducedMotionNote]]) button.addEventListener('click', event => { event.preventDefault(); event.stopPropagation(); openInfo(title, note); });
+  ui.musicPreview.addEventListener('click', event => { event.preventDefault(); event.stopPropagation(); previewMusic(); });
+  ui.closeInfo.addEventListener('click', closeInfo);
+  ui.helpingHandToggle.addEventListener('change', () => { menuDirty = true; profile.helpingHand = ui.helpingHandToggle.checked; saveProfile(); });
   ui.reducedMotionToggle.addEventListener('change', () => { menuDirty = true; profile.reducedMotion = ui.reducedMotionToggle.checked; document.documentElement.classList.toggle('reduced-motion', profile.reducedMotion); saveProfile(); });
   ui.tutorialNext.addEventListener('click', () => { if (tutorialIndex < TUTORIAL_STEPS.length - 1) { tutorialIndex++; renderTutorial(); sound('ui'); } else finishTutorial(); });
   ui.tutorialSkip.addEventListener('click', finishTutorial);
