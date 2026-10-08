@@ -1151,10 +1151,11 @@
     if (profile.tokens < cost) return updateUpgradeUI(`You need ${cost - profile.tokens} more Khanda tokens.`);
     profile.tokens -= cost; profile[type]++; saveProfile(); sound('purchase'); updateUpgradeUI('Upgrade purchased!');
   }
-  document.querySelector('#confirm-run-button').addEventListener('click', () => {
+  function confirmRunUpgrades() {
     for (const key of ['falcon', 'shield', 'powerJump']) if (profile[key] > 0) profile.runUpgrades[key] = document.querySelector(`#run-${key}-toggle`).checked;
     saveProfile(); start(pendingRunMode, true);
-  });
+  }
+  document.querySelector('#confirm-run-button').addEventListener('click', confirmRunUpgrades);
   document.querySelector('#cancel-run-button').addEventListener('click', showHome);
   ui.modeChoices.forEach(button => button.addEventListener('click', () => start(button.dataset.mode)));
   ui.restart.addEventListener('click', () => start(state?.mode || 'endless'));
@@ -1193,9 +1194,11 @@
     gamepadButtons = { a, pause };
     gamepadSteer = 0;
     if (!gamepadFocused || document.hidden || !pad) return;
-    if (pause && !previous.pause && state?.running && !state.paused) pauseGame();
+    if (pause && !previous.pause && activeModal === ui.runUpgrades) showHome();
+    else if (pause && !previous.pause && state?.running && !state.paused) pauseGame();
     else if (a && !previous.a) {
-      if (activeModal === ui.pause) resumeGame();
+      if (activeModal === ui.runUpgrades) confirmRunUpgrades();
+      else if (activeModal === ui.pause) resumeGame();
       else if (!activeModal && !ui.home.classList.contains('hidden')) start('endless');
     }
     if (state?.running && !state.paused && !menuVisible) gamepadSteer = rules.gamepadSteering(pad.axes[0], pad.buttons[14]?.pressed, pad.buttons[15]?.pressed);
@@ -1219,7 +1222,7 @@
   canvas.addEventListener('lostpointercapture', releasePointer);
   document.addEventListener('keydown', e => {
     if (e.key === 'Tab' && activeModal) {
-      const focusable = Array.from(activeModal.querySelectorAll(focusableSelector));
+      const focusable = Array.from(activeModal.querySelectorAll(focusableSelector)).filter(element => !element.closest('.hidden'));
       if (focusable.length) {
         const first = focusable[0], last = focusable[focusable.length - 1];
         if (e.shiftKey && (document.activeElement === activeModal || document.activeElement === first || !activeModal.contains(document.activeElement))) { last.focus(); e.preventDefault(); }

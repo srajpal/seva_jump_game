@@ -49,6 +49,7 @@ function makeRuntime(storage = {}, options = {}) {
       querySelector(selector) { if (selector === 'button:not([disabled]), a[href], input:not([disabled]), [tabindex]:not([tabindex="-1"])') return this.children.find(child => child.focus) || null; return element(selector); },
       querySelectorAll(selector) { if (selector === 'span') return [element('dot'), element('dot'), element('dot')]; if (selector.includes('button')) return this.children.filter(child => child.focus); return []; },
       contains(target) { return target === this || this.children.includes(target); }, focus() { document.activeElement = this; },
+      closest(selector) { return selector === '.hidden' && classes.has('hidden') ? this : null; },
     };
   }
   function character(name) { const selector = `.scene-character-${name}`; if (!elements.has(selector)) { const node = element(selector); node.dataset.character = name; elements.set(selector, node); } return elements.get(selector); }
@@ -182,7 +183,23 @@ async function run() {
   controls.hooks.profile.bestScores.challenge = 321; controls.hooks.showStats();
   assert.match(controls.elements.get('#home-records').innerHTML, /Challenge/);
   assert.match(controls.elements.get('#home-records').innerHTML, /321/);
-  console.log('Polish controls checks passed: canvas fallback, A/D, Home activation, gamepad steering/deadzone/disconnect/pause/modal/focus, Challenge stats.');
+  // With an owned upgrade, A opens the pre-run panel; the pad must be able to
+  // confirm it (A) or back out of it (B or Start) without a mouse or keyboard.
+  for (const back of [1, 9]) {
+    const upgradePad = { connected: true, mapping: 'standard', axes: [0], buttons: Array.from({ length: 16 }, () => ({ pressed: false })) };
+    const owned = makeRuntime({ value: JSON.stringify({ tutorialComplete: true, music: false, sound: false, falcon: 1 }) }, { getGamepads: () => [upgradePad] });
+    const press = button => { upgradePad.buttons[button].pressed = true; owned.hooks.pollGamepad(); upgradePad.buttons[button].pressed = false; owned.hooks.pollGamepad(); };
+    const panel = owned.elements.get('#run-upgrades-screen');
+    press(0); assert.equal(panel.classList.contains('hidden'), false, 'A opens the pre-run panel when an upgrade is owned');
+    assert.equal(owned.hooks.state?.running ?? false, false);
+    press(back); assert.equal(panel.classList.contains('hidden'), true, 'B/Start backs out of the pre-run panel');
+    assert.equal(owned.elements.get('#home-screen').classList.contains('hidden'), false, 'backing out returns Home');
+    press(0); press(0);
+    assert.equal(owned.hooks.state.running, true, 'A on the pre-run panel starts the run');
+    assert.equal(owned.hooks.state.mode, 'endless');
+    assert.equal(panel.classList.contains('hidden'), true);
+  }
+  console.log('Polish controls checks passed: canvas fallback, A/D, Home activation, gamepad steering/deadzone/disconnect/pause/modal/focus, pre-run panel, Challenge stats.');
   const deniedGamepad = makeRuntime(saved, { getGamepads() { throw new DOMException('Blocked by permissions policy', 'SecurityError'); } });
   deniedGamepad.hooks.start('endless');
   assert.doesNotThrow(() => deniedGamepad.hooks.loop(16), 'an embed denying gamepad access must still animate');
