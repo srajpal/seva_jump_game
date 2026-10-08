@@ -77,7 +77,9 @@ const unavailableResponse = destination => {
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then(cache => cache.addAll(APP_FILES))
+      // Bypass the HTTP cache: art replaced under an unchanged filename must
+      // not be precached from a stale browser copy of the previous release.
+      .then(cache => cache.addAll(APP_FILES.map(file => new Request(new URL(file, SCOPE_URL), { cache: 'reload' }))))
       .then(() => self.skipWaiting()),
   );
 });

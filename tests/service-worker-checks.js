@@ -10,9 +10,11 @@ class MockCache {
   constructor(scope, fetchImpl) { this.scope = scope; this.fetchImpl = fetchImpl; this.entries = new Map(); this.added = []; this.failPut = false; }
   key(request) { return new URL(typeof request === 'string' ? request : request.url, this.scope).href; }
   async addAll(files) {
-    this.added = [...files];
+    // Record precache entries relative to the scope, plus each request's cache mode.
+    this.added = files.map(file => typeof file === 'string' ? file : './' + file.url.slice(this.scope.length));
+    this.cacheModes = files.map(file => typeof file === 'string' ? 'default' : file.cache);
     const fetched = await Promise.all(files.map(async file => {
-      const response = await this.fetchImpl(new Request(new URL(file, this.scope)));
+      const response = await this.fetchImpl(typeof file === 'string' ? new Request(new URL(file, this.scope)) : file);
       if (!response.ok) throw new Error(`Precache failed: ${file}`);
       return [this.key(file), response];
     }));
@@ -81,6 +83,7 @@ function request(url, destination, mode) {
   assert.equal(cacheName, `seva-jump-${encodeURIComponent('/html/123456/')}-v${releaseVersion}-art6`);
   assert(!releaseCache.added.includes('./'), 'precache must not request the hosting directory');
   assert(releaseCache.added.includes('./index.html'));
+  assert(releaseCache.cacheModes.every(mode => mode === 'reload'), 'precache bypasses the HTTP cache so replaced art is never stale');
 
   const requestsBeforeNavigation = worker.requests.length;
   const onlineNavigation = await worker.dispatch('fetch', request(worker.scope, '', 'navigate'));
