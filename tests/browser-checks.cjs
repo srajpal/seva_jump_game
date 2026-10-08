@@ -294,6 +294,19 @@ async function canvasWork(page) {
     await offlinePage.locator('#endless-button').click(); await offlinePage.locator('#tutorial-skip-button').click();
     await offlinePage.locator('#pause-button').click(); assert(await offlinePage.locator('#pause-screen').isVisible());
     assert.deepEqual(offlineErrors,[]); check('first-visit offline actual game with directory URLs denied'); await offlineContext.close();
+    // The native apps package every file: a worker left by an earlier web-style
+    // build must be removed with its caches, or app updates replay old files.
+    const nativeContext = await browser.newContext(), nativePage = await nativeContext.newPage();
+    await nativePage.goto(`${origin}/game/index.html`);
+    await nativePage.evaluate(() => navigator.serviceWorker.ready);
+    await nativePage.addInitScript(() => { window.Capacitor = { isNativePlatform: () => true, getPlatform: () => 'android', Plugins: {} }; });
+    await nativePage.reload();
+    await nativePage.waitForFunction(async () => (await navigator.serviceWorker.getRegistrations()).length === 0, null, { timeout: 10000 });
+    // The outgoing worker controls this page until it unloads; the next launch runs without it.
+    await nativePage.reload();
+    assert.equal(await nativePage.evaluate(() => navigator.serviceWorker.controller), null, 'next launch is not served by a worker');
+    await nativePage.waitForFunction(async () => !(await caches.keys()).some(key => key.startsWith('seva-jump-')), null, { timeout: 10000 });
+    check('native app removes a leftover service worker and its caches'); await nativeContext.close();
   } catch (error) {
     const failurePage=browser.contexts().flatMap(context=>context.pages()).at(-1);
     if(failurePage) await failurePage.screenshot({path:path.join(output,'failure.png'),fullPage:true}).catch(()=>{});

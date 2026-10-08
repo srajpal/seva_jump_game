@@ -3,6 +3,10 @@ const SCOPE_URL = new URL(self.registration.scope);
 const SCOPE_KEY = encodeURIComponent(SCOPE_URL.pathname);
 const CACHE_PREFIX = `seva-jump-${SCOPE_KEY}-`;
 const CACHE_NAME = `${CACHE_PREFIX}v${RELEASE_VERSION}-art6`;
+// Capacitor serves the Android app from https://localhost with every file
+// packaged in the APK. A worker there only replays the previous release after
+// an app update, so a worker left by an older build removes itself instead.
+const NATIVE_APP_ORIGIN = SCOPE_URL.protocol === 'https:' && SCOPE_URL.hostname === 'localhost' && SCOPE_URL.port === '';
 
 // Keep this list explicit: itch.io rejects directory requests, and one failed
 // request would prevent the whole release cache from installing.
@@ -75,6 +79,7 @@ const unavailableResponse = destination => {
 };
 
 self.addEventListener('install', event => {
+  if (NATIVE_APP_ORIGIN) { event.waitUntil(self.skipWaiting()); return; }
   event.waitUntil(
     caches.open(CACHE_NAME)
       // Bypass the HTTP cache: art replaced under an unchanged filename must
@@ -85,6 +90,12 @@ self.addEventListener('install', event => {
 });
 
 self.addEventListener('activate', event => {
+  if (NATIVE_APP_ORIGIN) {
+    event.waitUntil(caches.keys()
+      .then(keys => Promise.all(keys.filter(key => key.startsWith(CACHE_PREFIX)).map(key => caches.delete(key))))
+      .then(() => self.registration.unregister()));
+    return;
+  }
   event.waitUntil(
     caches.keys()
       .then(keys => Promise.all(
@@ -96,7 +107,7 @@ self.addEventListener('activate', event => {
 });
 
 self.addEventListener('fetch', event => {
-  if (event.request.method !== 'GET') return;
+  if (NATIVE_APP_ORIGIN || event.request.method !== 'GET') return;
 
   const requestUrl = new URL(event.request.url);
   if (requestUrl.origin !== SCOPE_URL.origin || !requestUrl.href.startsWith(SCOPE_URL.href)) return;

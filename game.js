@@ -1240,5 +1240,11 @@
   window.addEventListener('focus', () => { gamepadFocused = true; });
   document.addEventListener('visibilitychange', () => { if (document.hidden) { const wasActive = state?.running && !state.paused; clearInput(); if (wasActive) pauseGame(); } });
   window.sevaJumpNativeBack = handleNativeBack; window.Capacitor?.Plugins?.App?.addListener?.('backButton', handleNativeBack); setNativeGameplayActive(false); applyPreferences(); setSelectedCharacter(selectedCharacter); reset(); state.running = false; updateUpgradeUI(); updateRecordsUI(); renderBadges(); renderStats(); requestAnimationFrame(loop);
-  if ('serviceWorker' in navigator && location.protocol !== 'file:') window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
+  // The native apps package every file, and a worker would replay the previous
+  // release after an app update. Remove one left by an earlier build there.
+  const capacitorApp = Boolean(window.Capacitor?.isNativePlatform?.() || window.SevaJumpAndroid);
+  if (capacitorApp) {
+    navigator.serviceWorker?.getRegistrations?.().then(registrations => registrations.forEach(registration => registration.unregister())).catch(() => {});
+    window.caches?.keys?.().then(keys => keys.filter(key => key.startsWith('seva-jump-')).forEach(key => caches.delete(key))).catch(() => {});
+  } else if ('serviceWorker' in navigator && location.protocol !== 'file:') window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
 })();
