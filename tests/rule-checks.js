@@ -2,6 +2,35 @@ const assert = require('node:assert/strict');
 const config = require('../game-config.js');
 const rules = require('../game-rules.js');
 
+for (const type of ['pigeon', 'sparrow', 'swift']) for (const direction of [-1, 1]) {
+  const player = { x: 200, y: 300 };
+  for (const height of [-48, -15, 24]) {
+    assert.ok(rules.birdTouchesPlayer(player, { x: 200, y: 300 + height, vx: direction * 80, type }), `${type}: head, torso and feet contact`);
+  }
+  for (const [x, y] of [[200, 220], [200, 350], [250, 285], [160, 240]]) {
+    assert.equal(rules.birdTouchesPlayer(player, { x, y, vx: direction * 80, type }), false, `${type}: nearby sky and wing-tip space are safe`);
+  }
+}
+const contactPlatform = { x: 150, y: 500, w: 100, type: 'normal' };
+const descending = { x: 200, y: 490, h: 48, vy: 300 };
+assert.ok(rules.landsOnPlatform(descending, { x: 200, bottom: 490 }, contactPlatform));
+assert.equal(rules.landsOnPlatform({ ...descending, vy: -300 }, { x: 200, bottom: 490 }, contactPlatform), false, 'rising through a platform never lands');
+assert.equal(rules.landsOnPlatform(descending, { x: 200, bottom: 501 }, contactPlatform), false, 'feet already below the surface never land');
+// Feet cross the surface 1/4 of the way through this frame, while still outside.
+assert.equal(rules.landsOnPlatform({ ...descending, x: 160, y: 506 }, { x: 130, bottom: 490 }, contactPlatform), false, 'entering after crossing the surface is not a midair bounce');
+assert.ok(rules.landsOnPlatform({ ...descending, x: 130, y: 506 }, { x: 160, bottom: 490 }, contactPlatform), 'a real contact before moving off the edge still bounces');
+assert.equal(rules.landsOnPlatform(descending, { x: 200, bottom: 490 }, { ...contactPlatform, x: 160 }, 250), false, 'a moving platform arriving after the feet pass cannot catch the player');
+for (const type of ['normal', 'spring', 'moving', 'break']) {
+  const platform = { ...contactPlatform, type }, surface = rules.platformSurface(platform);
+  for (const side of [-1, 1]) {
+    const edge = side < 0 ? surface.left : surface.right;
+    const outside = edge + side * (config.playerFootHalfWidth + 1);
+    const inside = edge + side * (config.playerFootHalfWidth - 1);
+    assert.equal(rules.landsOnPlatform({ ...descending, x: outside }, { x: outside, bottom: 490 }, platform), false, `${type}: unsupported edge falls`);
+    assert.ok(rules.landsOnPlatform({ ...descending, x: inside }, { x: inside, bottom: 490 }, platform), `${type}: visible edge contact works`);
+  }
+}
+
 // Completion rules: an endless run must never complete due to its score.
 for (const score of [0, config.arcadeTargetScore, 10000]) {
 assert.equal(rules.shouldComplete('endless', score, config.challengeParshadTarget + 100), false);
@@ -65,7 +94,14 @@ assert(rules.hardBirdChance(config.hardBirdStartScore) > 0, 'Hard birds should b
 assert(rules.hardBirdChance(100000) <= config.hardBirdChanceRange[1], 'Hard bird chance must remain capped.');
 assert.equal(rules.canSpawnHardBird([0], 799, 800), false, 'Hard Mode must not place two birds within one screen height.');
 assert.equal(rules.canSpawnHardBird([0], 800, 800), true, 'A new hard bird may appear after one full screen height.');
-assert(config.challengeBirdStartScore < config.arcadeBirdStartScore, 'Challenge birds should arrive earlier than Arcade birds.');
+assert.equal(rules.arcadeBirdChance(199), 0);
+assert.equal(rules.arcadeBirdChance(200), config.arcadeBirdIntroChance);
+assert.equal(rules.arcadeBirdChance(499), config.arcadeBirdIntroChance);
+assert.equal(rules.arcadeBirdChance(500), config.arcadeBirdChance);
+assert.equal(rules.canSpawnArcadeBird([0], -856, 800, 200), false, 'intro prevents overlapping bird encounters');
+assert.equal(rules.canSpawnArcadeBird([0], -857, 800, 200), true);
+assert.equal(rules.canSpawnArcadeBird([0], -428, 800, 500), false);
+assert.equal(rules.canSpawnArcadeBird([0], -429, 800, 500), true);
 assert.equal(rules.canSpawnChallengeBird([0], config.challengeBirdScreenSpacing - 1), false, 'Challenge must not place two birds within one screen.');
 assert.equal(rules.canSpawnChallengeBird([0], config.challengeBirdScreenSpacing), true, 'Challenge may place another bird after one full screen.');
 assert(config.hardBreakPlatformWidthRange[1] < 80, 'Hard breakable platforms should stay small.');
@@ -112,10 +148,10 @@ assert.ok(Math.abs(rules.hopTime(apex, hop) - config.baseJumpVelocity / config.g
 assert.equal(rules.horizontalReach(hopTime), config.pointerMaxHorizontalSpeed * (hopTime - 1 / config.pointerSteeringResponse), 'sideways reach is the pointer cap less one steering time constant');
 assert.equal(rules.horizontalReach(0.01), 0, 'no sideways reach before steering responds');
 const ledge = { x: 37, y: 500, w: 97, type: 'normal', broken: false };
-const nearSide = { x: 260, y: 404, w: 109, type: 'normal', broken: false, speed: 0 };
+const nearSide = { x: 246, y: 404, w: 109, type: 'normal', broken: false, speed: 0 };
 const farSide = { ...nearSide, x: 271 };
-assert.equal(rules.canHop(ledge, nearSide, hop), true, 'a row 96 px up and 229 px across is within a touch hop');
-assert.equal(rules.canHop(ledge, farSide, hop), false, 'eleven more pixels are beyond the ramp-adjusted pointer reach');
+assert.equal(rules.canHop(ledge, nearSide, hop), true, 'a row 96 px up and 215 px across is reachable with the smaller foot contact');
+assert.equal(rules.canHop(ledge, farSide, hop), false, 'the farther row is beyond the ramp-adjusted pointer reach');
 assert.equal(rules.canHop(ledge, { ...nearSide, speed: 90 }, hop), false, 'a moving target is assumed to drift away during the flight');
 assert.equal(rules.canHop(ledge, farSide, { ...hop, velocity: config.springJumpVelocity }), true, 'a spring flight lasts long enough to cover the far row');
 assert.equal(rules.isStranded([ledge, farSide], ledge, hop), true, 'a lone far-side survivor strands a touch player');

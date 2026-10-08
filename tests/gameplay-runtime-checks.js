@@ -18,6 +18,155 @@ function advanceUpdates(runtime, seconds, step = .04) {
 
 const runtime = makeRuntime({ value: JSON.stringify({ tutorialComplete: true, music: false, sound: false, reducedMotion: true }) });
 
+// Pre-run choices preserve inventory and apply consistently to every mode.
+{
+  const shields = makeRuntime({ value: JSON.stringify({ tutorialComplete: true, shield: 2 }) });
+  let run = cleanState(shields);
+  assert.equal(shields.hooks.profile.shield, 2, 'starting a run does not consume a shield');
+  shields.hooks.triggerBirdHit({ x: 200, y: 300 });
+  shields.hooks.resolveBirdHit(1);
+  assert.equal(shields.hooks.profile.shield, 1);
+  assert.equal(run.shieldUsed, true);
+  shields.hooks.triggerBirdHit({ x: 200, y: 300 });
+  shields.hooks.resolveBirdHit(1);
+  assert.equal(shields.hooks.profile.shield, 1, 'active protection costs no extra item');
+  run.invincibleTimer = 0;
+  shields.hooks.triggerBirdHit({ x: 200, y: 300 });
+  assert.equal(run.hitStop.type, 'loss', 'second shield is unavailable in the same run');
+  shields.hooks.resolveBirdHit(1);
+  assert.equal(shields.hooks.profile.shield, 1);
+  run = cleanState(shields);
+  assert.equal(run.shieldUsed, false);
+  shields.hooks.triggerBirdHit({ x: 200, y: 300 });
+  assert.equal(run.hitStop.type, 'shield', 'remaining shield is available next run');
+}
+for (const mode of ['endless', 'arcade', 'challenge', 'hard']) {
+  const loadout = makeRuntime({ value: JSON.stringify({ tutorialComplete: true, falcon: 2, shield: 3, powerJump: 5 }) });
+  loadout.hooks.start(mode);
+  assert.equal(loadout.elements.get('#run-upgrades-screen').classList.contains('hidden'), false);
+  assert.equal(loadout.hooks.state.running, false, 'game waits for confirmation');
+  for (const key of ['falcon', 'shield', 'powerJump']) loadout.elements.get(`#run-${key}-toggle`).checked = false;
+  loadout.elements.get('#confirm-run-button').listeners.click();
+  assert.equal(loadout.hooks.state.mode, mode);
+  assert.equal(loadout.hooks.state.player.vy, -config.baseJumpVelocity);
+  assert.equal(loadout.hooks.profile.powerJump, 5, 'purchased levels retained');
+  loadout.hooks.triggerBirdHit({ x: 200, y: 300 });
+  assert.equal(loadout.hooks.state.hitStop.type, 'loss', 'disabled shield cannot intercept a bird');
+  assert.equal(loadout.hooks.profile.shield, 3);
+  const falling = cleanState(loadout, mode);
+  falling.player.y = 2000; falling.player.vy = 500;
+  loadout.hooks.update(0);
+  assert.equal(loadout.hooks.profile.falcon, 2, 'disabled falcon is not consumed by a fall');
+  assert.equal(falling.falconUsed, false);
+  const saved = loadout.hooks.normalizeProfile(loadout.hooks.profile);
+  assert.equal(saved.runUpgrades.powerJump, false, 'choices survive profile loading');
+  loadout.hooks.start(mode);
+  for (const key of ['falcon', 'shield', 'powerJump']) loadout.elements.get(`#run-${key}-toggle`).checked = true;
+  loadout.elements.get('#confirm-run-button').listeners.click();
+  assert.equal(loadout.hooks.state.player.vy, -config.baseJumpVelocity * rules.powerJumpMultiplier(5));
+  loadout.hooks.triggerBirdHit({ x: 200, y: 300 });
+  assert.equal(loadout.hooks.state.hitStop.type, 'shield', 'reenabled shield protects again');
+}
+{
+  const empty = makeRuntime({ value: JSON.stringify({ tutorialComplete: true }) });
+  empty.hooks.start('endless');
+  assert.equal(empty.elements.get('#run-upgrades-screen').classList.contains('hidden'), true);
+  assert.equal(empty.hooks.state.running, true, 'no inventory skips the panel');
+  const single = makeRuntime({ value: JSON.stringify({ falcon: 1 }) });
+  single.hooks.start('arcade');
+  assert.equal(single.elements.get('#run-falcon-row').classList.contains('hidden'), false);
+  assert.equal(single.elements.get('#run-shield-row').classList.contains('hidden'), true);
+  assert.equal(single.elements.get('#run-powerJump-row').classList.contains('hidden'), true);
+  single.hooks.handleNativeBack();
+  assert.equal(single.elements.get('#run-upgrades-screen').classList.contains('hidden'), true);
+  assert.equal(single.hooks.profile.falcon, 1, 'canceling consumes nothing');
+}
+
+// New achievements preserve cumulative boost progress and require every Arcade bowl.
+for (const count of [4, 5, 24, 25]) {
+  const saved = makeRuntime({ value: JSON.stringify({ stats: { powerups: count } }) });
+  assert.equal(Boolean(saved.hooks.profile.badges['power-seeker']), count >= 5);
+  assert.equal(Boolean(saved.hooks.profile.badges['boost-master']), count >= 25);
+}
+for (const type of ['kara', 'nishan']) {
+  const boosts = makeRuntime({ value: JSON.stringify({ tutorialComplete: true, stats: { powerups: 24 } }) });
+  const run = cleanState(boosts);
+  run.powerups = [{ x: run.player.x, y: run.player.y, type }];
+  boosts.hooks.update(0);
+  assert.equal(boosts.hooks.profile.stats.powerups, 25);
+  assert.equal(boosts.hooks.profile.badges['boost-master'], true, `${type} counts toward Boost Master`);
+}
+for (const scenario of ['perfect', 'remaining', 'scrolled-off', 'loss', 'other-mode', 'empty']) {
+  const badgeRuntime = makeRuntime({ value: JSON.stringify({ tutorialComplete: true }) });
+  const run = cleanState(badgeRuntime, scenario === 'other-mode' ? 'endless' : 'arcade');
+  run.parshad = scenario === 'empty' ? 0 : 8;
+  if (scenario === 'remaining') run.collectibles = [{ x: 10, y: 200, type: 'parshad' }];
+  if (scenario === 'scrolled-off') {
+    run.collectibles = [{ x: 10, y: run.cameraY + 1000, type: 'parshad' }];
+    badgeRuntime.hooks.update(0);
+    assert.equal(run.arcadeMissedParshad, true, 'missed bowl remains recorded after cleanup');
+    assert.equal(run.collectibles.length, 0);
+  }
+  badgeRuntime.hooks.finish(scenario !== 'loss');
+  assert.equal(Boolean(badgeRuntime.hooks.profile.badges['perfect-arcade']), scenario === 'perfect', scenario);
+  badgeRuntime.hooks.reset('arcade');
+  assert.equal(badgeRuntime.hooks.state.arcadeMissedParshad, false, 'new run clears missed-bowl tracking');
+}
+
+// Birds touching the visible head must count, including both character choices.
+for (const [mode, rescued, completed] of [['arcade', true, true], ['arcade', false, true], ['arcade', true, false], ['endless', true, true]]) {
+  const comeback = makeRuntime({ value: JSON.stringify({ tutorialComplete: true }) });
+  const run = cleanState(comeback, mode);
+  run.falconUsed = rescued;
+  comeback.hooks.finish(completed);
+  assert.equal(Boolean(comeback.hooks.profile.badges['comeback-kid']), mode === 'arcade' && rescued && completed);
+}
+{
+  const characters = makeRuntime({ value: JSON.stringify({ tutorialComplete: true }) });
+  for (const character of ['girl', 'girl', 'boy']) {
+    const run = cleanState(characters, 'arcade');
+    run.player.character = character;
+    characters.hooks.finish(true);
+    assert.equal(Boolean(characters.hooks.profile.badges['both-feet-in']), character === 'boy');
+  }
+  const reloaded = makeRuntime({ value: JSON.stringify(characters.hooks.profile) });
+  assert.equal(reloaded.hooks.profile.stats.arcadeWinsGirl, 2);
+  assert.equal(reloaded.hooks.profile.stats.arcadeWinsBoy, 1);
+  assert.equal(reloaded.hooks.profile.badges['both-feet-in'], true);
+}
+
+for (const character of ['girl', 'boy']) {
+  const hitState = cleanState(runtime);
+  Object.assign(hitState.player, { x: 225, y: 400, character });
+  hitState.enemies = [{ x: 225, y: 352, vx: 60, type: 'pigeon', flapOffset: 0 }];
+  runtime.hooks.update(0);
+  assert.ok(hitState.hitStop, `${character}: a bird touching the head registers`);
+}
+
+// Empty sprite padding and a body leaning beyond the ledge cannot support feet.
+for (const [type, x] of [['normal', 310], ['moving', 155], ['break', 155], ['spring', 310]]) {
+  const edgeState = cleanState(runtime);
+  edgeState.platforms = [{ x: 150, y: 500, w: 150, type, speed: 0, dir: 1, broken: false }];
+  Object.assign(edgeState.player, { x, y: 475, vy: 100, vx: 0 });
+  runtime.hooks.update(.04);
+  assert.ok(edgeState.player.vy > 0, `${type}: unsupported feet keep falling`);
+}
+
+// A long frame can carry a bird past an edge; shorter following frames must
+// bring it back into the playfield instead of flipping its direction in place.
+for (const size of sizes) {
+  for (const side of [-1, 1]) {
+    const edgeRuntime = makeRuntime({}, size);
+    const edgeState = cleanState(edgeRuntime);
+    const edgeBird = { x: side < 0 ? 21 : size.width - 21, y: 100, vx: side * 200, type: 'pigeon', flapOffset: 0 };
+    edgeState.enemies = [edgeBird];
+    edgeRuntime.hooks.update(.04);
+    for (let frame = 0; frame < 12; frame++) edgeRuntime.hooks.update(1 / 120);
+    assert.equal(Math.sign(edgeBird.vx), -side, 'bird keeps flying inward after an edge turn');
+    assert.ok(edgeBird.x > 30 && edgeBird.x < size.width - 30, 'bird leaves the edge at mixed frame rates');
+  }
+}
+
 // Ordinary downward contact lands and increments the real jump counter.
 let state = cleanState(runtime);
 state.platforms = [{ x: 150, y: 500, w: 150, type: 'normal', speed: 0, dir: 1, broken: false }];
@@ -176,11 +325,15 @@ for (const native of [false, true]) {
   const painted = [];
   const messages = makeRuntime({}, { native, drawingContext: { fillText(text, x, y) { painted.push({ text, y }); } } });
   state = cleanState(messages, 'challenge'); state.challengeMissed = true;
-  for (const message of ['A bowl was missed - restart to collect all 50', 'FALCON SAVE!', 'Back in the sky!', 'Bird hit!']) {
+  state.stuckBanner = true; state.messageTimer = 0;
+  messages.hooks.draw();
+  assert.ok(painted.some(item => item.text === 'Uh-oh! Looks like you’re stuck!'), 'persistent banner renders on desktop and native with expired transient messages');
+  state.stuckBanner = false;
+  for (const message of ['A bowl was missed - restart to collect all 50', 'Stuck · no platform in reach', 'FALCON SAVE!', 'Back in the sky!', 'Bird hit!']) {
     state.message = message; state.messageTimer = 2; painted.length = 0; messages.hooks.draw();
     const item = painted.find(item => item.text === message);
     if (message.startsWith('A bowl')) assert.equal(item?.y, 180);
-    else if (native) assert.equal(item, undefined, 'later messages stay off the mobile canvas');
+    else if (native && message !== 'Stuck · no platform in reach') assert.equal(item, undefined, 'later messages stay off the mobile canvas');
     else assert.equal(item?.y, 120, 'desktop messages keep their normal position after a miss');
   }
 }
@@ -391,7 +544,11 @@ for (const [level, gap] of [[1, 244], [0, 222], [5, 334]]) {
 // broke, or a finish-runway step. The spring's longer flight covers it.
 // The harness letterboxes the 450 px canvas in a 768 px wide rect: scale 1.28,
 // 96 px of content offset (see getBoundingClientRect in runtime-browser-checks).
-const steer = x => rescueRuntime.elements.get('#game').listeners.pointerdown({ clientX: 96 + x * 1.28, pointerId: 1 });
+const steer = x => {
+  const canvas = rescueRuntime.elements.get('#game');
+  canvas.listeners.pointerup({ pointerId: 1 });
+  canvas.listeners.pointerdown({ clientX: 96 + x * 1.28, pointerId: 1, pointerType: 'mouse' });
+};
 const releaseSteering = () => rescueRuntime.elements.get('#game').listeners.pointercancel();
 // A player steers for the far row from the moment they leave the platform;
 // steering mid-descent would only carry them off the ledge.
@@ -458,11 +615,21 @@ for (const [mode, helpingHand] of stuckCases) {
   advanceUpdates(rescueRuntime, config.stallRescueSeconds + .5, 1 / 60);
   assert.equal(standingPlatform.type, 'normal', `${mode}: no spring`);
   assert.equal(stalled.platforms.length, 2, `${mode}: no helper steps`);
-  assert.equal(stalled.message, 'Stuck · no platform in reach', `${mode}: the player is told`);
+  if (mode === 'arcade') assert.equal(stalled.message, 'Stuck · no platform in reach');
+  else assert.equal(stalled.stuckBanner, true, `${mode}: persistent banner appears`);
   assert.equal(stalled.ending, false, `${mode}: the warning comes first`);
   advanceUpdates(rescueRuntime, config.stallEndSeconds - config.stallRescueSeconds, 1 / 60);
-  assert.equal(stalled.ending, true, `${mode}: the stuck run ends`);
-  assert.equal(stalled.endReason, 'fall');
+  if (mode === 'arcade') {
+    assert.equal(stalled.ending, true);
+    assert.equal(stalled.endReason, 'fall');
+  } else {
+    advanceUpdates(rescueRuntime, 20, 1 / 60);
+    assert.equal(stalled.running, true, `${mode}: player controls when to leave`);
+    assert.equal(stalled.stuckBanner, true, `${mode}: banner remains beyond the old timeout`);
+    stalled.platforms.push({ x: standingPlatform.x, y: standingPlatform.y - 60, w: 90, type: 'normal', speed: 0, dir: 1, broken: false });
+    rescueRuntime.hooks.update(0);
+    assert.equal(stalled.stuckBanner, false, 'banner clears when a route becomes reachable');
+  }
 }
 {
   const { stalled, standingPlatform } = strandedScenario('hard', { x: 20, y: 410, w: 90 });

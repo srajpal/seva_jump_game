@@ -7,7 +7,7 @@ const http = require('node:http');
 const playwright = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
 const engine = process.env.BROWSER_ENGINE || 'chromium';
 const root = path.resolve(process.env.TEST_WEB_ROOT || path.join(__dirname, '..'));
-const output = path.resolve(__dirname, '../screenshots/release-1.0.1', engine);
+const output = path.resolve(__dirname, '../screenshots/release-1.0.3', engine);
 fs.mkdirSync(output, { recursive: true });
 const reports = [];
 const mime = { '.html': 'text/html', '.js': 'application/javascript', '.css': 'text/css', '.png': 'image/png', '.webmanifest': 'application/manifest+json' };
@@ -53,6 +53,47 @@ async function canvasWork(page) {
       const context = await browser.newContext({ viewport: { width, height }, isMobile: touch && engine !== 'firefox', hasTouch: touch, serviceWorkers: 'block' });
       const page = await context.newPage(); const errors = []; page.on('pageerror', e => { errors.push(e.message); console.error(`${engine}/${name}: ${e.message}`); });
       await page.goto(`${origin}/inspect/index.html`);
+      await page.evaluate(() => { Object.assign(__qa.profile, { falcon: 2, shield: 1, powerJump: 3, tutorialComplete: true }); });
+      await page.locator('#arcade-button').click();
+      assert(await page.locator('#run-upgrades-screen').isVisible(), `${name}: owned upgrades open pre-run choices`);
+      await page.screenshot({ path: path.join(output, `${name}-run-upgrades.png`) });
+      for (const key of ['falcon', 'shield', 'powerJump']) await page.locator(`#run-${key}-toggle`).uncheck();
+      await page.locator('#confirm-run-button').click();
+      assert(await page.evaluate(() => __qa.state.running && __qa.state.mode === 'arcade' && __qa.profile.powerJump === 3 && !__qa.profile.runUpgrades.powerJump));
+      await page.locator('#pause-button').click();
+      await page.locator('#pause-home-button').click();
+      await page.locator('#arcade-button').click();
+      assert.equal(await page.locator('#run-falcon-toggle').isChecked(), false, `${name}: selection remembered`);
+      await page.keyboard.press('Escape');
+      assert(await page.locator('#home-screen').isVisible(), `${name}: Escape cancels choices`);
+      await page.evaluate(() => localStorage.removeItem('seva-jump-profile'));
+      await page.reload();
+      check(`pre-run upgrades, remembered choices and cancel: ${name}`);
+      await page.evaluate(() => Promise.all([...document.images].map(image => image.decode().catch(() => {}))));
+      const menuAlignment = await page.evaluate(() => {
+        const menus = [...document.querySelectorAll('.overlay')];
+        const original = menus.map(menu => menu.className);
+        const results = [];
+        for (const menu of menus) {
+          menus.forEach(other => other.classList.add('hidden'));
+          menu.classList.remove('hidden'); menu.scrollTop = 0;
+          const children = [...menu.children].filter(child => child.getBoundingClientRect().height > 0);
+          const first = children[0], last = children.at(-1);
+          const box = menu.getBoundingClientRect(), style = getComputedStyle(menu);
+          const top = first.getBoundingClientRect().top - parseFloat(getComputedStyle(first).marginTop);
+          const bottom = last.getBoundingClientRect().bottom + parseFloat(getComputedStyle(last).marginBottom);
+          results.push({ id: menu.id, fits: menu.scrollHeight <= menu.clientHeight + 1,
+            topGap: top - box.top - parseFloat(style.paddingTop),
+            bottomGap: box.bottom - parseFloat(style.paddingBottom) - bottom });
+        }
+        menus.forEach((menu, index) => { menu.className = original[index]; menu.scrollTop = 0; });
+        return results;
+      });
+      for (const menu of menuAlignment) {
+        assert(menu.topGap >= -2, `${name}/${menu.id}: first content stays reachable`);
+        if (menu.fits) assert(Math.abs(menu.topGap - menu.bottomGap) < 3, `${name}/${menu.id}: content group vertically centered ${JSON.stringify(menu)}`);
+      }
+      check(`all menu groups center or safely scroll: ${name}`);
       const layout = await page.evaluate(() => {
         const home = document.querySelector('#home-screen').getBoundingClientRect(), title = document.querySelector('h1').getBoundingClientRect(), canvas = document.querySelector('canvas').getBoundingClientRect();
         return { width: innerWidth, height: innerHeight, scrollWidth: document.documentElement.scrollWidth, scrollHeight: document.documentElement.scrollHeight, homeTop: home.top, titleTop: title.top, canvasBottom: canvas.bottom };
@@ -67,6 +108,7 @@ async function canvasWork(page) {
         assert(await page.locator(`#${menu}-screen`).isVisible());
         assert.equal(await page.locator(`#${menu}-screen`).evaluate(el=>el.scrollTop),0, `${menu} opens at the top`);
         assert.equal((await canvasWork(page)).images, 0, `${name}: ${menu} does not redraw continuously`);
+        await page.screenshot({ path: path.join(output, `${name}-${menu}.png`) });
         await page.locator(`#close-${menu}-button`).click();
       }
       await page.locator('#endless-button').click(); await page.keyboard.press('Escape');
@@ -77,6 +119,26 @@ async function canvasWork(page) {
       assert.equal(activeCanvas.shadows, 0, `${name}: active frames never assign shadowBlur`);
       await page.screenshot({ path: path.join(output, `${name}-cached-glows.png`) });
       check(`idle canvas and cached collectible glow: ${name}`, activeCanvas);
+      const edgeFlight = await page.evaluate(() => {
+        const state = __qa.state;
+        state.paused = true;
+        const previous = state.enemies;
+        const bird = { x: 429, y: state.player.y - 200, vx: 200, type: 'pigeon', flapOffset: 0 };
+        state.enemies = [bird];
+        state.paused = false;
+        __qa.update(.04);
+        for (let frame = 0; frame < 12; frame++) __qa.update(1 / 120);
+        state.paused = true;
+        __qa.draw();
+        const result = { x: bird.x, vx: bird.vx };
+        state.enemies = previous;
+        document.querySelector('#badge-toast-name').textContent = 'First Leap';
+        document.querySelector('#badge-toast').classList.remove('hidden');
+        return result;
+      });
+      assert.ok(edgeFlight.x < 420 && edgeFlight.vx < 0, `${name}: pigeon flies inward after a slow edge frame`);
+      await page.screenshot({ path: path.join(output, `${name}-badge-position.png`) });
+      await page.evaluate(() => { document.querySelector('#badge-toast').classList.add('hidden'); __qa.state.paused = false; });
       if (name === 'desktop') {
         await page.keyboard.down('a'); assert.deepEqual(await page.evaluate(() => __qa.keys), ['ArrowLeft']); await page.keyboard.up('a');
         await page.keyboard.down('D'); assert.deepEqual(await page.evaluate(() => __qa.keys), ['ArrowRight']); await page.keyboard.up('D');

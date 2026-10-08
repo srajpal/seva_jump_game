@@ -10,7 +10,7 @@ This document targets Google Play. For itch.io browser distribution, use [ITCH_L
 
 **Full description:**
 
-The birds have scattered the parshad! Choose your jumper and climb through peaceful, gurdwara-inspired skies to help bring it back.
+The birds have scattered the parshad! Choose your jumper and climb through peaceful, Gurdwara-inspired skies to help bring it back.
 
 SevaJump is a cheerful, touch-friendly jumping adventure designed for ages 8-15. Steer through bright pixel-art scenery, collect parshad bowls and Khanda tokens, avoid flying birds, and unlock helpful upgrades. The game has no ads, purchases, or accounts, and gameplay does not need an internet connection.
 
@@ -21,7 +21,7 @@ Four ways to play:
 - Challenge Mode: recover all 50 parshad bowls before reaching the finish.
 - Hard Mode: tackle smaller moving and breakable platforms with earlier bird encounters.
 
-The About & Help section explains the controls, game items, accessibility settings, and Sikh terms used in the adventure. Progress, preferences, upgrades, badges, and statistics stay locally on your device and can be erased from Settings. Android backup is disabled, so progress is not restored after uninstalling and reinstalling the app.
+The About & Help section explains the controls, game items, accessibility settings, and the difference between Sikh and Sikhi. Learn about seva: serving others without expecting a reward. Inspired by Sikhi, this is one creator's make-believe adventure, made for everyone and intended to spark curiosity. It does not replace Sikh teachings. Help includes an optional link to learn more. Everyone is welcome to play. Progress, preferences, upgrades, badges, and statistics stay locally on your device and can be erased from Settings. Android backup is disabled, so progress is not restored after uninstalling and reinstalling the app.
 
 ## Suggested Play Console declarations
 
@@ -41,7 +41,7 @@ These are preparation notes, not a substitute for reviewing the final Play Conso
 ## Screenshot plan
 
 1. Home screen with both characters and all four modes visible.
-2. Active Arcade play showing platforms, collectibles, HUD, and gurdwara backdrop.
+2. Active Arcade play showing platforms, collectibles, HUD, and Gurdwara backdrop.
 3. Challenge completion with the finish banner and fireworks.
 4. Upgrades or badges screen showing progression.
 5. Optional Hard Mode action shot showing a bird and breakable route.
@@ -50,4 +50,4 @@ Keep screenshots free of browser chrome, debug overlays, test currency, and noti
 
 ## Before submission
 
-Confirm the developer name, support email, website, and privacy-policy contact information in Play Console. The creator has reviewed and approved the current Sikh terminology and imagery; review any later changes to that content before release.
+Confirm the developer name, support email, website, and privacy-policy contact information in Play Console. Earlier creator approval does not certify subsequent changes. Apply [SIKHI_TEXT_REVIEW.md](SIKHI_TEXT_REVIEW.md) to the final copy and imagery before release; the September 27 text revisions have not been verified in the live listing.

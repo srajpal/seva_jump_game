@@ -23,6 +23,8 @@ lag-frame Challenge bowl recovery with Falcon. Generator checks assert birds
 use the configured spawn offset and current-platform clearance. Package checks keep the iOS asset folder
 aligned with the runtime allowlist.
 
+Collision regressions cover head/body/feet contact with each bird type, both flight directions, visible platform edges, and horizontal overlap at the instant of landing (including moving platforms). Android Back checks cover nested menus, tutorial cancellation, pause/resume and Home-to-launcher behavior; the native smoke test also verifies saved progress survives backgrounding and reopening.
+
 ## Browser checks
 
 `tests/browser-checks.cjs` uses Playwright as an optional development tool. It is not part of the shipped game. Set `PLAYWRIGHT_MODULE` to your installed Playwright module directory, or install Playwright locally so Node can resolve it. Edge is the default test browser.
@@ -41,7 +43,9 @@ Optional settings:
 - `TEST_WEB_ROOT`: an extracted release folder; default is the project source.
 - `SKIP_OFFLINE=1`: skip only the offline test, explicitly recorded as not run. Never use this to claim an offline pass.
 
-The suite starts its own local server and closes it afterward. It checks six viewport sizes, menu focus and scrolling, pause, pointer mapping, storage denial, reset, a local cross-origin iframe, and actual first-visit offline play. Screenshots and JSON results are written to ignored `screenshots/release-1.0.1/<engine>/`. Browser emulation is not a physical-device test; WebKit on Windows is not iPhone Safari.
+The suite starts its own local server and closes it afterward. It checks six viewport sizes, menu focus and scrolling, pause, pointer mapping, storage denial, reset, a local cross-origin iframe, and actual first-visit offline play. Screenshots and JSON results are written to ignored `screenshots/release-1.0.3/<engine>/`. Browser emulation is not a physical-device test; WebKit on Windows is not iPhone Safari.
+
+Run `node tests/android-layout-checks.cjs` with the same Playwright setup for Android layout regressions without an APK. It simulates the Android bridge and changing safe areas at compact, large and short tablet sizes, with touch/mouse input, plus a phone. It checks the entire canvas and HUD remain visible after focus/resume, menu headings and scrolling after gameplay, and exclusion of Android styling from iOS. Captures are saved under `screenshots/android-layout/`. The test uses desktop Edge with simulated Android state; actual WebView/system-bar checks still require the native smoke test on a device or emulator.
 
 ## Release artifact
 
@@ -52,7 +56,7 @@ npm run test:package
 
 The builder writes a ZIP plus manifest and checksum into `dist/`. Extract the ZIP into a fresh folder, point `TEST_WEB_ROOT` at it, and rerun the browser suite. Open its local `index.html` as a separate download/offline check. Confirm the archive hash matches both sidecars before upload. Same input files produce the same ZIP with the same Node/zlib version; the manifest records that toolchain.
 
-`npm run release:media` captures a cover and screenshots using the same optional Playwright setup. It writes only to `release-media/`; it does not alter source art. Check the images before uploading them.
+`npm run release:media` captures a cover and one portrait screenshot of each of the 13 player-accessible overlay/game screens using the same optional Playwright setup. It writes only to `release-media/`; it does not alter source art. `run-result.png` uses a controlled end to reach the result overlay; the inspection seam exists only in the local in-memory server response, never in shipped `game.js`. Review the images before using them. Keep promotional screenshots aligned with the exact hosted game version.
 
 ## Android and iOS
 
@@ -64,7 +68,7 @@ npm run android:debug
 
 If your default Java is older, set `JAVA_HOME` for the build session to your Java 21 installation (Android Studio's bundled `jbr` is one option). Do not change the machine-wide setting just for this project.
 
-Install the debug APK on a test phone and tablet/emulator. Check portrait/safe areas, touch, pause, Settings, Android Back and local saves. `tests/native-smoke.cjs` can attach to a forwarded debug WebView using `WEBVIEW_CDP`, `DEVICE_LABEL`, `ADB_SERIAL=emulator-<port>` and optionally `ADB_PATH`; it must target a test emulator, not a personal browsing session. The check repeats reloads, asserts inset publication and portrait/canvas layout, dispatches Back through ADB and an edge swipe when gesture navigation is enabled, and saves WebView/device screenshots plus window dumps under ignored `screenshots/release-1.0.1/native/`. Acknowledge Android's first-use fullscreen tutorial before collecting unobstructed captures. Run on Android 15 and 16 phone/tablet profiles. Inspect device captures and window dumps to confirm system bars show in menus and hide in gameplay; also check gesture Back, three-button navigation, cutouts, rotation and resume. Automated WebView assertions alone do not establish device visual correctness.
+Install the debug APK on a test phone and tablet/emulator. Check portrait/safe areas, touch, pause, Settings, Android Back and local saves. `tests/native-smoke.cjs` can attach to a forwarded debug WebView using `WEBVIEW_CDP`, `DEVICE_LABEL`, `ADB_SERIAL=emulator-<port>` and optionally `ADB_PATH`; it must target a test emulator, not a personal browsing session. The check repeats reloads, asserts inset publication and portrait/canvas layout, dispatches Back through ADB and an edge swipe when gesture navigation is enabled, and saves WebView/device screenshots plus window dumps under ignored `screenshots/release-1.0.3/native/`. Acknowledge Android's first-use fullscreen tutorial before collecting unobstructed captures. Run on Android 15 and 16 phone/tablet profiles. Inspect device captures and window dumps to confirm system bars show in menus and hide in gameplay; also check gesture Back, three-button navigation, cutouts, rotation and resume. Automated WebView assertions alone do not establish device visual correctness.
 
 Build iOS in Xcode and test on an iPhone/iPad. This Windows workspace cannot verify an iOS archive.
 

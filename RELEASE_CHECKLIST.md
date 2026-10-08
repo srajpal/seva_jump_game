@@ -2,7 +2,7 @@
 
 Use this checklist for every release candidate. Do not create or commit an upload keystore, passwords, or `keystore.properties`.
 
-Current candidate: **1.0.1, Android build 39 / iOS build 38**. Existing checkmarks record the historical 0.13.2 work unless newer evidence is explicitly dated. Rerun applicable checks after any source change and against the exact artifact proposed for upload. [ITCH_RELEASE_AUDIT.md](ITCH_RELEASE_AUDIT.md) preserves the original 0.13.1 findings; current status is in [RELEASE_PROGRESS.md](RELEASE_PROGRESS.md).
+Current candidate: **1.0.10, Android build 48 / iOS build 44 metadata** (September 30, 2026). Browser ZIP published on itch.io September 30; Android remains a local candidate, with no new iOS build or native store publication. Existing checkmarks record historical work unless newer evidence is explicitly dated. Rerun applicable checks after any source change and against the exact artifact proposed for upload. [ITCH_RELEASE_AUDIT.md](ITCH_RELEASE_AUDIT.md) preserves the original 0.13.1 findings; current status is in [RELEASE_PROGRESS.md](RELEASE_PROGRESS.md).
 
 ## itch.io browser release
 
@@ -16,8 +16,8 @@ Current candidate: **1.0.1, Android build 39 / iOS build 38**. Existing checkmar
 - [ ] Check keyboard focus/menus, text readability, reduced motion, slow loading and sustained performance on a lower-end device.
 - [x] Record artwork/code provenance and Sikh content approval. `CONTENT_REVIEW.md` records the Sikh creator's approval and confirmation that no outside assets were used; an outside review is optional.
 - [x] Prepare and review itch-specific copy, controls/save notes, support route, tags, cover, and screenshots. Hosted offline support and physical mobile claims remain unverified.
-- [ ] Create and test a private/restricted itch draft for host-specific storage, service worker, fullscreen and external-link behavior. Draft project 4999359 was created after owner sign-in. Hosted gameplay, fullscreen, and preference persistence passed; offline/outbound-link checks remain open. Nothing is published.
-- [ ] Record candidate version/checksum and retain a previous working ZIP for rollback; approve publication separately.
+- [ ] Complete host-specific offline and outbound-link checks on the published itch.io 1.0.10 build. Hosted launch and Arcade start passed September 30, 2026. Full hosted offline, mobile and mode checks remain open. A private/restricted preview was not used for this update.
+- [x] Record the 1.0.10 ZIP checksum, retain older ZIPs for rollback, and publish with owner authorization. Upload and release status are recorded in `RELEASE_PROGRESS.md`.
 
 Google Play and iOS signing/store-console tasks below do not block a browser-only itch release.
 
@@ -57,8 +57,9 @@ Google Play and iOS signing/store-console tasks below do not block a browser-onl
 - [ ] Complete target audience, content rating, ads, app access, and government-app declarations accurately.
 - [ ] Capture at least four portrait phone screenshots: home, active play, upgrades/badges, and a victory scene.
 - [ ] Prepare a 512 × 512 Play icon and 1024 × 500 feature graphic.
-- [ ] Upload to Internal testing first, then Closed testing; review the pre-launch report before production.
-- [ ] If using a new personal developer account, complete the required closed test with at least 12 continuously opted-in testers for 14 days, then apply for production access. See https://support.google.com/googleplay/android-developer/answer/14151465.
+- [ ] Upload to Internal testing first, then Closed testing; review the pre-launch report before production. Build 41 (1.0.3) was published to Internal testing September 22, 2026 at 10:25 PM and submitted for full rollout to Closed testing - Alpha and Closed testing - App Hive. Closed testing - Fiverr was configured September 23 with its 36-user email list, all 177 countries/regions, and the developer feedback address, then submitted with build 41. A separate Closed testing - 12 Testers Live track was also submitted September 23 with the `12testerslive@googlegroups.com` Google Group, all 177 regions, the developer feedback address, and build 41. Its seven changes are in review while automated checks run; verify all closed-track approvals, install the exact Play-delivered update, and review the generated pre-launch report.
+- [x] Complete the personal-account closed test with at least 12 continuously opted-in testers for 14 days, then apply for production access. Play Console confirmed all eligibility tasks complete and the application was submitted October 8, 2026 at 11:18 AM America/New_York. See https://support.google.com/googleplay/android-developer/answer/14151465.
+- [ ] Receive production-access approval and validate the final signed, Play-delivered candidate before production rollout. Application is pending review; production remains inactive. See `RELEASE_PROGRESS.md` for the submission record.
 
 ## Build verification
 

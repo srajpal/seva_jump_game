@@ -1,6 +1,26 @@
 const RULE_CONFIG = typeof module !== 'undefined' ? require('./game-config.js') : globalThis.SEVA_CONFIG;
 
 const SEVA_RULES = {
+  platformSurface(platform, x = platform.x) {
+    const inset = platform.w * (RULE_CONFIG.platformSurfaceInsets[platform.type] ?? .03);
+    return { left: x + inset, right: x + platform.w - inset };
+  },
+  landsOnPlatform(player, previous, platform, previousPlatformX = platform.x) {
+    const bottom = player.y + player.h / 2;
+    if (platform.broken || player.vy <= 0 || previous.bottom > platform.y || bottom < platform.y) return false;
+    const t = bottom === previous.bottom ? 0 : (platform.y - previous.bottom) / (bottom - previous.bottom);
+    const footX = previous.x + (player.x - previous.x) * t;
+    const surface = this.platformSurface(platform, previousPlatformX + (platform.x - previousPlatformX) * t);
+    return footX + RULE_CONFIG.playerFootHalfWidth > surface.left && footX - RULE_CONFIG.playerFootHalfWidth < surface.right;
+  },
+  birdTouchesPlayer(player, bird) {
+    const body = RULE_CONFIG.playerBirdBody;
+    const birdBody = RULE_CONFIG.birdBodies[bird.type] || RULE_CONFIG.birdBodies.pigeon;
+    const x = bird.x + birdBody.x * (bird.vx < 0 ? -1 : 1), y = bird.y + birdBody.y;
+    const dx = Math.max(0, Math.abs(x - player.x) - body.halfWidth);
+    const dy = Math.max(player.y + body.top - y, 0, y - player.y - body.bottom);
+    return (dx / birdBody.halfWidth) ** 2 + (dy / birdBody.halfHeight) ** 2 < 1;
+  },
   isArcadeLike(mode) { return mode === 'arcade' || mode === 'challenge'; },
   isHard(mode) { return mode === 'hard'; },
   gamepadSteering(axis, left, right) {
@@ -74,7 +94,8 @@ const SEVA_RULES = {
     const gap = from.y - to.y;
     if (!(gap > 0 && gap <= this.hopReach(hop))) return false;
     const time = this.hopTime(gap, hop);
-    const travel = Math.abs(to.x + to.w / 2 - from.x - from.w / 2) + (to.speed || 0) * time - to.w / 2 - hop.halfWidth;
+    const surface = this.platformSurface(to);
+    const travel = Math.abs(to.x + to.w / 2 - from.x - from.w / 2) + (to.speed || 0) * time - (surface.right - surface.left) / 2 - Math.min(hop.halfWidth, RULE_CONFIG.playerFootHalfWidth);
     return Math.max(0, travel) <= this.horizontalReach(time);
   },
   // Helping Hand is for the open modes; Challenge and Hard are played straight.
@@ -135,6 +156,17 @@ const SEVA_RULES = {
   },
   canSpawnHardBird(existingBirdYs, candidateY, screenHeight) {
     return existingBirdYs.every(y => Math.abs(y - candidateY) >= screenHeight);
+  },
+  arcadeBirdChance(score) {
+    return score < RULE_CONFIG.arcadeBirdStartScore ? 0
+      : score < RULE_CONFIG.arcadeBirdFullScore ? RULE_CONFIG.arcadeBirdIntroChance : RULE_CONFIG.arcadeBirdChance;
+  },
+  canSpawnArcadeBird(existingBirdYs, candidateY, screenHeight, score = RULE_CONFIG.arcadeBirdFullScore) {
+    // Include partial sprites at both edges. Three centers cannot fit within
+    // this expanded viewport when adjacent centers exceed half its height.
+    const limit = score < RULE_CONFIG.arcadeBirdFullScore ? 1 : RULE_CONFIG.arcadeMaxVisibleBirds;
+    const gap = (screenHeight + RULE_CONFIG.arcadeBirdSpriteHeight) / limit + 1;
+    return existingBirdYs.every(y => Math.abs(y - candidateY) >= gap);
   },
   canSpawnChallengeBird(existingBirdYs, candidateY) {
     return existingBirdYs.every(y => Math.abs(y - candidateY) >= RULE_CONFIG.challengeBirdScreenSpacing);

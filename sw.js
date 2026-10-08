@@ -1,8 +1,8 @@
-const RELEASE_VERSION = '1.0.1';
+const RELEASE_VERSION = '1.0.10';
 const SCOPE_URL = new URL(self.registration.scope);
 const SCOPE_KEY = encodeURIComponent(SCOPE_URL.pathname);
 const CACHE_PREFIX = `seva-jump-${SCOPE_KEY}-`;
-const CACHE_NAME = `${CACHE_PREFIX}v${RELEASE_VERSION}`;
+const CACHE_NAME = `${CACHE_PREFIX}v${RELEASE_VERSION}-art6`;
 
 // Keep this list explicit: itch.io rejects directory requests, and one failed
 // request would prevent the whole release cache from installing.
@@ -15,15 +15,14 @@ const APP_FILES = [
   './manifest.webmanifest',
   './privacy.html',
   './assets/app-icon-bird-v1.png',
+  './assets/seva-jump-logo.png',
+  './assets/badge-medals-v1.png',
+  './assets/power-jump-upgrade-v1.png',
   './assets/gurdwara-courtyard-pixel-v1.png',
   './assets/gurdwara-sunset-pixel-v1.png',
   './assets/gurdwara-dawn-pixel-v1.png',
-  './assets/player-girl-pixel-v1.png',
-  './assets/player-girl-fall-pixel-v1.png',
-  './assets/player-girl-net-pixel-v2.png',
-  './assets/player-boy-pixel-v1.png',
-  './assets/player-boy-fall-pixel-v3.png',
-  './assets/player-boy-net-pixel-v4.png',
+  './assets/player-girl-poses-v2.png',
+  './assets/player-boy-poses-v2.png',
   './assets/platform-grass-pixel-v1.png',
   './assets/platform-spring-pixel-v1.png',
   './assets/platform-moving-pixel-v1.png',

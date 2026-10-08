@@ -9,7 +9,7 @@ assert(serial && /^emulator-\d+$/.test(serial), 'Set ADB_SERIAL to the test emul
 const adb = (...args) => execFileSync(process.env.ADB_PATH || 'adb', ['-s', serial, ...args], {
   maxBuffer: 32 * 1024 * 1024, timeout: 30000
 });
-const output = path.resolve(__dirname, '../screenshots/release-1.0.1/native');
+const output = path.resolve(__dirname, '../screenshots/release-1.0.3/native');
 const name = process.env.DEVICE_LABEL || serial;
 assert(/^[\w-]+$/.test(name), 'DEVICE_LABEL must be a simple filename');
 fs.mkdirSync(output, { recursive: true });
@@ -71,6 +71,13 @@ fs.mkdirSync(output, { recursive: true });
     await page.locator('#arcade-button').click();
     if (await page.locator('#tutorial-screen').isVisible()) await page.locator('#tutorial-skip-button').click();
     await page.locator('#mobile-hud').waitFor();
+    assert(await page.evaluate(() => {
+      const frame = document.querySelector('.game-frame');
+      const canvas = document.querySelector('canvas').getBoundingClientRect();
+      const hud = document.querySelector('#mobile-hud').getBoundingClientRect();
+      return frame.scrollTop === 0 && hud.top >= 0 && canvas.top >= hud.bottom
+        && canvas.bottom <= innerHeight;
+    }), 'Canvas focus keeps the HUD visible and the whole playfield inside the viewport');
     await page.waitForFunction(() => {
       const button = document.querySelector('#pause-button').getBoundingClientRect();
       const safe = parseFloat(document.documentElement.style.getPropertyValue('--android-safe-top'));
@@ -86,27 +93,36 @@ fs.mkdirSync(output, { recursive: true });
     await page.locator('#pause-settings-button').click();
     await page.keyboard.press('Escape');
     assert(await page.locator('#settings-screen').isVisible());
-    await page.locator('#close-settings-button').click();
+    adb('shell', 'input', 'keyevent', 'KEYCODE_BACK');
+    await page.locator('#pause-screen').waitFor();
     await page.locator('#resume-button').click();
     // Exercise AndroidX/Capacitor's actual Back dispatch, not the JS handler directly.
     adb('shell', 'input', 'keyevent', 'KEYCODE_BACK');
-    await page.locator('#exit-confirm-screen').waitFor();
-    await page.locator('#cancel-exit-button').click();
     await page.locator('#pause-screen').waitFor();
     await page.locator('#pause-home-button').click();
     await page.locator('#open-about-button').click();
     await page.locator('#open-privacy-button').click();
-    await page.locator('#close-privacy-button').click();
+    adb('shell', 'input', 'keyevent', 'KEYCODE_BACK');
+    await page.locator('#about-screen').waitFor();
     const gestureNavigation = adb('shell', 'settings', 'get', 'secure', 'navigation_mode').toString().trim() === '2';
     if (gestureNavigation) {
       const [width, height] = await page.evaluate(() =>
         [Math.round(innerWidth * devicePixelRatio), Math.round(innerHeight * devicePixelRatio)]);
       adb('shell', 'input', 'touchscreen', 'swipe', '0', String(Math.floor(height / 2)),
         String(Math.floor(width * .75)), String(Math.floor(height / 2)), '150');
-      await page.locator('#exit-confirm-screen').waitFor();
-      await page.locator('#cancel-exit-button').click();
+      await page.locator('#home-screen').waitFor();
     }
-    await page.locator('#close-about-button').click();
+    if (!gestureNavigation) {
+      adb('shell', 'input', 'keyevent', 'KEYCODE_BACK');
+      await page.locator('#home-screen').waitFor();
+    }
+    const savedBeforeHomeBack = await page.evaluate(() => localStorage.getItem('seva-jump-profile'));
+    adb('shell', 'input', 'keyevent', 'KEYCODE_BACK');
+    await page.waitForFunction(() => document.visibilityState === 'hidden', null, { polling: 100 });
+    adb('shell', 'am', 'start', '-n', 'org.sevajump.game/.MainActivity');
+    await page.waitForFunction(() => document.visibilityState === 'visible', null, { polling: 100 });
+    await page.locator('#home-screen').waitFor();
+    assert.equal(await page.evaluate(() => localStorage.getItem('seva-jump-profile')), savedBeforeHomeBack, 'Home Back returns to launcher without changing saved progress');
     assert.deepEqual(errors, []);
     const result = { name, passed: true, sdk: adb('shell', 'getprop', 'ro.build.version.sdk').toString().trim(), gestureNavigation, layout, errors };
     fs.writeFileSync(path.join(output, `${name}-results.json`), JSON.stringify(result, null, 2));

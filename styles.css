@@ -26,7 +26,7 @@ canvas { display: block; width: 100%; height: auto; touch-action: none; }
 .home-screen h1 { margin: 0; font-family: "Arial Rounded MT Bold", "Trebuchet MS", system-ui, sans-serif; font-size: clamp(3.25rem, 15vw, 4.6rem); letter-spacing: -.075em; line-height: .9; color: #24483f; text-shadow: 0 3px 0 #fff7e7; }.home-screen h1 span { color: #d56d39; }
 .story-card { display: grid; grid-template-columns: 27px 1fr; gap: 7px; align-items: start; max-width: 330px; padding: 9px 13px; border: 2px solid #e3c58c; border-radius: 15px; background: #fff9eaf0; box-shadow: 0 3px 0 #d7b37a; text-align: left; }.story-card p { margin: 0; color: #4e4438; font-size: .84rem; line-height: 1.32; }.story-card strong { color: #a84f2b; }.story-icon { display: grid; place-items: center; width: 25px; height: 25px; border-radius: 50%; background: #f2c064; color: white; font-size: 1rem; }
 .home-records { margin: 0; padding: 5px 9px; border-radius: 999px; background: #24483fe8; color: #fff9e8; font-size: .67rem; font-weight: 800; letter-spacing: .01em; }
-.home-scene { position: relative; width: min(100%, 310px); height: 158px; margin: 2px 0 1px; overflow: hidden; filter: drop-shadow(0 3px 0 #ffffff99); }.home-scene img { image-rendering: pixelated; }.scene-girl { z-index: 2; height: 151px; left: 24px; top: 6px; }.scene-boy { z-index: 2; height: 151px; right: 18px; top: 10px; }.home-scene .scene-character { position: absolute; padding: 0; border: 0; background: transparent; cursor: pointer; opacity: .42; filter: grayscale(.45); transition: transform .18s ease, filter .18s ease, opacity .18s ease; }.home-scene .scene-character img { display: block; height: 100%; }.home-scene .scene-character.selected { z-index: 4; opacity: 1; filter: drop-shadow(0 0 0 #fff8e7) drop-shadow(0 4px 0 #24483f); transform: scale(1.06); }.scene-bowl { position: absolute; z-index: 3; width: 74px; left: calc(50% - 37px); bottom: -1px; }.character-prompt { margin: -1px 0 1px; color: #685d50; font-size: .7rem; font-weight: 700; }
+.home-scene { position: relative; width: min(100%, 310px); height: 158px; margin: 2px 0 1px; overflow: hidden; filter: none; }.home-scene img { image-rendering: pixelated; }.scene-girl { z-index: 2; height: 151px; left: 24px; top: 6px; }.scene-boy { z-index: 2; height: 151px; right: 18px; top: 10px; }.home-scene .scene-character { position: absolute; padding: 0; border: 0; background: transparent; cursor: pointer; opacity: .42; filter: grayscale(.45); transition: transform .18s ease, filter .18s ease, opacity .18s ease; }.home-scene .scene-character svg { display: block; width: 102px; height: 100%; overflow: hidden; }.home-scene .scene-character.selected { z-index: 4; opacity: 1; filter: none; transform: none; }.scene-bowl { position: absolute; z-index: 3; width: 74px; left: calc(50% - 37px); bottom: -1px; }.character-prompt { margin: -1px 0 1px; color: #685d50; font-size: .7rem; font-weight: 700; }
 .home-screen .primary { margin-top: 3px; }.home-screen .secondary { margin-top: 1px; }.home-screen .help { margin: 2px 0 0; }
 .game-version { margin: -1px 0 0; color: #7c766a; font-size: .59rem; font-weight: 800; letter-spacing: .07em; text-transform: uppercase; }
 .mode-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: min(100%, 330px); }.mode-actions button { display: grid; gap: 2px; min-height: 57px; padding: 8px 7px; border: 2px solid #527165; border-radius: 14px; background: #fff9ee; color: #24483f; box-shadow: 0 4px 0 #9eb6aa, 0 6px 10px #24483a26; cursor: pointer; font: inherit; font-weight: 800; transition: transform .14s ease, box-shadow .14s ease; }.mode-actions button:hover { transform: translateY(-1px); box-shadow: 0 5px 0 #9eb6aa, 0 8px 12px #24483a2e; }.mode-actions button:active { transform: translateY(3px); box-shadow: 0 1px 0 #9eb6aa, 0 2px 4px #24483a22; }.mode-actions span { font-size: .88rem; }.mode-actions small { font-size: .64rem; font-weight: 600; }.hard-mode-button { border-color: #9c4825 !important; background: linear-gradient(135deg, #fff5e8, #f7d6c7) !important; color: #843b24 !important; box-shadow: 0 4px 0 #c58a73, 0 6px 10px #7a321d2b !important; }.home-utilities { display: grid; justify-items: center; gap: 6px; width: min(100%, 330px); padding-top: 9px; border-top: 2px solid #7ba89b80; }.home-utilities > p { margin: 0; color: #527165; font-size: .62rem; font-weight: 900; letter-spacing: .13em; text-transform: uppercase; }.home-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 7px; }.home-screen .home-links .secondary { margin: 0; padding: 7px 11px; border-color: #8bb5a9; background: #e8f4ef; box-shadow: 0 3px 0 #a8c9bd, 0 5px 8px #24483a16; font-size: .74rem; }.home-screen .home-links .secondary:active { transform: translateY(2px); box-shadow: 0 1px 0 #a8c9bd; }
@@ -40,7 +40,7 @@ h2 { font-size: 2.3rem; }.eyebrow { margin: 0 0 7px; color: #a85e30; font-weight
 .end-screen { opacity: 0; transform: scale(.97); transition: opacity .38s ease, transform .38s ease; }.end-screen.visible { opacity: 1; transform: scale(1); }
 .tutorial-screen { background: linear-gradient(#e6f6f1f2, #fff4dff2), url('assets/gurdwara-courtyard-pixel-v1.png') center / cover; }.tutorial-screen h2 { max-width: 310px; margin: 0 0 7px; font-size: clamp(1.75rem, 8vw, 2.35rem); }.tutorial-icon { display: grid; place-items: center; width: 84px; height: 84px; margin: 4px 0 2px; border: 3px solid #5f9386; border-radius: 50%; background: radial-gradient(circle at 35% 28%, #fffdf0 0 15%, #cce9df 16% 63%, #91c3b5 64%); box-shadow: 0 4px 0 #6e9e91; color: #24483f; font: 900 3rem/1 "Trebuchet MS", system-ui, sans-serif; }.tutorial-step { margin: 0; color: #a85e30; font-size: .7rem; font-weight: 900; letter-spacing: .1em; text-transform: uppercase; }.tutorial-copy { max-width: 300px; margin: 0 0 9px; color: #4e4438; font-size: .9rem; line-height: 1.35; }.tutorial-dots { display: flex; gap: 7px; margin: 0 0 13px; }.tutorial-dots span { width: 8px; height: 8px; border-radius: 50%; background: #b8c8bf; }.tutorial-dots span.active { width: 22px; border-radius: 999px; background: #d56d39; }.tutorial-screen .primary { min-width: 152px; }.tutorial-screen .secondary { margin-top: 8px; padding: 7px 13px; font-size: .72rem; }
 .run-breakdown { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; width: min(100%, 300px); margin: 0 0 10px; }.run-breakdown span { display: grid; gap: 2px; padding: 7px 4px; border: 1px solid #d7c39f; border-radius: 10px; background: #fff9eee0; color: #685d50; font-size: .62rem; font-weight: 800; }.run-breakdown strong { color: #24483f; font-size: .92rem; }.end-goal { max-width: 290px; margin: 0 0 16px; color: #4e4438; font-size: .77rem; line-height: 1.35; }
-.badges-screen { justify-content: flex-start; padding: 22px 20px; overflow-y: auto; }.badges-screen h2 { margin-bottom: 3px; }.badge-count { margin: 0 0 12px; color: #a85e30; font-size: .8rem; font-weight: 900; }.badge-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; width: min(100%, 390px); margin-bottom: 15px; }.badge-card { position: relative; display: grid; grid-template-columns: 45px 1fr; gap: 7px; align-items: center; min-height: 67px; padding: 7px; border: 2px solid var(--badge-color, #d5be91); border-radius: 13px; background: linear-gradient(135deg, #fffdf6, #fff5e8); box-shadow: 0 2px 0 #d5be91; text-align: left; }.badge-card.locked { filter: grayscale(1); opacity: .58; }.badge-ribbon { position: relative; display: grid; place-items: center; width: 42px; height: 47px; }.badge-ribbon::before { content: ''; position: absolute; top: 27px; width: 26px; height: 22px; background: var(--badge-color, #d56d39); clip-path: polygon(0 0, 100% 0, 77% 100%, 50% 75%, 23% 100%); }.badge-icon { position: relative; z-index: 1; display: grid; place-items: center; width: 40px; height: 40px; border: 2px solid #9c4825; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #fff7c9 0 13%, #f1b74d 14% 48%, var(--badge-color, #d56d39) 49%); color: #24483f; font-size: 1.3rem; font-weight: 900; text-shadow: 0 1px #fff; }.badge-card h3, .badge-card p, .badge-card small { margin: 0; }.badge-card h3 { color: #24483f; font-size: .74rem; }.badge-card p { color: #685d50; font-size: .62rem; line-height: 1.2; }.badge-card small { color: var(--badge-color, #a85e30); font-size: .59rem; font-weight: 900; text-transform: uppercase; letter-spacing: .04em; }.badge-toast { position: absolute; z-index: 5; top: 72px; right: 13px; display: grid; grid-template-columns: 40px 1fr; gap: 8px; align-items: center; width: min(260px, calc(100% - 26px)); padding: 8px 10px; border: 2px solid #9c4825; border-radius: 14px; background: #fff9eef5; box-shadow: 0 4px 0 #c9985c; text-align: left; }.badge-toast.hidden { display: none; }.badge-toast strong { display: block; color: #a84f2b; font-size: .76rem; }.badge-toast small { display: block; color: #24483f; font-size: .83rem; font-weight: 900; }.badge-toast .badge-icon { width: 40px; height: 40px; }
+.badges-screen { justify-content: flex-start; padding: 22px 20px; overflow-y: auto; }.badges-screen h2 { margin-bottom: 3px; }.badge-count { margin: 0 0 12px; color: #a85e30; font-size: .8rem; font-weight: 900; }.badge-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; width: min(100%, 390px); margin-bottom: 15px; }.badge-card { position: relative; display: grid; grid-template-columns: 45px 1fr; gap: 7px; align-items: center; min-height: 67px; padding: 7px; border: 2px solid var(--badge-color, #d5be91); border-radius: 13px; background: linear-gradient(135deg, #fffdf6, #fff5e8); box-shadow: 0 2px 0 #d5be91; text-align: left; }.badge-card.locked { filter: grayscale(1); opacity: .58; }.badge-ribbon { position: relative; display: grid; place-items: center; width: 42px; height: 47px; }.badge-ribbon::before { content: ''; position: absolute; top: 27px; width: 26px; height: 22px; background: var(--badge-color, #d56d39); clip-path: polygon(0 0, 100% 0, 77% 100%, 50% 75%, 23% 100%); }.badge-icon { position: relative; z-index: 1; display: grid; place-items: center; width: 40px; height: 40px; border: 2px solid #9c4825; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #fff7c9 0 13%, #f1b74d 14% 48%, var(--badge-color, #d56d39) 49%); color: #24483f; font-size: 1.3rem; font-weight: 900; text-shadow: 0 1px #fff; }.badge-card h3, .badge-card p, .badge-card small { margin: 0; }.badge-card h3 { color: #24483f; font-size: .74rem; }.badge-card p { color: #685d50; font-size: .62rem; line-height: 1.2; }.badge-card small { color: var(--badge-color, #a85e30); font-size: .59rem; font-weight: 900; text-transform: uppercase; letter-spacing: .04em; }.badge-toast { position: absolute; z-index: 5; top: calc(96px + var(--safe-top)); right: 13px; display: grid; grid-template-columns: 40px 1fr; gap: 8px; align-items: center; width: min(260px, calc(100% - 26px)); padding: 8px 10px; border: 2px solid #9c4825; border-radius: 14px; background: #fff9eef5; box-shadow: 0 4px 0 #c9985c; text-align: left; }.badge-toast.hidden { display: none; }.badge-toast strong { display: block; color: #a84f2b; font-size: .76rem; }.badge-toast small { display: block; color: #24483f; font-size: .83rem; font-weight: 900; }.badge-toast .badge-icon { width: 40px; height: 40px; }
 .stats-screen { justify-content: flex-start; padding: 24px 20px; overflow-y: auto; background: linear-gradient(#f1f9f6ef, #fff4dfef); }.stats-screen > * { flex: 0 0 auto; }.stats-screen h2 { margin: 0 0 3px; font-size: 1.65rem; }.stats-intro, .stats-note { max-width: 350px; margin: 0 0 11px; color: #685d50; font-size: .72rem; line-height: 1.3; }.stats-summary { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; width: min(100%, 360px); }.stats-summary article, .death-breakdown article { display: grid; gap: 2px; min-height: 54px; padding: 7px 5px; border: 2px solid #c6d7c9; border-radius: 11px; background: #fffdf6; box-shadow: 0 2px 0 #b3c8b8; }.stats-summary strong, .death-breakdown strong { color: #24483f; font-size: .88rem; }.stats-summary span, .death-breakdown span { color: #685d50; font-size: .58rem; line-height: 1.08; }.stats-screen h3 { width: min(100%, 360px); margin: 13px 0 6px; color: #24483f; font-size: .88rem; text-align: left; }.death-breakdown { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px; width: min(100%, 360px); }.death-breakdown article { border-color: var(--stat-color); }.death-breakdown strong { color: var(--stat-color); }.stats-note { margin-top: 10px; }.stats-screen .primary { margin-top: 2px; }
 .character-choice { display: flex; gap: 8px; margin: 13px 0; }.choice, .primary, .secondary { border: 0; cursor: pointer; font: inherit; font-weight: 800; }
 .choice { padding: 10px; border: 2px solid #bca582; border-radius: 12px; background: #fff9ee; color: #4f4438; }.choice.selected { border-color: #24483f; background: #d8eee5; }
@@ -49,7 +49,7 @@ h2 { font-size: 2.3rem; }.eyebrow { margin: 0 0 7px; color: #a85e30; font-weight
 .privacy-screen { justify-content: flex-start; overflow-y: auto; padding: 28px 22px; background: linear-gradient(#edf9f6ef, #fff4dfef), url('assets/gurdwara-courtyard-pixel-v1.png') center / cover; }.privacy-screen h2 { margin-bottom: 4px; }.privacy-updated { margin: 0 0 11px; color: #685d50; font-size: .72rem; }.privacy-card { width: min(100%, 355px); margin: 0 0 14px; padding: 13px 15px; border: 2px solid #cdb78f; border-radius: 16px; background: #fff9eef5; box-shadow: 0 3px 0 #d5bc8c; color: #4e4438; text-align: left; }.privacy-card p { margin: 0 0 12px; font-size: .78rem; line-height: 1.4; }.privacy-card h3 { margin: 12px 0 5px; color: #a85e30; font-size: .85rem; }.privacy-card ul { margin: 0; padding-left: 20px; font-size: .76rem; line-height: 1.45; }
 .stats-summary article, .death-breakdown article { min-width: 0; }.stats-summary strong, .death-breakdown strong { overflow: hidden; font-size: clamp(.72rem, 3.8vw, .88rem); line-height: 1.05; text-overflow: ellipsis; white-space: nowrap; }.stats-summary span, .death-breakdown span { overflow-wrap: anywhere; }
 .secondary { padding: 10px 16px; border: 2px solid #527165; border-radius: 999px; background: #fff9ee; color: #24483f; }.secondary:active { transform: translateY(2px); }
-.menu-actions { display: grid; gap: 9px; width: min(100%, 220px); }.menu-actions .primary, .menu-actions .secondary { width: 100%; }
+.menu-actions { display: grid; gap: 16px; width: min(100%, 240px); }.menu-actions .primary, .menu-actions .secondary { width: 100%; min-height: 48px; }.pause-screen .menu-actions .primary, .end-screen .menu-actions .primary { margin-bottom: 5px; }
 .pause-screen, .settings-screen { background: linear-gradient(#eef9f3ee, #fff4dfef); }.pause-screen h2, .settings-screen h2 { margin-bottom: 12px; }.pause-settings { display: grid; gap: 7px; width: min(100%, 275px); margin: 0 0 12px; padding: 11px 14px; border: 2px solid #cdb78f; border-radius: 15px; background: #fff9eee8; text-align: left; color: #4e4438; font-size: .88rem; }.pause-settings label { display: flex; align-items: center; justify-content: space-between; gap: 12px; font-weight: 800; }.pause-settings input { width: 18px; height: 18px; accent-color: #d56d39; }.pause-settings label span { display: inline-flex; align-items: center; gap: 6px; }.pause-settings select { padding: 3px 6px; border: 2px solid #cdb78f; border-radius: 8px; background: #fff; color: #4e4438; font: 800 .8rem "Trebuchet MS", system-ui, sans-serif; }.info-button { width: 18px; height: 18px; padding: 0; border: 2px solid #b56b2e; border-radius: 50%; background: #fff9ee; color: #b56b2e; cursor: pointer; font: 800 .68rem Georgia, serif; line-height: 1; }.play-button { font-size: .55rem; }.info-screen { background: linear-gradient(#eef9f3f2, #fff4dff2); }.info-screen h2 { margin-bottom: 8px; }.info-screen > p:not(.eyebrow) { max-width: 285px; margin: 0 0 16px; color: #4e4438; font-size: .84rem; line-height: 1.4; }#replay-tutorial-button { margin-bottom: 16px; }.setting-note { max-width: 280px; margin: 0 0 12px; color: #685d50; font-size: .76rem; line-height: 1.35; }.reset-panel { width: min(100%, 280px); margin: 0 0 14px; padding: 10px 12px; border: 2px solid #d8a290; border-radius: 13px; background: #fff0e8; text-align: left; }.reset-panel strong { color: #9c4825; font-size: .84rem; }.reset-panel p { margin: 3px 0 8px; color: #6f4c40; font-size: .7rem; line-height: 1.25; }.danger-button { padding: 7px 10px; border: 2px solid #a84f2b; border-radius: 999px; background: #fff9ee; color: #a84f2b; cursor: pointer; font: 800 .72rem "Trebuchet MS", system-ui, sans-serif; }.danger-button:active { transform: translateY(2px); }
 .reset-confirm-screen { background: linear-gradient(#fff2e8f2, #f8e1d9f2); }.reset-confirm-screen h2 { margin-bottom: 7px; color: #9c4825; }.reset-confirm-screen > p:not(.eyebrow) { max-width: 285px; margin: 0 0 16px; color: #6f4c40; font-size: .84rem; line-height: 1.35; }.reset-confirm-screen .primary { background: #a84f2b; box-shadow: 0 4px 0 #7c321d; }
 .upgrade-intro { margin: 0 0 10px; font-size: .85rem; max-width: 310px; }.upgrade-list { display: grid; gap: 8px; width: min(100%, 330px); margin-bottom: 8px; }.upgrade-card { display: grid; grid-template-columns: 1fr auto; gap: 3px 10px; align-items: center; padding: 9px 12px; border: 2px solid #cdb78f; border-radius: 13px; background: #fff9ee; text-align: left; }.upgrade-card h3, .upgrade-card p { margin: 0; }.upgrade-card h3 { display: flex; align-items: center; gap: 6px; color: #24483f; font-size: .95rem; }.upgrade-icon, .power-jump-icon { width: 25px; height: 25px; object-fit: contain; image-rendering: pixelated; }.power-jump-icon { display: grid; place-items: center; border: 2px solid #a85e30; border-radius: 50%; background: #fff0d6; color: #a85e30; font-size: 1.2rem; font-weight: 900; line-height: 1; }.upgrade-card p { grid-column: 1; font-size: .73rem; color: #685d50; }.upgrade-card button { grid-column: 2; grid-row: 1 / span 2; }.upgrade-card small { grid-column: 1; color: #a85e30; font-weight: bold; }
@@ -100,7 +100,7 @@ h2 { font-size: 2.3rem; }.eyebrow { margin: 0 0 7px; color: #a85e30; font-weight
   .home-content { gap: 7px; }
   .home-scene { min-height: 158px; flex-shrink: 0; }
   .home-scene .scene-character { height: 151px !important; }
-  .home-scene .scene-character img { width: auto !important; height: 100% !important; max-width: none !important; }
+  .home-scene .scene-character svg { width: 102px !important; height: 100% !important; max-width: none !important; }
   .home-utilities { width: min(100%, 360px); }
   .home-links { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); width: 100%; gap: 7px; }
   .home-screen .home-links .secondary { min-height: 45px; padding: 6px 5px; border-radius: 13px; font-size: .66rem; line-height: 1.08; white-space: normal; }
@@ -172,3 +172,109 @@ h2 { font-size: 2.3rem; }.eyebrow { margin: 0 0 7px; color: #a85e30; font-weight
   .home-screen { justify-content: flex-start; }
   .home-screen h1 { max-width: 100%; font-size: clamp(2.45rem, 12vw, 3.5rem); line-height: .95; }
 }
+
+/* Android display scaling can put tablets below the wide-canvas breakpoint.
+   Fit either canvas inside the space left by the HUD and navigation area.
+   A clipped frame cannot be scrolled by canvas focus; menus scroll themselves. */
+.android-app { --android-hud-height: 74px; --android-canvas-ratio: .5625; --android-footer-height: 48px; }
+.android-app.android-tablet { --android-canvas-ratio: .8; }
+.android-app .game-shell { width: 100vw; height: 100dvh; padding: 0; }
+.android-app .game-frame {
+  height: 100%; border: 0; border-radius: 0; box-shadow: none; overflow: clip;
+  padding-top: calc(var(--android-hud-height) + var(--safe-top));
+  padding-bottom: calc(var(--android-footer-height) + var(--safe-bottom));
+}
+.android-app canvas {
+  width: min(100%, calc((100dvh - var(--android-hud-height) - var(--safe-top) - var(--android-footer-height) - var(--safe-bottom)) * var(--android-canvas-ratio)));
+  height: auto; max-height: 100%; margin: 0 auto;
+  aspect-ratio: auto; object-fit: contain;
+}
+.android-app .overlay {
+  padding-top: max(24px, calc(var(--safe-top) + 12px));
+  padding-bottom: max(24px, calc(var(--safe-bottom) + 12px));
+  padding-left: max(20px, var(--safe-left));
+  padding-right: max(20px, var(--safe-right));
+}
+.android-app .home-screen { justify-content: safe center; }
+.android-app .badge-toast { top: calc(var(--android-hud-height) + var(--safe-top) + 22px); }
+@media (min-width: 700px) and (min-height: 900px) {
+  .android-app { --android-hud-height: 96px; }
+}
+/* Phones prioritize the full-width scene. The mode pill floats at the bottom,
+   as in the original phone layout, rather than reserving a tablet footer.
+   Keep the height limit for unusually short viewports so nothing is cropped. */
+@media (max-width: 599px) {
+  .android-app { --android-footer-height: 0px; }
+}
+
+/* Records and help share readable cards and a consistent content rhythm. */
+.record-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; width: min(100%, 360px); }
+.record-grid article { display: grid; gap: 4px; padding: 16px 10px; border: 2px solid #7ba89b; border-radius: 14px; background: #fffaf0; }
+.record-grid span { font-size: .85rem; font-weight: 800; }
+.record-grid strong { color: #a85e30; font-size: 1.6rem; overflow-wrap: anywhere; }
+.record-grid small { color: #685d50; font-size: .7rem; }
+.about-screen { gap: 12px; background: linear-gradient(#edf9f6, #fff4df); }
+.about-screen .eyebrow { font-size: 1.35rem; color: #24483f; margin: 0; }
+.about-screen .mission-card, .about-screen .control-card, .about-screen .comfort-card, .about-screen .developer-card { margin: 0; padding: 14px; border: 1px solid #b4cbbf; border-radius: 12px; background: #fffaf0; box-shadow: none; }
+.about-screen .about-intro, .about-screen .about-subhead, .about-screen .glossary { margin: 0; }
+.about-screen .item-guide, .about-screen .control-card { grid-template-columns: 1fr; gap: 10px; }
+.about-screen .guide-card { grid-template-columns: 40px 1fr; gap: 12px; padding: 12px; border: 1px solid #b4cbbf; border-radius: 12px; background: #fffaf0; box-shadow: none; }
+.about-screen .guide-card strong, .about-screen .control-card strong, .about-screen .developer-card strong { font-size: .85rem; color: #24483f; }
+.about-screen .guide-card small, .about-screen .control-card p, .about-screen .comfort-card p, .about-screen .developer-card p, .about-screen .mission-card p, .about-screen .glossary dd { font-size: .78rem; line-height: 1.45; }
+.about-screen .control-card div { padding: 0; background: none; }
+.about-screen .glossary { gap: 8px; }
+.about-screen .glossary div { padding: 10px; border-color: #b4cbbf; background: #fffaf0; }
+
+/* Illustrated upgrades and achievement medals share the game's foreground art. */
+.home-screen h1 { line-height: 0; }
+.game-logo { display: block; width: auto; height: 112px; max-width: 100%; object-fit: contain; }
+@media (max-height: 700px) { .game-logo { height: 76px; } }
+@media (hover: hover) and (pointer: fine) and (max-height: 850px) { .game-logo { height: 64px; } }
+.badges-screen { padding: 12px 10px; }
+.android-app .badges-screen { padding-left: max(10px, var(--safe-left)); padding-right: max(10px, var(--safe-right)); }
+.badges-screen h2 { margin: 0 0 3px; }
+.badges-screen .eyebrow { margin: 0 0 3px; }
+.badge-count { margin-bottom: 8px; }
+.badge-grid { width: min(100%, 460px); gap: 6px; margin-bottom: 10px; }
+.badge-card { display: grid; grid-template-columns: 36px minmax(0, 1fr); gap: 5px; min-height: 76px; text-align: left; padding: 6px; }
+.badge-ribbon { width: 48px; height: 48px; }
+.badge-ribbon::before { content: none; }
+.badge-icon, .badge-toast .badge-icon { display: block; width: 48px; height: 48px; border: 0; border-radius: 0; background: url('assets/badge-medals-v1.png') 0 0 / 500% 200% no-repeat; text-shadow: none; }
+.badge-card.locked { opacity: 1; filter: none; border-color: #c3c6bb; background: #f5f4ed; box-shadow: 0 2px 0 #c3c6bb; }
+.badge-card.locked .badge-icon { filter: grayscale(1); opacity: .65; }
+.badge-card.locked small { color: #60695f; }
+.badge-card .badge-ribbon, .badge-card .badge-icon { width: 36px; height: 36px; }
+.badge-card p { margin: 2px 0; font-size: .68rem; line-height: 1.2; }
+.badge-card small { font-size: .62rem; }
+.badge-toast { grid-template-columns: 48px 1fr; }
+.upgrade-card { min-height: 100px; border-color: #b7c9bb; background: linear-gradient(120deg, #fffdf6, #eef6ed); box-shadow: 0 3px 0 #b7c9bb; }
+.upgrade-card h3 { gap: 8px; }
+.upgrade-card .upgrade-icon { flex: 0 0 42px; width: 42px !important; height: 42px !important; max-width: 42px !important; max-height: 42px !important; image-rendering: auto; }
+.mobile-hud-upgrades img, .native-app .mobile-hud-upgrades img { image-rendering: auto; }
+.badge-icon.badge-art-first-run { background-position: 0% 0%; }
+.badge-icon.badge-art-sky-starter { background-position: 25% 0%; }
+.badge-icon.badge-art-endless-1000 { background-position: 50% 0%; }
+.badge-icon.badge-art-endless-2000 { background-position: 75% 0%; }
+.badge-icon.badge-art-arcade-complete { background-position: 100% 0%; }
+.badge-icon.badge-art-challenge-complete { background-position: 0% 100%; }
+.badge-icon.badge-art-parshad-50 { background-position: 25% 100%; }
+.badge-icon.badge-art-tokens-10 { background-position: 50% 100%; }
+.badge-icon.badge-art-bird-defender { background-position: 75% 100%; }
+.badge-icon.badge-art-power-seeker { background-position: 100% 100%; }
+.badge-icon.badge-art-perfect-arcade { background-position: 100% 0%; }
+.badge-icon.badge-art-boost-master { background-position: 100% 100%; }
+.badge-icon.badge-art-both-feet-in { background-position: 0% 0%; }
+.badge-icon.badge-art-comeback-kid { background-image: url('assets/falcon-save-pixel-v1.png'); background-size: contain; background-position: center; }
+.badge-art-both-feet-in::after { content: '↔'; position: absolute; right: -3px; bottom: -2px; padding: 1px 2px; border: 1px solid #397e79; border-radius: 4px; background: #d9f5ee; color: #24594f; font: 900 13px/1 sans-serif; }
+.badge-art-perfect-arcade::after, .badge-art-boost-master::after { content: '★'; position: absolute; right: -3px; bottom: -2px; padding: 1px 2px; border: 1px solid #7b5315; border-radius: 4px; background: #fff3b3; color: #925b00; font: 900 11px/1 sans-serif; }
+.badge-art-boost-master::after { content: '★★'; border-color: #684085; background: #f3dcff; color: #684085; }
+
+/* Center the entire menu group inside its safe-area padding. When it is taller
+   than the viewport, safe alignment falls back to the top for full scrolling. */
+.game-frame .overlay, #upgrades-screen { justify-content: safe center; }
+#run-upgrades-screen h2 { font-size: 1.8rem; }
+#run-upgrades-screen .pause-settings label { gap: 12px; }
+#run-upgrades-screen .pause-settings label.hidden { display: none; }
+#run-upgrades-screen .pause-settings span { display: grid; gap: 3px; }
+#run-upgrades-screen small { font-size: .72rem; font-weight: normal; }
+#run-upgrades-screen .help { max-width: 320px; }

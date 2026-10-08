@@ -1,4 +1,14 @@
 const SEVA_CONFIG = {
+  // Stable contact geometry in canvas units; exclude arms, wing tips and
+  // transparent sprite margins rather than changing with animation frames.
+  playerFootHalfWidth: 6,
+  playerBirdBody: { halfWidth: 12, top: -54, bottom: 30 },
+  birdBodies: {
+    pigeon: { x: 4, y: 7, halfWidth: 20, halfHeight: 10 },
+    sparrow: { x: 1, y: 7, halfWidth: 21, halfHeight: 9 },
+    swift: { x: 3, y: 3, halfWidth: 22, halfHeight: 8 },
+  },
+  platformSurfaceInsets: { normal: .03, moving: .12, break: .075, spring: .05 },
   gravity: 1500,
   baseJumpVelocity: 620,
   springJumpVelocity: 820,
@@ -113,8 +123,12 @@ const SEVA_CONFIG = {
   // recovered misses even beyond this extra warning margin.
   challengeMissedBowlMargin: 60,
   challengeMissedMessageDuration: 3,
-  arcadeBirdStartScore: 500,
-  // Challenge introduces birds earlier than Arcade, but keeps them at least
+  arcadeBirdStartScore: 200,
+  arcadeBirdFullScore: 500,
+  arcadeBirdIntroChance: .08,
+  arcadeMaxVisibleBirds: 2,
+  arcadeBirdSpriteHeight: 56,
+  // Challenge keeps its separate introduction and spaces birds at least
   // one screen apart so each encounter remains readable.
   challengeBirdStartScore: 350,
   challengeBirdChance: .24,

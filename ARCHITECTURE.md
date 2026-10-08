@@ -6,6 +6,7 @@ Seva Jump is a browser game packaged for Android and iOS. The browser source is 
 
 - `index.html` contains the canvas, menus, dialogs, HUD, help, and in-game privacy text.
 - `styles.css` lays out the portrait canvas, responsive menus, safe areas, and reduced-motion presentation. The canvas is 450 × 800 in browsers and 640 × 800 on native tablets.
+- Android presentation is scoped with `android-app`. Tablets at 600 CSS pixels wide and above fit the canvas between the HUD and a reserved bottom navigation area, including compact tablets using the narrower canvas. Phones below 600 CSS pixels omit that extra footer to prioritize a full-width scene, with a floating mode label; a height limit prevents cropping on unusually short screens. The outer game frame cannot scroll on focus; menu overlays retain their own scrolling. iOS keeps its separate presentation.
 - `game.js` owns runtime state, course generation, collision handling, input, audio, persistence, menu flow, and canvas drawing.
 - `game-config.js` contains gameplay tuning. `game-rules.js` contains shared calculations that the Node checks can exercise without a browser.
 - `assets/` contains only the pixel art used at runtime. Unused source variants live in `design/`, excluded from web, Android, and iOS packages.
@@ -24,7 +25,7 @@ The renderer draws the backdrop, platforms, collectibles, hazards, player, effec
 
 Pointer input maps screen coordinates into the current canvas size, including letterboxing, and steers toward the pointer position. A/D and Left/Right Arrow keys provide keyboard steering. Enter/Space starts Endless from Home unless a control has focus. Standard gamepads are polled each animation frame, including menus and pause: stick/D-pad steer, A starts/resumes, and B/Start pauses on a fresh press. Escape and the pause button pause a run. Losing focus or hiding the page also pauses active gameplay and clears held input. Desktop fullscreen targets the game frame so HTML controls remain available alongside the canvas.
 
-Opening Settings from a paused run keeps the run paused. Leaving or restarting a paused run records that the player left early. Android Back opens the exit confirmation away from the home screen; Back on the home screen exits through Capacitor's App plugin. The Android bridge also switches system bars between menu and gameplay presentation.
+Opening Settings from a paused run keeps the run paused. Leaving or restarting a paused run records that the player left early. Android Back closes the current dialog or returns to its parent: Privacy to About, Settings to Home or Pause, and other main menus to Home. Back pauses gameplay and dismisses Pause to resume; from Home it minimizes the Android task to the launcher. The Android bridge also switches system bars between menu and gameplay presentation.
 
 ## Saves and audio
 
