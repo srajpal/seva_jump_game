@@ -36,7 +36,15 @@ const { hooks } = runtime, canvas = runtime.elements.get('#game');
 const scale = 1.28, contentLeft = 96; // matches the harness' 768x1024 canvas rect
 const W = canvas.width, g = config.gravity, HALF_W = 15.5, FEET = 24, POINTER_SPEED = config.pointerMaxHorizontalSpeed;
 
-function steerTo(x) { canvas.listeners.pointerdown({ clientX: contentLeft + Math.max(0, Math.min(W, x)) * scale, pointerId: 1 }); }
+// Hold one mouse pointer and move it, as a player would: the game ignores a
+// second pointerdown while a pointer is already steering.
+let pointerHeld = false;
+function steerTo(x) {
+  const event = { clientX: contentLeft + Math.max(0, Math.min(W, x)) * scale, pointerId: 1, pointerType: 'mouse', buttons: 1 };
+  if (pointerHeld) canvas.listeners.pointermove(event);
+  else { canvas.listeners.pointerdown(event); pointerHeld = true; }
+}
+function releasePointer() { if (pointerHeld) canvas.listeners.pointerup?.({ pointerId: 1 }); pointerHeld = false; }
 
 function chooseTarget(state, stalled) {
   const p = state.player; let best = null;
@@ -76,7 +84,7 @@ function liftWorld(state, pixels) {
 }
 
 function playRun(mode) {
-  hooks.reset(mode); const state = hooks.state, profile = hooks.profile;
+  releasePointer(); hooks.reset(mode); const state = hooks.state, profile = hooks.profile;
   if (START_SCORE > 0) liftWorld(state, START_SCORE * 18);
   const before = { jumps: profile.stats.jumps, powerups: profile.stats.powerups };
   const seenPowerups = new WeakSet(), seenBirds = new WeakSet(), platformTypes = new WeakMap();
