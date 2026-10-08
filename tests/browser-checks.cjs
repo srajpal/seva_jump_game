@@ -219,6 +219,24 @@ async function canvasWork(page) {
         check('result menu and return Home stop drawing');
       }
       await page.locator('.scene-boy').click(); await page.locator('#open-settings-button').click();
+      // Rows that also hold an info or preview button: the row text belongs to
+      // the setting, the button keeps its own action, and controls are named.
+      assert(await page.evaluate(() => ['helping-hand-toggle', 'reduced-motion-toggle', 'music-style-select'].every(id => {
+        const control = document.getElementById(id);
+        return control.labels.length === 1 && control.labels[0].control === control;
+      })), `${name}: settings labels point at their controls`);
+      for (const id of ['helping-hand-toggle', 'reduced-motion-toggle']) {
+        const before = await page.locator(`#${id}`).isChecked();
+        await page.locator(`label[for="${id}"] > span`).click({ position: { x: 4, y: 8 } });
+        assert.equal(await page.locator(`#${id}`).isChecked(), !before, `${name}: tapping the ${id} row text toggles it`);
+        assert(await page.locator('#settings-screen').isVisible(), `${name}: row text does not open the info popup`);
+        await page.locator(`label[for="${id}"] > span`).click({ position: { x: 4, y: 8 } });
+      }
+      await page.locator('#helping-hand-info').click();
+      assert(await page.locator('#info-screen').isVisible(), `${name}: the info button still opens its popup`);
+      await page.locator('#close-info-button').click();
+      assert(await page.locator('#settings-screen').isVisible());
+      check(`settings rows toggle from their text: ${name}`);
       await page.locator('#reset-progress-button').click(); await page.locator('#confirm-reset-button').click();
       assert(await page.evaluate(() => __qa.profile.character==='girl' && document.querySelector('.scene-girl').getAttribute('aria-pressed')==='true'));
       if (name === 'desktop') {
