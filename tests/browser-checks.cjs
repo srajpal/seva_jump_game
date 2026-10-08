@@ -219,6 +219,24 @@ async function canvasWork(page) {
         check('result menu and return Home stop drawing');
       }
       await page.locator('.scene-boy').click(); await page.locator('#open-settings-button').click();
+      // Rows that also hold an info or preview button: the row text belongs to
+      // the setting, the button keeps its own action, and controls are named.
+      assert(await page.evaluate(() => ['helping-hand-toggle', 'reduced-motion-toggle', 'music-style-select'].every(id => {
+        const control = document.getElementById(id);
+        return control.labels.length === 1 && control.labels[0].control === control;
+      })), `${name}: settings labels point at their controls`);
+      for (const id of ['helping-hand-toggle', 'reduced-motion-toggle']) {
+        const before = await page.locator(`#${id}`).isChecked();
+        await page.locator(`label[for="${id}"] > span`).click({ position: { x: 4, y: 8 } });
+        assert.equal(await page.locator(`#${id}`).isChecked(), !before, `${name}: tapping the ${id} row text toggles it`);
+        assert(await page.locator('#settings-screen').isVisible(), `${name}: row text does not open the info popup`);
+        await page.locator(`label[for="${id}"] > span`).click({ position: { x: 4, y: 8 } });
+      }
+      await page.locator('#helping-hand-info').click();
+      assert(await page.locator('#info-screen').isVisible(), `${name}: the info button still opens its popup`);
+      await page.locator('#close-info-button').click();
+      assert(await page.locator('#settings-screen').isVisible());
+      check(`settings rows toggle from their text: ${name}`);
       await page.locator('#reset-progress-button').click(); await page.locator('#confirm-reset-button').click();
       assert(await page.evaluate(() => __qa.profile.character==='girl' && document.querySelector('.scene-girl').getAttribute('aria-pressed')==='true'));
       if (name === 'desktop') {
@@ -276,6 +294,19 @@ async function canvasWork(page) {
     await offlinePage.locator('#endless-button').click(); await offlinePage.locator('#tutorial-skip-button').click();
     await offlinePage.locator('#pause-button').click(); assert(await offlinePage.locator('#pause-screen').isVisible());
     assert.deepEqual(offlineErrors,[]); check('first-visit offline actual game with directory URLs denied'); await offlineContext.close();
+    // The native apps package every file: a worker left by an earlier web-style
+    // build must be removed with its caches, or app updates replay old files.
+    const nativeContext = await browser.newContext(), nativePage = await nativeContext.newPage();
+    await nativePage.goto(`${origin}/game/index.html`);
+    await nativePage.evaluate(() => navigator.serviceWorker.ready);
+    await nativePage.addInitScript(() => { window.Capacitor = { isNativePlatform: () => true, getPlatform: () => 'android', Plugins: {} }; });
+    await nativePage.reload();
+    await nativePage.waitForFunction(async () => (await navigator.serviceWorker.getRegistrations()).length === 0, null, { timeout: 10000 });
+    // The outgoing worker controls this page until it unloads; the next launch runs without it.
+    await nativePage.reload();
+    assert.equal(await nativePage.evaluate(() => navigator.serviceWorker.controller), null, 'next launch is not served by a worker');
+    await nativePage.waitForFunction(async () => !(await caches.keys()).some(key => key.startsWith('seva-jump-')), null, { timeout: 10000 });
+    check('native app removes a leftover service worker and its caches'); await nativeContext.close();
   } catch (error) {
     const failurePage=browser.contexts().flatMap(context=>context.pages()).at(-1);
     if(failurePage) await failurePage.screenshot({path:path.join(output,'failure.png'),fullPage:true}).catch(()=>{});

@@ -35,8 +35,8 @@ class MockCache {
   }
 }
 
-function createWorker() {
-  const scope = 'https://html-classic.itch.zone/html/123456/';
+function createWorker(scope = 'https://html-classic.itch.zone/html/123456/') {
+  let unregistered = false;
   const listeners = {}, stores = new Map(), deleted = [], requests = [];
   let online = true, status = 200;
   const fetchImpl = async request => {
@@ -56,7 +56,7 @@ function createWorker() {
     async delete(name) { deleted.push(name); return stores.delete(name); },
   };
   const self = {
-    registration: { scope }, clients: { claim: async () => {} }, skipWaiting: async () => {},
+    registration: { scope, unregister: async () => { unregistered = true; return true; } }, clients: { claim: async () => {} }, skipWaiting: async () => {},
     addEventListener(type, handler) { listeners[type] = handler; },
   };
   vm.runInNewContext(source, { self, caches, fetch: fetchImpl, Request, Response, URL });
@@ -66,7 +66,7 @@ function createWorker() {
     if (pending) await pending;
     return response;
   };
-  return { scope, stores, deleted, requests, dispatch, setOnline(value) { online = value; }, setStatus(value) { status = value; } };
+  return { scope, stores, deleted, requests, dispatch, get unregistered() { return unregistered; }, setOnline(value) { online = value; }, setStatus(value) { status = value; } };
 }
 
 function request(url, destination, mode) {
@@ -129,5 +129,20 @@ function request(url, destination, mode) {
   assert.match(offlineAsset.headers.get('Content-Type'), /javascript/, 'missing scripts never receive HTML');
   assert.equal(await worker.dispatch('fetch', request('https://example.com/external.js', 'script')), undefined);
 
-  console.log('PASS service worker: scoped atomic precache, first-load offline, cache ownership and typed fallbacks');
+  // In the Capacitor app (https://localhost) a worker left by an older build
+  // must stand down: no precache, no interception, its caches removed.
+  const native = createWorker('https://localhost/');
+  native.stores.set(`seva-jump-${encodeURIComponent('/')}-v1.0.10-art6`, new MockCache(native.scope, async () => new Response('old')));
+  native.stores.set('other-app-cache', new MockCache(native.scope, async () => new Response('other')));
+  await native.dispatch('install');
+  assert.equal(native.requests.length, 0, 'the native app worker precaches nothing');
+  await native.dispatch('activate');
+  assert.deepEqual([...native.stores.keys()], ['other-app-cache'], 'the native app worker removes only Seva Jump caches');
+  assert.equal(native.unregistered, true, 'the native app worker unregisters itself');
+  assert.equal(await native.dispatch('fetch', request('https://localhost/index.html', '', 'navigate')), undefined, 'the native app loads its packaged files');
+  const devServer = createWorker('http://localhost:8765/');
+  await devServer.dispatch('install');
+  assert(devServer.requests.length > 0, 'local web servers keep offline caching');
+
+  console.log('PASS service worker: scoped atomic precache, first-load offline, cache ownership, typed fallbacks and native-app stand-down');
 })().catch(error => { console.error(error); process.exitCode = 1; });

@@ -98,10 +98,10 @@
           <h2 id="settings-heading">Settings</h2>
           <div class="pause-settings" aria-label="Game settings">
             <label><span>Music</span><input id="music-toggle" type="checkbox" checked /></label>
-            <label><span>Music style<button id="music-preview-button" class="info-button play-button" type="button" aria-label="Play a sample of this music style">▶</button></span><select id="music-style-select"><option value="varied">Varied</option><option value="classic">Classic</option></select></label>
+            <label for="music-style-select"><span>Music style<button id="music-preview-button" class="info-button play-button" type="button" aria-label="Play a sample of this music style">▶</button></span><select id="music-style-select" aria-label="Music style"><option value="varied">Varied</option><option value="classic">Classic</option></select></label>
             <label><span>Sound effects</span><input id="sound-toggle" type="checkbox" checked /></label>
-            <label><span>Helping Hand<button id="helping-hand-info" class="info-button" type="button" aria-label="About Helping Hand" aria-haspopup="dialog">i</button></span><input id="helping-hand-toggle" type="checkbox" checked /></label>
-            <label><span>Reduced motion<button id="reduced-motion-info" class="info-button" type="button" aria-label="About Reduced motion" aria-haspopup="dialog">i</button></span><input id="reduced-motion-toggle" type="checkbox" /></label>
+            <label for="helping-hand-toggle"><span>Helping Hand<button id="helping-hand-info" class="info-button" type="button" aria-label="About Helping Hand" aria-haspopup="dialog">i</button></span><input id="helping-hand-toggle" type="checkbox" aria-label="Helping Hand" checked /></label>
+            <label for="reduced-motion-toggle"><span>Reduced motion<button id="reduced-motion-info" class="info-button" type="button" aria-label="About Reduced motion" aria-haspopup="dialog">i</button></span><input id="reduced-motion-toggle" type="checkbox" aria-label="Reduced motion" /></label>
           </div>
           <p class="setting-note">Helping Hand applies to Endless and Arcade only.</p>
           <p id="audio-warning" class="setting-note hidden" role="status">Sound isn’t available in this browser. You can still play.</p>

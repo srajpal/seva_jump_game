@@ -5,7 +5,22 @@ def keystoreProperties = new Properties()
 if (keystorePropertiesFile.exists()) {
     keystorePropertiesFile.withInputStream { keystoreProperties.load(it) }
 }
-def releaseSigningReady = ['storeFile', 'storePassword', 'keyAlias', 'keyPassword'].every { keystoreProperties[it] }
+def missingSigningSettings = ['storeFile', 'storePassword', 'keyAlias', 'keyPassword'].findAll { !keystoreProperties[it] }
+if (!missingSigningSettings && !file(keystoreProperties['storeFile']).exists()) {
+    missingSigningSettings = ["storeFile (${keystoreProperties['storeFile']} not found)"]
+}
+def releaseSigningReady = missingSigningSettings.isEmpty()
+
+// Without signing settings a release bundle still builds, unsigned, and Play
+// rejects it at upload. Stop before packaging instead; -PallowUnsignedRelease
+// builds one on purpose.
+gradle.taskGraph.whenReady { graph ->
+    def releasePackaging = graph.allTasks.any { it.project == project && it.name ==~ /(assemble|bundle|package|sign)Release(Bundle)?/ }
+    if (releasePackaging && !releaseSigningReady && !project.hasProperty('allowUnsignedRelease')) {
+        throw new GradleException("Release signing is not configured: missing ${missingSigningSettings.join(', ')} in android/keystore.properties. " +
+            "Add the upload-key settings (never commit them), or pass -PallowUnsignedRelease to build an unsigned release on purpose.")
+    }
+}
 
 android {
     namespace = "org.sevajump.game"

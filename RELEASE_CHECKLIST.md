@@ -50,6 +50,7 @@ Google Play and iOS signing/store-console tasks below do not block a browser-onl
 - [x] Migrated compile/target SDK to API 36 with Capacitor 8, AGP 8.13.0 and Gradle 8.14.3; Android 16 phone/tablet emulator checks passed September 19, 2026.
 - [ ] Confirm the enforced target API in the verified replacement Play Console account and upload a signed AAB to verify acceptance. Local builds do not satisfy this gate. Published requirements: https://support.google.com/googleplay/android-developer/answer/11926878.
 - [ ] Create and securely back up a separate upload key; never store it in this repository.
+- [ ] Release builds read `storeFile`, `storePassword`, `keyAlias` and `keyPassword` from the ignored `android/keystore.properties`. `bundleRelease`/`assembleRelease` now stop with a message naming any missing setting instead of producing an unsigned AAB; `-PallowUnsignedRelease` builds one on purpose.
 - [ ] Enroll in Play App Signing and build a signed Android App Bundle (`.aab`).
 - [ ] Decide cross-store signing before distribution: use a consistent application ID and compatible signing identity for updates. An upload key is not the Play app signing key. See `ANDROID_DISTRIBUTION.md`.
 - [x] Publish the privacy policy at `https://srajpal.github.io/seva_jump_game/privacy.html` (public page verified September 18, 2026; final contact/declaration review remains).
