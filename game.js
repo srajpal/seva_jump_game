@@ -1222,7 +1222,7 @@
   canvas.addEventListener('lostpointercapture', releasePointer);
   document.addEventListener('keydown', e => {
     if (e.key === 'Tab' && activeModal) {
-      const focusable = Array.from(activeModal.querySelectorAll(focusableSelector));
+      const focusable = Array.from(activeModal.querySelectorAll(focusableSelector)).filter(element => !element.closest('.hidden'));
       if (focusable.length) {
         const first = focusable[0], last = focusable[focusable.length - 1];
         if (e.shiftKey && (document.activeElement === activeModal || document.activeElement === first || !activeModal.contains(document.activeElement))) { last.focus(); e.preventDefault(); }

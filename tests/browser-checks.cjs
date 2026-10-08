@@ -66,6 +66,17 @@ async function canvasWork(page) {
       assert.equal(await page.locator('#run-falcon-toggle').isChecked(), false, `${name}: selection remembered`);
       await page.keyboard.press('Escape');
       assert(await page.locator('#home-screen').isVisible(), `${name}: Escape cancels choices`);
+      if (name === 'desktop') {
+        // An unowned upgrade's row is hidden; Tab must still wrap inside the panel.
+        await page.evaluate(() => { __qa.profile.falcon = 0; });
+        await page.locator('#arcade-button').click();
+        await page.locator('#cancel-run-button').focus();
+        await page.keyboard.press('Tab');
+        assert.equal(await page.evaluate(() => document.activeElement?.id), 'run-shield-toggle', 'Tab wraps to the first visible choice');
+        await page.keyboard.press('Shift+Tab');
+        assert.equal(await page.evaluate(() => document.activeElement?.id), 'cancel-run-button', 'Shift+Tab wraps to the last control');
+        await page.keyboard.press('Escape');
+      }
       await page.evaluate(() => localStorage.removeItem('seva-jump-profile'));
       await page.reload();
       check(`pre-run upgrades, remembered choices and cancel: ${name}`);
