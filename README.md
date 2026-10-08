@@ -2,17 +2,21 @@
 
 **A skyward seva adventure.**
 
-Current release-candidate build: **v1.0.2** (Android build 40; iOS build 38). The published itch.io version remains 0.13.2 until a new upload is approved.
+Current public [itch.io browser release](https://khalsagamestudio.itch.io/seva-jump): **v1.0.10**. Android **1.0.3 / build 41** is available in Google Play closed testing; production access was applied for October 8, 2026 and is pending review. Android **1.0.10 / build 48** remains a local candidate; iOS build 44 is metadata only. See `RELEASE_PROGRESS.md` for validation and publication details.
 
-The birds have flown away with the parshad. Choose a young Sikh boy or girl, leap from platform to platform, and bring it back in this cheerful browser game prototype.
+The birds have flown away with the parshad. Choose a young Sikh boy or girl, leap from platform to platform, and bring it back in this cheerful browser game.
 
-Seva Jump is designed for ages 8-15, with touch-first controls, a calm gurdwara-inspired setting, and a respectful introduction to a few Sikh terms used in the game.
+Seva Jump is designed for ages 8-15, with touch-first controls, a calm Gurdwara-inspired setting, and a respectful introduction to a few Sikh terms used in the game.
 
 ## Play
 
 Open **`index.html`** in a modern browser. On a phone or tablet, drag across the game to steer left and right. On a desktop, drag with a mouse or steer with A/D or the left and right arrow keys. Enter or Space starts Endless from Home when a button or other control is not focused. Press Escape to pause; the ⛶ button toggles fullscreen during play where supported.
 
 Standard gamepads use the left stick or D-pad to steer, A to start Endless from Home or resume, and B or Start to pause. Breakable platforms stop supporting the player immediately after landing, then fall and fade over 0.3 seconds (fade only with reduced motion). “Birds seen” counts their first appearance during play.
+
+Touch dragging is relative to where each touch begins: lift and reposition your thumb without steering toward the new contact point. Personal best scores live in Records & Stats, accessible from the bottom of Home.
+
+On Android, Back returns through menus and dismisses dialogs. During play it pauses; from Pause it resumes. Back from Home returns to the Android launcher without a close confirmation. Landings require the feet to overlap the visible platform surface; bird collisions cover the character's head and body while allowing space around wing tips and outstretched hands.
 
 New players receive a short three-step guide after choosing their first mode. It can be replayed later from Settings.
 
@@ -56,6 +60,12 @@ sync step for iOS.
 
 ## Game modes
 
+Arcade introduces occasional single-bird encounters from 200 points, with more frequent encounters from 500. Vertical spacing limits the visible scene to two birds, including partial sprites at the screen edges; the introductory section keeps encounters one at a time.
+
+Each run can activate at most one Falcon Save and one Dhal Shield. Starting or abandoning a run does not spend an unused item. The run HUD shows one available, Off when disabled, or Used after activation; the shop and pre-run panel show total inventory. A shield's four-second protection still applies, but further hits after it expires cannot consume another shield until the next run. Power Jump remains a permanent level with an optional off switch; collectible boosts are unchanged.
+
+When you own a Falcon Save, Dhal Shield, or Power Jump level, selecting a mode opens **Upgrades for this run**. Only owned upgrades appear. Switch consumables off to preserve inventory or Power Jump off to use the base jump height; purchased levels are retained. Choices are saved locally for future runs, and the HUD marks disabled upgrades **Off**. With no upgrades, mode selection starts normally. Restarting also offers these choices; Back cancels to Home. Kara and Nishan boosts collected during play remain active.
+
 | Mode | Goal |
 | --- | --- |
 | **Endless Run** | Keep climbing for as long as you can. The course continues indefinitely. |
@@ -74,13 +84,15 @@ Challenge Mode warns once when an uncollected bowl scrolls out of reach and keep
 - **Dhal Shield** blocks one bird hit when owned.
 - **Falcon Save** gives a second chance after falling.
 - **Grass, spring, moving, and wooden breakable platforms** each change how you plan your next jump.
-- **Helping Hand** (on by default, switchable in Settings; Endless and Arcade only) steps in when a broken row leaves the next platform out of reach, too high or too far to the side: after about three seconds without climbing, the platform you are bouncing on becomes a spring, and if even a spring cannot get there, helper platforms appear to bridge the way. Without it, and always in Challenge and Hard, a stuck run is warned at three seconds and ends at six.
+- **Helping Hand** (on by default, switchable in Settings; Endless and Arcade only) steps in when a broken row leaves the next platform out of reach, too high or too far to the side: after about three seconds without climbing, the platform you are bouncing on becomes a spring, and if even a spring cannot get there, helper platforms appear to bridge the way. With assistance disabled in Endless or Arcade, a stuck run is warned at three seconds and ends at six. Challenge and Hard instead display a persistent banner while stranded and never end solely for being stuck: keep trying, or use Pause to restart or return home. Normal falls, bird collisions and Challenge completion rules still apply.
 
 ## A note on language and setting
 
-*Seva* means selfless service. *Parshad* (also written *prashad*) is a blessed offering shared in a gurdwara. A *gurdwara* is a Sikh place of worship. The in-game **About** screen explains these and other terms in more detail.
+Use **Sikh** for a person or as an adjective for people, culture, institutions, and articles of faith; use **Sikhi** for the path and teachings. *Seva* is service with love and humility, without expecting a reward. Here, *parshad* means *karah parshad*, a blessed sweet offering shared equally with everyone, Sikh or non-Sikh. A *Gurdwara* is a Sikh place of worship, learning, and community gathering, open to everyone. The in-game **About** screen explains these terms, shares the creator's approach to playful allegory inspired by Sikhi, and offers an optional SikhRI link and local-Gurdwara learning suggestion. The game welcomes everyone and does not seek to proselytize or replace Sikh teachings. Do not depict the Sikh Gurus in game or promotional imagery.
 
-The setting is gurdwara-inspired and avoids using sacred spaces or symbols as obstacles. The game is a work in progress, and feedback on its respectful presentation is welcome.
+See [SIKHI_TEXT_REVIEW.md](SIKHI_TEXT_REVIEW.md) for the September 27, 2026 text review, sources, the creator's direction and imagery boundaries, wording decisions, optional art observations, and external-site verification checklist.
+
+The setting is Gurdwara-inspired and avoids using sacred spaces or symbols as obstacles. The game is a work in progress, and feedback on its respectful presentation is welcome.
 
 ## Run the checks
 
@@ -132,3 +144,9 @@ All rights reserved for now. Please do not reuse the game artwork or code withou
 ## Source and feedback
 
 Source code is available at https://github.com/srajpal/seva_jump_game. Bug reports and suggestions are welcome. No project license has been selected; public source availability is not an open-source license.
+
+## Art direction
+
+See [ART_DIRECTION.md](ART_DIRECTION.md) for the approved visual style, asset review decisions, avatar continuity references, and the interactive before/after gallery.
+
+Badge definitions and progression: [BADGES.md](BADGES.md).

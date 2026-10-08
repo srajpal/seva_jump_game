@@ -11,7 +11,7 @@
     <link rel="manifest" href="manifest.webmanifest" />
     <link rel="icon" href="assets/app-icon-bird-v1.png" type="image/png" />
     <link rel="apple-touch-icon" href="assets/app-icon-bird-v1.png" />
-    <link rel="stylesheet" href="styles.css?v=1.0.2" />
+    <link rel="stylesheet" href="styles.css?v=1.0.10" />
   </head>
   <body>
     <main class="game-shell">
@@ -24,7 +24,7 @@
           <div class="mobile-hud-upgrades" aria-label="Owned upgrades">
             <span><img src="assets/falcon-save-pixel-v1.png" alt="Falcon Save" /><b id="mobile-falcon">0</b></span>
             <span><img src="assets/dhal-shield-pixel-v1.png" alt="Dhal Shield" /><b id="mobile-shield">0</b></span>
-            <span class="mobile-power-icon" aria-label="Power Jump">↑<b id="mobile-power">0</b></span>
+            <span class="mobile-power-icon" aria-label="Power Jump"><img src="assets/power-jump-upgrade-v1.png" alt="" /><b id="mobile-power">0</b></span>
           </div>
           <span id="mobile-mode" class="mobile-hud-mode">ENDLESS</span>
         </div>
@@ -35,16 +35,15 @@
         <div id="home-screen" class="overlay home-screen">
           <div class="home-content">
             <p class="eyebrow">A skyward seva adventure</p>
-            <h1><span>Seva</span> Jump</h1>
+            <h1><img class="game-logo" src="assets/seva-jump-logo.png" alt="Seva Jump" /></h1>
             <div class="story-card">
               <span class="story-icon" aria-hidden="true">✦</span>
-              <p><strong>Help!</strong> The birds have stolen all the parshad. You have to help get it back.</p>
+              <p><strong>Help!</strong> The birds have scattered the parshad bowls. Help bring them back.</p>
             </div>
-            <p id="home-records" class="home-records" aria-live="polite">Best · Endless 0 · Arcade 0 · Challenge 0 · Hard 0</p>
             <div class="home-scene" aria-label="Choose your character">
               <img class="scene-bowl" src="assets/parshad-bowl-pixel-v3.png" alt="" />
-              <button class="scene-girl scene-character selected" data-character="girl" type="button" aria-label="Play as the young Sikh girl" aria-pressed="true"><img src="assets/player-girl-pixel-v1.png" alt="" /></button>
-              <button class="scene-boy scene-character" data-character="boy" type="button" aria-label="Play as the young Sikh boy" aria-pressed="false"><img src="assets/player-boy-pixel-v1.png" alt="" /></button>
+              <button class="scene-girl scene-character selected" data-character="girl" type="button" aria-label="Play as the young Sikh girl" aria-pressed="true"><svg width="102" height="153" viewBox="67 -25 385 577" aria-hidden="true" focusable="false"><defs><clipPath id="girl-preview-clip"><rect x="80" y="0" width="360" height="545" /></clipPath></defs><image href="assets/player-girl-poses-v2.png" width="1536" height="1024" clip-path="url(#girl-preview-clip)" /></svg></button>
+              <button class="scene-boy scene-character" data-character="boy" type="button" aria-label="Play as the young Sikh boy" aria-pressed="false"><svg width="102" height="153" viewBox="67 -25 385 577" aria-hidden="true" focusable="false"><defs><clipPath id="boy-preview-clip"><rect x="80" y="0" width="360" height="545" /></clipPath></defs><g transform="translate(520 0) scale(-1 1)"><image href="assets/player-boy-poses-v2.png" width="1536" height="1024" clip-path="url(#boy-preview-clip)" /></g></svg></button>
             </div>
             <p class="character-prompt">Tap a character to choose your jumper</p>
           </div>
@@ -57,9 +56,9 @@
           <p class="help mode-help">Choose a mode to start your skyward seva adventure.</p>
           <section class="home-utilities" aria-label="More game options">
             <p>More to explore</p>
-            <div class="home-links"><button id="open-upgrades-button" class="secondary">Upgrades</button><button id="open-badges-button" class="secondary">Badges</button><button id="open-stats-button" class="secondary">Stats</button><button id="open-about-button" class="secondary">About &amp; Help</button><button id="open-settings-button" class="secondary">Settings</button></div>
+            <div class="home-links"><button id="open-upgrades-button" class="secondary">Upgrades</button><button id="open-badges-button" class="secondary">Badges</button><button id="open-stats-button" class="secondary">Records</button><button id="open-about-button" class="secondary">About &amp; Help</button><button id="open-settings-button" class="secondary">Settings</button></div>
           </section>
-          <p class="game-version" aria-label="Game version 1.0.2">v1.0.2 | Khalsa Game Studio</p>
+          <p class="game-version" aria-label="Game version 1.0.10">v1.0.10 | Khalsa Game Studio</p>
         </div>
         <div id="end-screen" class="overlay hidden" role="dialog" aria-modal="true" aria-labelledby="end-heading">
           <p class="eyebrow">Nice climb!</p>
@@ -104,8 +103,9 @@
             <label><span>Helping Hand<button id="helping-hand-info" class="info-button" type="button" aria-label="About Helping Hand" aria-haspopup="dialog">i</button></span><input id="helping-hand-toggle" type="checkbox" checked /></label>
             <label><span>Reduced motion<button id="reduced-motion-info" class="info-button" type="button" aria-label="About Reduced motion" aria-haspopup="dialog">i</button></span><input id="reduced-motion-toggle" type="checkbox" /></label>
           </div>
+          <p class="setting-note">Helping Hand applies to Endless and Arcade only.</p>
           <p id="audio-warning" class="setting-note hidden" role="status">Sound isn’t available in this browser. You can still play.</p>
-          <p id="helping-hand-note" class="setting-note hidden">Helping Hand steps in when you are stuck bouncing with no platform in reach in Endless or Arcade: after about three seconds your platform turns into a spring, or helper platforms appear. Challenge and Hard never help; a stuck run there ends after a warning.</p>
+          <p id="helping-hand-note" class="setting-note hidden">Helping Hand steps in when you are stuck bouncing with no platform in reach in Endless or Arcade: after about three seconds your platform turns into a spring, or helper platforms appear. Challenge and Hard show a persistent warning instead; keep trying or use Pause to restart or leave.</p>
           <p id="reduced-motion-note" class="setting-note hidden">Reduced Motion makes decorative effects still: character bobbing, net hovering, finish-banner floating, fireworks expansion, and interface transitions.</p>
           <button id="replay-tutorial-button" class="secondary" type="button">Replay first-run guide</button>
           <div class="reset-panel">
@@ -128,16 +128,17 @@
           <div class="menu-actions"><button id="confirm-reset-button" class="primary" type="button">Yes, reset everything</button><button id="cancel-reset-button" class="secondary" type="button">Keep my progress</button></div>
         </div>
         <div id="badges-screen" class="overlay badges-screen hidden" role="dialog" aria-modal="true" aria-labelledby="badges-heading">
-          <p class="eyebrow">Your collection</p>
           <h2 id="badges-heading">Badges</h2>
-          <p id="badge-count" class="badge-count">0 of 10 earned</p>
+          <p id="badge-count" class="badge-count">0 of 14 earned</p>
           <div id="badge-grid" class="badge-grid" aria-live="polite"></div>
           <button id="close-badges-button" class="primary">Back to main screen</button>
         </div>
         <div id="stats-screen" class="overlay stats-screen hidden" role="dialog" aria-modal="true" aria-labelledby="stats-heading">
           <p class="eyebrow">Your journey</p>
-          <h2 id="stats-heading">Run statistics</h2>
+          <h2 id="stats-heading">Records &amp; Stats</h2>
           <p class="stats-intro">A growing record of your climbs on this device.</p>
+          <div id="home-records" class="record-grid" aria-label="Personal best scores" aria-live="polite"></div>
+          <h3>Lifetime statistics</h3>
           <div id="stats-summary" class="stats-summary" aria-live="polite"></div>
           <h3>How runs ended</h3>
           <div id="death-breakdown" class="death-breakdown" aria-live="polite"></div>
@@ -145,7 +146,7 @@
           <button id="close-stats-button" class="primary">Back to main screen</button>
         </div>
         <div id="badge-toast" class="badge-toast hidden" role="status" aria-live="assertive">
-          <span id="badge-toast-icon" class="badge-icon" aria-hidden="true">✦</span>
+          <span id="badge-toast-icon" class="badge-icon badge-art-first-run" aria-hidden="true"></span>
           <span><strong>Badge earned!</strong><small id="badge-toast-name"></small></span>
         </div>
         <div id="upgrades-screen" class="overlay hidden" role="dialog" aria-modal="true" aria-labelledby="upgrades-heading">
@@ -155,7 +156,7 @@
           <div class="upgrade-list">
             <article class="upgrade-card"><h3><img class="upgrade-icon" src="assets/falcon-save-pixel-v1.png" alt="" />Falcon Save</h3><p>Catch one fall during a run.</p><button id="buy-falcon" class="secondary">Buy</button><small id="falcon-owned">Owned: 0</small></article>
             <article class="upgrade-card"><h3><img class="upgrade-icon" src="assets/dhal-shield-pixel-v1.png" alt="" />Dhal Shield</h3><p>Block one bird collision.</p><button id="buy-shield" class="secondary">Buy</button><small id="shield-owned">Owned: 0</small></article>
-            <article class="upgrade-card"><h3><span class="power-jump-icon" aria-hidden="true">↑</span>Power Jump</h3><p>Increase jump height by 10%.</p><button id="buy-power" class="secondary">Buy</button><small id="power-owned">Level: 0 / 5</small></article>
+            <article class="upgrade-card"><h3><img class="upgrade-icon" src="assets/power-jump-upgrade-v1.png" alt="" />Power Jump</h3><p>Increase jump height by 10%.</p><button id="buy-power" class="secondary">Buy</button><small id="power-owned">Level: 0 / 5</small></article>
           </div>
           <p id="upgrade-message" class="help" aria-live="polite"></p>
           <button id="close-upgrades-button" class="primary">Back to main screen</button>
@@ -166,11 +167,11 @@
             <span class="mission-cloud" aria-hidden="true">☁</span>
             <div><strong>Your mission</strong><p>Birds have scattered the parshad. Leap through the sky, collect it, and help bring it back.</p></div>
           </section>
-          <p class="about-intro">A playful jumping adventure inspired by Sikh community values. Here is everything you need for your next run.</p>
+          <p class="about-intro">A playful jumping adventure inspired by Sikhi and its values of equality, kindness, and seva. Everyone is welcome to play.</p>
           <h3 class="about-subhead"><span aria-hidden="true">✦</span> Collect, jump, protect</h3>
           <div class="item-guide" role="list">
             <article class="guide-card" role="listitem"><img src="assets/parshad-bowl-pixel-v3.png" alt="" /><span><strong>Parshad bowl</strong><small>Adds to your score.</small></span></article>
-            <article class="guide-card" role="listitem"><img src="assets/khanda-token-pixel-v3.png" alt="" /><span><strong>Khanda token</strong><small>Spend these in Upgrades.</small></span></article>
+            <article class="guide-card" role="listitem"><img src="assets/khanda-token-pixel-v3.png" alt="" /><span><strong>Khanda token</strong><small>Spend these on upgrades.</small></span></article>
             <article class="guide-card" role="listitem"><img src="assets/platform-spring-pixel-v1.png" alt="" /><span><strong>Platforms</strong><small>Grass is steady; spring launches, moving shifts, and wood breaks.</small></span></article>
             <article class="guide-card" role="listitem"><img src="assets/powerup-kara-pixel-v1.png" alt="" /><span><strong>Kara boost</strong><small>Gives one higher jump.</small></span></article>
             <article class="guide-card" role="listitem"><img src="assets/powerup-nishan-pixel-v1.png" alt="" /><span><strong>Nishan boost</strong><small>A short guided flight you steer, plus 5 seconds of bird protection.</small></span></article>
@@ -186,19 +187,27 @@
             <div><strong>Controller</strong><p>Use a standard gamepad's left stick or D-pad to steer. A starts Endless from Home or resumes a paused run. B or Start pauses.</p></div>
           </section>
           <section class="comfort-card"><span aria-hidden="true">◌</span><p><strong>Reduced Motion</strong> keeps gameplay the same while making decorative movement still, including character bobbing, hovering, fireworks, and transitions.</p></section>
-          <h3 class="about-subhead"><span aria-hidden="true">✦</span> Sikh terms</h3>
+          <h3 class="about-subhead"><span aria-hidden="true">✦</span> Learn about Sikhi</h3>
           <dl class="glossary">
-            <div><dt>Seva</dt><dd>Selfless service and helping others.</dd></div>
-            <div><dt>Parshad</dt><dd>A blessed sweet food shared with the congregation.</dd></div>
-            <div><dt>Gurdwara</dt><dd>A Sikh place of worship and community gathering.</dd></div>
+            <div><dt>Sikh</dt><dd>A learner and disciple of the Guru who follows Sikhi.</dd></div>
+            <div><dt>Sikhi</dt><dd>The Sikh path of learning and living by the teachings of the Gurus, beginning with Guru Nanak Sahib.</dd></div>
+            <div><dt>Seva</dt><dd>Serving others with love and humility, without expecting a reward.</dd></div>
+            <div><dt>Parshad</dt><dd>Here, karah parshad: a blessed sweet offering shared equally with everyone, Sikh or non-Sikh.</dd></div>
+            <div><dt>Gurdwara</dt><dd>A Sikh place of worship, learning, and community gathering, open to everyone.</dd></div>
             <div><dt>Kara</dt><dd>A steel bracelet, one of the Sikh articles of faith.</dd></div>
-            <div><dt>Nishan Sahib</dt><dd>The Sikh flag, seen outside gurdwaras.</dd></div>
+            <div><dt>Nishan Sahib</dt><dd>The Sikh flag, seen outside Gurdwaras.</dd></div>
             <div><dt>Khanda</dt><dd>A widely recognized Sikh emblem.</dd></div>
             <div><dt>Dhal</dt><dd>A shield; in the game, it blocks one bird collision.</dd></div>
           </dl>
+          <h3 class="about-subhead">A note from the creator</h3>
+          <p class="about-intro">I am a follower of Sikhi, and this game is my creative idea, inspired by Sikhi and made for everyone. Familiar symbols become playful parts of a make-believe adventure. I hope they spark questions, not tell you what to believe. The game does not replace Sikh teachings or learning from others.</p>
+          <p class="about-intro">I welcome corrections to facts and feedback about anything that gives the wrong impression. People may see the creative choices differently, and we can disagree respectfully.</p>
+          <h3 class="about-subhead">Curious about Sikhi?</h3>
+          <p class="about-intro">Wondering about a kara, a Gurdwara, or seva? Explore the Sikh Research Institute (SikhRI), or visit a local Gurdwara and ask about its teachings and visitor customs. Younger players can explore with a parent or trusted adult.</p>
+          <p class="about-intro"><a href="https://sikhri.org/" target="_blank" rel="noopener noreferrer">Explore Sikhi at SikhRI (external website)</a>. This optional link needs internet access and opens outside the game. SikhRI is independent of Seva Jump.</p>
           <section class="developer-card" aria-label="Developer information">
             <strong>Developed by Khalsa Game Studio</strong>
-            <p>Bright, welcoming games inspired by Sikh culture and values.</p>
+            <p>Bright, welcoming games inspired by Sikh culture and the values of Sikhi.</p>
             <a href="https://www.khalsagamestudio.com/" target="_blank" rel="noopener noreferrer">khalsagamestudio.com</a>
           </section>
           <button id="open-privacy-button" class="privacy-link" type="button">Privacy</button>
@@ -207,20 +216,39 @@
         <div id="privacy-screen" class="overlay privacy-screen hidden" role="dialog" aria-modal="true" aria-labelledby="privacy-heading">
           <p class="eyebrow">Seva Jump</p>
           <h2 id="privacy-heading">Privacy</h2>
-          <p class="privacy-updated">Last updated: September 11, 2026</p>
+          <p class="privacy-updated">Last updated: September 26, 2026</p>
           <section class="privacy-card">
-            <p>Seva Jump is free and offline-friendly. We do not collect, sell, or share personal information.</p>
+            <p>Seva Jump (SevaJump) is a free, offline-friendly game from Khalsa Game Studio, listed on Google Play as Khalsa Game Studio Games. The game does not collect, transmit, sell, or share personal information.</p>
             <h3>What stays on your device</h3>
             <p>Your scores, settings, upgrades, badges, and statistics are stored only on your device to remember your progress. You can erase them with Reset all progress in Settings.</p>
             <p>Browser saves belong to this browser and site. Clearing site data can erase them. If saving is unavailable, you can still play for the current session.</p>
+            <h3>Retention and deletion</h3>
+            <p>Local progress remains until you reset it or the app or browser storage is cleared. On Android, you can also clear the app's storage in device Settings. We do not receive a copy and cannot recover deleted progress. There are no accounts or cloud saves.</p>
             <h3>Playing on another website</h3>
             <p>The game itself has no tracking. A website hosting the game, such as itch.io, may process information under its own privacy policy.</p>
             <h3>What we do not use</h3>
             <ul><li>No accounts or sign-in</li><li>No advertising or purchases</li><li>No analytics or tracking cookies</li><li>No collection of location, contacts, photos, microphone, or camera data</li></ul>
             <h3>Children</h3>
             <p>The game does not collect personal information from children or adults.</p>
+            <h3>Privacy questions and support</h3>
+            <p>Email <a href="mailto:khalsagamestudio.apps@gmail.com">khalsagamestudio.apps@gmail.com</a> for privacy questions or deletion requests for information you have sent us. Your email address and message are processed through our email provider to respond and may remain until deleted. You can request deletion, subject to legal retention obligations. This is separate from gameplay; the game sends no automatic diagnostic or gameplay reports.</p>
+            <p>Please do not send passwords or sensitive information. Children should ask a parent or guardian to contact us.</p>
+            <h3>Policy updates</h3>
+            <p>Changes will be shown with a revised date and reflected in applicable store disclosures. External websites and email services operate under their own privacy policies.</p>
           </section>
           <button id="close-privacy-button" class="primary" type="button">Back to About</button>
+        </div>
+        <div id="run-upgrades-screen" class="overlay hidden" role="dialog" aria-modal="true" aria-labelledby="run-upgrades-heading">
+          <h2 id="run-upgrades-heading">Upgrades for this run</h2>
+          <p>Switch off anything you want to save or try without.</p>
+          <div class="pause-settings">
+            <label id="run-falcon-row"><span>Falcon Save <small id="run-falcon-owned"></small></span><input id="run-falcon-toggle" type="checkbox" /></label>
+            <label id="run-shield-row"><span>Dhal Shield <small id="run-shield-owned"></small></span><input id="run-shield-toggle" type="checkbox" /></label>
+            <label id="run-powerJump-row"><span>Power Jump <small id="run-powerJump-owned"></small></span><input id="run-powerJump-toggle" type="checkbox" /></label>
+          </div>
+          <p class="help">One Falcon Save and one Dhal Shield per run, used only when activated. Unused items are kept. Choices are remembered; collected boosts still work.</p>
+          <button id="confirm-run-button" class="primary">Start run</button>
+          <button id="cancel-run-button" class="secondary">Back</button>
         </div>
         <div id="exit-confirm-screen" class="overlay reset-confirm-screen hidden" role="dialog" aria-modal="true" aria-labelledby="exit-heading">
           <p class="eyebrow">Leaving Seva Jump</p>
@@ -231,8 +259,8 @@
         <p id="storage-warning" class="storage-warning hidden" role="status" aria-live="polite"></p>
       </section>
     </main>
-    <script src="game-config.js?v=1.0.2"></script>
-    <script src="game-rules.js?v=1.0.2"></script>
-    <script src="game.js?v=1.0.2"></script>
+    <script src="game-config.js?v=1.0.10"></script>
+    <script src="game-rules.js?v=1.0.10"></script>
+    <script src="game.js?v=1.0.10"></script>
   </body>
 </html>

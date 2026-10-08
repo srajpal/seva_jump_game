@@ -1,8 +1,10 @@
 # Seva Jump — itch.io listing and upload plan
 
-Candidate: **0.13.2**. Current verification and remaining gates: [RELEASE_PROGRESS.md](RELEASE_PROGRESS.md).
+Current public browser release: **1.0.3**, marked Released on September 22, 2026. The [full release devlog](https://khalsagamestudio.itch.io/seva-jump/devlog/1673901/seva-jump-103-is-out-full-release) has player-facing notes and the browser ZIP attached. Current verification and remaining checks: [RELEASE_PROGRESS.md](RELEASE_PROGRESS.md).
 
 ## Ready-to-use page copy
+
+Terminology review: [SIKHI_TEXT_REVIEW.md](SIKHI_TEXT_REVIEW.md). September 27 revisions below are local drafts; live page copy and uploaded game still need verification.
 
 **Title:** Seva Jump  
 **Short description:** A cheerful skyward adventure inspired by Sikh culture. Jump, collect parshad, and keep climbing!
@@ -16,7 +18,7 @@ Play four ways:
 - **Challenge Mode:** collect all 50 parshad bowls to complete the course.
 - **Hard Mode:** take on smaller moving and breakable platforms, with birds arriving earlier.
 
-Collect tokens during runs to unlock upgrades, earn badges, and beat your own best scores. Includes a first-run guide, music and sound controls, reduced motion, and an About & Help screen explaining Sikh terms used in the game.
+Collect tokens during runs to unlock upgrades, earn badges, and beat your own best scores. Includes a first-run guide, music and sound controls, reduced motion, and an About & Help screen explaining Sikh and Sikhi. Seva means serving others without expecting a reward. Inspired by Sikhi, this is one creator's make-believe adventure, made for everyone and intended to spark curiosity. It does not replace Sikh teachings. Help includes an optional link to learn more. Everyone is welcome to play.
 
 ### Controls
 
@@ -32,7 +34,7 @@ For offline play, download the ZIP, extract it, and open `index.html` in a moder
 
 ### About the creator
 
-Created by **Khalsa Game Studio**. The Sikh creator directed and approved the game's current cultural content. The artwork and synthesized music were made with ChatGPT assistance from the creator's ideas; the creator confirms that no outside assets were used.
+Created by **Khalsa Game Studio**, with the cultural setting directed by its Sikh creator. The artwork and synthesized music were made with ChatGPT assistance from the creator's ideas; the creator confirms that no outside assets were used.
 
 [Visit Khalsa Game Studio](https://www.khalsagamestudio.com/)
 
@@ -44,19 +46,20 @@ Feedback is welcome in this game's itch.io comments. When reporting a problem, i
 | --- | --- |
 | Kind | HTML Game |
 | Pricing | Free; no required payment |
-| Release status | Released only after final draft verification; keep candidate restricted until then |
+| Release status | Released on September 22, 2026; hosted launch, Endless start, pause and Settings checked |
 | Genre | Platformer |
 | Suggested tags | 2D, Arcade, Casual, Pixel Art, Singleplayer, Family Friendly |
-| Upload | `dist/seva-jump-0.13.2-itch.zip`; mark as playable in browser |
-| Download | Offer the same ZIP as an optional offline download if the upload controls permit, otherwise add a separate downloadable copy |
+| Upload | `dist/seva-jump-1.0.3-itch.zip` is the current browser-play file |
+| Download | `seva-jump-1.0.3-offline.zip` is the optional public download. The 0.13.2 file is hidden, not deleted. Both 1.0.3 ZIPs have the same SHA-256; see `RELEASE_PROGRESS.md`. |
 | Desktop embed | Click-to-play; start with 500×800; fullscreen button on |
 | Mobile friendly | Enable only after the hosted mobile check; touch browser/emulator verification is recorded separately |
 | Orientation | Portrait preferred; responsive menus support landscape |
 | Comments | Enable as the proposed support route; moderate as needed |
-| Cover | `release-media/itch-cover-630x500.png` |
-| Screenshots | `release-media/home.png`, `gameplay.png`, `upgrades.png`, `about.png` |
+| Cover | `release-media/itch-cover-630x500.png`; refreshed locally alongside the app icon, but replace on itch.io only with the matching game build. |
+| Screenshots for current 1.0.3 listing | Existing four hosted images remain until the 1.0.8 browser build is published. |
+| Prepared 1.0.8 gallery | `release-media/gameplay.png`, `home.png`, `upgrades.png`, `badges.png`, `about.png`, in that order. The later 1.0.9 pre-run panel still needs a screenshot before this is a complete current-screen set. |
 
-The cover is a composition of existing game art. Screenshots show the actual interface and a natural opening run; no fabricated score or victory is shown. All generated media should be checked in the itch preview for cropping and legibility.
+The cover is a composition of existing game art. Prepared gallery screenshots show the current local interface and a natural opening run; no fabricated score or victory is in the gallery. The reserve `run-result.png` is a controlled result-screen capture and should not be represented as a natural playthrough. Review media in the itch preview for cropping and legibility after uploading the matching browser build.
 
 Official references: [HTML5 upload guide](https://itch.io/docs/creators/html5), [page design guide](https://itch.io/docs/creators/design). The ZIP includes only runtime files; cover/screenshots are uploaded separately, not included in the game payload.
 

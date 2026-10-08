@@ -1,3 +1,4 @@
+const releaseVersion = require('../package.json').version;
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
@@ -77,7 +78,7 @@ function request(url, destination, mode) {
   const worker = createWorker();
   await worker.dispatch('install');
   const [[cacheName, releaseCache]] = worker.stores;
-  assert.equal(cacheName, `seva-jump-${encodeURIComponent('/html/123456/')}-v1.0.2`);
+  assert.equal(cacheName, `seva-jump-${encodeURIComponent('/html/123456/')}-v${releaseVersion}-art6`);
   assert(!releaseCache.added.includes('./'), 'precache must not request the hosting directory');
   assert(releaseCache.added.includes('./index.html'));
 
@@ -88,7 +89,7 @@ function request(url, destination, mode) {
     'a controlling worker keeps HTML on its complete cached release during an upgrade');
 
   worker.setOnline(false);
-  const scriptResponse = await worker.dispatch('fetch', request(`${worker.scope}game.js?v=1.0.2`, 'script'));
+  const scriptResponse = await worker.dispatch('fetch', request(`${worker.scope}game.js?v=1.0.3`, 'script'));
   assert.equal(scriptResponse.status, 200, 'first controlled offline reload finds a versioned script');
   assert.match(await scriptResponse.text(), /TEST_SCRIPT/);
   const navigationResponse = await worker.dispatch('fetch', request(worker.scope, '', 'navigate'));
@@ -97,7 +98,7 @@ function request(url, destination, mode) {
   worker.stores.set('other-game-v9', new MockCache(worker.scope, async () => new Response('other')));
   const collidingLossyScope = `seva-jump-${encodeURIComponent('/html-123456/')}-v0.13.1`;
   worker.stores.set(collidingLossyScope, new MockCache(worker.scope, async () => new Response('other scope')));
-  const oldName = cacheName.replace('v1.0.2', 'v1.0.0');
+  const oldName = cacheName.replace(`v${releaseVersion}`, 'v1.0.0');
   worker.stores.set(oldName, new MockCache(worker.scope, async () => new Response('old')));
   await worker.dispatch('activate');
   assert(worker.stores.has('other-game-v9'), 'activation preserves unrelated shared-origin caches');

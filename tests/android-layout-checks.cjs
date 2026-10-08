@@ -55,11 +55,12 @@ fs.mkdirSync(output, { recursive: true });
       assert.equal(await page.locator('.game-frame').evaluate(el => el.scrollTop), 0, `${name}: resume preserves frame position`);
       await page.locator('#pause-button').click();
       await page.evaluate(() => window.sevaJumpNativeBack());
-      await page.locator('#exit-confirm-screen').waitFor();
-      const exitTitle = await page.locator('#exit-confirm-screen h2').boundingBox();
-      assert.ok(exitTitle.y >= 24, `${name}: exit heading clears status bar`);
-      await page.screenshot({ path: path.join(output, `${name}-exit.png`) });
-      await page.locator('#cancel-exit-button').click();
+      assert.equal(await page.locator('#pause-screen').isVisible(), false, `${name}: Back resumes from Pause`);
+      await page.evaluate(() => window.sevaJumpNativeBack());
+      await page.locator('#pause-screen').waitFor();
+      await page.locator('#pause-settings-button').click();
+      await page.evaluate(() => window.sevaJumpNativeBack());
+      await page.locator('#pause-screen').waitFor();
       await page.locator('#pause-home-button').click();
       for (const menu of ['about', 'upgrades', 'badges', 'stats', 'settings']) {
         await page.locator(`#open-${menu}-button`).click();
@@ -68,7 +69,9 @@ fs.mkdirSync(output, { recursive: true });
         const close = page.locator(`#close-${menu}-button`);
         await close.scrollIntoViewIfNeeded();
         await page.screenshot({ path: path.join(output, `${name}-${menu}.png`) });
-        await close.click();
+        await page.evaluate(() => window.sevaJumpNativeBack());
+        assert.ok(await page.locator('#home-screen').isVisible(), `${name}/${menu}: Back returns Home`);
+        assert.equal(await page.locator('#exit-confirm-screen').isVisible(), false);
         assert.equal(await page.locator('.game-frame').evaluate(el => el.scrollTop), 0, `${name}: scrolling a menu does not move the frame`);
       }
       assert.deepEqual(errors, []);

@@ -1,5 +1,6 @@
 const assert = require('node:assert/strict');
 const config = require('../game-config.js');
+const rules = require('../game-rules.js');
 const { makeRuntime } = require('./runtime-browser-checks.js');
 
 const sizes = [
@@ -27,7 +28,8 @@ function checkRow(runtime, previous, row, birds) {
   const discriminant = config.baseJumpVelocity ** 2 - 2 * config.gravity * gap;
   assert.ok(gap > 0 && discriminant > 0, `${state.mode}/${canvas.width}: unreachable vertical gap ${gap}`);
   const time = (config.baseJumpVelocity + Math.sqrt(discriminant)) / config.gravity;
-  const travel = Math.max(0, Math.abs(center - previous.x - previous.w / 2) + platform.speed * time - platform.w / 2 - state.player.w / 2);
+  const surface = rules.platformSurface(platform);
+  const travel = Math.max(0, Math.abs(center - previous.x - previous.w / 2) + platform.speed * time - (surface.right - surface.left) / 2 - config.playerFootHalfWidth);
   assert.ok(travel <= config.pointerMaxHorizontalSpeed * time + .01, `${state.mode}/${canvas.width}: unreachable horizontal landing`);
   for (const item of row) {
     assert.ok(Number.isFinite(item.x) && item.x >= 12 - 1e-8 && item.x + item.w <= canvas.width - 12 + 1e-8, 'platform stays inside canvas margins');
@@ -45,6 +47,19 @@ function checkRow(runtime, previous, row, birds) {
     const spacing = state.mode === 'hard' ? canvas.height : state.mode === 'challenge' ? config.challengeBirdScreenSpacing : 0;
     for (const other of state.enemies) {
       if (other !== bird && !other.hit) assert.ok(Math.abs(other.y - bird.y) >= spacing, 'birds remain at least one screen apart');
+    }
+    if (state.mode === 'arcade') {
+      if (state.score < config.arcadeBirdFullScore) {
+        assert.ok(state.score >= config.arcadeBirdStartScore, 'no Arcade bird before introductory score');
+        for (const other of state.enemies) if (other !== bird && !other.hit) {
+          assert.ok(Math.abs(other.y - bird.y) > canvas.height + config.arcadeBirdSpriteHeight, 'introductory birds appear one at a time');
+        }
+      }
+      const ys = state.enemies.filter(other => !other.hit).map(other => other.y).sort((a, b) => a - b);
+      for (let i = config.arcadeMaxVisibleBirds; i < ys.length; i++) {
+        assert.ok(ys[i] - ys[i - config.arcadeMaxVisibleBirds] > canvas.height + config.arcadeBirdSpriteHeight,
+          'Arcade never shows more than two birds, including partial sprites');
+      }
     }
   }
   return time;

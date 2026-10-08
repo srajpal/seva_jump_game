@@ -34,7 +34,7 @@ assert.equal(zip.readUInt32LE(zip.length - 6), offset);
 const pkg = JSON.parse(await readFile(new URL('../package.json', import.meta.url)));
 const html = entries.find(e => e.name === 'index.html').data.toString();
 for (const match of html.matchAll(/(?:src|href)="([^"#]+)"/g)) {
-  if (/^https?:/.test(match[1])) continue;
+  if (/^(https?:|mailto:)/.test(match[1])) continue;
   assert(names.includes(match[1].split('?')[0]), `Packaged HTML dependency: ${match[1]}`);
 }
 const visibleVersion = html.match(/class="game-version"\s+aria-label="Game version ([^"]+)">v([^ |<]+)/);

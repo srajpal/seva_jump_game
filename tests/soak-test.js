@@ -22,6 +22,8 @@ for (const size of sizes) {
       const state = runtime.hooks.state;
       for (let step = 0; step < STEPS; step++) {
         const score = state.score;
+        const arcadeBirdEligible = mode === 'arcade' && score >= config.arcadeBirdFullScore
+          && rules.canSpawnArcadeBird(state.enemies.filter(b => !b.hit).map(b => b.y), state.nextY - config.birdSpawnOffset, runtime.elements.get('#game').height);
         const generated = addRow(runtime);
         if (mode === 'challenge') {
           if (!generated.items.some(item => item.challengeBowl)) counts.tokenRows++;
@@ -35,7 +37,7 @@ for (const size of sizes) {
           const kara = generated.powerups.filter(item => item.type === 'kara').length, nishan = generated.powerups.filter(item => item.type === 'nishan').length;
           if (score >= config.tierThresholds[1]) { counts.karaRows++; counts.kara += kara; } else counts.earlyBoosts += kara;
           if (score >= config.tierThresholds[2]) { counts.nishanRows++; counts.nishan += nishan; } else counts.earlyBoosts += nishan;
-          if (mode === 'arcade' && score >= config.arcadeBirdStartScore) { counts.birdRows++; counts.birds += generated.birds.length; }
+          if (arcadeBirdEligible) { counts.birdRows++; counts.birds += generated.birds.length; }
         }
         collectRow(state, generated.platform, generated.items);
         landings++;

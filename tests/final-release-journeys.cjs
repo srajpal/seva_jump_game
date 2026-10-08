@@ -111,7 +111,7 @@ async function controlledResult(page, { character, mode, completed, reason, scor
     assert.match(await page.locator('#death-breakdown').textContent(), /1Falls.*1Bird collisions/);
     await page.locator('#close-stats-button').click();
     await page.reload();
-    assert.match(await page.locator('#home-records').textContent(), /Endless 321.*Arcade 1000.*Challenge 913.*Hard 222/);
+    assert.match(await page.locator('#home-records').textContent(), /Endless321.*Arcade1,000.*Challenge913.*Hard222/);
     assert.equal(await page.locator('.scene-boy').getAttribute('aria-pressed'), 'true');
     assert.deepEqual(errors, []);
     console.log('PASS final Edge journeys: preferences, upgrades, badges, both characters, all modes, controlled win/loss results, stats, reload persistence');

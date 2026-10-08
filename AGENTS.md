@@ -60,6 +60,7 @@ npm run android:debug
 - For iOS releases, also align `MARKETING_VERSION` in `ios/SevaJump.xcodeproj/project.pbxproj` and the version/build values in `ios/SevaJump/App/Info.plist`; verify the packaged web version agrees.
 - For itch.io browser releases, test the exact extracted ZIP over HTTP and on a draft itch page before publication. Keep `index.html` at archive root, use relative case-correct paths, and exclude native/tooling files and unused assets. Verify desktop height fitting, touch letterboxing, iframe focus, fullscreen, storage failures, and actual offline play after a first visit. Native orientation and passing rule simulations do not establish browser usability.
 - Keep Sikh terminology and the gurdwara-inspired setting respectful; route lasting wording or imagery decisions through the appropriate user-facing documentation when needed.
+- Follow the creator direction in `SIKHI_TEXT_REVIEW.md`: Seva Jump is inspired by Sikhi, welcomes everyone, and invites optional curiosity without proselytizing. Allegorical kara/Nishan boosts and Khanda tokens are intentional; do not remove them merely to avoid disagreement. Do not depict or personify the Sikh Gurus in game or promotional imagery. Correct factual mistakes, assess unintended messages, and distinguish those from disagreement with the creative premise. Record owner decisions separately from historical review recommendations.
 
 ## Documentation
 

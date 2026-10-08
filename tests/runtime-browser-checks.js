@@ -10,7 +10,7 @@ const runtimeHookSource = `globalThis.__SEVA_RUNTIME_HOOKS__ = {
   start, reset, addPlatform, update, draw, loop, updateMobileHud, finish, triggerBirdHit, resolveBirdHit, triggerFalconSave, updateFalconRescue,
   showHome, showUpgrades, showAbout, showBadges, showStats, getAudio, noise, pollGamepad, setMusic,
   observeSounds(observer) { const playSound = sound; sound = type => { observer(type); playSound(type); }; },
-  pauseGame, resumeGame, openSettings, closeSettings, requestResetProgress, cancelResetProgress,
+  pauseGame, resumeGame, openSettings, closeSettings, requestResetProgress, cancelResetProgress, handleNativeBack,
   setLastTime(value) { lastTime = value; },
   get profile() { return profile; }, get state() { return state; }, get pointerX() { return pointerX; }, get keys() { return keys; },
 };`;
@@ -58,7 +58,7 @@ function makeRuntime(storage = {}, options = {}) {
   Object.defineProperty(gameFrame, 'children', { get: () => Array.from(elements.entries()).filter(([key]) => key.startsWith('#') && (key.endsWith('-screen') || ['#game', '#game-tools', '#mobile-hud'].includes(key))).map(([, value]) => value) });
   const localStorage = { getItem: storage.getItem || (() => storage.value ?? null), setItem: storage.setItem || ((key, value) => { storage.value = value; }), removeItem: storage.removeItem || (() => { delete storage.value; }) };
   const window = { innerWidth: options.innerWidth ?? 450, innerHeight: options.innerHeight ?? 800, matchMedia: () => ({ matches: false }), addEventListener(type, handler) { windowListeners[type] = handler; }, close() {} };
-  if (options.native) window.Capacitor = { isNativePlatform: () => true, getPlatform: () => 'android', Plugins: {} };
+  if (options.native) window.Capacitor = { isNativePlatform: () => true, getPlatform: () => 'android', Plugins: { App: options.appPlugin } };
   if (options.AudioContext) window.AudioContext = options.AudioContext;
   const runtimeMath = Object.create(Math);
   runtimeMath.random = options.random ?? Math.random;
@@ -77,6 +77,69 @@ function makeRuntime(storage = {}, options = {}) {
 }
 
 async function run() {
+  {
+    const poses = [];
+    let poseScale = 1;
+    const avatars = makeRuntime({ value: JSON.stringify({ tutorialComplete: true, sound: false, music: false }) }, { drawingContext: {
+      scale(x) { poseScale = x; },
+      drawImage(image, ...bounds) { if (image._src?.includes('-poses-v2.png')) poses.push({ image: image._src, bounds, mirror: poseScale }); },
+    } });
+    avatars.images.forEach(image => image.load());
+    avatars.hooks.start('endless');
+    for (const character of ['girl', 'boy']) {
+      const player = avatars.hooks.state.player;
+      player.character = character;
+      for (const [velocity, push, reduced, expectedX, expectedY] of [
+        [-400, 0, false, 80, 0], [200, 0, false, 545, 0],
+        [0, 0, false, 565, 512], [-400, .075, false, 70, 565],
+        [-400, .075, true, 80, 0], [0, 0, true, 80, 0],
+      ]) {
+        player.vy = velocity; player.pushPoseRemaining = push; avatars.hooks.profile.reducedMotion = reduced;
+        poses.length = 0; avatars.hooks.draw();
+        assert.equal(poses.at(-1).image, `assets/player-${character}-poses-v2.png`);
+        assert.equal(poses.at(-1).mirror, character === 'boy' ? -1 : 1, 'all boy poses mirror the girl baseline');
+        assert.deepEqual(poses.at(-1).bounds.slice(0, 2), [expectedX, expectedY]);
+      }
+      avatars.hooks.state.ending = true; avatars.hooks.state.completed = false; avatars.hooks.state.endReason = 'fall';
+      poses.length = 0; avatars.hooks.draw();
+      assert.deepEqual(poses.at(-1).bounds.slice(0, 2), [1080, 65], 'net landing uses the same character sheet');
+      assert.equal(poses.at(-1).mirror, character === 'boy' ? -1 : 1, 'net landing retains the character mirror');
+      avatars.hooks.state.ending = false;
+    }
+  }
+  let minimized = 0;
+  const navigation = makeRuntime({ value: JSON.stringify({ tutorialComplete: true, music: false, sound: false }) }, { native: true, appPlugin: { minimizeApp() { minimized++; } } });
+  const back = () => navigation.hooks.handleNativeBack();
+  const visible = selector => !navigation.elements.get(selector).classList.contains('hidden');
+  navigation.hooks.showAbout(); back();
+  assert.ok(visible('#home-screen'), 'Android Back from About returns Home');
+  assert.equal(visible('#exit-confirm-screen'), false);
+  navigation.hooks.openSettings('home'); navigation.hooks.requestResetProgress(); back();
+  assert.ok(visible('#settings-screen'), 'Back cancels reset without leaving Settings');
+  back(); assert.ok(visible('#home-screen'));
+  navigation.hooks.showAbout(); navigation.elements.get('#open-privacy-button').listeners.click(); back();
+  assert.ok(visible('#about-screen'), 'Privacy returns to About'); back();
+  for (const menu of ['showUpgrades', 'showBadges', 'showStats']) { navigation.hooks[menu](); back(); assert.ok(visible('#home-screen')); }
+  navigation.hooks.start('endless'); back();
+  assert.ok(visible('#pause-screen') && navigation.hooks.state.paused, 'Back pauses active gameplay');
+  navigation.hooks.openSettings('pause');
+  navigation.elements.get('#helping-hand-info').listeners.click({ preventDefault() {}, stopPropagation() {} });
+  back(); assert.ok(visible('#settings-screen'), 'Back dismisses info to Settings');
+  back(); assert.ok(visible('#pause-screen'), 'Settings opened from Pause returns to Pause');
+  back(); assert.equal(navigation.hooks.state.paused, false, 'Back dismisses Pause and resumes');
+  navigation.hooks.showHome(); back(); assert.equal(minimized, 1, 'Home Back returns to the Android launcher');
+  const tutorialBack = makeRuntime({ value: JSON.stringify({ music: false, sound: false }) });
+  tutorialBack.hooks.start('endless');
+  tutorialBack.elements.get('#tutorial-next-button').listeners.click();
+  tutorialBack.hooks.handleNativeBack();
+  assert.equal(tutorialBack.elements.get('#tutorial-step').textContent, '1 of 3');
+  tutorialBack.hooks.handleNativeBack();
+  assert.equal(tutorialBack.hooks.profile.tutorialComplete, false, 'Backing out of the first-run guide does not mark it complete');
+  assert.equal(tutorialBack.elements.get('#home-screen').classList.contains('hidden'), false);
+  navigation.hooks.openSettings('home');
+  navigation.elements.get('#replay-tutorial-button').listeners.click(); back();
+  assert.ok(visible('#settings-screen'), 'Replayed guide returns to Settings');
+
   const noCanvas = makeRuntime({}, { noCanvas: true });
   assert.match(noCanvas.elements.get('#canvas-warning').textContent, /cannot draw the game/);
   assert.equal(noCanvas.elements.get('#canvas-warning').classList.contains('hidden'), false);
@@ -117,8 +180,8 @@ async function run() {
   controls.windowListeners.blur(); pad.buttons[0].pressed = true; controls.hooks.pollGamepad(); assert.equal(started.paused, true);
   controls.windowListeners.focus(); controls.hooks.pollGamepad(); assert.equal(started.paused, true, 'background A press cannot resume on focus');
   controls.hooks.profile.bestScores.challenge = 321; controls.hooks.showStats();
-  assert.match(controls.elements.get('#stats-summary').innerHTML, /Best Challenge/);
-  assert.match(controls.elements.get('#stats-summary').innerHTML, /321/);
+  assert.match(controls.elements.get('#home-records').innerHTML, /Challenge/);
+  assert.match(controls.elements.get('#home-records').innerHTML, /321/);
   console.log('Polish controls checks passed: canvas fallback, A/D, Home activation, gamepad steering/deadzone/disconnect/pause/modal/focus, Challenge stats.');
   const deniedGamepad = makeRuntime(saved, { getGamepads() { throw new DOMException('Blocked by permissions policy', 'SecurityError'); } });
   deniedGamepad.hooks.start('endless');
@@ -153,6 +216,15 @@ async function run() {
   assert.deepEqual(glows.map(sprite => [sprite.width, sprite.height]), [[78, 62], [62, 62]], 'both collectible glows are baked at the intended size');
   drawnImages.length = 0; rendering.hooks.draw();
   assert.deepEqual(drawnImages.filter(sprite => sprite.name === 'canvas'), glows, 'drawing reuses the same cached glow canvases');
+  rendering.hooks.setLastTime(0); drawnImages.length = 0; rendering.hooks.draw();
+  const faceOn = drawnImages.filter(sprite => sprite.name === 'canvas')[1];
+  rendering.hooks.setLastTime(600); drawnImages.length = 0; rendering.hooks.draw();
+  const edgeOn = drawnImages.filter(sprite => sprite.name === 'canvas')[1];
+  assert.notEqual(edgeOn, faceOn, 'Y-axis spin advances to an edge-on cached frame');
+  rendering.hooks.profile.reducedMotion = true;
+  drawnImages.length = 0; rendering.hooks.draw();
+  assert.equal(drawnImages.filter(sprite => sprite.name === 'canvas')[1], faceOn, 'Reduced Motion holds the token face-on');
+  rendering.hooks.profile.reducedMotion = false;
   for (const open of ['showHome', 'showUpgrades', 'showAbout', 'showBadges', 'showStats', 'openSettings']) {
     const count = framesDrawn;
     rendering.hooks[open]('home'); frame();
@@ -407,6 +479,25 @@ async function run() {
   canvas.listeners.pointerdown({ clientX: 384, pointerId: 1 }); canvas.listeners.pointercancel();
   assert.equal(runtime.hooks.pointerX, null);
 
+  const touch = makeRuntime({ value: JSON.stringify({ tutorialComplete: true, music: false, sound: false }) });
+  touch.hooks.start('endless');
+  const touchCanvas = touch.elements.get('#game'), player = touch.hooks.state.player;
+  player.x = 225;
+  touchCanvas.listeners.pointerdown({ clientX: 500, pointerId: 1, pointerType: 'touch' });
+  assert.equal(touch.hooks.pointerX, 225, 'touchdown anchors to the jumper, not the thumb');
+  touchCanvas.listeners.pointermove({ clientX: 530, pointerId: 1, buttons: 1 });
+  assert.ok(touch.hooks.pointerX > 225, 'dragging right steers right');
+  const target = touch.hooks.pointerX;
+  touchCanvas.listeners.pointerdown({ clientX: 100, pointerId: 2, pointerType: 'touch' });
+  touchCanvas.listeners.pointerup({ pointerId: 2 });
+  assert.equal(touch.hooks.pointerX, target, 'a second finger cannot steal or release steering');
+  touchCanvas.listeners.pointerup({ pointerId: 1 });
+  assert.equal(touch.hooks.pointerX, null);
+  player.x = 250;
+  touchCanvas.listeners.pointerdown({ clientX: 200, pointerId: 3, pointerType: 'touch' });
+  assert.equal(touch.hooks.pointerX, 250, 'recontact reanchors at the current position');
+  touch.windowListeners.blur();
+  assert.equal(touch.hooks.pointerX, null, 'backgrounding releases the active touch');
   console.log('Runtime browser checks passed.');
 }
 

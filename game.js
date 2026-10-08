@@ -21,13 +21,17 @@
     document.querySelectorAll('.mode-actions button').forEach(button => { button.disabled = true; });
     return;
   }
-  ctx.imageSmoothingEnabled = false;
+  // Source art is larger than its gameplay footprint; filter downsampling so
+  // thin outlines and emblem details do not break into isolated pixels.
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
   const W = canvas.width, H = canvas.height;
   const config = globalThis.SEVA_CONFIG;
   const rules = globalThis.SEVA_RULES;
   let menuDirty = true, menuVisible = true;
   let gamepadSteer = 0, gamepadButtons = { a: false, pause: false }, gamepadFocused = true;
   const ui = {
+    runUpgrades: document.querySelector("#run-upgrades-screen"),
     home: document.querySelector('#home-screen'), end: document.querySelector('#end-screen'), upgrades: document.querySelector('#upgrades-screen'), about: document.querySelector('#about-screen'), tutorial: document.querySelector('#tutorial-screen'), tutorialIcon: document.querySelector('#tutorial-icon'), tutorialStep: document.querySelector('#tutorial-step'), tutorialHeading: document.querySelector('#tutorial-heading'), tutorialCopy: document.querySelector('#tutorial-copy'), tutorialDots: document.querySelector('#tutorial-dots'), tutorialNext: document.querySelector('#tutorial-next-button'), tutorialSkip: document.querySelector('#tutorial-skip-button'), pause: document.querySelector('#pause-screen'), gameTools: document.querySelector('#game-tools'), mobileHud: document.querySelector('#mobile-hud'), mobileScore: document.querySelector('#mobile-score'), mobileItems: document.querySelector('#mobile-items'), mobileMode: document.querySelector('#mobile-mode'), mobileFalcon: document.querySelector('#mobile-falcon'), mobileShield: document.querySelector('#mobile-shield'), mobilePower: document.querySelector('#mobile-power'),
     score: document.querySelector('#end-score'), endHeading: document.querySelector('#end-heading'), endBest: document.querySelector('#end-best'), runBreakdown: document.querySelector('#run-breakdown'), endGoal: document.querySelector('#end-goal'), homeRecords: document.querySelector('#home-records'), endless: document.querySelector('#endless-button'), arcade: document.querySelector('#arcade-button'), challenge: document.querySelector('#challenge-button'), hard: document.querySelector('#hard-button'), modeChoices: document.querySelectorAll('.mode-actions button'),
     restart: document.querySelector('#restart-button'), choices: document.querySelectorAll('.scene-character'),
@@ -43,14 +47,28 @@
   };
   const palette = ['#bce7ef', '#f8d9a7', '#c9e5c0', '#e5c4d6'];
   const backgroundImages = ['assets/gurdwara-courtyard-pixel-v1.png', 'assets/gurdwara-sunset-pixel-v1.png', 'assets/gurdwara-dawn-pixel-v1.png'].map(src => { const image = new Image(); image.src = src; return image; });
-  const playerSprites = { girl: { jump: new Image(), fall: new Image() }, boy: { jump: new Image(), fall: new Image() } };
-  playerSprites.girl.jump.src = 'assets/player-girl-pixel-v1.png';
-  playerSprites.girl.fall.src = 'assets/player-girl-fall-pixel-v1.png';
-  playerSprites.boy.jump.src = 'assets/player-boy-pixel-v1.png';
-  playerSprites.boy.fall.src = 'assets/player-boy-fall-pixel-v3.png';
-  const netLandingSprites = { girl: new Image(), boy: new Image() };
-  netLandingSprites.girl.src = 'assets/player-girl-net-pixel-v2.png';
-  netLandingSprites.boy.src = 'assets/player-boy-net-pixel-v4.png';
+  const playerSheets = { girl: new Image(), boy: new Image() };
+  // Explicit rectangles preserve complete feet where artwork crosses a grid edge.
+  // All poses use one scale, rather than stretching each silhouette to fit a box.
+  const playerFrames = {
+    jump: [80, 0, 360, 545], fall: [545, 0, 450, 512],
+    net: [1080, 65, 390, 465], push: [70, 565, 395, 445], apex: [565, 512, 410, 505],
+  };
+  function drawPlayerPose(context, character, pose, x, bottom, scale) {
+    const sheet = playerSheets[character];
+    if (!sheet.complete || !sheet.naturalWidth) return false;
+    const [sx, sy, width, height] = playerFrames[pose];
+    context.save();
+    context.translate(x, bottom);
+    // Mirror the boy's base pose; movement-facing remains an independent transform.
+    context.scale(character === 'boy' ? -1 : 1, 1);
+    context.drawImage(sheet, sx, sy, width, height, -width * scale / 2, -height * scale, width * scale, height * scale);
+    context.restore();
+    return true;
+  }
+  for (const character of ['girl', 'boy']) {
+    playerSheets[character].src = `assets/player-${character}-poses-v2.png`;
+  }
   const platformSprite = new Image();
   platformSprite.src = 'assets/platform-grass-pixel-v1.png';
   const springPlatformSprite = new Image();
@@ -61,17 +79,30 @@
   movingPlatformSprite.src = 'assets/platform-moving-pixel-v1.png';
   const platformSprites = { normal: platformSprite, spring: springPlatformSprite, break: breakPlatformSprite, moving: movingPlatformSprite };
   const collectibleGlows = {};
-  function glowSprite(sprite, color, w, h) {
+  function glowSprite(sprite, color, w, h, angle = 0) {
     const buffer = document.createElement('canvas'); buffer.width = w + 24; buffer.height = h + 24;
-    const glow = buffer.getContext('2d'); glow.imageSmoothingEnabled = false; glow.shadowColor = color; glow.shadowBlur = 8;
-    glow.drawImage(sprite, 12, 12, w, h);
+    const glow = buffer.getContext('2d'); glow.imageSmoothingEnabled = true; glow.imageSmoothingQuality = 'high'; glow.shadowColor = color; glow.shadowBlur = 8;
+    glow.translate(buffer.width / 2, buffer.height / 2);
+    if (angle) {
+      // Orthographic Y-axis turn: the face narrows while the gold edge remains.
+      const face = Math.abs(Math.cos(angle));
+      glow.fillStyle = '#e8a323'; glow.beginPath();
+      glow.ellipse(0, 0, Math.max(2, w * face / 2), h * .47, 0, 0, Math.PI * 2); glow.fill();
+      glow.scale(Math.max(.02, face), 1);
+    }
+    glow.drawImage(sprite, -w / 2, -h / 2, w, h);
     return buffer;
   }
   const parshadSprite = new Image();
   parshadSprite.onload = () => { collectibleGlows.parshad = glowSprite(parshadSprite, '#ffd45c', 54, 38); menuDirty = true; };
   parshadSprite.src = 'assets/parshad-bowl-pixel-v3.png';
   const khandaTokenSprite = new Image();
-  khandaTokenSprite.onload = () => { collectibleGlows.token = glowSprite(khandaTokenSprite, '#65d8ff', 38, 38); menuDirty = true; };
+  khandaTokenSprite.onload = () => {
+    // Derive every frame from one master: the emblem cannot drift between poses.
+    collectibleGlows.token = Array.from({ length: 24 }, (_, frame) =>
+      glowSprite(khandaTokenSprite, '#65d8ff', 38, 38, frame * Math.PI / 12));
+    menuDirty = true;
+  };
   khandaTokenSprite.src = 'assets/khanda-token-pixel-v3.png';
   const birdSprites = {};
   [['pigeon', 'assets/bird-pigeon-flap-pixel-v1.png'], ['sparrow', 'assets/bird-sparrow-flap-pixel-v1.png'], ['swift', 'assets/bird-swift-flap-pixel-v1.png']].forEach(([type, src]) => { const image = new Image(); image.src = src; birdSprites[type] = image; });
@@ -82,29 +113,36 @@
   catchNetSprite.src = 'assets/catch-net-hover-pixel-v1.png';
   const dhalShieldSprite = new Image();
   dhalShieldSprite.src = 'assets/dhal-shield-pixel-v1.png';
+  const powerJumpSprite = new Image();
+  powerJumpSprite.src = 'assets/power-jump-upgrade-v1.png';
   const falconSaveSprite = new Image();
   falconSaveSprite.src = 'assets/falcon-save-pixel-v1.png';
   const finishBannerSprite = new Image();
   finishBannerSprite.src = 'assets/finish-banner-hover-pixel-v1.png';
   // An idle menu needs one fresh frame when an asynchronously loaded sprite
   // replaces a fallback. Keep the normal frame loop idle after that repaint.
-  [...backgroundImages, ...Object.values(playerSprites).flatMap(sprites => Object.values(sprites)), ...Object.values(netLandingSprites), ...Object.values(platformSprites), ...Object.values(birdSprites), ...Object.values(powerupSprites), catchNetSprite, dhalShieldSprite, falconSaveSprite, finishBannerSprite].forEach(sprite => sprite.addEventListener('load', () => { menuDirty = true; }));
+  [...backgroundImages, ...Object.values(playerSheets), ...Object.values(platformSprites), ...Object.values(birdSprites), ...Object.values(powerupSprites), catchNetSprite, dhalShieldSprite, powerJumpSprite, falconSaveSprite, finishBannerSprite].forEach(sprite => sprite.addEventListener('load', () => { menuDirty = true; }));
+  // Approximate progression from early milestones to demanding run achievements.
   const BADGES = [
     { id: 'first-run', icon: '✦', title: 'First Leap', description: 'Finish your first run.', color: '#d56d39' },
     { id: 'sky-starter', icon: '☁', title: 'Sky Starter', description: 'Reach 100 points.', color: '#4e98c7' },
-    { id: 'endless-1000', icon: '∞', title: 'Endless Explorer', description: 'Reach 1,000 in Endless Run.', color: '#477e55' },
-    { id: 'endless-2000', icon: '★', title: 'Sky Legend', description: 'Reach 2,000 in Endless Run.', color: '#a85e30' },
-    { id: 'arcade-complete', icon: '⚑', title: 'Banner Breaker', description: 'Complete Arcade Mode.', color: '#9b597e' },
-    { id: 'challenge-complete', icon: '◎', title: 'Seva Champion', description: 'Collect all 50 in Challenge.', color: '#b56b2e' },
+    { id: 'power-seeker', icon: '⚡', title: 'Boost Seeker', description: 'Collect 5 boosts total.', color: '#b65e45' },
     { id: 'parshad-50', icon: '◉', title: 'Bowl Collector', description: 'Collect 50 parshad bowls total.', color: '#c88932' },
     { id: 'tokens-10', icon: '◇', title: 'Khanda Keeper', description: 'Collect 10 Khanda tokens total.', color: '#5d7c94' },
     { id: 'bird-defender', icon: '◒', title: 'Bird Defender', description: 'Block 3 bird collisions.', color: '#5476a8' },
-    { id: 'power-seeker', icon: '⚡', title: 'Power Seeker', description: 'Collect 5 power-ups.', color: '#b65e45' },
+    { id: 'boost-master', icon: '⚡', title: 'Boost Master', description: 'Collect 25 boosts total.', color: '#8553a1' },
+    { id: 'arcade-complete', icon: '⚑', title: 'Banner Breaker', description: 'Complete Arcade Mode.', color: '#9b597e' },
+    { id: 'endless-1000', icon: '∞', title: 'Endless Explorer', description: 'Reach 1,000 in Endless Run.', color: '#477e55' },
+    { id: 'comeback-kid', icon: '↟', title: 'Comeback Kid', description: 'Finish Arcade after a Falcon Save.', color: '#b66a34' },
+    { id: 'both-feet-in', icon: '↔', title: 'Both Feet In', description: 'Finish Arcade with each character.', color: '#397e79' },
+    { id: 'challenge-complete', icon: '◎', title: 'Challenge Champion', description: 'Collect all 50 in Challenge.', color: '#b56b2e' },
+    { id: 'endless-2000', icon: '★', title: 'Sky Legend', description: 'Reach 2,000 in Endless Run.', color: '#a85e30' },
+    { id: 'perfect-arcade', icon: '★', title: 'Perfect Arcade', description: 'Finish Arcade with every parshad bowl.', color: '#b27b19' },
   ];
-  const defaultProfile = { tokens: 0, falcon: 0, shield: 0, powerJump: 0, character: 'girl', tutorialComplete: false, music: true, musicStyle: 'varied', sound: true, helpingHand: true, reducedMotion: Boolean(window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches), bestScores: { endless: 0, arcade: 0, challenge: 0, hard: 0 }, badges: {}, stats: { runs: 0, wins: 0, arcadeWins: 0, challengeWins: 0, leftEarly: 0, deaths: 0, fallDeaths: 0, birdDeaths: 0, challengeMisses: 0, jumps: 0, totalScore: 0, totalHeight: 0, parshad: 0, tokens: 0, powerups: 0, birdsSeen: 0, birdsBlocked: 0, falconSaves: 0, shieldsUsed: 0 } };
+  const defaultProfile = { tokens: 0, falcon: 0, shield: 0, powerJump: 0, character: 'girl', tutorialComplete: false, music: true, musicStyle: 'varied', sound: true, helpingHand: true, reducedMotion: Boolean(window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches), bestScores: { endless: 0, arcade: 0, challenge: 0, hard: 0 }, badges: {}, stats: { runs: 0, wins: 0, arcadeWins: 0, arcadeWinsGirl: 0, arcadeWinsBoy: 0, challengeWins: 0, leftEarly: 0, deaths: 0, fallDeaths: 0, birdDeaths: 0, challengeMisses: 0, jumps: 0, totalScore: 0, totalHeight: 0, parshad: 0, tokens: 0, powerups: 0, birdsSeen: 0, birdsBlocked: 0, falconSaves: 0, shieldsUsed: 0 } };
   const profileStorageKey = 'seva-jump-profile';
   let storageAvailable = true;
-  function freshProfile() { return { ...defaultProfile, bestScores: { ...defaultProfile.bestScores }, badges: {}, stats: { ...defaultProfile.stats } }; }
+  function freshProfile() { return { ...defaultProfile, bestScores: { ...defaultProfile.bestScores }, badges: {}, runUpgrades: { falcon: true, shield: true, powerJump: true }, stats: { ...defaultProfile.stats } }; }
   function wholeNumber(value, maximum = Number.MAX_SAFE_INTEGER) { const number = Number(value); return Number.isFinite(number) ? Math.max(0, Math.min(maximum, Math.floor(number))) : 0; }
   function normalizeProfile(saved) {
     if (!saved || typeof saved !== 'object' || Array.isArray(saved)) return freshProfile();
@@ -118,6 +156,10 @@
     Object.keys(normalized.bestScores).forEach(key => { normalized.bestScores[key] = wholeNumber(saved.bestScores?.[key]); });
     if (saved.badges && typeof saved.badges === 'object' && !Array.isArray(saved.badges)) Object.keys(saved.badges).forEach(key => { if (saved.badges[key] === true) normalized.badges[key] = true; });
     Object.keys(normalized.stats).forEach(key => { normalized.stats[key] = wholeNumber(saved.stats?.[key]); });
+    // Keep the original seeker save ID and credit previously collected boosts.
+    if (normalized.stats.powerups >= 5) normalized.badges['power-seeker'] = true;
+    if (normalized.stats.powerups >= 25) normalized.badges['boost-master'] = true;
+    normalized.runUpgrades = Object.fromEntries(["falcon", "shield", "powerJump"].map(key => [key, saved.runUpgrades?.[key] !== false]));
     return normalized;
   }
   function showStorageWarning(message = 'Progress can’t be saved in this browser. You can keep playing for this session.') {
@@ -149,7 +191,10 @@
     } catch { showStorageWarning('Saved progress could not be erased. Your progress is reset for this session only.'); return false; }
   }
   let profile = loadProfile();
-  let state, selectedCharacter = profile.character === 'boy' ? 'boy' : 'girl', settingsReturn = 'home', pointerX = null, keys = new Set(), lastTime = 0, tutorialIndex = 0, tutorialResumesRun = false;
+  const runUpgrade = key => profile.runUpgrades[key] ? profile[key] : 0;
+  const consumableLabel = key => !profile.runUpgrades[key] ? 'Off' : state?.[`${key}Used`] ? 'Used' : String(Math.min(1, profile[key]));
+  let pendingRunMode = "endless";
+  let state, selectedCharacter = profile.character === 'boy' ? 'boy' : 'girl', settingsReturn = 'home', pointerX = null, keys = new Set(), lastTime = 0, tutorialIndex = 0, tutorialResumesRun = false, tutorialReturn = 'home';
   let audioContext, musicTimer = null, musicVoices = [], badgeQueue = [], badgeToastTimer = null;
   let nextMusicPhraseTime = 0, musicPhraseIndex = 0;
   const noiseBuffers = new Map();
@@ -298,17 +343,18 @@
   }
   function updateRecordsUI() {
     const best = profile.bestScores;
-    ui.homeRecords.textContent = `Best · Endless ${best.endless} · Arcade ${best.arcade} · Challenge ${best.challenge} · Hard ${best.hard}`;
+    ui.homeRecords.innerHTML = ['endless', 'arcade', 'challenge', 'hard'].map(mode => `<article><span>${mode[0].toUpperCase() + mode.slice(1)}</span><strong>${rules.formatStat(best[mode])}</strong><small>Best score</small></article>`).join('');
   }
   function renderBadges() {
     const earned = BADGES.filter(badge => profile.badges[badge.id]).length;
     ui.badgeCount.textContent = `${earned} of ${BADGES.length} earned`;
-    ui.badgeGrid.innerHTML = BADGES.map(badge => `<article class="badge-card${profile.badges[badge.id] ? '' : ' locked'}" style="--badge-color:${badge.color}"><span class="badge-ribbon"><span class="badge-icon" aria-hidden="true">${badge.icon}</span></span><span><h3>${badge.title}</h3><p>${badge.description}</p><small>${profile.badges[badge.id] ? 'Earned' : 'Keep climbing'}</small></span></article>`).join('');
+    ui.badgeGrid.innerHTML = BADGES.map(badge => `<article class="badge-card${profile.badges[badge.id] ? '' : ' locked'}" style="--badge-color:${badge.color}"><span class="badge-ribbon"><span class="badge-icon badge-art-${badge.id}" aria-hidden="true"></span></span><span><h3>${badge.title}</h3><p>${badge.description}</p><small>${profile.badges[badge.id] ? 'Earned' : 'Keep climbing'}</small></span></article>`).join('');
   }
   function renderStats() {
+    updateRecordsUI();
     const s = profile.stats, averageScore = s.runs ? Math.round(s.totalScore / s.runs) : 0;
     ui.statsSummary.innerHTML = [
-      ['Runs', s.runs], ['Jumps', s.jumps], ['Best Endless', profile.bestScores.endless], ['Best Arcade', profile.bestScores.arcade], ['Best Challenge', profile.bestScores.challenge], ['Best Hard', profile.bestScores.hard],
+      ['Runs', s.runs], ['Jumps', s.jumps],
       ['Average score', averageScore], ['Height climbed', s.totalHeight], ['Parshad', s.parshad], ['Khanda earned', s.tokens],
       ['Boosts collected', s.powerups], ['Birds seen', s.birdsSeen], ['Birds blocked', s.birdsBlocked],
     ].map(([label, value]) => `<article><strong>${rules.formatStat(value)}</strong><span>${label}</span></article>`).join('');
@@ -319,7 +365,8 @@
   function showNextBadgeToast() {
     const badge = badgeQueue.shift();
     if (!badge) return;
-    ui.badgeToastIcon.textContent = badge.icon;
+    ui.badgeToastIcon.textContent = '';
+    ui.badgeToastIcon.className = `badge-icon badge-art-${badge.id}`;
     ui.badgeToastName.textContent = badge.title;
     ui.badgeToast.classList.remove('hidden');
     clearTimeout(badgeToastTimer);
@@ -344,9 +391,9 @@
     // the canvas to 640, so a fixed x would leave the opening jump short.
     const startPlatform = { x: W / 2 - 57.5, y: 700, w: 115, type: 'normal', speed: 0, dir: 1, broken: false };
     state = {
-      running: true, paused: false, mode, score: 0, heightScore: 0, parshad: 0, tokens: 0, cameraY: 0,
-      background: Math.floor(Math.random() * backgroundImages.length), backdropZone: 0, backdropFade: null, nextY: 610, ending: false, falconUsed: false, invincibleTimer: 0, invincibleSource: null, shieldVisualTimer: 0, resultTimer: null, finishGate: null, fireworkSoundTimers: [], challengePlaced: 0, challengePlatformCount: 0, upgradeEffect: null, hitStop: null, falconRescue: null, flight: null,
-      player: { x: W / 2, y: 650, vx: 0, vy: -config.baseJumpVelocity * rules.powerJumpMultiplier(profile.powerJump), w: 31, h: 48, character: selectedCharacter, facing: 1 },
+      running: true, paused: false, mode, score: 0, heightScore: 0, parshad: 0, tokens: 0, cameraY: 0, arcadeMissedParshad: false,
+      background: Math.floor(Math.random() * backgroundImages.length), backdropZone: 0, backdropFade: null, nextY: 610, ending: false, falconUsed: false, shieldUsed: false, invincibleTimer: 0, invincibleSource: null, shieldVisualTimer: 0, resultTimer: null, finishGate: null, fireworkSoundTimers: [], challengePlaced: 0, challengePlatformCount: 0, upgradeEffect: null, hitStop: null, falconRescue: null, flight: null,
+      player: { x: W / 2, y: 650, vx: 0, vy: -config.baseJumpVelocity * rules.powerJumpMultiplier(runUpgrade('powerJump')), w: 31, h: 48, character: selectedCharacter, facing: 1 },
       // The opening launch has no landing event, so the start platform counts
       // as the first landing for the stall rescue.
       platforms: [startPlatform], lastPlatform: startPlatform, lastLanding: startPlatform, stallTimer: 0, collectibles: [], enemies: [], powerups: [], particles: [], challengeMissed: false, missedBowls: new Set(), challengeWarningShown: false,
@@ -431,12 +478,13 @@
     if (state.mode !== 'challenge' && level >= 4 && Math.random() < config.powerupChances.nishan) state.powerups.push({ x: x + w / 2, y: platform.y - 60, type: 'nishan' });
     const birdChance = state.mode === 'challenge'
       ? (state.score >= config.challengeBirdStartScore ? config.challengeBirdChance : 0)
-      : arcade ? (state.score >= config.arcadeBirdStartScore ? config.arcadeBirdChance : 0)
+      : arcade ? rules.arcadeBirdChance(state.score)
         : hard ? rules.hardBirdChance(state.score) : rules.endlessBirdChance(state.score);
     const candidateBirdY = platform.y - config.birdSpawnOffset;
     const activeBirdYs = state.enemies.filter(bird => !bird.hit).map(bird => bird.y);
     const birdSpacingIsSafe = hard ? rules.canSpawnHardBird(activeBirdYs, candidateBirdY, H)
-      : state.mode === 'challenge' ? rules.canSpawnChallengeBird(activeBirdYs, candidateBirdY) : true;
+      : state.mode === 'arcade' ? rules.canSpawnArcadeBird(activeBirdYs, candidateBirdY, H, state.score)
+        : state.mode === 'challenge' ? rules.canSpawnChallengeBird(activeBirdYs, candidateBirdY) : true;
     if (!challengeBowlPlatform && birdSpacingIsSafe && Math.random() < birdChance) {
       const types = ['pigeon', 'sparrow', 'swift'], platformCenter = x + w / 2, clearance = config.birdPlatformClearance;
       const leftLimit = Math.max(25, platformCenter - clearance), rightLimit = Math.min(W - 25, platformCenter + clearance);
@@ -505,6 +553,13 @@
     }
     awardBadge('first-run');
     if (state.mode === 'arcade' && completed) awardBadge('arcade-complete');
+    if (state.mode === 'arcade' && completed && state.falconUsed) awardBadge('comeback-kid');
+    if (state.mode === 'arcade' && completed) {
+      profile.stats[state.player.character === 'boy' ? 'arcadeWinsBoy' : 'arcadeWinsGirl']++;
+      if (profile.stats.arcadeWinsBoy > 0 && profile.stats.arcadeWinsGirl > 0) awardBadge('both-feet-in');
+    }
+    if (state.mode === 'arcade' && completed && state.parshad > 0 && !state.arcadeMissedParshad
+      && !state.collectibles.some(item => item.type === 'parshad' && !item.taken)) awardBadge('perfect-arcade');
     if (state.mode === 'challenge' && completed) awardBadge('challenge-complete');
     profile.tokens += state.tokens; saveProfile(); updateUpgradeUI(); updateRecordsUI();
     const resultDelay = completed ? config.victorySceneDurationMs : 2800;
@@ -532,7 +587,7 @@
       state.message = state.invincibleSource === 'falcon' ? 'The falcon kept you safe!' : 'Dhal Shield is still protecting you!'; state.messageTimer = 1.5;
       return;
     }
-    state.hitStop = { bird, type: state.invincibleTimer > 0 ? 'nishan' : profile.shield > 0 ? 'shield' : 'loss', elapsed: 0, duration: profile.reducedMotion ? config.reducedMotionBirdHitDurationMs : config.birdHitDurationMs };
+    state.hitStop = { bird, type: state.invincibleTimer > 0 ? 'nishan' : (runUpgrade('shield') > 0 && !state.shieldUsed) ? 'shield' : 'loss', elapsed: 0, duration: profile.reducedMotion ? config.reducedMotionBirdHitDurationMs : config.birdHitDurationMs };
     state.message = state.hitStop.type === 'loss' ? 'BIRD HIT!' : 'BIRD BLOCKED!';
     state.messageTimer = 1.1;
     sound('hit');
@@ -548,7 +603,7 @@
       state.message = 'Nishan boost protected you!'; state.messageTimer = 2;
     } else if (hit.type === 'shield') {
       profile.stats.birdsBlocked++; profile.stats.shieldsUsed++; if (profile.stats.birdsBlocked >= 3) awardBadge('bird-defender'); sound('shield');
-      profile.shield--; state.invincibleTimer = 4; state.invincibleSource = 'shield'; state.shieldVisualTimer = 4; state.upgradeEffect = { type: 'shield', elapsed: 0, duration: config.shieldFlashDurationMs }; saveProfile(); updateUpgradeUI(); state.message = 'Dhal Shield activated! You are protected for 4 seconds.'; state.messageTimer = 2;
+      profile.shield--; state.shieldUsed = true; state.invincibleTimer = 4; state.invincibleSource = 'shield'; state.shieldVisualTimer = 4; state.upgradeEffect = { type: 'shield', elapsed: 0, duration: config.shieldFlashDurationMs }; saveProfile(); updateUpgradeUI(); state.message = 'Dhal Shield activated! You are protected for 4 seconds.'; state.messageTimer = 2;
     } else { finish(false, 'bird'); return true; }
     return false;
   }
@@ -570,12 +625,13 @@
     const carry = (progress - .55) / .45, targetX = rescue.platform.x + rescue.platform.w / 2, targetY = rescue.platform.y - p.h / 2;
     p.x = rescue.pickupX + (targetX - rescue.pickupX) * carry; p.y = rescue.pickupY + (targetY - rescue.pickupY) * carry;
     if (progress < 1) return true;
-    p.x = targetX; p.y = targetY; p.vx = 0; p.vy = -config.baseJumpVelocity * rules.powerJumpMultiplier(profile.powerJump); if (state.invincibleTimer < 1.2) { state.invincibleTimer = 1.2; state.invincibleSource = 'falcon'; } state.falconRescue = null;
+    p.x = targetX; p.y = targetY; p.vx = 0; p.vy = -config.baseJumpVelocity * rules.powerJumpMultiplier(runUpgrade('powerJump')); if (state.invincibleTimer < 1.2) { state.invincibleTimer = 1.2; state.invincibleSource = 'falcon'; } state.falconRescue = null;
     state.lastLanding = rescue.platform; // the carry launches the player from here without a landing event
     state.message = 'Back in the sky!'; state.messageTimer = 1.4;
     return false;
   }
   function updateStallRescue() {
+    state.stuckBanner = false;
     // A broken row can leave the nearest intact platform two gaps above the
     // one the player keeps bouncing on, or its only survivor too far sideways
     // for a touch player, and the camera never scrolls down. Once the climb
@@ -586,9 +642,13 @@
     const standing = state.lastLanding;
     if (state.stallTimer < config.stallRescueSeconds || state.hitStop || state.falconRescue || state.ending || state.paused) return;
     if (!standing || standing.broken || !state.platforms.includes(standing)) return;
-    const hop = { powerJump: profile.powerJump, halfWidth: state.player.w / 2 }, springHop = { ...hop, velocity: config.springJumpVelocity };
+    const hop = { powerJump: runUpgrade('powerJump'), halfWidth: state.player.w / 2 }, springHop = { ...hop, velocity: config.springJumpVelocity };
     if (!rules.isStranded(state.platforms, standing, standing.type === 'spring' ? springHop : hop)) return;
     if (!profile.helpingHand || !rules.helpingHandApplies(state.mode)) {
+      if (state.mode === 'challenge' || state.mode === 'hard') {
+        state.stuckBanner = true;
+        return;
+      }
       // No help here: say so, then end the run rather than bounce forever.
       if (state.stallTimer >= config.stallEndSeconds) return finish(false, 'fall');
       if (state.message !== 'Stuck · no platform in reach') { state.message = 'Stuck · no platform in reach'; state.messageTimer = config.stallEndSeconds - config.stallRescueSeconds; }
@@ -626,6 +686,7 @@
     if (state.falconRescue && updateFalconRescue(dt)) return;
     if (state.hitStop) { if (resolveBirdHit(dt)) return; if (state.hitStop) return; }
     const p = state.player;
+    p.pushPoseRemaining = Math.max(0, (p.pushPoseRemaining || 0) - dt);
     if (state.invincibleTimer > 0) { state.invincibleTimer = Math.max(0, state.invincibleTimer - dt); if (!state.invincibleTimer) state.invincibleSource = null; }
     if (state.shieldVisualTimer > 0) state.shieldVisualTimer = Math.max(0, state.shieldVisualTimer - dt);
     const keyboard = (keys.has('ArrowRight') ? 1 : 0) - (keys.has('ArrowLeft') ? 1 : 0);
@@ -639,6 +700,7 @@
     }
     p.vx = Math.max(-config.maxHorizontalSpeed, Math.min(config.maxHorizontalSpeed, p.vx));
     if (Math.abs(p.vx) > 22) p.facing = Math.sign(p.vx);
+    const previousX = p.x;
     p.x += p.vx * dt;
     const previousBottom = p.y + p.h / 2;
     p.x = Math.max(p.w / 2, Math.min(W - p.w / 2, p.x));
@@ -650,11 +712,13 @@
     p.y += p.vy * dt;
     for (const plat of state.platforms) {
       if (plat.broken) { plat.breakElapsed += dt; continue; }
+      const previousPlatformX = plat.x;
       if (plat.type === 'moving') { plat.x += plat.dir * plat.speed * dt; if (plat.x < 6 || plat.x + plat.w > W - 6) plat.dir *= -1; }
       const top = plat.y;
-      if (!plat.broken && p.vy > 0 && previousBottom <= top && p.y + p.h / 2 >= top && p.x + p.w / 2 > plat.x && p.x - p.w / 2 < plat.x + plat.w) {
-        const jumpMultiplier = rules.powerJumpMultiplier(profile.powerJump);
+      if (rules.landsOnPlatform(p, { x: previousX, bottom: previousBottom }, plat, previousPlatformX)) {
+        const jumpMultiplier = rules.powerJumpMultiplier(runUpgrade('powerJump'));
         p.y = top - p.h / 2; p.vy = -(plat.type === 'spring' ? config.springJumpVelocity : config.baseJumpVelocity) * jumpMultiplier;
+        p.pushPoseRemaining = .075;
         profile.stats.jumps++; state.lastLanding = plat;
         sound(plat.type === 'break' ? 'break' : plat.type === 'spring' ? 'spring' : 'land');
         const landingColor = plat.type === 'spring' ? '#d5a5ff' : plat.type === 'break' ? '#c49464' : '#f7efd7';
@@ -706,8 +770,9 @@
         sound('loss');
       }
     }
+    if (state.mode === 'arcade' && state.collectibles.some(c => c.type === 'parshad' && !c.taken && c.y >= state.cameraY + H + 100)) state.arcadeMissedParshad = true;
     state.collectibles = state.collectibles.filter(c => !c.taken && c.y < state.cameraY + H + 100);
-    for (const power of state.powerups) if (!power.taken && collide(p, power, 30)) { power.taken = true; profile.stats.powerups++; burst(power.x, power.y, power.type === 'kara' ? '#f5cb58' : '#f1815a', 14); if (profile.stats.powerups >= 5) awardBadge('power-seeker'); sound('boost'); if (power.type === 'nishan') { state.invincibleTimer = 5; state.invincibleSource = 'nishan'; state.flight = { remaining: config.nishanFlightSeconds }; p.vy = -config.nishanFlightSpeed; } else if (state.flight) state.flight.remaining += config.karaFlightExtensionSeconds; else p.vy = rules.boostVelocity(power.type, profile.powerJump); state.message = power.type === 'nishan' ? 'Nishan boost · guided flight + protection!' : state.flight ? 'Kara boost · flight extended!' : 'Kara boost · one higher jump!'; state.messageTimer = 2; }
+    for (const power of state.powerups) if (!power.taken && collide(p, power, 30)) { power.taken = true; profile.stats.powerups++; burst(power.x, power.y, power.type === 'kara' ? '#f5cb58' : '#f1815a', 14); if (profile.stats.powerups >= 5) awardBadge('power-seeker'); if (profile.stats.powerups >= 25) awardBadge('boost-master'); sound('boost'); if (power.type === 'nishan') { state.invincibleTimer = 5; state.invincibleSource = 'nishan'; state.flight = { remaining: config.nishanFlightSeconds }; p.vy = -config.nishanFlightSpeed; } else if (state.flight) state.flight.remaining += config.karaFlightExtensionSeconds; else p.vy = rules.boostVelocity(power.type, runUpgrade('powerJump')); state.message = power.type === 'nishan' ? 'Nishan boost · guided flight + protection!' : state.flight ? 'Kara boost · flight extended!' : 'Kara boost · one higher jump!'; state.messageTimer = 2; }
     state.powerups = state.powerups.filter(o => !o.taken && o.y < state.cameraY + H + 100);
     for (const bird of state.enemies) {
       if (bird.hit) continue;
@@ -716,7 +781,7 @@
       // leave the bird outside the edge while it is already flying inward.
       if (bird.x < 20) bird.vx = Math.abs(bird.vx);
       else if (bird.x > W - 20) bird.vx = -Math.abs(bird.vx);
-      if (collide(p, bird, 28)) triggerBirdHit(bird);
+      if (rules.birdTouchesPlayer(p, bird)) triggerBirdHit(bird);
     }
     state.enemies = state.enemies.filter(o => o.y < state.cameraY + H + 100 && !o.hit);
     for (const particle of state.particles) { particle.x += particle.vx * dt; particle.y += particle.vy * dt; particle.vy += 360 * dt; particle.life -= dt; }
@@ -724,7 +789,7 @@
     // End the run as the character reaches the visible net, rather than after
     // they have already disappeared below the frame.
     if (p.y > state.cameraY + H - 52) {
-      if (rules.canUseFalconSave(profile.falcon, state.falconUsed)) triggerFalconSave();
+      if (rules.canUseFalconSave(runUpgrade('falcon'), state.falconUsed)) triggerFalconSave();
       else finish(false, 'fall');
     }
     state.messageTimer -= dt;
@@ -781,9 +846,9 @@
   }
   function drawUpgradeStatus() {
     const entries = [
-      { icon: falconSaveSprite, value: `×${profile.falcon}`, active: profile.falcon > 0 },
-      { icon: dhalShieldSprite, value: `×${profile.shield}`, active: profile.shield > 0 },
-      { icon: null, value: `↑${profile.powerJump}`, active: profile.powerJump > 0 },
+      { icon: falconSaveSprite, value: consumableLabel('falcon'), active: runUpgrade('falcon') > 0 && !state.falconUsed },
+      { icon: dhalShieldSprite, value: consumableLabel('shield'), active: (runUpgrade('shield') > 0 && !state.shieldUsed) },
+      { icon: powerJumpSprite, value: profile.runUpgrades.powerJump ? `${profile.powerJump}` : 'Off', active: runUpgrade('powerJump') > 0 },
     ];
     let x = 17;
     for (const entry of entries) {
@@ -802,7 +867,7 @@
   // The HUD refreshes every frame, so only write to the DOM when a value changes.
   const hudText = new Map();
   function setHudText(element, value) { const text = String(value); if (hudText.get(element) === text) return; hudText.set(element, text); element.textContent = text; }
-  function updateMobileHud() { if (!usesMobileHud() || !state?.running) { if (!ui.mobileHud.classList.contains('hidden')) ui.mobileHud.classList.add('hidden'); return; } const name = state.mode === 'arcade' ? 'ARCADE' : state.mode === 'challenge' ? 'CHALLENGE' : state.mode === 'hard' ? 'HARD' : 'ENDLESS'; const detail = state.mode === 'challenge' ? `${state.parshad}/${config.challengeParshadTarget}${state.challengeMissed ? " · MISSED" : ""}` : state.mode === 'arcade' ? `${Math.floor(state.score)}/${config.arcadeTargetScore}` : 'CLIMB'; setHudText(ui.mobileScore, `Score ${Math.floor(state.score)}`); setHudText(ui.mobileItems, `Parshad ${state.parshad} · Khanda ${state.tokens}`); setHudText(ui.mobileFalcon, profile.falcon); setHudText(ui.mobileShield, profile.shield); setHudText(ui.mobilePower, profile.powerJump); setHudText(ui.mobileMode, `${name} · ${detail}`); if (ui.mobileHud.classList.contains('hidden')) ui.mobileHud.classList.remove('hidden'); }
+  function updateMobileHud() { if (!usesMobileHud() || !state?.running) { if (!ui.mobileHud.classList.contains('hidden')) ui.mobileHud.classList.add('hidden'); return; } const name = state.mode === 'arcade' ? 'ARCADE' : state.mode === 'challenge' ? 'CHALLENGE' : state.mode === 'hard' ? 'HARD' : 'ENDLESS'; const detail = state.mode === 'challenge' ? `${state.parshad}/${config.challengeParshadTarget}${state.challengeMissed ? " · MISSED" : ""}` : state.mode === 'arcade' ? `${Math.floor(state.score)}/${config.arcadeTargetScore}` : 'CLIMB'; setHudText(ui.mobileScore, `Score ${Math.floor(state.score)}`); setHudText(ui.mobileItems, `Parshad ${state.parshad} · Khanda ${state.tokens}`); setHudText(ui.mobileFalcon, consumableLabel('falcon')); setHudText(ui.mobileShield, consumableLabel('shield')); setHudText(ui.mobilePower, profile.runUpgrades.powerJump ? profile.powerJump : 'Off'); setHudText(ui.mobileMode, `${name} · ${detail}`); if (ui.mobileHud.classList.contains('hidden')) ui.mobileHud.classList.remove('hidden'); }
   function drawUpgradeEffect() {
     const effect = state.upgradeEffect;
     if (!effect) return;
@@ -871,7 +936,10 @@
     for (const particle of state.particles) { const alpha = Math.max(0, particle.life / particle.maxLife); ctx.save(); ctx.globalAlpha = alpha; ctx.fillStyle = particle.color; ctx.fillRect(Math.round(particle.x - particle.size / 2), Math.round(worldToScreen(particle.y) - particle.size / 2), particle.size, particle.size); ctx.restore(); }
     for (const c of state.collectibles) {
       const y = worldToScreen(c.y); ctx.save(); ctx.translate(c.x, y);
-      const glow = collectibleGlows[c.type];
+      const frames = collectibleGlows[c.type];
+      const glow = c.type === 'token' && frames
+        ? frames[profile.reducedMotion ? 0 : Math.floor(lastTime / 100) % frames.length]
+        : frames;
       if (glow) ctx.drawImage(glow, -glow.width / 2, -glow.height / 2);
       else if (c.type === 'token' && khandaTokenSprite.complete && khandaTokenSprite.naturalWidth) ctx.drawImage(khandaTokenSprite, -19, -19, 38, 38);
       else if (c.type === 'token') { ctx.fillStyle = '#e3a721'; ctx.beginPath(); ctx.arc(0, 0, 12, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = '#fff4b2'; ctx.font = 'bold 14px sans-serif'; ctx.textAlign = 'center'; ctx.fillText('✦', 0, 5); }
@@ -885,29 +953,24 @@
     const p = state.player, py = worldToScreen(p.y);
     const isNetLanding = state.ending && !state.completed && (state.endReason === 'fall' || state.endReason === 'bird');
     if (isNetLanding) {
-      const landingSprite = netLandingSprites[p.character];
-      if (landingSprite.complete && landingSprite.naturalWidth) ctx.drawImage(landingSprite, W / 2 - 74, H - 177, 148, 148);
+      if (drawPlayerPose(ctx, p.character, 'net', W / 2, H - 32, .26)) { /* Seated pose shares the airborne character design. */ }
       else { ctx.fillStyle = '#24483f'; ctx.font = 'bold 18px "Trebuchet MS"'; ctx.textAlign = 'center'; ctx.fillText('Oh man!', W / 2, H - 98); }
       drawNetStars();
     } else {
     const isFalling = p.vy > 30 || state.ending;
-    const playerSprite = playerSprites[p.character][isFalling ? 'fall' : 'jump'];
+    const pose = state.ending ? 'fall' : !profile.reducedMotion && p.pushPoseRemaining > 0 ? 'push' : !profile.reducedMotion && Math.abs(p.vy) < 95 ? 'apex' : isFalling ? 'fall' : 'jump';
     const tilt = isFalling ? Math.max(-.12, Math.min(.12, p.vx / 1300)) : Math.max(-.055, Math.min(.055, p.vx / 4200));
     const bob = isFalling || profile.reducedMotion ? 0 : Math.sin(lastTime / 85) * 1.25;
     ctx.save(); ctx.translate(p.x, py + bob); ctx.rotate(tilt); ctx.scale(p.facing, 1); if (state.invincibleTimer > 0 && !profile.reducedMotion && Math.floor(lastTime / 105) % 2) ctx.globalAlpha = .48;
-    if (playerSprite.complete && playerSprite.naturalWidth) {
-      // The source has transparent padding; these bounds align its visible feet
-      // with the collision body while preserving a crisp, readable silhouette.
-      ctx.drawImage(playerSprite, -34, -60, 68, 102);
-    } else {
+    if (!drawPlayerPose(ctx, p.character, pose, 0, 32, .165)) {
       ctx.fillStyle = p.character === 'girl' ? '#d46686' : '#477e55'; ctx.beginPath(); ctx.arc(0, -15, 16, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = '#a96942'; ctx.beginPath(); ctx.arc(0, -8, 12, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = '#324e3d'; ctx.fillRect(-11, 1, 22, 26); ctx.fillStyle = '#f6d4b0'; ctx.fillRect(-18, 5, 8, 20); ctx.fillRect(10, 5, 8, 20);
     }
-    if ((profile.shield > 0 || state.shieldVisualTimer > 0) && dhalShieldSprite.complete && dhalShieldSprite.naturalWidth) ctx.drawImage(dhalShieldSprite, 6, -14, 39, 39);
+    if (((runUpgrade('shield') > 0 && !state.shieldUsed) || state.shieldVisualTimer > 0) && dhalShieldSprite.complete && dhalShieldSprite.naturalWidth) ctx.drawImage(dhalShieldSprite, 6, -14, 39, 39);
     ctx.restore();
     }
     drawFalconRescue();
     if (state.running || state.ending) {
-      updateMobileHud(); if (usesMobileHud()) { if (isMissedBowlMessage()) drawRunMessage(); drawUpgradeEffect(); drawLossTransition(); drawWinTransition(); return; }
+      updateMobileHud(); if (usesMobileHud()) { if (state.stuckBanner || isMissedBowlMessage() || state.message === 'Stuck · no platform in reach') drawRunMessage(); drawUpgradeEffect(); drawLossTransition(); drawWinTransition(); return; }
       ctx.fillStyle = '#24483f'; ctx.font = 'bold 18px "Trebuchet MS"'; ctx.textAlign = 'left'; ctx.fillText(`Score ${Math.floor(state.score)}`, 18, 31); ctx.font = 'bold 13px "Trebuchet MS"'; ctx.fillText(`Parshad ${state.parshad}  ·  Khanda ${state.tokens}`, 18, 52);
       drawUpgradeStatus();
       const modeName = state.mode === 'arcade' ? 'ARCADE MODE' : state.mode === 'challenge' ? 'CHALLENGE MODE' : state.mode === 'hard' ? 'HARD MODE' : 'ENDLESS RUN';
@@ -925,6 +988,17 @@
   }
   function isMissedBowlMessage() { return state.message === `A bowl was missed - restart to collect all ${config.challengeParshadTarget}`; }
   function drawRunMessage() {
+    if (state.stuckBanner && state.running && !state.ending) {
+      const width = Math.min(W - 24, 390), left = (W - width) / 2;
+      ctx.fillStyle = '#fff4df'; ctx.fillRect(left, 96, width, 94);
+      ctx.strokeStyle = '#9c4825'; ctx.lineWidth = 3; ctx.strokeRect(left, 96, width, 94);
+      ctx.textAlign = 'center'; ctx.fillStyle = '#603015'; ctx.font = 'bold 18px "Trebuchet MS"';
+      ctx.fillText('Uh-oh! Looks like you’re stuck!', W / 2, 122);
+      ctx.font = '14px "Trebuchet MS"';
+      ctx.fillText('No more platforms within reach.', W / 2, 149);
+      ctx.fillText('Keep trying, or pause to restart or leave.', W / 2, 174);
+      return;
+    }
     if (state.messageTimer > 0) { ctx.textAlign = 'center'; ctx.fillStyle = '#24483f'; ctx.font = 'bold 15px "Trebuchet MS"'; ctx.fillText(state.message, W / 2, isMissedBowlMessage() ? 180 : 120); }
   }
   function loop(time) {
@@ -958,7 +1032,7 @@
     ui.tutorialNext.textContent = tutorialIndex === TUTORIAL_STEPS.length - 1 ? 'Let’s jump!' : 'Next';
   }
   // Same order as the overlays in index.html: the later visible dialog is on top.
-  const modalScreens = [ui.end, ui.tutorial, ui.pause, ui.settings, ui.infoScreen, ui.resetConfirm, ui.badges, ui.stats, ui.upgrades, ui.about, ui.privacy, ui.exitConfirm];
+  const modalScreens = [ui.runUpgrades, ui.end, ui.tutorial, ui.pause, ui.settings, ui.infoScreen, ui.resetConfirm, ui.badges, ui.stats, ui.upgrades, ui.about, ui.privacy, ui.exitConfirm];
   const gameFrame = document.querySelector('.game-frame');
   const fullscreenButton = document.querySelector('#fullscreen-button');
   if (!nativePlatform && gameFrame.requestFullscreen && document.fullscreenEnabled) fullscreenButton.classList.remove('hidden');
@@ -1008,6 +1082,7 @@
     if (!activeModal && state?.running && !state.paused && document.activeElement !== canvas) canvas.focus();
   }
   function showTutorial() { menuVisible = true; menuDirty = true;
+    tutorialReturn = ui.settings.classList.contains('hidden') ? 'home' : 'settings';
     setNativeGameplayActive(false);
     tutorialIndex = 0; tutorialResumesRun = Boolean(state?.running); if (state?.running) state.paused = true;
     ui.home.classList.add('hidden'); ui.end.classList.add('hidden'); ui.upgrades.classList.add('hidden'); ui.about.classList.add('hidden'); ui.badges.classList.add('hidden'); ui.stats.classList.add('hidden'); ui.settings.classList.add('hidden'); ui.pause.classList.add('hidden'); ui.gameTools.classList.add('hidden');
@@ -1024,14 +1099,46 @@
   function closeSettings() { menuDirty = true; ui.settings.classList.add('hidden'); if (settingsReturn === 'pause' && state?.paused) ui.pause.classList.remove('hidden'); else ui.home.classList.remove('hidden'); syncModalAccessibility(); }
   function leaveRunEarly() { if (state?.running && state.paused && !state.ending) { profile.stats.leftEarly++; saveProfile(); } showHome(); }
   function restartPausedRun() { const mode = state?.mode || 'endless'; leaveRunEarly(); start(mode); }
-  function start(mode) { menuVisible = false; menuDirty = true; getAudio(); reset(mode); ui.home.classList.add('hidden'); ui.end.classList.add('hidden'); ui.end.classList.remove('visible'); ui.upgrades.classList.add('hidden'); ui.about.classList.add('hidden'); ui.privacy.classList.add('hidden'); ui.badges.classList.add('hidden'); ui.stats.classList.add('hidden'); ui.settings.classList.add('hidden'); ui.resetConfirm.classList.add('hidden'); ui.infoScreen.classList.add('hidden'); ui.exitConfirm.classList.add('hidden'); ui.pause.classList.add('hidden'); if (!profile.tutorialComplete) return showTutorial(); setNativeGameplayActive(true); startAudio(); ui.tutorial.classList.add('hidden'); ui.gameTools.classList.remove('hidden'); syncModalAccessibility(); }
-  function showHome() { menuVisible = true; menuDirty = true; setNativeGameplayActive(false); clearInput(); if (state) state.running = false; stopMusic(); ui.mobileHud.classList.add('hidden'); updateRecordsUI(); ui.home.classList.remove('hidden'); ui.end.classList.add('hidden'); ui.end.classList.remove('visible'); ui.upgrades.classList.add('hidden'); ui.about.classList.add('hidden'); ui.privacy.classList.add('hidden'); ui.badges.classList.add('hidden'); ui.stats.classList.add('hidden'); ui.tutorial.classList.add('hidden'); ui.settings.classList.add('hidden'); ui.resetConfirm.classList.add('hidden'); ui.infoScreen.classList.add('hidden'); ui.exitConfirm.classList.add('hidden'); ui.pause.classList.add('hidden'); ui.gameTools.classList.add('hidden'); syncModalAccessibility(); }
+  function start(mode, confirmed = false) {
+    if (!confirmed && ['falcon', 'shield', 'powerJump'].some(key => profile[key] > 0)) {
+      showHome(); pendingRunMode = mode; ui.home.classList.add('hidden');
+      for (const key of ['falcon', 'shield', 'powerJump']) {
+        document.querySelector(`#run-${key}-row`).classList.toggle('hidden', profile[key] <= 0);
+        document.querySelector(`#run-${key}-toggle`).checked = profile.runUpgrades[key];
+        document.querySelector(`#run-${key}-owned`).textContent = key === 'powerJump' ? `Level ${profile[key]}` : `${profile[key]} owned`;
+      }
+      ui.runUpgrades.classList.remove('hidden'); syncModalAccessibility(); return;
+    }
+    ui.runUpgrades.classList.add('hidden'); menuVisible = false; menuDirty = true; getAudio(); reset(mode); ui.home.classList.add('hidden'); ui.end.classList.add('hidden'); ui.end.classList.remove('visible'); ui.upgrades.classList.add('hidden'); ui.about.classList.add('hidden'); ui.privacy.classList.add('hidden'); ui.badges.classList.add('hidden'); ui.stats.classList.add('hidden'); ui.settings.classList.add('hidden'); ui.resetConfirm.classList.add('hidden'); ui.infoScreen.classList.add('hidden'); ui.exitConfirm.classList.add('hidden'); ui.pause.classList.add('hidden'); if (!profile.tutorialComplete) return showTutorial(); setNativeGameplayActive(true); startAudio(); ui.tutorial.classList.add('hidden'); ui.gameTools.classList.remove('hidden'); syncModalAccessibility(); }
+  function showHome() { ui.runUpgrades.classList.add('hidden'); menuVisible = true; menuDirty = true; setNativeGameplayActive(false); clearInput(); if (state) state.running = false; stopMusic(); ui.mobileHud.classList.add('hidden'); updateRecordsUI(); ui.home.classList.remove('hidden'); ui.end.classList.add('hidden'); ui.end.classList.remove('visible'); ui.upgrades.classList.add('hidden'); ui.about.classList.add('hidden'); ui.privacy.classList.add('hidden'); ui.badges.classList.add('hidden'); ui.stats.classList.add('hidden'); ui.tutorial.classList.add('hidden'); ui.settings.classList.add('hidden'); ui.resetConfirm.classList.add('hidden'); ui.infoScreen.classList.add('hidden'); ui.exitConfirm.classList.add('hidden'); ui.pause.classList.add('hidden'); ui.gameTools.classList.add('hidden'); syncModalAccessibility(); }
   function showUpgrades() { menuVisible = true; menuDirty = true; setNativeGameplayActive(false); clearInput(); if (state) state.running = false; stopMusic(); updateUpgradeUI(); ui.home.classList.add('hidden'); ui.end.classList.add('hidden'); ui.upgrades.classList.remove('hidden'); ui.about.classList.add('hidden'); ui.badges.classList.add('hidden'); ui.stats.classList.add('hidden'); ui.settings.classList.add('hidden'); ui.pause.classList.add('hidden'); ui.gameTools.classList.add('hidden'); syncModalAccessibility(); }
   function showAbout() { menuVisible = true; menuDirty = true; setNativeGameplayActive(false); clearInput(); if (state) state.running = false; stopMusic(); ui.home.classList.add('hidden'); ui.end.classList.add('hidden'); ui.upgrades.classList.add('hidden'); ui.about.classList.remove('hidden'); ui.privacy.classList.add('hidden'); ui.badges.classList.add('hidden'); ui.stats.classList.add('hidden'); ui.settings.classList.add('hidden'); ui.pause.classList.add('hidden'); ui.gameTools.classList.add('hidden'); syncModalAccessibility(); }
   function showPrivacy() { menuVisible = true; menuDirty = true; setNativeGameplayActive(false); ui.about.classList.add('hidden'); ui.privacy.classList.remove('hidden'); syncModalAccessibility(); }
   function openExitConfirm() { ui.exitConfirm.classList.remove('hidden'); syncModalAccessibility(); }
   function closeExitConfirm() { ui.exitConfirm.classList.add('hidden'); syncModalAccessibility(); }
-  function handleNativeBack() { if (!ui.exitConfirm.classList.contains('hidden')) return closeExitConfirm(); if (!ui.home.classList.contains('hidden')) return exitNativeApp(); if (state?.running && !state.paused) pauseGame(); openExitConfirm(); }
+  function handleNativeBack() {
+    if (!ui.runUpgrades.classList.contains('hidden')) return showHome();
+    if (!ui.exitConfirm.classList.contains('hidden')) return closeExitConfirm();
+    if (!ui.infoScreen.classList.contains('hidden')) return closeInfo();
+    if (!ui.resetConfirm.classList.contains('hidden')) return cancelResetProgress();
+    if (!ui.privacy.classList.contains('hidden')) return showAbout();
+    if (!ui.tutorial.classList.contains('hidden')) {
+      if (tutorialIndex > 0) { tutorialIndex--; renderTutorial(); return; }
+      ui.tutorial.classList.add('hidden');
+      if (tutorialReturn === 'settings') { ui.settings.classList.remove('hidden'); syncModalAccessibility(); }
+      else showHome();
+      return;
+    }
+    if (!ui.settings.classList.contains('hidden')) return closeSettings();
+    if ([ui.about, ui.upgrades, ui.badges, ui.stats, ui.end].some(screen => !screen.classList.contains('hidden'))) return showHome();
+    if (!ui.pause.classList.contains('hidden')) return resumeGame();
+    if (state?.running) { if (!state.ending) pauseGame(); return; }
+    if (!ui.home.classList.contains('hidden')) {
+      const app = window.Capacitor?.Plugins?.App;
+      if (app?.minimizeApp) app.minimizeApp();
+      else exitNativeApp();
+    }
+  }
   function exitNativeApp() { const app = window.Capacitor?.Plugins?.App; if (app?.exitApp) app.exitApp(); else window.close(); }
   function showBadges() { menuVisible = true; menuDirty = true; setNativeGameplayActive(false); renderBadges(); ui.home.classList.add('hidden'); ui.badges.classList.remove('hidden'); ui.stats.classList.add('hidden'); syncModalAccessibility(); }
   function showStats() { menuVisible = true; menuDirty = true; setNativeGameplayActive(false); renderStats(); ui.home.classList.add('hidden'); ui.badges.classList.add('hidden'); ui.stats.classList.remove('hidden'); syncModalAccessibility(); }
@@ -1044,6 +1151,11 @@
     if (profile.tokens < cost) return updateUpgradeUI(`You need ${cost - profile.tokens} more Khanda tokens.`);
     profile.tokens -= cost; profile[type]++; saveProfile(); sound('purchase'); updateUpgradeUI('Upgrade purchased!');
   }
+  document.querySelector('#confirm-run-button').addEventListener('click', () => {
+    for (const key of ['falcon', 'shield', 'powerJump']) if (profile[key] > 0) profile.runUpgrades[key] = document.querySelector(`#run-${key}-toggle`).checked;
+    saveProfile(); start(pendingRunMode, true);
+  });
+  document.querySelector('#cancel-run-button').addEventListener('click', showHome);
   ui.modeChoices.forEach(button => button.addEventListener('click', () => start(button.dataset.mode)));
   ui.restart.addEventListener('click', () => start(state?.mode || 'endless'));
   ui.openUpgrades.addEventListener('click', showUpgrades); ui.endUpgrades.addEventListener('click', showUpgrades); ui.endHome.addEventListener('click', showHome); ui.closeUpgrades.addEventListener('click', showHome); ui.openAbout.addEventListener('click', showAbout); ui.closeAbout.addEventListener('click', showHome); ui.openPrivacy.addEventListener('click', showPrivacy); ui.closePrivacy.addEventListener('click', showAbout); ui.confirmExit.addEventListener('click', exitNativeApp); ui.cancelExit.addEventListener('click', closeExitConfirm); ui.openBadges.addEventListener('click', showBadges); ui.closeBadges.addEventListener('click', showHome); ui.openStats.addEventListener('click', showStats); ui.closeStats.addEventListener('click', showHome); ui.openSettings.addEventListener('click', () => openSettings('home')); ui.pauseSettings.addEventListener('click', () => openSettings('pause')); ui.closeSettings.addEventListener('click', closeSettings); ui.replayTutorial.addEventListener('click', showTutorial); ui.resetProgress.addEventListener('click', requestResetProgress); ui.confirmReset.addEventListener('click', resetAllProgress); ui.cancelReset.addEventListener('click', cancelResetProgress);
@@ -1067,7 +1179,8 @@
     const contentWidth = W * scale, contentLeft = rect.left + (rect.width - contentWidth) / 2;
     return Math.max(0, Math.min(W, (event.clientX - contentLeft) / scale));
   }
-  function clearInput() { pointerX = null; keys.clear(); gamepadSteer = 0; }
+  let activePointerId = null, touchAnchor = null;
+  function clearInput() { pointerX = null; activePointerId = null; touchAnchor = null; keys.clear(); gamepadSteer = 0; }
   function steeringKey(key) { return key.toLowerCase() === 'a' ? 'ArrowLeft' : key.toLowerCase() === 'd' ? 'ArrowRight' : key; }
   function pollGamepad() {
     let pads;
@@ -1087,11 +1200,23 @@
     }
     if (state?.running && !state.paused && !menuVisible) gamepadSteer = rules.gamepadSteering(pad.axes[0], pad.buttons[14]?.pressed, pad.buttons[15]?.pressed);
   }
-  canvas.addEventListener('pointerdown', e => { pointerX = canvasPointerX(e); canvas.setPointerCapture?.(e.pointerId); });
-  canvas.addEventListener('pointermove', e => { if (e.buttons) pointerX = canvasPointerX(e); });
-  canvas.addEventListener('pointerup', clearInput);
-  canvas.addEventListener('pointercancel', clearInput);
-  canvas.addEventListener('lostpointercapture', clearInput);
+  canvas.addEventListener('pointerdown', e => {
+    if (activePointerId !== null || !state?.running || state.paused) return;
+    activePointerId = e.pointerId;
+    const x = canvasPointerX(e);
+    touchAnchor = e.pointerType === 'touch' ? { finger: x, player: state.player.x } : null;
+    pointerX = touchAnchor ? state.player.x : x;
+    canvas.setPointerCapture?.(e.pointerId);
+  });
+  canvas.addEventListener('pointermove', e => {
+    if (e.pointerId !== activePointerId || !e.buttons) return;
+    const x = canvasPointerX(e);
+    pointerX = touchAnchor ? Math.max(state.player.w / 2, Math.min(W - state.player.w / 2, touchAnchor.player + x - touchAnchor.finger)) : x;
+  });
+  const releasePointer = e => { if (!e || e.pointerId === activePointerId) clearInput(); };
+  canvas.addEventListener('pointerup', releasePointer);
+  canvas.addEventListener('pointercancel', releasePointer);
+  canvas.addEventListener('lostpointercapture', releasePointer);
   document.addEventListener('keydown', e => {
     if (e.key === 'Tab' && activeModal) {
       const focusable = Array.from(activeModal.querySelectorAll(focusableSelector));
@@ -1102,7 +1227,7 @@
       }
       return;
     }
-    if (e.key === 'Escape') { if (!ui.pause.classList.contains('hidden')) resumeGame(); else if (state?.running && !state.paused) pauseGame(); e.preventDefault(); return; }
+    if (e.key === 'Escape') { if (!ui.runUpgrades.classList.contains('hidden')) { showHome(); e.preventDefault(); return; } if (!ui.pause.classList.contains('hidden')) resumeGame(); else if (state?.running && !state.paused) pauseGame(); e.preventDefault(); return; }
     if (['Enter', ' '].includes(e.key) && !e.repeat && !activeModal && !ui.home.classList.contains('hidden') && !e.target?.closest?.('button, a, input, select, textarea')) { e.preventDefault(); start('endless'); return; }
     const key = steeringKey(e.key);
     if (['ArrowLeft', 'ArrowRight'].includes(key) && state?.running && !state.paused) { keys.add(key); e.preventDefault(); }

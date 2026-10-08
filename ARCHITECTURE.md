@@ -25,7 +25,7 @@ The renderer draws the backdrop, platforms, collectibles, hazards, player, effec
 
 Pointer input maps screen coordinates into the current canvas size, including letterboxing, and steers toward the pointer position. A/D and Left/Right Arrow keys provide keyboard steering. Enter/Space starts Endless from Home unless a control has focus. Standard gamepads are polled each animation frame, including menus and pause: stick/D-pad steer, A starts/resumes, and B/Start pauses on a fresh press. Escape and the pause button pause a run. Losing focus or hiding the page also pauses active gameplay and clears held input. Desktop fullscreen targets the game frame so HTML controls remain available alongside the canvas.
 
-Opening Settings from a paused run keeps the run paused. Leaving or restarting a paused run records that the player left early. Android Back opens the exit confirmation away from the home screen; Back on the home screen exits through Capacitor's App plugin. The Android bridge also switches system bars between menu and gameplay presentation.
+Opening Settings from a paused run keeps the run paused. Leaving or restarting a paused run records that the player left early. Android Back closes the current dialog or returns to its parent: Privacy to About, Settings to Home or Pause, and other main menus to Home. Back pauses gameplay and dismisses Pause to resume; from Home it minimizes the Android task to the launcher. The Android bridge also switches system bars between menu and gameplay presentation.
 
 ## Saves and audio
 

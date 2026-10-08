@@ -1,8 +1,11 @@
 node_modules/
+.codex-remote-attachments/
 .worktrees/
 www/
 dist/
 screenshots/
+release-media/source/
+release-media/tools/
 .capacitor/
 *.apk
 *.aab
