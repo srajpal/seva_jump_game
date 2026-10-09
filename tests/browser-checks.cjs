@@ -250,6 +250,47 @@ async function canvasWork(page) {
       assert.deepEqual(errors, [], `${name}: no page errors`);
       check(`layout and core journeys: ${name}`, layout); await context.close();
     }
+    // Unsupported dynamic viewport declarations must leave a usable vh layout.
+    const legacyCSS = fs.readFileSync(path.join(root, 'styles.css'), 'utf8')
+      .replace(/[a-z-]+\s*:\s*[^;{}]*dvh[^;{}]*(?:;|(?=\}))/gi, '');
+    for (const [name, width, height, touch, ios] of [
+      ['legacy-desktop', 1280, 720, false, false],
+      ['legacy-touch-browser', 360, 640, true, false],
+      ['legacy-ios-phone', 390, 844, true, true],
+    ]) {
+      const context = await browser.newContext({ viewport: { width, height }, hasTouch: touch, isMobile: touch && engine !== 'firefox', serviceWorkers: 'block' });
+      await context.route('**/styles.css*', route => route.fulfill({ contentType: 'text/css', body: legacyCSS }));
+      await context.addInitScript(ios => {
+        localStorage.setItem('seva-jump-profile', JSON.stringify({ tutorialComplete: true, music: false, sound: false }));
+        if (ios) window.Capacitor = { isNativePlatform: () => true, getPlatform: () => 'ios', Plugins: {} };
+      }, ios);
+      const page = await context.newPage(), errors = [];
+      page.on('pageerror', error => errors.push(error.message));
+      await page.goto(`${origin}/game/index.html`);
+      const shell = await page.locator('.game-shell').boundingBox();
+      if (touch) assert.equal(shell.height, height, `${name}: shell retains viewport height`);
+      else assert(shell.y >= 0 && shell.y + shell.height <= height, `${name}: shell fits desktop height`);
+      await page.locator('#arcade-button').click();
+      const pause = await page.locator('#pause-button').boundingBox();
+      assert(pause.y >= 0 && pause.y + pause.height <= height, `${name}: Pause stays visible`);
+      if (!touch) {
+        await page.locator('#fullscreen-button').click();
+        await page.waitForFunction(() => document.fullscreenElement);
+        const canvas = await page.locator('canvas').boundingBox();
+        assert(Math.abs(canvas.width / canvas.height - 450 / 800) < .01, `${name}: fullscreen fallback preserves portrait aspect ratio`);
+        assert(canvas.y >= 0 && canvas.y + canvas.height <= height + 1, `${name}: fullscreen canvas fits`);
+        await page.locator('#pause-button').click();
+        await page.locator('#resume-button').click();
+        await page.locator('#fullscreen-button').click();
+      } else {
+        await page.locator('#pause-button').click();
+        await page.locator('#resume-button').click();
+      }
+      await page.screenshot({ path: path.join(output, `${name}-fallback.png`) });
+      assert.deepEqual(errors, [], `${name}: no page errors`);
+      check(`viewport fallback without dvh: ${name}`);
+      await context.close();
+    }
     const fallbackContext = await browser.newContext({ serviceWorkers: 'block' });
     await fallbackContext.addInitScript(() => { HTMLCanvasElement.prototype.getContext = () => null; });
     const fallbackPage = await fallbackContext.newPage(), fallbackErrors = [];

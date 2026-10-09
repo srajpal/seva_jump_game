@@ -6,6 +6,7 @@ Seva Jump is a browser game packaged for Android and iOS. The browser source is 
 
 - `index.html` contains the canvas, menus, dialogs, HUD, help, and in-game privacy text.
 - `styles.css` lays out the portrait canvas, responsive menus, safe areas, and reduced-motion presentation. The canvas is 450 × 800 in browsers and 640 × 800 on native tablets.
+- Viewport-dependent sizes declare `vh` fallbacks before `dvh` for older WebViews. The fullscreen custom-property calculation switches to `dvh` only inside `@supports`, since custom properties otherwise accept unsupported units and invalidate the later padding calculation.
 - Android presentation is scoped with `android-app`. Tablets at 600 CSS pixels wide and above fit the canvas between the HUD and a reserved bottom navigation area, including compact tablets using the narrower canvas. Phones below 600 CSS pixels omit that extra footer to prioritize a full-width scene, with a floating mode label; a height limit prevents cropping on unusually short screens. The outer game frame cannot scroll on focus; menu overlays retain their own scrolling. iOS keeps its separate presentation.
 - `game.js` owns runtime state, course generation, collision handling, input, audio, persistence, menu flow, and canvas drawing.
 - `game-config.js` contains gameplay tuning. `game-rules.js` contains shared calculations that the Node checks can exercise without a browser.
@@ -35,7 +36,9 @@ Music and sound effects are generated at runtime with the Web Audio API. Music p
 
 ## Hosted offline lifecycle
 
-On HTTP or HTTPS, `game.js` registers `sw.js` after page load. The service worker uses a release- and path-scoped cache name, installs only after every listed app file is cached, takes control, and removes older Seva Jump caches for the same path. Same-scope GET requests use the release cache first and fetch missing files from the network. Navigation returns the cached `index.html`. Local `file:` play does not register a service worker and reads the extracted files directly.
+For hosted browser play on HTTP or HTTPS, `game.js` registers `sw.js` after page load. The service worker uses a release- and path-scoped cache name, precaches files with `cache: 'reload'` so changed artwork cannot come from stale HTTP-cache entries, installs only after every listed app file is cached, takes control, and removes older Seva Jump caches for the same path. Same-scope GET requests use the release cache first and fetch missing files from the network. Navigation returns the cached `index.html`. Local `file:` play does not register a service worker and reads the extracted files directly.
+
+Native apps use packaged files rather than a service-worker release cache. `game.js` unregisters workers left by older native builds and removes their Seva Jump caches. On Capacitor's Android origin (`https://localhost`), `sw.js` also skips precaching and request interception, deletes its path-scoped caches, and unregisters itself. An existing installation may still run the old worker-controlled release on the first launch after updating; subsequent launches use the packaged release. Verify both launches and saved-progress retention on the exact Play-delivered update. The iOS wrapper loads local `file:` URLs.
 
 ## Builds and native wrappers
 

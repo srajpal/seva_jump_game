@@ -12,7 +12,7 @@ Seva Jump is designed for ages 8-15, with touch-first controls, a calm Gurdwara-
 
 Open **`index.html`** in a modern browser. On a phone or tablet, drag across the game to steer left and right. On a desktop, drag with a mouse or steer with A/D or the left and right arrow keys. Enter or Space starts Endless from Home when a button or other control is not focused. Press Escape to pause; the ⛶ button toggles fullscreen during play where supported.
 
-Standard gamepads use the left stick or D-pad to steer, A to start Endless from Home or resume, and B or Start to pause. Breakable platforms stop supporting the player immediately after landing, then fall and fade over 0.3 seconds (fade only with reduced motion). “Birds seen” counts their first appearance during play.
+Standard gamepads use the left stick or D-pad to steer, A to start Endless from Home, confirm pre-run upgrade choices, or resume, and B or Start to pause or cancel pre-run choices. Breakable platforms stop supporting the player immediately after landing, then fall and fade over 0.3 seconds (fade only with reduced motion). “Birds seen” counts their first appearance during play.
 
 Touch dragging is relative to where each touch begins: lift and reposition your thumb without steering toward the new contact point. Personal best scores live in Records & Stats, accessible from the bottom of Home.
 
@@ -133,7 +133,7 @@ ARCHITECTURE.md      Runtime, packaging, and platform architecture
 
 The feature set is frozen for the current release candidate. Use [RELEASE_CHECKLIST.md](RELEASE_CHECKLIST.md) for regression testing and signing, [STORE_LISTING.md](STORE_LISTING.md) for the prepared Google Play copy and declarations, and [ITCH_LISTING.md](ITCH_LISTING.md) for the browser listing and upload plan.
 
-The September 11, 2026 itch.io audit records the problems found in v0.13.1. Work on the v0.13.2 candidate is tracked in [RELEASE_PROGRESS.md](RELEASE_PROGRESS.md). Do not treat either document as approval to publish; the release checklist still requires hosted-draft and device checks.
+The September 11, 2026 itch.io audit records the problems found in v0.13.1. Current source, published builds, and outstanding checks are tracked separately in [RELEASE_PROGRESS.md](RELEASE_PROGRESS.md). The October 8 review fixes are newer than the published 1.0.10 browser ZIP and Play's 1.0.3 test build. They need a new release version and candidate validation before upload; the existing version number does not identify identical contents across those artifacts.
 
 Native-store work still includes screenshots, signing credentials, console forms, device testing, and applicable store testing. Check [RELEASE_PROGRESS.md](RELEASE_PROGRESS.md) and the platform metadata before naming a native build ready. Localization remains planned follow-up work.
 

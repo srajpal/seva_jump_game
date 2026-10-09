@@ -1,5 +1,16 @@
 # Release notes
 
+## Unreleased — post-1.0.10 review fixes
+
+Includes review fixes merged October 8, 2026 and issue #40's viewport fallback fix prepared October 9, 2026. Local metadata remains 1.0.10 / Android build 48 / iOS build 44; no new release version assigned. These changes are absent from the September 30 browser ZIP and Play's 1.0.3 / build 41. Assign the next version/build and record its preparation date before a release build or upload.
+
+- Confirm or cancel pre-run upgrade choices with a controller; keyboard focus stays inside the panel when an upgrade is unowned.
+- Tap Settings row text to change its setting; the info and music-preview buttons retain their own actions.
+- Fetch refreshed artwork when installing a hosted browser cache, and remove old native caches so later launches use the installed app version.
+- Keep the play area and Pause control visible on older WebViews with compatible viewport sizing, including desktop fullscreen.
+
+Android update check: an existing installation may show the previous version on its first launch after updating while the outgoing worker unregisters. Reopening must use the new packaged version and retain saved progress. A direct debug update on the physical K70 PRO tablet confirmed this transition October 9; physical-phone and Play-delivered update verification remain pending. Release packaging now rejects incomplete signing settings; the test autopilot's pointer handling is also corrected.
+
 ## 1.0.10 — Android build 48 / iOS build 44 metadata
 
 Prepared September 30, 2026. Browser edition published on itch.io September 30, 2026. Android build 48 remains a local debug candidate; no iOS build produced.
