@@ -4,6 +4,8 @@ Use this checklist for every release candidate. Do not create or commit an uploa
 
 Current candidate: **1.0.10, Android build 48 / iOS build 44 metadata** (September 30, 2026). Browser ZIP published on itch.io September 30; Android remains a local candidate, with no new iOS build or native store publication. Existing checkmarks record historical work unless newer evidence is explicitly dated. Rerun applicable checks after any source change and against the exact artifact proposed for upload. [ITCH_RELEASE_AUDIT.md](ITCH_RELEASE_AUDIT.md) preserves the original 0.13.1 findings; current status is in [RELEASE_PROGRESS.md](RELEASE_PROGRESS.md).
 
+Source now includes October 8 post-release review fixes at the same local version. They are not in the published September 30 ZIP or Play's 1.0.3 / build 41. Prepare a new version/build and update cumulative release notes before the next release artifact. Keep Play build and screenshot uploads on hold while the production-access application is pending, as requested by the owner.
+
 ## itch.io browser release
 
 - [x] Resolve the original audit's menu/Escape, storage failure, viewport fitting, letterboxed steering, focus/input-loss, small-screen, reset and outbound-link findings; verify them locally.
@@ -46,11 +48,11 @@ Google Play and iOS signing/store-console tasks below do not block a browser-onl
 ## Google Play preparation
 
 - [ ] Confirm the permanent application ID: `org.sevajump.game`.
-- [ ] Create a replacement developer account and complete verification: the old Khalsa Game Studio account was confirmed closed for inactivity on September 18, 2026. Then create the app in Play Console.
+- [x] Create the replacement personal developer account and SevaJump app. The operational account and `org.sevajump.game` closed-test app were verified in Play Console October 8, 2026; the former studio account's September 18 closure is historical.
 - [x] Migrated compile/target SDK to API 36 with Capacitor 8, AGP 8.13.0 and Gradle 8.14.3; Android 16 phone/tablet emulator checks passed September 19, 2026.
 - [ ] Confirm the enforced target API in the verified replacement Play Console account and upload a signed AAB to verify acceptance. Local builds do not satisfy this gate. Published requirements: https://support.google.com/googleplay/android-developer/answer/11926878.
 - [ ] Create and securely back up a separate upload key; never store it in this repository.
-- [ ] Release builds read `storeFile`, `storePassword`, `keyAlias` and `keyPassword` from the ignored `android/keystore.properties`. `bundleRelease`/`assembleRelease` now stop with a message naming any missing setting instead of producing an unsigned AAB; `-PallowUnsignedRelease` builds one on purpose.
+- [ ] Build and verify the next release with the existing upload key. Signing reads `storeFile`, `storePassword`, `keyAlias` and `keyPassword` from ignored `android/keystore.properties`; missing settings or a nonexistent keystore stop release packaging. `-PallowUnsignedRelease` is only for deliberate local validation, not an upload artifact. Verify the final signature and payload after packaging.
 - [ ] Enroll in Play App Signing and build a signed Android App Bundle (`.aab`).
 - [ ] Decide cross-store signing before distribution: use a consistent application ID and compatible signing identity for updates. An upload key is not the Play app signing key. See `ANDROID_DISTRIBUTION.md`.
 - [x] Publish the privacy policy at `https://srajpal.github.io/seva_jump_game/privacy.html` (public page verified September 18, 2026; final contact/declaration review remains).
@@ -58,7 +60,9 @@ Google Play and iOS signing/store-console tasks below do not block a browser-onl
 - [ ] Complete target audience, content rating, ads, app access, and government-app declarations accurately.
 - [ ] Capture at least four portrait phone screenshots: home, active play, upgrades/badges, and a victory scene.
 - [ ] Prepare a 512 × 512 Play icon and 1024 × 500 feature graphic.
-- [ ] Upload to Internal testing first, then Closed testing; review the pre-launch report before production. Build 41 (1.0.3) was published to Internal testing September 22, 2026 at 10:25 PM and submitted for full rollout to Closed testing - Alpha and Closed testing - App Hive. Closed testing - Fiverr was configured September 23 with its 36-user email list, all 177 countries/regions, and the developer feedback address, then submitted with build 41. A separate Closed testing - 12 Testers Live track was also submitted September 23 with the `12testerslive@googlegroups.com` Google Group, all 177 regions, the developer feedback address, and build 41. Its seven changes are in review while automated checks run; verify all closed-track approvals, install the exact Play-delivered update, and review the generated pre-launch report.
+- [x] Publish 1.0.3 / build 41 to Internal testing and closed testing. October 8 Console verification showed full rollout and tester availability on Alpha, App Hive, Fiverr and 12 Testers Live. Historical submission details are preserved in `RELEASE_PROGRESS.md`.
+- [ ] Test the next signed candidate through Play delivery and review its pre-launch report before production. No generated report was visible October 8; do not claim a pre-launch pass.
+- [ ] On a physical phone and tablet, update the existing Play installation without clearing app data. Check the visible version and retained saves on first launch, then close/reopen twice and test airplane-mode play. The outgoing native worker can serve the previous release once; subsequent launches must use the packaged candidate. Test instructions are in `TESTING.md`.
 - [x] Complete the personal-account closed test with at least 12 continuously opted-in testers for 14 days, then apply for production access. Play Console confirmed all eligibility tasks complete and the application was submitted October 8, 2026 at 11:18 AM America/New_York. See https://support.google.com/googleplay/android-developer/answer/14151465.
 - [ ] Receive production-access approval and validate the final signed, Play-delivered candidate before production rollout. Application is pending review; production remains inactive. See `RELEASE_PROGRESS.md` for the submission record.
 

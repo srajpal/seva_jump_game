@@ -2,7 +2,7 @@
 * { box-sizing: border-box; }
 .storage-warning { position: fixed; z-index: 20; bottom: max(8px, var(--safe-bottom)); left: 50%; width: min(92vw, 390px); margin: 0; padding: 8px 12px; border: 2px solid #7c321d; border-radius: 10px; background: #fff9ee; color: #62331e; box-shadow: 0 2px 8px #24483f33; font-size: .75rem; line-height: 1.3; text-align: center; transform: translateX(-50%); pointer-events: none; }
 body { margin: 0; min-height: 100vh; min-height: 100dvh; display: grid; place-items: center; }
-.game-shell { width: min(100%, 500px, calc((100dvh - 96px) * .5625)); padding: 14px; text-align: center; }
+.game-shell { width: min(100%, 500px, calc((100vh - 96px) * .5625)); width: min(100%, 500px, calc((100dvh - 96px) * .5625)); padding: 14px; text-align: center; }
 .studio-home-link { display: block; width: fit-content; margin: 0 auto 12px; padding: 9px 16px; border: 2px solid #527165; border-radius: 999px; background: #fff9ee; box-shadow: 0 3px 0 #9eb6aa; color: #24483f; font-size: .8rem; font-weight: 900; text-decoration: none; }
 .studio-home-link:active { transform: translateY(2px); box-shadow: 0 1px 0 #9eb6aa; }
 .native-app .studio-home-link { display: none; }
@@ -11,7 +11,12 @@ canvas { display: block; width: 100%; height: auto; touch-action: none; }
 .overlay { position: absolute; inset: 0; z-index: 3; display: flex; flex-direction: column; justify-content: safe center; align-items: center; padding: 30px; overflow-x: hidden; overflow-y: auto; scrollbar-width: thin; background: linear-gradient(#ffffffcf, #f8f0dfdf); }
 .overlay > * { flex: 0 0 auto; }
 .game-tools { position: absolute; z-index: 2; top: 64px; right: 12px; display: flex; gap: 6px; }
-.game-frame:fullscreen { --fullscreen-side: max(0px, calc((100vw - 100dvh * .5625) / 2)); width: 100vw; height: 100dvh; border: 0; border-radius: 0; box-shadow: none; padding: 0 var(--fullscreen-side); background: #172b27; }
+.game-frame:fullscreen { --fullscreen-side: max(0px, calc((100vw - 100vh * .5625) / 2)); width: 100vw; height: 100vh; height: 100dvh; border: 0; border-radius: 0; box-shadow: none; padding: 0 var(--fullscreen-side); background: #172b27; }
+/* Custom properties accept unknown units, so gate the dynamic calculation
+   rather than overriding the usable fallback on older WebViews. */
+@supports (height: 100dvh) {
+  .game-frame:fullscreen { --fullscreen-side: max(0px, calc((100vw - 100dvh * .5625) / 2)); }
+}
 .game-frame:fullscreen canvas { width: 100%; height: 100%; object-fit: contain; }
 .game-frame:fullscreen .overlay { left: var(--fullscreen-side); right: var(--fullscreen-side); }
 .game-frame:fullscreen .game-tools { right: calc(var(--fullscreen-side) + 12px); }
@@ -58,15 +63,15 @@ h2 { font-size: 2.3rem; }.eyebrow { margin: 0 0 7px; color: #a85e30; font-weight
    phone-sized desktop panel. The canvas aspect ratio stays unchanged. */
 @media (min-width: 700px) and (min-height: 900px) {
   body { background: radial-gradient(circle at 50% 24%, #fffdf4, #f8f0df 60%); }
-  .game-shell { width: min(calc(100vw - 72px), 560px, calc((100dvh - 132px) * .5625)); padding: 24px 0 30px; }
+  .game-shell { width: min(calc(100vw - 72px), 560px, calc((100vh - 132px) * .5625)); width: min(calc(100vw - 72px), 560px, calc((100dvh - 132px) * .5625)); padding: 24px 0 30px; }
   .studio-home-link { margin-bottom: 18px; padding: 10px 19px; font-size: .9rem; }
   .game-frame { border-width: 6px; border-radius: 30px; box-shadow: 0 10px 0 #d5b48c; }
 
   /* Native tablets use the whole display, like phones. JavaScript gives their
      canvas a wider logical viewport so the scene grows without stretching art. */
   .native-app, .native-app body { width: 100%; min-height: 100%; overflow: hidden; background: #bce7ef; }
-  .native-app body { min-height: 100dvh; display: block; }
-  .native-app .game-shell { width: 100vw; height: 100dvh; padding: 0; }
+  .native-app body { min-height: 100vh; min-height: 100dvh; display: block; }
+  .native-app .game-shell { width: 100vw; height: 100vh; height: 100dvh; padding: 0; }
   .native-app .game-frame { width: 100%; height: 100%; padding-top: calc(96px + var(--safe-top)); border: 0; border-radius: 0; box-shadow: none; background: linear-gradient(#bce7ef, #dff5ef); }
   .native-app canvas { width: 100%; height: auto; max-height: calc(100% - 96px - var(--safe-top)); margin: 0 auto; aspect-ratio: 4 / 5; object-fit: contain; object-position: top center; }
   .native-app .mobile-hud { position: absolute; z-index: 2; top: 0; left: 0; right: 0; height: calc(96px + var(--safe-top)); display: grid; grid-template-columns: minmax(230px, .9fr) minmax(290px, 1.25fr); align-items: center; gap: 15px; padding: calc(12px + var(--safe-top)) calc(106px + var(--safe-right)) 12px calc(28px + var(--safe-left)); border-bottom: 2px solid #7aa99e; background: linear-gradient(135deg, #dff5ef 0%, #bce7ef 54%, #f8e2b8 100%); box-shadow: 0 3px 8px #24483f33; color: #24483f; text-align: left; }
@@ -85,8 +90,8 @@ h2 { font-size: 2.3rem; }.eyebrow { margin: 0 0 7px; color: #a85e30; font-weight
 /* Phone play uses the whole browser viewport: no decorative outer frame or gaps. */
 @media (hover: none) and (pointer: coarse) {
   :root, body { width: 100%; min-height: 100%; background: #bce7ef; overflow: hidden; }
-  body { min-height: 100dvh; display: block; }
-  .game-shell { width: 100vw; height: 100dvh; padding: 0; }
+  body { min-height: 100vh; min-height: 100dvh; display: block; }
+  .game-shell { width: 100vw; height: 100vh; height: 100dvh; padding: 0; }
   .studio-home-link { display: none; }
   .game-frame { display: block; width: 100%; height: 100%; padding-top: calc(74px + var(--safe-top)); border: 0; border-radius: 0; box-shadow: none; background: linear-gradient(#bce7ef, #dff5ef); }
   canvas { width: 100%; height: auto; max-height: 100%; aspect-ratio: 9 / 16; object-fit: contain; object-position: top center; }
@@ -116,8 +121,8 @@ h2 { font-size: 2.3rem; }.eyebrow { margin: 0 0 7px; color: #a85e30; font-weight
    pointer. Native phone layout must follow the viewport, not the input device. */
 @media (max-width: 699px), (max-height: 899px) {
   .native-app, .native-app body { width: 100%; min-height: 100%; overflow: hidden; background: #bce7ef; }
-  .native-app body { min-height: 100dvh; display: block; }
-  .native-app .game-shell { width: 100vw; height: 100dvh; padding: 0; }
+  .native-app body { min-height: 100vh; min-height: 100dvh; display: block; }
+  .native-app .game-shell { width: 100vw; height: 100vh; height: 100dvh; padding: 0; }
   .native-app .game-frame { display: block; width: 100%; height: 100%; padding-top: calc(74px + var(--safe-top)); border: 0; border-radius: 0; box-shadow: none; background: linear-gradient(#bce7ef, #dff5ef); }
   .native-app canvas { width: 100%; height: auto; max-height: none; aspect-ratio: 9 / 16; object-fit: contain; object-position: top center; }
   .native-app .mobile-hud { position: absolute; z-index: 2; top: 0; left: 0; right: 0; height: calc(74px + var(--safe-top)); display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.25fr); align-items: center; gap: 9px; padding: calc(8px + var(--safe-top)) calc(72px + var(--safe-right)) 8px calc(13px + var(--safe-left)); border-bottom: 2px solid #7aa99e; background: linear-gradient(135deg, #dff5ef 0%, #bce7ef 54%, #f8e2b8 100%); box-shadow: 0 3px 8px #24483f33; color: #24483f; text-align: left; }
@@ -178,13 +183,14 @@ h2 { font-size: 2.3rem; }.eyebrow { margin: 0 0 7px; color: #a85e30; font-weight
    A clipped frame cannot be scrolled by canvas focus; menus scroll themselves. */
 .android-app { --android-hud-height: 74px; --android-canvas-ratio: .5625; --android-footer-height: 48px; }
 .android-app.android-tablet { --android-canvas-ratio: .8; }
-.android-app .game-shell { width: 100vw; height: 100dvh; padding: 0; }
+.android-app .game-shell { width: 100vw; height: 100vh; height: 100dvh; padding: 0; }
 .android-app .game-frame {
   height: 100%; border: 0; border-radius: 0; box-shadow: none; overflow: clip;
   padding-top: calc(var(--android-hud-height) + var(--safe-top));
   padding-bottom: calc(var(--android-footer-height) + var(--safe-bottom));
 }
 .android-app canvas {
+  width: min(100%, calc((100vh - var(--android-hud-height) - var(--safe-top) - var(--android-footer-height) - var(--safe-bottom)) * var(--android-canvas-ratio)));
   width: min(100%, calc((100dvh - var(--android-hud-height) - var(--safe-top) - var(--android-footer-height) - var(--safe-bottom)) * var(--android-canvas-ratio)));
   height: auto; max-height: 100%; margin: 0 auto;
   aspect-ratio: auto; object-fit: contain;

@@ -6,17 +6,25 @@ const { pathToFileURL } = require('node:url');
 const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
 const output = path.resolve(__dirname, '../screenshots/android-layout');
 fs.mkdirSync(output, { recursive: true });
+// Parse a separate stylesheet as an engine without dynamic viewport units would:
+// unsupported declarations are discarded, leaving their preceding vh fallback.
+const legacyCSS = fs.readFileSync(path.resolve(__dirname, '../styles.css'), 'utf8')
+  .replace(/[a-z-]+\s*:\s*[^;{}]*dvh[^;{}]*(?:;|(?=\}))/gi, '');
 
 (async () => {
   const browser = await chromium.launch({ channel: process.env.BROWSER_CHANNEL || 'msedge', headless: true });
   try {
-    for (const [name, width, height, touch] of [
+    for (const [name, width, height, touch, noDvh] of [
       ['compact-tablet', 600, 960, true], ['compact-tablet-mouse', 600, 960, false],
       ['tablet', 800, 1280, true], ['tablet-mouse', 800, 1280, false],
       ['wide-tablet', 960, 1280, true], ['phone', 393, 808, true],
       ['short-tablet', 700, 850, true],
       ['pixel-phone', 411, 914, true],
       ['short-handset', 320, 568, true],
+      ['legacy-short-handset', 360, 640, true, true],
+      ['legacy-phone-cutout', 411, 914, true, true],
+      ['legacy-tablet', 800, 1280, true, true],
+      ['legacy-short-tablet', 700, 850, false, true],
     ]) {
       const context = await browser.newContext({ viewport: { width, height }, hasTouch: touch, isMobile: touch });
       const page = await context.newPage();
@@ -33,19 +41,24 @@ fs.mkdirSync(output, { recursive: true });
         window.SevaJumpAndroid = { setGameplayActive: insets };
         document.addEventListener('DOMContentLoaded', () => insets(false));
         localStorage.setItem('seva-jump-profile', JSON.stringify({ tutorialComplete: true, music: false, sound: false }));
-      }, { cutout: name === 'pixel-phone' ? 60 : 0 });
+      }, { cutout: name === 'pixel-phone' || name === 'legacy-phone-cutout' ? 60 : 0 });
       await page.goto(pathToFileURL(path.resolve(__dirname, '../index.html')).href);
+      if (noDvh) {
+        await page.addStyleTag({ content: legacyCSS });
+        await page.locator('link[rel="stylesheet"]').evaluateAll(links => links.forEach(link => link.remove()));
+      }
       await page.locator('#arcade-button').click();
       await page.locator('#mobile-hud').waitFor();
       const geometry = await page.evaluate(() => {
         const frame = document.querySelector('.game-frame');
         const canvas = document.querySelector('canvas');
         const rect = element => { const r = element.getBoundingClientRect(); return { top: r.top, bottom: r.bottom, left: r.left, right: r.right }; };
-        return { scroll: frame.scrollTop, canvas: rect(canvas), hud: rect(document.querySelector('#mobile-hud')), pause: rect(document.querySelector('#pause-button')), width: canvas.width, height: canvas.height };
+        return { scroll: frame.scrollTop, pageScroll: window.scrollY, canvas: rect(canvas), hud: rect(document.querySelector('#mobile-hud')), pause: rect(document.querySelector('#pause-button')), width: canvas.width, height: canvas.height };
       });
       await page.screenshot({ path: path.join(output, `${name}-play.png`) });
       assert.equal(geometry.scroll, 0, `${name}: focusing canvas must not scroll the game frame: ${JSON.stringify(geometry)}`);
-      assert.ok(geometry.hud.top >= 0 && geometry.pause.top >= 0, `${name}: HUD and Pause remain visible`);
+      assert.equal(geometry.pageScroll, 0, `${name}: focusing canvas must not scroll the page: ${JSON.stringify(geometry)}`);
+      assert.ok(geometry.hud.top >= 0 && geometry.hud.bottom <= height && geometry.pause.top >= 0 && geometry.pause.bottom <= height, `${name}: HUD and Pause remain visible`);
       assert.ok(geometry.canvas.bottom <= height && geometry.canvas.top >= geometry.hud.bottom, `${name}: whole canvas fits below HUD`);
       if (name.includes('phone')) assert.ok(geometry.canvas.left < 1 && geometry.canvas.right >= width - 1, `${name}: phone playfield fills the width without side borders`);
       if (width >= 600) assert.ok(geometry.canvas.bottom <= height - 64 + 1, `${name}: tablet retains its footer and bottom safe area`);
@@ -53,6 +66,7 @@ fs.mkdirSync(output, { recursive: true });
       await page.locator('#pause-button').click();
       await page.locator('#resume-button').click();
       assert.equal(await page.locator('.game-frame').evaluate(el => el.scrollTop), 0, `${name}: resume preserves frame position`);
+      assert.equal(await page.evaluate(() => window.scrollY), 0, `${name}: resume preserves page position`);
       await page.locator('#pause-button').click();
       await page.evaluate(() => window.sevaJumpNativeBack());
       assert.equal(await page.locator('#pause-screen').isVisible(), false, `${name}: Back resumes from Pause`);
