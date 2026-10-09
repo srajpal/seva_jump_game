@@ -1,5 +1,12 @@
 # Seva Jump release progress
 
+## October 9, 2026 — issue #1 migration and Play acceptance verified complete
+
+- Reviewed issue #1 and merged PR #15 against merged `main` (including PR #48). Compile/target SDK 36, minimum SDK 24, Capacitor core/android/CLI 8.5.2 and App 8.1.1, AGP 8.13.0 and Gradle 8.14.3 remain in place. MainActivity owns safe areas and immersive bars, guards document-root injection and republishes insets after reload; duplicate Capacitor inset handling is disabled. Android metadata is 1.0.10 / build 48, beyond the original migration build 39.
+- Reviewed all four passing migration reports: Android 15/16 phones and tablets, including safe areas, Back, immersive bars and repeated reloads. Today's Java 21 debug build and physical-tablet update are recorded below; no new build or emulator run was needed for this record-only verification.
+- Rechecked the live replacement-account Play Console: 1.0.3 / build 41 is active and available at full rollout on Internal testing and all four closed tracks. Its App bundle explorer details show **Target SDK 36** and **API levels 24+**. Policy status shows **No issues found**. Console details: https://play.google.com/console/u/1/developers/7088734711289805133/app/4973543107979121743/app-bundle-explorer?artifactId=4860233169179726951 . The retained signed AAB checksum matches `7e43d1e000b4277d68b4a4ecd64ace55f7e547483f8aa20ef10600b0f0d9f4e3`.
+- This satisfies issue #1's original acceptance criteria and supersedes the September migration record's pending Play-acceptance gate. Updated the current checklist/follow-up status; future signed production-artifact checks, physical full playthroughs and exact Play-delivered upgrade validation remain open. Production access is still under review; no upload or publication was performed.
+
 ## October 9, 2026 — issue #40 rebuild installed on K70 PRO tablet
 
 - At the owner's request, rebuilt/synchronized the current 1.0.10 / Android 48 debug candidate with Java 21, including issue #40's viewport fallbacks. Build passed; APK SHA-256 remains `4922177c8d6c923e02ba86f4f89b22634d1c16892bd43bf9ffea432f7c6b621c`, identical to the validated October 8 artifact. Browser/layout/package and emulator results are recorded below; no runtime source changed since those checks.
