@@ -1,6 +1,8 @@
-# SevaJump store listing draft
+# SevaJump store listing
 
 This document targets Google Play. For itch.io browser distribution, use [ITCH_LISTING.md](ITCH_LISTING.md). Current verification and remaining work are tracked in [RELEASE_PROGRESS.md](RELEASE_PROGRESS.md).
+
+October 10, 2026: saved the full description below and refreshed phone/7-inch/10-inch tablet galleries in Play Console for review with 1.0.11 / build 49. Not yet approved or published. New screenshots are labeled as using AI-created artwork, consistent with `CONTENT_REVIEW.md` and the existing icon/feature graphic declarations. The short description and app name already match this document.
 
 ## Core listing
 
@@ -50,4 +52,4 @@ Keep screenshots free of browser chrome, debug overlays, test currency, and noti
 
 ## Before submission
 
-Confirm the developer name, support email, website, and privacy-policy contact information in Play Console. Earlier creator approval does not certify subsequent changes. Apply [SIKHI_TEXT_REVIEW.md](SIKHI_TEXT_REVIEW.md) to the final copy and imagery before release; the September 27 text revisions have not been verified in the live listing.
+Confirm the developer name, support email, website, and privacy-policy contact information in Play Console. Earlier creator approval does not certify subsequent changes. Apply [SIKHI_TEXT_REVIEW.md](SIKHI_TEXT_REVIEW.md) to the final copy and imagery before release; the September 27 text revisions were verified in the saved October 10 Console change, with publication pending review.

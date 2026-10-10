@@ -47,18 +47,18 @@ Google Play and iOS signing/store-console tasks below do not block a browser-onl
 
 ## Google Play preparation
 
-- [ ] Confirm the permanent application ID: `org.sevajump.game`.
+- [x] Confirm the permanent application ID: `org.sevajump.game` (signed build 49 and live Console, October 10, 2026).
 - [x] Create the replacement personal developer account and SevaJump app. The operational account and `org.sevajump.game` closed-test app were verified in Play Console October 8, 2026; the former studio account's September 18 closure is historical.
 - [x] Migrated compile/target SDK to API 36 with Capacitor 8, AGP 8.13.0 and Gradle 8.14.3; Android 16 phone/tablet emulator checks passed September 19, 2026.
 - [x] Verify target-API compliance and signed-AAB acceptance in the replacement Play account. Live Console verification October 9, 2026 confirms active 1.0.3 / build 41 targets SDK 36, supports API 24+, is available to internal/closed testers, and Policy status reports no issues. This completes issue #1's original migration/upload gate; the next production candidate still needs its own artifact/update validation. Published requirements: https://support.google.com/googleplay/android-developer/answer/11926878.
 - [ ] Create and securely back up a separate upload key; never store it in this repository.
-- [ ] Build and verify the next release with the existing upload key. Signing reads `storeFile`, `storePassword`, `keyAlias` and `keyPassword` from ignored `android/keystore.properties`; missing settings or a nonexistent keystore stop release packaging. `-PallowUnsignedRelease` is only for deliberate local validation, not an upload artifact. Verify the final signature and payload after packaging.
-- [ ] Enroll in Play App Signing and build a signed Android App Bundle (`.aab`).
+- [x] Build and verify 1.0.11 / build 49 with the existing upload key (October 10, 2026); matching certificate, signed AAB and all 34 packaged web files verified. Signing reads ignored `android/keystore.properties`; never use `-PallowUnsignedRelease` for uploads.
+- [x] Verify Play App Signing and the signed Android App Bundle (`.aab`). Play accepted build 49 and its generated APK uses the existing Play signing identity; hashes are in `RELEASE_PROGRESS.md`.
 - [ ] Decide cross-store signing before distribution: use a consistent application ID and compatible signing identity for updates. An upload key is not the Play app signing key. See `ANDROID_DISTRIBUTION.md`.
 - [x] Publish the privacy policy at `https://srajpal.github.io/seva_jump_game/privacy.html` (public page verified September 18, 2026; final contact/declaration review remains).
 - [ ] Complete Data safety as no data collected or shared, after verifying every included SDK.
 - [ ] Complete target audience, content rating, ads, app access, and government-app declarations accurately.
-- [ ] Capture at least four portrait phone screenshots: home, active play, upgrades/badges, and a victory scene.
+- [x] Capture four current portrait phone screenshots: home, active play, upgrades, and Arcade completion; also four tablet images. Saved the Play gallery change October 10, 2026, pending review.
 - [ ] Prepare a 512 × 512 Play icon and 1024 × 500 feature graphic.
 - [x] Publish 1.0.3 / build 41 to Internal testing and closed testing. October 8 Console verification showed full rollout and tester availability on Alpha, App Hive, Fiverr and 12 Testers Live. Historical submission details are preserved in `RELEASE_PROGRESS.md`.
 - [ ] Test the next signed candidate through Play delivery and review its pre-launch report before production. No generated report was visible October 8; do not claim a pre-launch pass.
