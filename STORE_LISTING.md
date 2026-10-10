@@ -2,7 +2,7 @@
 
 This document targets Google Play. For itch.io browser distribution, use [ITCH_LISTING.md](ITCH_LISTING.md). Current verification and remaining work are tracked in [RELEASE_PROGRESS.md](RELEASE_PROGRESS.md).
 
-October 10, 2026: submitted the full description below and refreshed phone/7-inch/10-inch tablet galleries to Google's review queue with production 1.0.11 / build 49. Quick checks remain in progress; managed publishing is enabled. Not yet approved or published. New screenshots are labeled as using AI-created artwork, consistent with `CONTENT_REVIEW.md` and the existing icon/feature graphic declarations. The short description and app name already match this document.
+October 10, 2026: submitted the full description below and refreshed phone/7-inch/10-inch tablet galleries with production 1.0.11 / build 49. Quick checks completed and Console confirms the changes are now in review; managed publishing is enabled. Not yet approved or published. New screenshots are labeled as using AI-created artwork, consistent with `CONTENT_REVIEW.md` and the existing icon/feature graphic declarations. The short description and app name already match this document.
 
 ## Core listing
 

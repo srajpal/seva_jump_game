@@ -66,7 +66,7 @@ Google Play and iOS signing/store-console tasks below do not block a browser-onl
 - [x] Complete the personal-account closed test with at least 12 continuously opted-in testers for 14 days, then apply for production access. Play Console confirmed all eligibility tasks complete and the application was submitted October 8, 2026 at 11:18 AM America/New_York. See https://support.google.com/googleplay/android-developer/answer/14151465.
 - [x] Receive production-access approval. Live Console verified October 10, 2026; production remains inactive until a release is approved and published.
 - [ ] Validate the final signed, Play-delivered candidate before production rollout. See `RELEASE_PROGRESS.md` for current artifact and review status.
-- [x] Submit first production release 49 and refreshed listing to Google's review queue (October 10, 2026), with managed publishing enabled. Quick checks, approval and public publication remain pending; confirm all remaining launch checks before publishing approved changes.
+- [x] Submit first production release 49 and refreshed listing (October 10, 2026), with managed publishing enabled. Quick checks completed and Console confirms the changes are now in review. Approval and public publication remain pending; confirm all remaining launch checks before publishing approved changes.
 - [ ] Deploy and reverify the hosted privacy-page navigation fix found October 10. The old worker rendered the game for policy navigations; public policy access must work for returning visitors before production publication.
 
 ## Build verification
