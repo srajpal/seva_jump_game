@@ -2,9 +2,9 @@
 
 Use this checklist for every release candidate. Do not create or commit an upload keystore, passwords, or `keystore.properties`.
 
-Current candidate: **1.0.10, Android build 48 / iOS build 44 metadata** (September 30, 2026). Browser ZIP published on itch.io September 30; Android remains a local candidate, with no new iOS build or native store publication. Existing checkmarks record historical work unless newer evidence is explicitly dated. Rerun applicable checks after any source change and against the exact artifact proposed for upload. [ITCH_RELEASE_AUDIT.md](ITCH_RELEASE_AUDIT.md) preserves the original 0.13.1 findings; current status is in [RELEASE_PROGRESS.md](RELEASE_PROGRESS.md).
+Current candidate: **1.0.11, Android build 49 / iOS build 45 metadata** (October 10, 2026). The public browser edition remains 1.0.10. No iOS build or production publication is claimed. Existing checkmarks record historical work unless newer evidence is explicitly dated. Rerun applicable checks after any source change and against the exact artifact proposed for upload. [ITCH_RELEASE_AUDIT.md](ITCH_RELEASE_AUDIT.md) preserves the original 0.13.1 findings; current status is in [RELEASE_PROGRESS.md](RELEASE_PROGRESS.md).
 
-Source now includes October 8 post-release review fixes at the same local version. They are not in the published September 30 ZIP or Play's 1.0.3 / build 41. Prepare a new version/build and update cumulative release notes before the next release artifact. Keep Play build and screenshot uploads on hold while the production-access application is pending, as requested by the owner.
+Production access was granted and verified in the live Console October 10, 2026. The owner authorized preparation, Internal testing, refreshed screenshots, production submission and publication following approval. Version 1.0.11 includes the merged review and viewport fixes; validate the exact signed candidate before rollout.
 
 ## itch.io browser release
 
@@ -47,24 +47,27 @@ Google Play and iOS signing/store-console tasks below do not block a browser-onl
 
 ## Google Play preparation
 
-- [ ] Confirm the permanent application ID: `org.sevajump.game`.
+- [x] Confirm the permanent application ID: `org.sevajump.game` (signed build 49 and live Console, October 10, 2026).
 - [x] Create the replacement personal developer account and SevaJump app. The operational account and `org.sevajump.game` closed-test app were verified in Play Console October 8, 2026; the former studio account's September 18 closure is historical.
 - [x] Migrated compile/target SDK to API 36 with Capacitor 8, AGP 8.13.0 and Gradle 8.14.3; Android 16 phone/tablet emulator checks passed September 19, 2026.
-- [ ] Confirm the enforced target API in the verified replacement Play Console account and upload a signed AAB to verify acceptance. Local builds do not satisfy this gate. Published requirements: https://support.google.com/googleplay/android-developer/answer/11926878.
+- [x] Verify target-API compliance and signed-AAB acceptance in the replacement Play account. Live Console verification October 9, 2026 confirms active 1.0.3 / build 41 targets SDK 36, supports API 24+, is available to internal/closed testers, and Policy status reports no issues. This completes issue #1's original migration/upload gate; the next production candidate still needs its own artifact/update validation. Published requirements: https://support.google.com/googleplay/android-developer/answer/11926878.
 - [ ] Create and securely back up a separate upload key; never store it in this repository.
-- [ ] Build and verify the next release with the existing upload key. Signing reads `storeFile`, `storePassword`, `keyAlias` and `keyPassword` from ignored `android/keystore.properties`; missing settings or a nonexistent keystore stop release packaging. `-PallowUnsignedRelease` is only for deliberate local validation, not an upload artifact. Verify the final signature and payload after packaging.
-- [ ] Enroll in Play App Signing and build a signed Android App Bundle (`.aab`).
+- [x] Build and verify 1.0.11 / build 49 with the existing upload key (October 10, 2026); matching certificate, signed AAB and all 34 packaged web files verified. Signing reads ignored `android/keystore.properties`; never use `-PallowUnsignedRelease` for uploads.
+- [x] Verify Play App Signing and the signed Android App Bundle (`.aab`). Play accepted build 49 and its generated APK uses the existing Play signing identity; hashes are in `RELEASE_PROGRESS.md`.
 - [ ] Decide cross-store signing before distribution: use a consistent application ID and compatible signing identity for updates. An upload key is not the Play app signing key. See `ANDROID_DISTRIBUTION.md`.
 - [x] Publish the privacy policy at `https://srajpal.github.io/seva_jump_game/privacy.html` (public page verified September 18, 2026; final contact/declaration review remains).
-- [ ] Complete Data safety as no data collected or shared, after verifying every included SDK.
-- [ ] Complete target audience, content rating, ads, app access, and government-app declarations accurately.
-- [ ] Capture at least four portrait phone screenshots: home, active play, upgrades/badges, and a victory scene.
-- [ ] Prepare a 512 × 512 Play icon and 1024 × 500 feature graphic.
+- [x] Verify saved Data safety declaration: no data collected or shared, and Play Families commitment (live Console October 10, 2026). No added analytics/ads SDKs in build 49.
+- [x] Verify completed audience, rating, ads, access and government declarations (October 10, 2026): age groups 6-8, 9-12, 13-15, 16-17; ESRB Everyone / PEGI 3; no ads, no special access, not a government app. No declarations need attention. Existing audience selections were retained.
+- [x] Capture four current portrait phone screenshots: home, active play, upgrades, and Arcade completion; also four tablet images. Saved the Play gallery change October 10, 2026, pending review.
+- [x] Verify existing 512 × 512 Play icon and 1024 × 500 feature graphic in the October 10 listing; retained with their recorded AI-artwork labels.
 - [x] Publish 1.0.3 / build 41 to Internal testing and closed testing. October 8 Console verification showed full rollout and tester availability on Alpha, App Hive, Fiverr and 12 Testers Live. Historical submission details are preserved in `RELEASE_PROGRESS.md`.
-- [ ] Test the next signed candidate through Play delivery and review its pre-launch report before production. No generated report was visible October 8; do not claim a pre-launch pass.
+- [ ] Review build 49's pre-launch report before public production rollout. No generated report was visible October 10; do not claim a pre-launch pass. Internal testing is live; the owner reports successful Play-delivered update/save/reopen/offline checks on another device.
 - [ ] On a physical phone and tablet, update the existing Play installation without clearing app data. Check the visible version and retained saves on first launch, then close/reopen twice and test airplane-mode play. The outgoing native worker can serve the previous release once; subsequent launches must use the packaged candidate. Test instructions are in `TESTING.md`.
 - [x] Complete the personal-account closed test with at least 12 continuously opted-in testers for 14 days, then apply for production access. Play Console confirmed all eligibility tasks complete and the application was submitted October 8, 2026 at 11:18 AM America/New_York. See https://support.google.com/googleplay/android-developer/answer/14151465.
-- [ ] Receive production-access approval and validate the final signed, Play-delivered candidate before production rollout. Application is pending review; production remains inactive. See `RELEASE_PROGRESS.md` for the submission record.
+- [x] Receive production-access approval. Live Console verified October 10, 2026; production remains inactive until a release is approved and published.
+- [ ] Validate the final signed, Play-delivered candidate before production rollout. See `RELEASE_PROGRESS.md` for current artifact and review status.
+- [x] Submit first production release 49 and refreshed listing (October 10, 2026), with managed publishing enabled. Quick checks completed and Console confirms the changes are now in review. Approval and public publication remain pending; confirm all remaining launch checks before publishing approved changes.
+- [ ] Deploy and reverify the hosted privacy-page navigation fix found October 10. The old worker rendered the game for policy navigations; public policy access must work for returning visitors before production publication.
 
 ## Build verification
 

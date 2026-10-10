@@ -42,7 +42,8 @@ function createWorker(scope = 'https://html-classic.itch.zone/html/123456/') {
   const fetchImpl = async request => {
     const url = new URL(request.url); requests.push(url.href);
     if (!online) throw new TypeError('offline');
-    const body = url.pathname.endsWith('.js') ? 'self.TEST_SCRIPT = true;' :
+    const body = url.pathname.endsWith('/privacy.html') ? '<!doctype html><title>Privacy | Seva Jump</title><h1>Privacy</h1>' :
+      url.pathname.endsWith('.js') ? 'self.TEST_SCRIPT = true;' :
       url.pathname.endsWith('.css') ? 'body{}' :
       url.pathname.endsWith('.png') ? 'png' : '<!doctype html><title>Seva Jump</title>';
     return new Response(body, { status, headers: { 'Content-Type': url.pathname.endsWith('.js') ? 'application/javascript' : 'text/html' } });
@@ -90,6 +91,8 @@ function request(url, destination, mode) {
   assert.match(await onlineNavigation.text(), /Seva Jump/);
   assert.equal(worker.requests.length, requestsBeforeNavigation,
     'a controlling worker keeps HTML on its complete cached release during an upgrade');
+  const onlinePrivacy = await worker.dispatch('fetch', request(`${worker.scope}privacy.html`, '', 'navigate'));
+  assert.match(await onlinePrivacy.text(), /<h1>Privacy<\/h1>/, 'privacy navigation serves the policy, not the game');
 
   worker.setOnline(false);
   const scriptResponse = await worker.dispatch('fetch', request(`${worker.scope}game.js?v=1.0.3`, 'script'));
@@ -97,6 +100,8 @@ function request(url, destination, mode) {
   assert.match(await scriptResponse.text(), /TEST_SCRIPT/);
   const navigationResponse = await worker.dispatch('fetch', request(worker.scope, '', 'navigate'));
   assert.match(await navigationResponse.text(), /Seva Jump/, 'directory navigation uses cached index.html');
+  const offlinePrivacy = await worker.dispatch('fetch', request(`${worker.scope}privacy.html?source=store`, '', 'navigate'));
+  assert.match(await offlinePrivacy.text(), /<h1>Privacy<\/h1>/, 'offline privacy navigation uses its own cached document');
 
   worker.stores.set('other-game-v9', new MockCache(worker.scope, async () => new Response('other')));
   const collidingLossyScope = `seva-jump-${encodeURIComponent('/html-123456/')}-v0.13.1`;
@@ -114,6 +119,8 @@ function request(url, destination, mode) {
   releaseCache.failPut = false;
 
   worker.setStatus(404);
+  const missingPage = await worker.dispatch('fetch', request(`${worker.scope}missing.html`, '', 'navigate'));
+  assert.equal(missingPage.status, 404, 'unknown online documents retain their server status');
   const missingResponse = await worker.dispatch('fetch', request(`${worker.scope}assets/missing.png`, 'image'));
   assert.equal(missingResponse.status, 404);
   assert(![...releaseCache.entries.keys()].some(key => key.endsWith('missing.png')), '404 is not cached');
