@@ -2,9 +2,9 @@
 
 Use this checklist for every release candidate. Do not create or commit an upload keystore, passwords, or `keystore.properties`.
 
-Current candidate: **1.0.10, Android build 48 / iOS build 44 metadata** (September 30, 2026). Browser ZIP published on itch.io September 30; Android remains a local candidate, with no new iOS build or native store publication. Existing checkmarks record historical work unless newer evidence is explicitly dated. Rerun applicable checks after any source change and against the exact artifact proposed for upload. [ITCH_RELEASE_AUDIT.md](ITCH_RELEASE_AUDIT.md) preserves the original 0.13.1 findings; current status is in [RELEASE_PROGRESS.md](RELEASE_PROGRESS.md).
+Current candidate: **1.0.11, Android build 49 / iOS build 45 metadata** (October 10, 2026). The public browser edition remains 1.0.10. No iOS build or production publication is claimed. Existing checkmarks record historical work unless newer evidence is explicitly dated. Rerun applicable checks after any source change and against the exact artifact proposed for upload. [ITCH_RELEASE_AUDIT.md](ITCH_RELEASE_AUDIT.md) preserves the original 0.13.1 findings; current status is in [RELEASE_PROGRESS.md](RELEASE_PROGRESS.md).
 
-Source now includes October 8 post-release review fixes at the same local version. They are not in the published September 30 ZIP or Play's 1.0.3 / build 41. Prepare a new version/build and update cumulative release notes before the next release artifact. Keep Play build and screenshot uploads on hold while the production-access application is pending, as requested by the owner.
+Production access was granted and verified in the live Console October 10, 2026. The owner authorized preparation, Internal testing, refreshed screenshots, production submission and publication following approval. Version 1.0.11 includes the merged review and viewport fixes; validate the exact signed candidate before rollout.
 
 ## itch.io browser release
 
@@ -64,7 +64,8 @@ Google Play and iOS signing/store-console tasks below do not block a browser-onl
 - [ ] Test the next signed candidate through Play delivery and review its pre-launch report before production. No generated report was visible October 8; do not claim a pre-launch pass.
 - [ ] On a physical phone and tablet, update the existing Play installation without clearing app data. Check the visible version and retained saves on first launch, then close/reopen twice and test airplane-mode play. The outgoing native worker can serve the previous release once; subsequent launches must use the packaged candidate. Test instructions are in `TESTING.md`.
 - [x] Complete the personal-account closed test with at least 12 continuously opted-in testers for 14 days, then apply for production access. Play Console confirmed all eligibility tasks complete and the application was submitted October 8, 2026 at 11:18 AM America/New_York. See https://support.google.com/googleplay/android-developer/answer/14151465.
-- [ ] Receive production-access approval and validate the final signed, Play-delivered candidate before production rollout. Application is pending review; production remains inactive. See `RELEASE_PROGRESS.md` for the submission record.
+- [x] Receive production-access approval. Live Console verified October 10, 2026; production remains inactive until a release is approved and published.
+- [ ] Validate the final signed, Play-delivered candidate before production rollout. See `RELEASE_PROGRESS.md` for current artifact and review status.
 
 ## Build verification
 

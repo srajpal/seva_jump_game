@@ -2,7 +2,7 @@
 
 **A skyward seva adventure.**
 
-Current public [itch.io browser release](https://khalsagamestudio.itch.io/seva-jump): **v1.0.10**. Android **1.0.3 / build 41** is available in Google Play closed testing; production access was applied for October 8, 2026 and is pending review. Android **1.0.10 / build 48** remains a local candidate; iOS build 44 is metadata only. See `RELEASE_PROGRESS.md` for validation and publication details.
+Current public [itch.io browser release](https://khalsagamestudio.itch.io/seva-jump): **v1.0.10**. Android **1.0.3 / build 41** is available in Google Play closed testing. Production access was granted and verified October 10, 2026. Android **1.0.11 / build 49** is being prepared for Internal testing and production; iOS build 45 is metadata only. See `RELEASE_PROGRESS.md` for validation and publication details.
 
 The birds have flown away with the parshad. Choose a young Sikh boy or girl, leap from platform to platform, and bring it back in this cheerful browser game.
 
@@ -133,7 +133,7 @@ ARCHITECTURE.md      Runtime, packaging, and platform architecture
 
 The feature set is frozen for the current release candidate. Use [RELEASE_CHECKLIST.md](RELEASE_CHECKLIST.md) for regression testing and signing, [STORE_LISTING.md](STORE_LISTING.md) for the prepared Google Play copy and declarations, and [ITCH_LISTING.md](ITCH_LISTING.md) for the browser listing and upload plan.
 
-The September 11, 2026 itch.io audit records the problems found in v0.13.1. Current source, published builds, and outstanding checks are tracked separately in [RELEASE_PROGRESS.md](RELEASE_PROGRESS.md). The October 8 review fixes are newer than the published 1.0.10 browser ZIP and Play's 1.0.3 test build. They need a new release version and candidate validation before upload; the existing version number does not identify identical contents across those artifacts.
+The September 11, 2026 itch.io audit records the problems found in v0.13.1. Current source, published builds, and outstanding checks are tracked separately in [RELEASE_PROGRESS.md](RELEASE_PROGRESS.md). The October review fixes are included in the 1.0.11 candidate and are newer than the published 1.0.10 browser ZIP and Play's 1.0.3 test build. Candidate preparation and store publication are recorded separately.
 
 Native-store work still includes screenshots, signing credentials, console forms, device testing, and applicable store testing. Check [RELEASE_PROGRESS.md](RELEASE_PROGRESS.md) and the platform metadata before naming a native build ready. Localization remains planned follow-up work.
 

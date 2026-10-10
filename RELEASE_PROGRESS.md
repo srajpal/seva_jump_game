@@ -1,5 +1,13 @@
 # Seva Jump release progress
 
+## October 10, 2026 — production access granted; 1.0.11 / build 49 preparation
+
+- Live Play Console confirms production access has been granted. Production remains inactive; Internal and four closed testing tracks are active. The owner authorized the next build, Internal testing, refreshed store screenshots, production submission and publication after approval.
+- Prepared version metadata and cumulative release notes for 1.0.11 / Android 49, including merged PRs #19, #47 and #48. iOS version/build metadata is 1.0.11 / 45 only; no iOS build. Public itch.io stays at 1.0.10.
+- Syntax, all gameplay/rule suites (2,170,000 generated landings), runtime/gameplay/cache checks, 32-file package checks, 48 Edge browser checks and 13 Android layout cases plus iOS presentation exclusion passed. Java 21 debug, signed release AAB/APK and release lint builds passed. No gameplay tuning changed.
+- Signed AAB: `dist/SevaJump-1.0.11-build49-play.aab`, SHA-256 `366addf5509698219481cb3c0170f98abd9b5a15a49e3173665696fb98363b26`. JAR signature verifies and the upload certificate matches build 41 (`EE:92:43:19:E8:41:FD:0C:C5:DC:B4:F9:94:02:67:0A:C8:87:CC:82:89:8A:0D:CF:D9:70:57:F9:D3:40:AB:BD`). All 34 packaged web/Capacitor files match synchronized native sources. Release APK SHA-256 `cf095c6518b6fa4a0f7df4e467da4215ec32eadf612e73fa9fbe5bcaa81b0ad6`; debug APK `35b162cd8e2fa28f68da4bf731fb3a1c4f017dcbd598dda959a1864f167edeaea`.
+- Uploaded the verified AAB to an Internal testing draft. Play accepted version 1.0.11 / build 49, target SDK 36 and API 24+. Internal delivery, screenshot uploads, pre-launch report and production submission remain pending. Preserve the existing upload identity and local saves; keep prepared artifacts distinct from published releases.
+
 ## October 9, 2026 — issue #1 migration and Play acceptance verified complete
 
 - Reviewed issue #1 and merged PR #15 against merged `main` (including PR #48). Compile/target SDK 36, minimum SDK 24, Capacitor core/android/CLI 8.5.2 and App 8.1.1, AGP 8.13.0 and Gradle 8.14.3 remain in place. MainActivity owns safe areas and immersive bars, guards document-root injection and republishes insets after reload; duplicate Capacitor inset handling is disabled. Android metadata is 1.0.10 / build 48, beyond the original migration build 39.
