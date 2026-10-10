@@ -55,7 +55,7 @@ Google Play and iOS signing/store-console tasks below do not block a browser-onl
 - [x] Build and verify 1.0.11 / build 49 with the existing upload key (October 10, 2026); matching certificate, signed AAB and all 34 packaged web files verified. Signing reads ignored `android/keystore.properties`; never use `-PallowUnsignedRelease` for uploads.
 - [x] Verify Play App Signing and the signed Android App Bundle (`.aab`). Play accepted build 49 and its generated APK uses the existing Play signing identity; hashes are in `RELEASE_PROGRESS.md`.
 - [ ] Decide cross-store signing before distribution: use a consistent application ID and compatible signing identity for updates. An upload key is not the Play app signing key. See `ANDROID_DISTRIBUTION.md`.
-- [x] Publish the privacy policy at `https://srajpal.github.io/seva_jump_game/privacy.html` (public page verified September 18, 2026; final contact/declaration review remains).
+- [x] Publish the privacy policy at `https://srajpal.github.io/seva_jump_game/privacy.html` (public page and matching support contact reverified October 10, 2026 after the hosted navigation fix deployed).
 - [x] Verify saved Data safety declaration: no data collected or shared, and Play Families commitment (live Console October 10, 2026). No added analytics/ads SDKs in build 49.
 - [x] Verify completed audience, rating, ads, access and government declarations (October 10, 2026): age groups 6-8, 9-12, 13-15, 16-17; ESRB Everyone / PEGI 3; no ads, no special access, not a government app. No declarations need attention. Existing audience selections were retained.
 - [x] Capture four current portrait phone screenshots: home, active play, upgrades, and Arcade completion; also four tablet images. Saved the Play gallery change October 10, 2026, pending review.
@@ -67,7 +67,7 @@ Google Play and iOS signing/store-console tasks below do not block a browser-onl
 - [x] Receive production-access approval. Live Console verified October 10, 2026; production remains inactive until a release is approved and published.
 - [ ] Validate the final signed, Play-delivered candidate before production rollout. See `RELEASE_PROGRESS.md` for current artifact and review status.
 - [x] Submit first production release 49 and refreshed listing (October 10, 2026), with managed publishing enabled. Quick checks completed and Console confirms the changes are now in review. Approval and public publication remain pending; confirm all remaining launch checks before publishing approved changes.
-- [ ] Deploy and reverify the hosted privacy-page navigation fix found October 10. The old worker rendered the game for policy navigations; public policy access must work for returning visitors before production publication.
+- [x] Deploy and reverify the hosted privacy-page navigation fix found October 10. PR #50 merged and GitHub Pages deployed successfully. The same returning browser opens the Privacy page after worker activation and returns to v1.0.11; no site data was cleared.
 
 ## Build verification
 
