@@ -334,7 +334,13 @@ async function canvasWork(page) {
     assert.equal(await offlinePage.evaluate(()=>typeof SEVA_RULES),'object');
     await offlinePage.locator('#endless-button').click(); await offlinePage.locator('#tutorial-skip-button').click();
     await offlinePage.locator('#pause-button').click(); assert(await offlinePage.locator('#pause-screen').isVisible());
-    assert.deepEqual(offlineErrors,[]); check('first-visit offline actual game with directory URLs denied'); await offlineContext.close();
+    assert.deepEqual(offlineErrors,[]); check('first-visit offline actual game with directory URLs denied');
+    await offlinePage.goto(`${origin}/game/privacy.html?source=store`);
+    assert.equal(await offlinePage.locator('h1').textContent(),'Privacy');
+    assert(await offlinePage.getByRole('link',{name:'khalsagamestudio.apps@gmail.com',exact:true}).isVisible());
+    await offlinePage.getByRole('link',{name:'Back to Seva Jump',exact:true}).click();
+    assert(await offlinePage.locator('#endless-button').isVisible());
+    assert.deepEqual(offlineErrors,[]); check('offline policy navigation and return to game'); await offlineContext.close();
     // The native apps package every file: a worker left by an earlier web-style
     // build must be removed with its caches, or app updates replay old files.
     const nativeContext = await browser.newContext(), nativePage = await nativeContext.newPage();

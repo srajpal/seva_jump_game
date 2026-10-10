@@ -113,11 +113,16 @@ self.addEventListener('fetch', event => {
   if (requestUrl.origin !== SCOPE_URL.origin || !requestUrl.href.startsWith(SCOPE_URL.href)) return;
 
   if (event.request.mode === 'navigate') {
+    const documentUrl = requestUrl.pathname === SCOPE_URL.pathname
+      ? new URL('./index.html', SCOPE_URL).href
+      : requestUrl.href;
     event.respondWith(
       // Keep a controlled page on one complete release. The browser still
       // checks sw.js for updates; the next worker takes over only after its
       // entire APP_FILES cache installs successfully.
-      cacheMatch('./index.html')
+      // Each document keeps its own identity: policy links must never render
+      // the game. Only the scope's directory URL aliases index.html.
+      cacheMatch(documentUrl)
         .then(cached => cached || fetchAndCache(event.request))
         .catch(() => unavailableResponse('document')),
     );

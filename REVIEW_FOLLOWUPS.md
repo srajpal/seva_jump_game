@@ -8,6 +8,13 @@ follow-ups here rather than relying on task history. GitHub issues are the sourc
 of truth for scheduled work; this file is a linked review index. When resolving an
 item, update its issue/PR evidence and this index together.
 
+## PR #50 — production preparation and privacy-route check
+
+Source: [release PR](https://github.com/srajpal/seva_jump_game/pull/50), October 10 production preparation. No review comments were present when checked.
+
+- [x] Fix hosted privacy navigation, which incorrectly used the cached game document. A policy-identity regression failed before the fix and passes afterward; online/offline policy, unknown-document status and native worker bypass are covered. All 49 Edge browser checks, runtime/cache and package checks pass. The change follows the already uploaded Android artifact and leaves the native bypass intact.
+- [ ] Verify the deployed public privacy route for returning browsers before publishing approved production changes. Local checks alone do not establish GitHub Pages deployment or removal of an older controlling worker.
+
 ## PR #9 — generator checks
 
 Source: [review comment](https://github.com/srajpal/seva_jump_game/pull/9#issuecomment-5745429146).

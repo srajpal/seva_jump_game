@@ -56,16 +56,18 @@ Google Play and iOS signing/store-console tasks below do not block a browser-onl
 - [x] Verify Play App Signing and the signed Android App Bundle (`.aab`). Play accepted build 49 and its generated APK uses the existing Play signing identity; hashes are in `RELEASE_PROGRESS.md`.
 - [ ] Decide cross-store signing before distribution: use a consistent application ID and compatible signing identity for updates. An upload key is not the Play app signing key. See `ANDROID_DISTRIBUTION.md`.
 - [x] Publish the privacy policy at `https://srajpal.github.io/seva_jump_game/privacy.html` (public page verified September 18, 2026; final contact/declaration review remains).
-- [ ] Complete Data safety as no data collected or shared, after verifying every included SDK.
-- [ ] Complete target audience, content rating, ads, app access, and government-app declarations accurately.
+- [x] Verify saved Data safety declaration: no data collected or shared, and Play Families commitment (live Console October 10, 2026). No added analytics/ads SDKs in build 49.
+- [x] Verify completed audience, rating, ads, access and government declarations (October 10, 2026): age groups 6-8, 9-12, 13-15, 16-17; ESRB Everyone / PEGI 3; no ads, no special access, not a government app. No declarations need attention. Existing audience selections were retained.
 - [x] Capture four current portrait phone screenshots: home, active play, upgrades, and Arcade completion; also four tablet images. Saved the Play gallery change October 10, 2026, pending review.
-- [ ] Prepare a 512 × 512 Play icon and 1024 × 500 feature graphic.
+- [x] Verify existing 512 × 512 Play icon and 1024 × 500 feature graphic in the October 10 listing; retained with their recorded AI-artwork labels.
 - [x] Publish 1.0.3 / build 41 to Internal testing and closed testing. October 8 Console verification showed full rollout and tester availability on Alpha, App Hive, Fiverr and 12 Testers Live. Historical submission details are preserved in `RELEASE_PROGRESS.md`.
-- [ ] Test the next signed candidate through Play delivery and review its pre-launch report before production. No generated report was visible October 8; do not claim a pre-launch pass.
+- [ ] Review build 49's pre-launch report before public production rollout. No generated report was visible October 10; do not claim a pre-launch pass. Internal testing is live; the owner reports successful Play-delivered update/save/reopen/offline checks on another device.
 - [ ] On a physical phone and tablet, update the existing Play installation without clearing app data. Check the visible version and retained saves on first launch, then close/reopen twice and test airplane-mode play. The outgoing native worker can serve the previous release once; subsequent launches must use the packaged candidate. Test instructions are in `TESTING.md`.
 - [x] Complete the personal-account closed test with at least 12 continuously opted-in testers for 14 days, then apply for production access. Play Console confirmed all eligibility tasks complete and the application was submitted October 8, 2026 at 11:18 AM America/New_York. See https://support.google.com/googleplay/android-developer/answer/14151465.
 - [x] Receive production-access approval. Live Console verified October 10, 2026; production remains inactive until a release is approved and published.
 - [ ] Validate the final signed, Play-delivered candidate before production rollout. See `RELEASE_PROGRESS.md` for current artifact and review status.
+- [x] Submit first production release 49 and refreshed listing to Google's review queue (October 10, 2026), with managed publishing enabled. Quick checks, approval and public publication remain pending; confirm all remaining launch checks before publishing approved changes.
+- [ ] Deploy and reverify the hosted privacy-page navigation fix found October 10. The old worker rendered the game for policy navigations; public policy access must work for returning visitors before production publication.
 
 ## Build verification
 
