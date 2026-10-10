@@ -13,7 +13,7 @@ item, update its issue/PR evidence and this index together.
 Source: [release PR](https://github.com/srajpal/seva_jump_game/pull/50), October 10 production preparation. No review comments were present when checked.
 
 - [x] Fix hosted privacy navigation, which incorrectly used the cached game document. A policy-identity regression failed before the fix and passes afterward; online/offline policy, unknown-document status and native worker bypass are covered. All 49 Edge browser checks, runtime/cache and package checks pass. The change follows the already uploaded Android artifact and leaves the native bypass intact.
-- [ ] Verify the deployed public privacy route for returning browsers before publishing approved production changes. Local checks alone do not establish GitHub Pages deployment or removal of an older controlling worker.
+- [x] PR #50 merged and GitHub Pages deployed successfully October 10. The same returning browser opens the actual Privacy page after its old worker updates and returns to game v1.0.11; no site data was cleared. Local checks and live deployment evidence are recorded separately in `RELEASE_PROGRESS.md`.
 
 ## PR #9 — generator checks
 
