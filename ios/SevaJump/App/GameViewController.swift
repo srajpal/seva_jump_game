@@ -3,6 +3,20 @@ import UIKit
 
 final class GameViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
     private let webView = WKWebView(frame: .zero, configuration: GameViewController.configuration)
+    private var interrupted = false
+
+    func pauseForAppInterruption() {
+        interrupted = true
+        webView.evaluateJavaScript("window.dispatchEvent(new Event('blur'));")
+    }
+
+    func completeAppInterruption() {
+        guard interrupted else { return }
+        interrupted = false
+        // WebKit can defer script execution while suspended. Repeat on return
+        // so a short app switch always reaches the game's existing pause path.
+        webView.evaluateJavaScript("window.dispatchEvent(new Event('blur'));")
+    }
 
     private static let configuration: WKWebViewConfiguration = {
         let configuration = WKWebViewConfiguration()
@@ -28,7 +42,7 @@ final class GameViewController: UIViewController, WKNavigationDelegate, WKUIDele
                       top: calc(var(--safe-top) + 8px);
                       right: calc(var(--safe-right) + 10px);
                     }
-                    .ios-native .game-tool {
+                    .ios-native #pause-button:not(.hidden) {
                       position: relative;
                       display: grid;
                       width: 44px;
@@ -45,8 +59,8 @@ final class GameViewController: UIViewController, WKNavigationDelegate, WKUIDele
                       -webkit-backdrop-filter: blur(10px);
                       backdrop-filter: blur(10px);
                     }
-                    .ios-native .game-tool::before,
-                    .ios-native .game-tool::after {
+                    .ios-native #pause-button::before,
+                    .ios-native #pause-button::after {
                       position: absolute;
                       width: 4px;
                       height: 17px;
@@ -54,9 +68,9 @@ final class GameViewController: UIViewController, WKNavigationDelegate, WKUIDele
                       background: #24483f;
                       content: '';
                     }
-                    .ios-native .game-tool::before { transform: translateX(-4px); }
-                    .ios-native .game-tool::after { transform: translateX(4px); }
-                    .ios-native .game-tool:active {
+                    .ios-native #pause-button::before { transform: translateX(-4px); }
+                    .ios-native #pause-button::after { transform: translateX(4px); }
+                    .ios-native #pause-button:active {
                       transform: translateY(1px);
                       box-shadow: 0 1px 0 rgba(82, 113, 101, .65), 0 2px 5px rgba(36, 49, 45, .16);
                     }
