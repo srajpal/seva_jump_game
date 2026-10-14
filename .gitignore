@@ -16,3 +16,6 @@ android/local.properties
 ios/build/
 ios/DerivedData/
 *.xcuserstate
+
+# macOS Finder metadata
+.DS_Store
