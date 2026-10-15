@@ -38,6 +38,65 @@ final class GameViewController: UIViewController, WKNavigationDelegate, WKUIDele
                   root.classList.add('ios-native');
                   var style = document.createElement('style');
                   style.textContent = `
+                    /* Fit the canvas below the HUD. An overflowing canvas can
+                       scroll the frame when focused, carrying menus and HUD
+                       above the screen even with native scrolling disabled. */
+                    .ios-native { --ios-canvas-ratio: .5625; --ios-hud-height: 74px; }
+                    .ios-native.native-app .game-frame {
+                      overflow: hidden;
+                      overflow: clip;
+                      padding-bottom: var(--safe-bottom);
+                    }
+                    .ios-native.native-app canvas {
+                      width: min(100%, calc((100vh - var(--ios-hud-height) - var(--safe-top) - var(--safe-bottom)) * var(--ios-canvas-ratio)));
+                      width: min(100%, calc((100dvh - var(--ios-hud-height) - var(--safe-top) - var(--safe-bottom)) * var(--ios-canvas-ratio)));
+                      height: auto;
+                      max-height: 100%;
+                      margin: 0 auto;
+                      aspect-ratio: auto;
+                      object-fit: contain;
+                    }
+                    @media (min-width: 700px) and (min-height: 700px) {
+                      .ios-native { --ios-canvas-ratio: .8; }
+                    }
+                    @media (min-width: 700px) and (min-height: 900px) {
+                      .ios-native { --ios-hud-height: 96px; }
+                    }
+                    .ios-native.native-app .overlay {
+                      justify-content: flex-start;
+                      padding-top: max(18px, calc(var(--safe-top) + 12px));
+                      padding-bottom: max(22px, calc(var(--safe-bottom) + 12px));
+                      padding-left: max(18px, var(--safe-left));
+                      padding-right: max(18px, var(--safe-right));
+                      scroll-padding-top: calc(var(--safe-top) + 12px);
+                      scroll-padding-bottom: calc(var(--safe-bottom) + 12px);
+                    }
+                    @supports (justify-content: safe center) {
+                      .ios-native.native-app .overlay { justify-content: safe center; }
+                    }
+                    .ios-native.native-app .overlay button,
+                    .ios-native.native-app .overlay select,
+                    .ios-native.native-app .pause-settings label {
+                      min-height: 44px;
+                    }
+                    .ios-native.native-app .overlay button { min-width: 44px; }
+                    .ios-native.native-app .overlay a {
+                      display: inline-flex;
+                      align-items: center;
+                      min-height: 44px;
+                      max-width: 100%;
+                      overflow-wrap: anywhere;
+                    }
+                    .ios-native.native-app .info-button {
+                      width: 44px;
+                      height: 44px;
+                      flex-shrink: 0;
+                      font-size: .9rem;
+                    }
+                    /* Earned badges remain in Records; their toast must not
+                       cover a dialog heading or its navigation. */
+                    .ios-native #badge-toast[inert],
+                    .ios-native #end-screen:not(.hidden) ~ #badge-toast { display: none; }
                     .ios-native .game-tools {
                       top: calc(var(--safe-top) + 8px);
                       right: calc(var(--safe-right) + 10px);
@@ -84,7 +143,9 @@ final class GameViewController: UIViewController, WKNavigationDelegate, WKUIDele
                         padding-bottom: max(8px, var(--safe-bottom));
                       }
                       .ios-native .home-screen .eyebrow {
-                        display: none;
+                        display: block;
+                        margin: 0;
+                        font-size: .68rem;
                       }
                       .ios-native .home-screen h1 {
                         font-size: 3rem;

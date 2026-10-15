@@ -2,7 +2,7 @@
 
 Use this checklist for every release candidate. Do not create or commit an upload keystore, passwords, or `keystore.properties`.
 
-Current candidate: **1.0.11, Android build 49 / iOS build 45 metadata** (October 10, 2026). The public browser edition remains 1.0.10. No iOS build or production publication is claimed. Existing checkmarks record historical work unless newer evidence is explicitly dated. Rerun applicable checks after any source change and against the exact artifact proposed for upload. [ITCH_RELEASE_AUDIT.md](ITCH_RELEASE_AUDIT.md) preserves the original 0.13.1 findings; current status is in [RELEASE_PROGRESS.md](RELEASE_PROGRESS.md).
+Current candidate: **1.0.11, Android build 49 / iOS build 47 parshad follow-up** (October 15, 2026). The public browser edition remains 1.0.10. iOS builds 45 and 46 are already available for owner-only internal TestFlight testing; build 47 preparation/upload status is in [RELEASE_PROGRESS.md](RELEASE_PROGRESS.md). No iOS production publication is claimed. Existing checkmarks record historical work unless newer evidence is explicitly dated. Rerun applicable checks after any source change and against the exact artifact proposed for upload. [ITCH_RELEASE_AUDIT.md](ITCH_RELEASE_AUDIT.md) preserves the original 0.13.1 findings; current status is in [RELEASE_PROGRESS.md](RELEASE_PROGRESS.md).
 
 Production access was granted and verified in the live Console October 10, 2026. The owner authorized preparation, Internal testing, refreshed screenshots, production submission and publication following approval. Version 1.0.11 includes the merged review and viewport fixes; validate the exact signed candidate before rollout.
 
@@ -93,7 +93,7 @@ Use `npm run test:browser` for browser coverage. Run it in Firefox, Chromium, an
 
 For iOS, use a submission-compatible Xcode and SDK (from April 28, 2026: Xcode 26+ / iOS 26+ SDK). Xcode 26.3 supports macOS 15.6+, including this Mac's 15.8.1. See [Apple's requirement](https://developer.apple.com/news/upcoming-requirements/?id=04282026a) and [system requirements](https://developer.apple.com/xcode/system-requirements). Open `ios/SevaJump.xcodeproj`, sign into the owner's account and use automatic signing for team `LSES4VT2GU` / `org.sevajump.game`. Build the **Seva Jump** scheme on iPhone and iPad, then archive for App Store Connect. A successful unsigned simulator build does not validate signing, the upload SDK or physical-device behavior.
 
-### iOS first submission gates (October 12, 2026)
+### iOS first submission gates (updated October 15, 2026)
 
 - [x] Active membership, registered identifier and App Store Connect record.
 - [x] Version 1.0.11 copy, URLs, four iPhone and four iPad screenshots saved.
@@ -104,10 +104,12 @@ For iOS, use a submission-compatible Xcode and SDK (from April 28, 2026: Xcode 2
 - [x] Install Apple-signed Xcode 26.3 alongside the old Xcode at `/Applications/Xcode-26.3.app`.
 - [x] Owner completes Xcode 26.3 first launch/account sign-in; export and locally validate App Store-signed 1.0.11 / build 45 IPA with the iOS 26.2 SDK. Source archive is unsigned; distribution export is signed.
 - [x] Production-source Release iPhone 16 / iPad Pro 13-inch checks passed October 12 with iOS 26.2 SDK / iOS 26.3.1 runtime: modes, touch, pause/resume, backgrounding, reset, audio controls and save persistence.
-- [ ] Validate exact candidate on physical iPhone and iPad, including cold offline launch and retained saves. Owner has neither device available; retain as unverified.
-- [ ] Resolve age-rating guidance or explicitly retain the saved conservative 13+ rating for submission.
-- [x] Upload/processing completed and build 45 selected for version 1.0.11; owner-only internal TestFlight enabled October 12. Final App Review validation remains separate.
-- [ ] Obtain owner direction for the final review submission; retain manual release for publication.
+- [x] Owner tested TestFlight build 47 in every mode on the physical iPhone and confirmed it works October 15.
+- [ ] Complete physical iPad, cold offline launch, retained-save and extended performance coverage; these are not established by the owner’s mode-testing report.
+- [x] Owner reports updating the listing to 4+ and explicitly authorizes submission October 15; supersedes the historical 13+ hold. No Apple support ruling claimed.
+- [x] Build 47 uploaded/processed, enabled for owner-only internal TestFlight, selected for version 1.0.11 and submitted October 15. Apple confirms Waiting for Review.
+- [x] Owner authorized final review submission; completed October 15 with manual release retained.
+- [ ] After approval, obtain owner direction for public App Store publication.
 
 For the store, use Android Studio's **Build > Generate Signed Bundle / APK > Android App Bundle** flow. Increment both `versionCode` and the visible version before every upload.
 

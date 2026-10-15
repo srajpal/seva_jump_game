@@ -140,6 +140,17 @@ async function run() {
   navigation.hooks.openSettings('home');
   navigation.elements.get('#replay-tutorial-button').listeners.click(); back();
   assert.ok(visible('#settings-screen'), 'Replayed guide returns to Settings');
+  for (const completion of ['skip', 'finish']) {
+    navigation.elements.get('#replay-tutorial-button').listeners.click();
+    if (completion === 'skip') navigation.elements.get('#tutorial-skip-button').listeners.click();
+    else for (let step = 0; step < 3; step++) navigation.elements.get('#tutorial-next-button').listeners.click();
+    assert.ok(visible('#settings-screen'), `${completion} replay returns to Settings`);
+  }
+  back(); navigation.hooks.start('endless'); back(); navigation.hooks.openSettings('pause');
+  navigation.elements.get('#replay-tutorial-button').listeners.click();
+  navigation.elements.get('#tutorial-skip-button').listeners.click();
+  assert.ok(visible('#settings-screen') && navigation.hooks.state.paused, 'Replay from Pause preserves Settings and paused run');
+  back(); assert.ok(visible('#pause-screen'), 'Back after replay returns to Pause');
 
   const noCanvas = makeRuntime({}, { noCanvas: true });
   assert.match(noCanvas.elements.get('#canvas-warning').textContent, /cannot draw the game/);
@@ -231,6 +242,8 @@ async function run() {
   drawnImages.length = 0; rendering.hooks.draw();
   const glows = drawnImages.filter(sprite => sprite.name === 'canvas');
   assert.deepEqual(glows.map(sprite => [sprite.width, sprite.height]), [[78, 62], [62, 62]], 'both collectible glows are baked at the intended size');
+  const bowlImage = rendering.images.find(sprite => sprite._src.includes('parshad-bowl'));
+  assert.ok(drawnImages.includes(bowlImage), 'the visible bowl is drawn from its source even when a glow cache exists');
   drawnImages.length = 0; rendering.hooks.draw();
   assert.deepEqual(drawnImages.filter(sprite => sprite.name === 'canvas'), glows, 'drawing reuses the same cached glow canvases');
   rendering.hooks.setLastTime(0); drawnImages.length = 0; rendering.hooks.draw();

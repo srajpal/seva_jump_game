@@ -1,10 +1,10 @@
 # Seva Jump App Store listing draft
 
-Prepared October 12, 2026 for the first iPhone and iPad release. Individual membership activation is verified, with renewal due October 12, 2027. [Seva Jump's App Store Connect record](https://appstoreconnect.apple.com/apps/6822047487/distribution) is created with Apple ID `6822047487`, bundle ID `org.sevajump.game`, SKU `sevajump-ios`, iOS, English (U.S.), and Limited Access. Console version 1.0.11 is Prepare for Submission. Listing copy and both screenshot galleries are saved; build 45 was uploaded October 12 at 6:55 PM EDT, processed and selected for this version. See [RELEASE_PROGRESS.md](RELEASE_PROGRESS.md) for validation and publication status.
+Current status October 15, 2026: **1.0.11 (47) — Waiting for Review**, submitted at approximately 3:13 PM EDT after the owner confirmed every mode works on the physical iPhone and authorized submission. Manual release remains selected; no public App Store release. The owner reports updating the listing and age rating to **4+**, superseding the earlier conservative-rating hold. [Seva Jump's App Store Connect record](https://appstoreconnect.apple.com/apps/6822047487/distribution) has Apple ID `6822047487`, bundle ID `org.sevajump.game`, SKU `sevajump-ios`, iOS and English (U.S.). See [RELEASE_PROGRESS.md](RELEASE_PROGRESS.md) for artifact validation, submission evidence and historical preparation details.
 
 ## App record
 
-October 12 live save: English copy, subtitle, review notes, URLs, and copyright are entered; version is 1.0.11, no sign-in required, manual release selected. Both four-image galleries are uploaded and accepted in the numbered order. Games/Casual is saved; Arcade is unavailable as a subcategory in the live form. Privacy is published as Data Not Collected; age rating is saved as 13+ pending Apple clarification. Content rights and the owner-authorized private review contact are saved. Free pricing, 173 launch regions and EU non-trader status are complete. Signed-build upload remains outstanding. No submission or publication.
+Historical October 12 live save: English copy, subtitle, review notes, URLs, and copyright are entered; version is 1.0.11, no sign-in required, manual release selected. Both four-image galleries are uploaded and accepted in the numbered order. Games/Casual is saved; Arcade is unavailable as a subcategory in the live form. Privacy is published as Data Not Collected; age rating is saved as 13+ pending Apple clarification. Content rights and the owner-authorized private review contact are saved. Free pricing, 173 launch regions and EU non-trader status are complete. Signed-build upload remains outstanding. No submission or publication.
 
 | Field | Prepared value |
 | --- | --- |
@@ -20,7 +20,7 @@ October 12 live save: English copy, subtitle, review notes, URLs, and copyright 
 | Seller | Sunny Rajpal (active individual membership) |
 | Copyright | 2026 Sunny Rajpal (saved) |
 
-The studio brand remains Khalsa Game Studio in the description; do not substitute it for the individual account's legal seller name. Current source metadata is 1.0.11 / iOS build 45, with minimum iOS 15. Follow the release checklist and align release notes and version/build metadata before producing an upload artifact.
+The studio brand remains Khalsa Game Studio in the description; do not substitute it for the individual account's legal seller name. Current source metadata is 1.0.11 / iOS build 47, with minimum iOS 15. Follow the release checklist and align release notes and version/build metadata before producing an upload artifact.
 
 ## Copy ready to paste
 
@@ -125,13 +125,13 @@ October 12 prepared gallery: four native captures each on iPhone 16 and iPad Pro
 
 Existing App Store icon source: `ios/SevaJump/App/Assets.xcassets/AppIcon.appiconset/Icon-1024.png`. Validate the compiled icon and final screenshot set against the upload requirements. An app-preview video is optional and is not prepared here.
 
-## Remaining submission work
+## Current submission status — October 15, 2026
 
-- Xcode 26.3 first launch and owner account sign-in are complete. The local App Store distribution IPA is prepared with the iOS 26.2 SDK, team LSES4VT2GU, version 1.0.11 / build 45. Signature, distribution profile, encryption declaration and all 32 packaged runtime files are verified; no QA hooks ship. Local artifact: `dist/SevaJump-1.0.11-iOS45-final/Seva Jump.ipa`. See RELEASE_PROGRESS.md for checksum and simulator evidence. The final archive was uploaded successfully October 12; processing completed and build 45 is selected.
-- Production-source iPhone/iPad Release simulator checks passed: all four modes, touch, pause/resume, background interruption, reset, audio controls and save persistence. Physical iPhone/iPad checks are unavailable: the owner has neither device. Audible output quality, real-device performance and airplane-mode validation remain unverified.
-- Upload/processing and build selection for version 1.0.11 are complete. Build 45 is available to the owner through internal TestFlight; validate the Apple-delivered build on physical devices. TestFlight beta review and App Store review are separate; a prior TestFlight release is not a prerequisite for selecting a processed build.
-- Review Apple's age-rating reply (case 102994481389) before changing the saved conservative 13+ answers. If no reply arrives, decide explicitly whether to submit with the current rating.
-- Keep manual release selected so public launch remains a separate owner action. No Add for Review or review submission was performed in this preparation.
+- Signed and processed **1.0.11 (47)** is selected and submitted. Apple displays **Waiting for Review**; submission ID `2a6d343f-641c-4f61-9ab3-6d0b83b36650`. Manual release is retained for a separate public-launch action after approval.
+- Owner confirmed the TestFlight build works in every mode on the physical iPhone. Native simulator and automated layout/rendering evidence is recorded in RELEASE_PROGRESS.md; physical iPad, cold offline launch and extended performance remain unverified.
+- Owner reports the store listing now has a **4+** rating and explicitly authorized submission. This supersedes the historical October 12 13+ hold; no Apple Support ruling is claimed.
+- Reset all progress remains a deliberate Settings feature with explanation and confirmation. No rebuild was needed for submission.
+- Review Apple's response when available. Public publication remains separate from review approval.
 
 Apple field limits: name and subtitle 30 characters; promotional text 170; description 4,000; keywords 100 bytes. References: [app information](https://developer.apple.com/help/app-store-connect/reference/app-information/app-information/) and [version information](https://developer.apple.com/help/app-store-connect/reference/app-information/platform-version-information).
 
@@ -144,3 +144,15 @@ The owner's existing App Store Connect account is the sole tester in **Owner Dev
 **What to Test:** Check touch steering and readable portrait layouts on iPhone and iPad. Try Endless, Arcade, Challenge and Hard modes. Check Pause/Resume, a quick app switch and lock/unlock, music and sound, and saved progress after force-closing. With airplane mode and Wi-Fi off, launch the app again and play. Report the device model, OS, mode and steps for any clipping, crashes, sound issues or lost progress. Settings → Reset all progress intentionally clears the local save; test it only after other save checks.
 
 Beta information and build-specific What to Test are saved. Feedback uses the public studio address already published in the privacy policy; private review contact remains only in Apple and ignored proof. Sign-in is not required. Internal access is configured; no external beta-review submission.
+
+## TestFlight build 46 — October 15, 2026
+
+Uploaded version 1.0.11 (46) with the iPhone clipping, tagline and menu-navigation fixes. Processing completed and the build was enabled for the existing **Owner Device Testing** internal group (one tester). Build-specific What to Test is saved. App Store version build selection is unchanged; see `RELEASE_PROGRESS.md` for evidence and status.
+
+**What to Test:** iPhone layout and navigation fixes: check the full “A skyward seva adventure” tagline and logo, including on smaller iPhones. Start all four modes and check that the score, Pause button and full play area stay visible. Open every menu, scroll long pages to Back, and check Privacy returns to About. Replay or skip the guide from Settings; it should return there and keep an existing run paused. Check badge notifications do not cover dialog headings. Also check retained progress after updating, Pause/Resume, app switching and lock/unlock, music/sound, and a cold airplane-mode launch with Wi-Fi off. Report the device model, iOS version and steps for any clipping, unreachable controls or lost progress. Test Reset only after save-retention checks.
+
+## TestFlight build 47 — October 15, 2026
+
+Parshad visibility safeguard uploaded and processed October 15; What to Test saved and **1.0.11 (47)** verified **Testing** in the existing owner-only internal group. Evidence is tracked in `RELEASE_PROGRESS.md`. Retains build 46 layout/navigation fixes.
+
+**What to Test:** Parshad visibility follow-up: look for visible golden parshad bowls before collecting them in all four modes, including after switching apps and locking/unlocking. Report any invisible pickups with device/iOS, mode and steps. Khanda tokens, kara/Nishan boosts and birds should remain visible. Also check retained progress, sound, Pause/Resume and the iPhone layout/menu fixes from build 46.

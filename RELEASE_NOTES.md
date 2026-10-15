@@ -1,5 +1,22 @@
 # Release notes
 
+## 1.0.11 — iOS build 47 (parshad visibility)
+
+Prepared and uploaded October 15, 2026 for a TestFlight follow-up; processed and enabled for the existing owner-only internal testing group. Submitted for App Review October 15, 2026 after owner testing; Waiting for Review with manual release selected, not publicly released. Artifact checksums and validation are tracked in `RELEASE_PROGRESS.md`.
+
+- Keep parshad bowls visible even if their decorative glow cache is empty.
+- Includes build 46's iPhone layout, tagline and menu-navigation fixes.
+
+## 1.0.11 — iOS build 46 (TestFlight update)
+
+Prepared and uploaded October 15, 2026; processed and enabled for the existing owner-only internal TestFlight group. Artifact checksums, validation and availability status are tracked in `RELEASE_PROGRESS.md`.
+
+- Keep the full logo and “A skyward seva adventure” visible on smaller iPhones.
+- Keep the score, Pause control and unstretched play area on screen when starting or resuming a run.
+- Improve safe-area spacing, scrolling and touch targets throughout iPhone menus.
+- Return to Settings after replaying the guide, keeping an existing run paused.
+- Keep badge notifications clear of dialog headings and navigation.
+
 ## 1.0.11 — Android build 49 / iOS build 45 metadata
 
 Prepared October 10, 2026. Published to Google Play Internal testing that day; submitted the first production release and refreshed listing to Google's review queue with managed publishing enabled. Production approval and public publication remain pending. Includes the merged October review fixes and all updates since Play's 1.0.3 / build 41. iOS first-release candidate preparation is recorded below. The public itch.io edition remains 1.0.10.

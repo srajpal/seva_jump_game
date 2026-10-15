@@ -20,7 +20,7 @@ Seva Jump is a browser game packaged for Android and iOS. The browser source is 
 
 `reset(mode)` creates a run state containing the player, platforms, collectibles, birds, effects, camera position, score, and mode progress. Platform creation reads tuning from `game-config.js` and decisions from `game-rules.js`. Arcade and Challenge add a finish runway. Endless and Hard continue until the player loses or leaves.
 
-The renderer draws the backdrop, platforms, collectibles, hazards, player, effects, and transitions from the current state. Bowl and token glow canvases are baked when their sprites load and reused without per-frame shadow blur. The mobile HUD is HTML so it remains legible over the portrait canvas. Bird hit-stop, Falcon carry, and upgrade flashes accumulate active update time; pausing freezes their progress rather than counting wall-clock time.
+The renderer draws the backdrop, platforms, collectibles, hazards, player, effects, and transitions from the current state. Bowl and token glow canvases are baked when their sprites load and reused without per-frame shadow blur. Parshad also draws its source image each frame, so an empty decorative cache cannot hide the collectible; token spin stays in its cached frames. The mobile HUD is HTML so it remains legible over the portrait canvas. Bird hit-stop, Falcon carry, and upgrade flashes accumulate active update time; pausing freezes their progress rather than counting wall-clock time.
 
 ## Input and lifecycle
 

@@ -76,11 +76,33 @@ Build iOS with a submission-compatible Xcode and test on an iPhone/iPad. On this
 
 For the next Play candidate, test an in-place update from the existing 1.0.3 / build 41 installation without clearing storage or reinstalling. Record the visible version and saved records, inventory and preferences on the first launch, then fully close and reopen twice. The first launch can still be controlled by the outgoing worker; later launches must show the packaged version, preserve saves and work in airplane mode. Repeat on a phone and tablet. Do not report first-launch save compatibility as passed solely because the later launch is current.
 
-## First physical iPhone/iPad check — iOS 1.0.11 / build 45
+## Physical iPhone/iPad check — iOS 1.0.11 / build 47
+
+For iOS layout regressions, run `node tests/ios-layout-checks.cjs` with Playwright
+available through `PLAYWRIGHT_MODULE` if needed (installed Chrome by default;
+`BROWSER_ENGINE=webkit` selects an installed Playwright WebKit). The check loads
+the wrapper's actual injected presentation, simulates safe-area insets, and checks
+canvas proportions, HUD/Pause visibility, focus, resume and menus after gameplay
+at seven phone/tablet sizes and fallback configurations. Captures go to ignored
+`screenshots/ios-layout/`. Confirm actual safe areas with native simulator captures
+and repeat start → Pause → Resume → Home on a physical device; browser inset
+simulation does not establish WKWebView's native safe-area behavior.
+
+Run `node tests/ios-screen-checks.cjs` with the same Playwright module setup for
+the full iPhone menu audit (installed Chrome). It checks 150 screen states across
+320×568, SE, notched, 17 Pro and Pro Max viewports: all overlays, guide steps,
+four-mode entry/Pause/results, nested settings/info/reset cancellation, Privacy
+return, upgrade selection and restart/Home navigation. It checks safe-area fit,
+horizontal overflow, heading visibility and reachable 44-point touch targets.
+Long screens must scroll to their Back controls. Results are triggered through
+an in-memory HTTP-response seam; this is not a natural run-completion test.
+The shared exit dialog is inspected through that seam because iOS has no entry
+point for it. Reports and top/bottom captures stay in ignored
+`screenshots/ios-screens/`; no test hooks are included in the packaged app.
 
 Use the processed TestFlight build when available. Run this on each device and record its model, OS, build, date and pass/fail results in `RELEASE_PROGRESS.md`.
 
-1. Confirm TestFlight shows 1.0.11 (45) and the home screen shows v1.0.11. Check every home button, Settings and About & Help for clipping; rotate the device and confirm the game keeps a portrait layout with reachable controls.
+1. Confirm TestFlight shows 1.0.11 (47) and the home screen shows v1.0.11. Check the full “A skyward seva adventure” tagline/logo, every home button, Settings and About & Help for clipping; rotate the device and confirm the game keeps a portrait layout with reachable controls. Scroll long screens to their Back controls. Replay the guide from Settings and verify completion/skip returns there; a run opened from Pause must remain paused. Check badges never cover dialog headings.
 2. Enter all four modes. Dismiss the guide if shown, drag both directions and check the play area is not stretched. Exercise a natural landing, collectible and run-ending sequence; check the result and Records screens. Complete Arcade and Challenge naturally when practical; record unfinished playthroughs explicitly.
 3. Pause and wait: the run must stay still. Resume, then switch to Home and return quickly, and repeat after locking/unlocking. An active run should return paused. Confirm no duplicate Pause or browser Fullscreen control.
 4. Turn music/sound on, play the music sample and a run, and listen through the device speaker. Check effects, distortion, silence while paused and sound after resume. Repeat with sound muted and note any device silent-mode behavior.
@@ -93,3 +115,12 @@ Use the processed TestFlight build when available. Run this on each device and r
 Test the exact ZIP on the actual itch draft, including mobile fullscreen and browser save restrictions. Record the build/hash, browser/device, outcome and any exceptions in `RELEASE_PROGRESS.md`. Keep incomplete checks open; passing simulations do not establish host behavior, human completion, accessibility for every player, or long-term performance.
 
 Additional packaged-candidate journeys: `node tests/final-release-journeys.cjs` (same Playwright environment). Mode entry, purchases, preferences, and persistence use UI actions; win/loss results use controlled test state and do not certify natural complete playthroughs.
+
+Parshad render regression: run `node tests/collectible-render-checks.cjs` with the
+same Playwright module setup (Chrome). It compares actual canvas pixels with a
+normal, deliberately cleared, and absent bowl cache, plus focus return. The
+inspection seam is injected only into the HTTP response. `TEST_GAME_SOURCE` can
+point to an older packaged `game.js` to confirm the regression fails. Captures
+stay under ignored `screenshots/parshad-render/`. On the physical TestFlight
+build, verify visible bowls before collecting in every mode and after an app
+switch; a controlled empty-cache test does not identify the spontaneous trigger.

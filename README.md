@@ -2,7 +2,7 @@
 
 **A skyward seva adventure.**
 
-Current public [itch.io browser release](https://khalsagamestudio.itch.io/seva-jump): **v1.0.10**. Android **1.0.3 / build 41** is available in Google Play closed testing. Production access was granted and verified October 10, 2026. Android **1.0.11 / build 49** is available in Internal testing and submitted to the production review queue with managed publishing enabled; public publication is pending. iOS **1.0.11 / build 45** has a locally verified App Store-signed IPA prepared with Xcode 26.3 / iOS 26.2 SDK; it was uploaded/processed October 12, selected for the App Store version and enabled for owner-only internal TestFlight testing. See `RELEASE_PROGRESS.md` for validation and publication details.
+Current public [itch.io browser release](https://khalsagamestudio.itch.io/seva-jump): **v1.0.10**. Android **1.0.3 / build 41** is available in Google Play closed testing. Production access was granted and verified October 10, 2026. Android **1.0.11 / build 49** is available in Internal testing and submitted to the production review queue with managed publishing enabled; public publication is pending. iOS **1.0.11 / build 47** includes the parshad visibility safeguard and iPhone layout/navigation fixes, was verified with Xcode 26.3 / iOS 26.2 SDK, and was uploaded/processed October 15 and enabled for owner-only internal TestFlight testing. Build 47 was submitted for App Review October 15 and is Waiting for Review; manual release remains selected. See `RELEASE_PROGRESS.md` for validation and publication details.
 
 The birds have flown away with the parshad. Choose a young Sikh boy or girl, leap from platform to platform, and bring it back in this cheerful browser game.
 
@@ -18,7 +18,7 @@ Touch dragging is relative to where each touch begins: lift and reposition your 
 
 On Android, Back returns through menus and dismisses dialogs. During play it pauses; from Pause it resumes. Back from Home returns to the Android launcher without a close confirmation. Landings require the feet to overlap the visible platform surface; bird collisions cover the character's head and body while allowing space around wing tips and outstretched hands.
 
-New players receive a short three-step guide after choosing their first mode. It can be replayed later from Settings.
+New players receive a short three-step guide after choosing their first mode. It can be replayed later from Settings. Finishing or skipping a replay returns to Settings; a run paused before opening Settings stays paused.
 
 The game is self-contained: no login, ads, purchases, or network connection are needed to play from local files. Hosted play uses a service worker for offline caching. The original September 2026 browser audit is preserved in [ITCH_RELEASE_AUDIT.md](ITCH_RELEASE_AUDIT.md); follow the current fixes and remaining verification in [RELEASE_PROGRESS.md](RELEASE_PROGRESS.md).
 

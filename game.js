@@ -941,10 +941,14 @@
         ? frames[profile.reducedMotion ? 0 : Math.floor(lastTime / 100) % frames.length]
         : frames;
       if (glow) ctx.drawImage(glow, -glow.width / 2, -glow.height / 2);
-      else if (c.type === 'token' && khandaTokenSprite.complete && khandaTokenSprite.naturalWidth) ctx.drawImage(khandaTokenSprite, -19, -19, 38, 38);
-      else if (c.type === 'token') { ctx.fillStyle = '#e3a721'; ctx.beginPath(); ctx.arc(0, 0, 12, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = '#fff4b2'; ctx.font = 'bold 14px sans-serif'; ctx.textAlign = 'center'; ctx.fillText('✦', 0, 5); }
-      else if (parshadSprite.complete && parshadSprite.naturalWidth) ctx.drawImage(parshadSprite, -27, -19, 54, 38);
-      else { ctx.fillStyle = '#f6c879'; ctx.beginPath(); ctx.ellipse(0, 4, 15, 7, 0, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = '#fff0ae'; ctx.beginPath(); ctx.arc(-5, -4, 5, 0, Math.PI * 2); ctx.arc(4, -4, 5, 0, Math.PI * 2); ctx.fill(); }
+      // A decorative canvas cache must not be the bowl's only visible image.
+      // Draw the source over it too, so an empty cache cannot hide a collectible.
+      if (c.type === 'parshad' && parshadSprite.complete && parshadSprite.naturalWidth) ctx.drawImage(parshadSprite, -27, -19, 54, 38);
+      else if (!glow) {
+        if (c.type === 'token' && khandaTokenSprite.complete && khandaTokenSprite.naturalWidth) ctx.drawImage(khandaTokenSprite, -19, -19, 38, 38);
+        else if (c.type === 'token') { ctx.fillStyle = '#e3a721'; ctx.beginPath(); ctx.arc(0, 0, 12, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = '#fff4b2'; ctx.font = 'bold 14px sans-serif'; ctx.textAlign = 'center'; ctx.fillText('✦', 0, 5); }
+        else { ctx.fillStyle = '#f6c879'; ctx.beginPath(); ctx.ellipse(0, 4, 15, 7, 0, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = '#fff0ae'; ctx.beginPath(); ctx.arc(-5, -4, 5, 0, Math.PI * 2); ctx.arc(4, -4, 5, 0, Math.PI * 2); ctx.fill(); }
+      }
       ctx.restore();
     }
     for (const o of state.powerups) { const y = worldToScreen(o.y); const sprite = powerupSprites[o.type]; if (sprite.complete && sprite.naturalWidth) ctx.drawImage(sprite, o.x - 25, y - 25, 50, 50); else { ctx.fillStyle = o.type === 'kara' ? '#d6a740' : '#ed7353'; ctx.beginPath(); ctx.arc(o.x, y, 15, 0, Math.PI * 2); ctx.fill(); } }
@@ -1091,7 +1095,8 @@
   function finishTutorial() {
     profile.tutorialComplete = true;
     saveProfile(); ui.tutorial.classList.add('hidden');
-    if (tutorialResumesRun && state) { menuVisible = false; menuDirty = true; state.paused = false; setNativeGameplayActive(true); startAudio(); ui.gameTools.classList.remove('hidden'); }
+    if (tutorialReturn === 'settings') { ui.settings.classList.remove('hidden'); menuVisible = true; menuDirty = true; }
+    else if (tutorialResumesRun && state) { menuVisible = false; menuDirty = true; state.paused = false; setNativeGameplayActive(true); startAudio(); ui.gameTools.classList.remove('hidden'); }
     else showHome();
     syncModalAccessibility();
   }
