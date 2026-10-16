@@ -1,0 +1,72 @@
+{
+  "prepared": "2026-10-16",
+  "sourceVersion": "1.0.11",
+  "sourceBuild": "47",
+  "uploaded": false,
+  "files": [
+    {
+      "file": "phone/01-arcade.png",
+      "width": 1206,
+      "height": 2622,
+      "source": "raw/phone/arcade.png",
+      "sourceSHA256": "575749123febf5067f63c29181b6e32b42648166cc472985c922d354e5e908bb",
+      "sha256": "f292e5fdd9d94b78ae657bb6200a3bb8d129b3ee7c5e8165b597fd508bc18eb8"
+    },
+    {
+      "file": "phone/02-challenge.png",
+      "width": 1206,
+      "height": 2622,
+      "source": "raw/phone/challenge.png",
+      "sourceSHA256": "00cd51d6dd0d3baf5351386564f3af09d1f5653345ac090d1ee09e7c90198cfa",
+      "sha256": "0ca595857e756746209f787f29d6547bac03ed3934598e751be130004323f84b"
+    },
+    {
+      "file": "phone/03-hard.png",
+      "width": 1206,
+      "height": 2622,
+      "source": "raw/phone/hard.png",
+      "sourceSHA256": "2da268e2f37a62b443601a3e0ed93f9c47e5bdd9412e105618207a49b31a46b6",
+      "sha256": "6c11f74da4344afc1534cd54747945dbb99d75c6f0ca6225ec8ee019dc7b45af"
+    },
+    {
+      "file": "phone/04-home.png",
+      "width": 1206,
+      "height": 2622,
+      "source": "raw/phone/home.png",
+      "sourceSHA256": "596bba03ba9fcbd171b2723d1a0c0fbf9ea232001059e53968c510e680a0e1fe",
+      "sha256": "36048c9a5b452c2a85540276615ca8309c22851718b71241700f5d5d13eb55b8"
+    },
+    {
+      "file": "pad/01-arcade.png",
+      "width": 2064,
+      "height": 2752,
+      "source": "raw/pad/arcade.png",
+      "sourceSHA256": "c530a41fbb7085325b205c1c20f8b89cb1845eacede99e66af20e4b60b8da304",
+      "sha256": "d7ff3cf941a9b15de8c36a31e4522167472652ed4d980082e0bb67272ee8ca6a"
+    },
+    {
+      "file": "pad/02-challenge.png",
+      "width": 2064,
+      "height": 2752,
+      "source": "raw/pad/challenge.png",
+      "sourceSHA256": "d3847ef93c62a2818192f9b66dd1e5636abe2066cf36af5e04a9906dad389ea6",
+      "sha256": "ee9c22b2c3f415d7beb6bdd4cb222194298038f9cf33d0b33a0b65ea5cf41638"
+    },
+    {
+      "file": "pad/03-hard.png",
+      "width": 2064,
+      "height": 2752,
+      "source": "raw/pad/hard.png",
+      "sourceSHA256": "9ab8d80f3245d9867de1c1aa0fc9b9c0a845c4c8a08b17c87557d164e400c973",
+      "sha256": "8b581b229705f633d03d067c27b39e943a61b1e420901e6e731ac306b4957e2b"
+    },
+    {
+      "file": "pad/04-home.png",
+      "width": 2064,
+      "height": 2752,
+      "source": "raw/pad/home.png",
+      "sourceSHA256": "cd93812ac80a21110974911af6285d983b3512c334a4e1641f72062f52431943",
+      "sha256": "a1d0575ab271cbe428013f56c777492788215ada1c13d7a0a70fa6000672228a"
+    }
+  ]
+}

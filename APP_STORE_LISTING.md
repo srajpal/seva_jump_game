@@ -2,6 +2,59 @@
 
 Current status October 15, 2026: **1.0.11 (47) — Waiting for Review**, submitted at approximately 3:13 PM EDT after the owner confirmed every mode works on the physical iPhone and authorized submission. Manual release remains selected; no public App Store release. The owner reports updating the listing and age rating to **4+**, superseding the earlier conservative-rating hold. [Seva Jump's App Store Connect record](https://appstoreconnect.apple.com/apps/6822047487/distribution) has Apple ID `6822047487`, bundle ID `org.sevajump.game`, SKU `sevajump-ios`, iOS and English (U.S.). See [RELEASE_PROGRESS.md](RELEASE_PROGRESS.md) for artifact validation, submission evidence and historical preparation details.
 
+## October 16 optimization — preserve the current review
+
+Owner authorized metadata and screenshot improvements while keeping the existing build 47 review moving. No withdrawal, build change or new review submission is authorized by this optimization pass.
+
+- Subtitle **Offline pixel platformer**: App Store Connect displayed **Saved** after saving this field alone; fresh-load verification is pending because the detail pages repeatedly return service errors.
+- Action as the second game subcategory: attempted, rejected with “Primary Subcategory couldn’t be saved because another field is invalid”; reverted to the original empty second subcategory before saving the subtitle. Games/Casual remains the recorded configuration.
+- The optimized promotional text, keywords and description below are **prepared, not saved**. Version detail pages repeatedly failed to load reliably. Do not treat this proposed copy as the submitted version's current text until a successful save is verified.
+- Eight refreshed native screenshot panels (four phone / four iPad) and a matching header are **prepared locally, not uploaded**. Apple [locks screenshot edits while Waiting for Review](https://developer.apple.com/help/app-store-connect/reference/app-information/app-and-submission-statuses); [first-release assets must be submitted with the app](https://developer.apple.com/help/app-store-connect/manage-submissions-to-app-review/submit-assets-from-asset-library). Preserve the current review and apply visuals in a later permitted update. The header remains a candidate pending Apple template/safe-area preview and upload validation.
+- Package: ignored `dist/SevaJump-1.0.11-iOS47-store-optimization.zip`; editable layouts, native originals, metadata, hashes and previews under `screenshots/app-store-1.0.11-build47/`. Generator: `scripts/prepare-ios-store-artwork.cjs` (requires sharp). Screenshot order is Arcade gameplay, Challenge, Hard Mode, then the four-mode home screen. Captions describe actual features and sit outside uniformly scaled, unaltered native screens. No fake scores or state injection. Native game source/assets match archive 47. iPhone 17 Pro and iPad Pro 13-inch (M5), iOS 26.3 simulator runtime; 1206 × 2622 and 2064 × 2752 RGB output. Both final contact sheets and header visually inspected. No runtime source, icon, build number, or release artifact changed.
+
+**Owner follow-up, October 16:** package ready for a post-review update; keep the active review moving. Curated files are backed up in `design/app-store/ios-1.0.11-build47/`. After approval, use Apple’s [standalone asset submission flow](https://developer.apple.com/help/app-store-connect/manage-submissions-to-app-review/submit-assets-from-asset-library) where eligible; version-bound metadata or placements may require a later version update. Verify the subtitle save before applying remaining copy.
+
+### Prepared optimized metadata (pending application)
+
+Name: **Seva Jump** (unchanged). Subtitle: **Offline pixel platformer** (24 characters).
+
+Promotional text (149 characters):
+
+Jump through colorful skies in a Sikhi-inspired pixel adventure. Four modes, simple touch controls, and offline play—with no ads or in-app purchases.
+
+Keywords (93 ASCII characters; avoids name/subtitle/category duplication):
+
+`endless,arcade,sikh,sikhi,parshad,gurdwara,khalsa,climb,collect,retro,2d,high score,challenge`
+
+Description:
+
+Jump through colorful skies in a Sikhi-inspired pixel adventure. Play four modes with simple touch controls, collect parshad, and dodge birds. Enjoy offline play with no ads, in-app purchases, or accounts.
+
+The birds have scattered the parshad! Choose one of two jumpers and help bring it back. Drag to steer as your character jumps automatically through Gurdwara-inspired scenery. Collect Khanda tokens, unlock helpful upgrades, earn badges, and beat your best runs.
+
+FOUR WAYS TO PLAY
+
+• Endless Run: Climb as high as you can.
+• Arcade Mode: Reach 1,000 points and cross the finish.
+• Challenge Mode: Recover all 50 parshad bowls before the finish.
+• Hard Mode: Take on smaller, moving and breakable platforms with earlier bird encounters.
+
+PLAY AT YOUR OWN PACE
+
+Pause whenever you need a break. Adjust music and sound effects in Settings, replay the guide, and explore About & Help for controls and game items.
+
+OFFLINE, WITH YOUR PROGRESS ON YOUR DEVICE
+
+No ads, purchases, subscriptions, or accounts. Gameplay works without an internet connection. Progress, upgrades, badges, statistics, and preferences stay on your device. Reset all progress in Settings lets you start fresh. There is no cloud save.
+
+INSPIRED BY SIKHI, MADE FOR EVERYONE
+
+Seva means serving others with love and humility, without expecting a reward. Seva Jump is a make-believe adventure from Khalsa Game Studio, inspired by Sikhi and welcoming everyone. Fantasy items and scores describe game progress, not spiritual achievement, and do not replace Sikh teachings.
+
+About & Help includes an optional link for learning more. External websites need an internet connection.
+
+The historical submitted copy is retained below for comparison. After successful application, update the current-copy section and the saved/pending status above.
+
 ## App record
 
 Historical October 12 live save: English copy, subtitle, review notes, URLs, and copyright are entered; version is 1.0.11, no sign-in required, manual release selected. Both four-image galleries are uploaded and accepted in the numbered order. Games/Casual is saved; Arcade is unavailable as a subcategory in the live form. Privacy is published as Data Not Collected; age rating is saved as 13+ pending Apple clarification. Content rights and the owner-authorized private review contact are saved. Free pricing, 173 launch regions and EU non-trader status are complete. Signed-build upload remains outstanding. No submission or publication.

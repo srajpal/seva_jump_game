@@ -1,5 +1,15 @@
 # Seva Jump release progress
 
+## October 16, 2026 — Store optimization with review preserved
+
+- Owner authorized listing/screenshot optimization while preserving build 47's active review. App list and the partially loaded version page continued to show **Waiting for Review**. No withdrawal, build reassociation, release-setting change or publication.
+- Prepared gameplay-first description/promo copy, a 24-character subtitle and 93-character deduplicated keyword set. Subtitle-only save displayed **Saved**; independent fresh-load verification remains pending amid repeated Apple detail-page errors. Adding Action as a second subcategory failed validation and was reverted before that save. Description/promo/keywords remain prepared locally, not saved.
+- Prepared four phone and four iPad captioned screenshot panels from native production-source Release captures, plus a 3840 × 1646 header candidate. Native game source/assets match archive 47 (29 checked files). The source simulator build is for captures, not a new distribution build. Full original screens are scaled uniformly without redrawing gameplay. Output RGB/no-alpha dimensions, manifests, original captures, previews and copy are in ignored `screenshots/app-store-1.0.11-build47/`; packaged ZIP in ignored `dist/`. Generator is `scripts/prepare-ios-store-artwork.cjs`.
+- Visually reviewed both device contact sheets and header. Capture harness passed on phone and iPad; the initial iPad tap missed and passed after using the observed button frame. Discarded a premature home capture before its logo loaded. No new gameplay certification is inferred from marketing captures. Header safe-area/upload validation remains pending.
+- Images are not uploaded: Apple locks screenshot edits during Waiting for Review and first-release assets must accompany the app submission. Retain the current queue and apply the visual package in a later permitted update. Full proposed copy and actual saved/pending state are recorded in `APP_STORE_LISTING.md`.
+
+- Owner confirmed October 16 that this package should be held ready and applied after the current review completes. Curated output images, eight native source captures, metadata and hashes are versioned in `design/app-store/ios-1.0.11-build47/`; diagnostic captures and ZIP/build artifacts remain ignored. Apple permits standalone asset review after an approved app version exists; verify placement and version editability before applying, and use a later version update for fields/placements that remain locked. No promise that approval unlocks every field immediately.
+
 ## October 15, 2026 — iOS build 47 submitted for App Review
 
 - Owner reported testing build **1.0.11 (47)** on the physical iPhone in every mode and confirmed it works; explicitly authorized this build for the store and submission. Owner also reported updating the listing and age rating to **4+**; this rating is owner-reported, not independently inspected in this submission pass. This supersedes the October 12 conservative-rating hold; the historical Apple support inquiry remains recorded below.
