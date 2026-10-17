@@ -18,6 +18,8 @@ const legacyCSS = fs.readFileSync(path.resolve(__dirname, '../styles.css'), 'utf
       ['compact-tablet', 600, 960, true], ['compact-tablet-mouse', 600, 960, false],
       ['tablet', 800, 1280, true], ['tablet-mouse', 800, 1280, false],
       ['wide-tablet', 960, 1280, true], ['phone', 393, 808, true],
+      ['tall-store-tablet', 900, 1600, true],
+      ['tall-tablet-cutout', 800, 1280, true],
       ['short-tablet', 700, 850, true],
       ['pixel-phone', 411, 914, true],
       ['short-handset', 320, 568, true],
@@ -41,7 +43,7 @@ const legacyCSS = fs.readFileSync(path.resolve(__dirname, '../styles.css'), 'utf
         window.SevaJumpAndroid = { setGameplayActive: insets };
         document.addEventListener('DOMContentLoaded', () => insets(false));
         localStorage.setItem('seva-jump-profile', JSON.stringify({ tutorialComplete: true, music: false, sound: false }));
-      }, { cutout: name === 'pixel-phone' || name === 'legacy-phone-cutout' ? 60 : 0 });
+      }, { cutout: name.includes('cutout') || name === 'pixel-phone' ? 60 : 0 });
       await page.goto(pathToFileURL(path.resolve(__dirname, '../index.html')).href);
       if (noDvh) {
         await page.addStyleTag({ content: legacyCSS });
@@ -62,6 +64,7 @@ const legacyCSS = fs.readFileSync(path.resolve(__dirname, '../styles.css'), 'utf
       assert.ok(geometry.canvas.bottom <= height && geometry.canvas.top >= geometry.hud.bottom, `${name}: whole canvas fits below HUD`);
       if (name.includes('phone')) assert.ok(geometry.canvas.left < 1 && geometry.canvas.right >= width - 1, `${name}: phone playfield fills the width without side borders`);
       if (width >= 600) assert.ok(geometry.canvas.bottom <= height - 64 + 1, `${name}: tablet retains its footer and bottom safe area`);
+      if (width >= 600) assert.ok(height - geometry.canvas.bottom <= 66, `${name}: tablet has no oversized blank region below gameplay: ${JSON.stringify(geometry)}`);
       assert.ok(Math.abs((geometry.canvas.right - geometry.canvas.left) / (geometry.canvas.bottom - geometry.canvas.top) - geometry.width / geometry.height) < .01, `${name}: canvas is not stretched`);
       await page.locator('#pause-button').click();
       await page.locator('#resume-button').click();

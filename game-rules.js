@@ -1,6 +1,13 @@
 const RULE_CONFIG = typeof module !== 'undefined' ? require('./game-config.js') : globalThis.SEVA_CONFIG;
 
 const SEVA_RULES = {
+  androidTabletCanvasWidth(viewportWidth, viewportHeight) {
+    // Match the Android HUD/footer space in styles.css. Keep the established
+    // 800-unit vertical course and stay inside the phone/tablet width bounds.
+    const hudHeight = viewportWidth >= 700 && viewportHeight >= 900 ? 96 : 74;
+    const availableHeight = Math.max(1, viewportHeight - hudHeight - 48);
+    return Math.max(450, Math.min(640, Math.floor(viewportWidth * 800 / availableHeight)));
+  },
   platformSurface(platform, x = platform.x) {
     const inset = platform.w * (RULE_CONFIG.platformSurfaceInsets[platform.type] ?? .03);
     return { left: x + inset, right: x + platform.w - inset };

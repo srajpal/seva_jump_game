@@ -11,8 +11,12 @@
     window.SevaJumpAndroid?.setGameplayActive?.(Boolean(active));
   }
   const nativeTablet = Boolean(nativePlatform) && Math.min(window.innerWidth, window.innerHeight) >= 700;
-  document.documentElement.classList.toggle('android-tablet', androidPlatform && nativeTablet);
-  if (nativeTablet) canvas.width = 640;
+  const androidTablet = androidPlatform && Math.min(window.innerWidth, window.innerHeight) >= 600;
+  document.documentElement.classList.toggle('android-tablet', androidTablet);
+  if (androidTablet) {
+    canvas.width = globalThis.SEVA_RULES.androidTabletCanvasWidth(window.innerWidth, window.innerHeight);
+    document.documentElement.style.setProperty('--android-canvas-ratio', canvas.width / canvas.height);
+  } else if (nativeTablet) canvas.width = 640;
   const ctx = canvas.getContext('2d');
   if (!ctx) {
     const warning = document.querySelector('#canvas-warning');

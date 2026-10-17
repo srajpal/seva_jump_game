@@ -182,7 +182,7 @@ h2 { font-size: 2.3rem; }.eyebrow { margin: 0 0 7px; color: #a85e30; font-weight
    Fit either canvas inside the space left by the HUD and navigation area.
    A clipped frame cannot be scrolled by canvas focus; menus scroll themselves. */
 .android-app { --android-hud-height: 74px; --android-canvas-ratio: .5625; --android-footer-height: 48px; }
-.android-app.android-tablet { --android-canvas-ratio: .8; }
+/* Android sets its tablet ratio from the available portrait viewport. */
 .android-app .game-shell { width: 100vw; height: 100vh; height: 100dvh; padding: 0; }
 .android-app .game-frame {
   height: 100%; border: 0; border-radius: 0; box-shadow: none; overflow: clip;

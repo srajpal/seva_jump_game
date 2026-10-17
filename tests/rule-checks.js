@@ -2,6 +2,11 @@ const assert = require('node:assert/strict');
 const config = require('../game-config.js');
 const rules = require('../game-rules.js');
 
+assert.equal(rules.androidTabletCanvasWidth(900, 1600), 494, 'tall tablet fits the playfield between HUD and footer');
+assert.equal(rules.androidTabletCanvasWidth(800, 1280), 563, 'standard tablet uses the available height');
+assert.equal(rules.androidTabletCanvasWidth(960, 1280), 640, 'wide tablet retains the maximum course width');
+assert.equal(rules.androidTabletCanvasWidth(600, 2000), 450, 'very tall viewport retains the minimum playable course width');
+
 for (const type of ['pigeon', 'sparrow', 'swift']) for (const direction of [-1, 1]) {
   const player = { x: 200, y: 300 };
   for (const height of [-48, -15, 24]) {

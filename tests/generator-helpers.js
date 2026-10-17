@@ -6,6 +6,8 @@ const { makeRuntime } = require('./runtime-browser-checks.js');
 const sizes = [
   { width: 450, innerWidth: 450, innerHeight: 800, native: false },
   { width: 640, innerWidth: 800, innerHeight: 1100, native: true },
+  { width: 494, innerWidth: 900, innerHeight: 1600, native: true },
+  { width: 563, innerWidth: 800, innerHeight: 1280, native: true },
 ];
 
 function makeGenerator(size, seed) {
