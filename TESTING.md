@@ -9,6 +9,7 @@ node --check game.js
 node --check sw.js
 npm test
 npm run test:runtime
+npm run test:localization
 npm run test:package
 ```
 
@@ -26,6 +27,10 @@ aligned with the runtime allowlist.
 Collision regressions cover head/body/feet contact with each bird type, both flight directions, visible platform edges, and horizontal overlap at the instant of landing (including moving platforms). Android Back checks cover nested menus, tutorial cancellation, pause/resume and Home-to-launcher behavior; the native smoke test also verifies saved progress survives backgrounding and reopening.
 
 ## Browser checks
+
+Localization checks use the same Playwright setup below: run `node tests/localization-browser-checks.cjs`. The suite covers Hindi and Gurmukhi on 320×568, 393×808, 800×1280 and simulated Android 900×1600 viewports, actual bundled fonts, menu overflow, all four modes, paused-run preservation, select keyboard behavior, persistence, storage denial, direct-file launch, and offline switching/navigation to the privacy page. Set `TEST_WEB_ROOT` to a fresh extracted ZIP to verify the exact artifact. Captures under ignored `screenshots/localization/` are QA evidence, not approved store assets. Fluent language review, physical-device screen-reader/shaping checks and native builds remain separate.
+
+`npm run test:localization` checks catalog/reference/placeholder parity, unchanged English detection, familiar digits, device-language exclusions (including `pa-PK, pa` fallback lists), preference storage and runtime warnings. It also checks old saves, each mode, paused state/profile identity, reset language removal and blocked storage. Run `node scripts/localization-inventory.cjs` after catalog edits; it retains review fields only when all three texts for an ID are unchanged and resets changed entries to pending.
 
 `tests/browser-checks.cjs` uses Playwright as an optional development tool. It is not part of the shipped game. Set `PLAYWRIGHT_MODULE` to your installed Playwright module directory, or install Playwright locally so Node can resolve it. Edge is the default test browser.
 
@@ -51,6 +56,8 @@ Run `node tests/android-layout-checks.cjs` with the same Playwright setup for An
 
 ## Release artifact
 
+Run `node tests/home-fit-checks.cjs` with the same Playwright setup to check Home in all three languages. Ordinary phone sizes down to 360×640 and Android safe-area/tablet cases must fit without scrolling; 320×568 retains scrolling with reachable language controls. Captures are saved under ignored `screenshots/home-fit/`.
+
 ```powershell
 npm run itch:build
 npm run test:package
@@ -61,6 +68,8 @@ The builder writes a ZIP plus manifest and checksum into `dist/`. Extract the ZI
 `npm run release:media` captures a cover and one portrait screenshot of each of the 13 player-accessible overlay/game screens using the same optional Playwright setup. It writes only to `release-media/`; it does not alter source art. `run-result.png` uses a controlled end to reach the result overlay; the inspection seam exists only in the local in-memory server response, never in shipped `game.js`. Review the images before using them. Keep promotional screenshots aligned with the exact hosted game version.
 
 ## Android and iOS
+
+`node scripts/capture-play-tablets.cjs` captures four 1800 × 3200 tablet store images, ordered Arcade / Home / Challenge / Upgrades. Set `TEST_WEB_ROOT` to the extracted signed AAB's `base/assets/public` payload and `MEDIA_OUTPUT` for a custom output folder. It uses an isolated profile and simulated Android bridge, captures natural opening gameplay without injected state, and asserts a compact footer and un-stretched artwork. Native emulator/device verification remains separate. `tests/android-layout-checks.cjs` and `tests/native-smoke.cjs` now assert the tablet has no oversized empty region below gameplay.
 
 Android uses Capacitor 8, Node 22+, Java 21, Android SDK 36, AGP 8.13.0 and Gradle 8.14.3. Use Android Studio Otter 2025.2.1+ when opening the project. The minimum device version is Android 7.0 (API 24):
 
@@ -73,6 +82,10 @@ If your default Java is older, set `JAVA_HOME` for the build session to your Jav
 Install the debug APK on a test phone and tablet/emulator. Check portrait/safe areas, touch, pause, Settings, Android Back and local saves. `tests/native-smoke.cjs` can attach to a forwarded debug WebView using `WEBVIEW_CDP`, `DEVICE_LABEL`, `ADB_SERIAL=emulator-<port>` and optionally `ADB_PATH`; it must target a test emulator, not a personal browsing session. The check repeats reloads, asserts inset publication and portrait/canvas layout, dispatches Back through ADB and an edge swipe when gesture navigation is enabled, and saves WebView/device screenshots plus window dumps under ignored `screenshots/release-1.0.3/native/`. Acknowledge Android's first-use fullscreen tutorial before collecting unobstructed captures. Run on Android 15 and 16 phone/tablet profiles. Inspect device captures and window dumps to confirm system bars show in menus and hide in gameplay; also check gesture Back, three-button navigation, cutouts, rotation and resume. Automated WebView assertions alone do not establish device visual correctness.
 
 Build iOS with a submission-compatible Xcode and test on an iPhone/iPad. On this Mac, use Xcode 26+ with the iOS 26+ SDK for upload candidates; Xcode 16.2 simulator checks establish earlier-SDK compilation only. Test portrait/safe areas, all four modes, touch, pause/resume, music/sound, background/foreground, save retention, reset, external links and a cold airplane-mode launch on both device types. Confirm the processed TestFlight/App Store build matches the verified distribution IPA and its source archive. Simulator checks cannot establish audible output quality, physical-device performance or airplane-mode behavior; record unavailable device checks explicitly.
+
+`tests/localization-native-checks.cjs` targets only an explicit `ADB_SERIAL=emulator-…`. It updates the debug APK in place, preserves the existing save, exercises Hindi/Gurmukhi at phone and tablet sizes with actual Android Back/system bars, and restores prior display overrides and the language preference. It requires an existing debuggable game and the same Playwright setup. Its results/captures are under ignored `screenshots/localization-native/`.
+
+For an explicitly authorized physical-phone browser check, serve a fresh extracted ZIP on localhost port 8763, reverse that port with ADB for the selected phone, open only its QA URL in Chrome, and forward `chrome_devtools_remote` to 9253. `tests/localization-phone-checks.cjs` connects only to `http://127.0.0.1:8763/index.html` (override via `PHONE_QA_URL`/`PHONE_CDP`), tests both languages, restores that QA origin's saved values and closes only the QA tab. Remove temporary forwards afterward. It does not install an APK or alter the native game; preserve a Play installation when debug signing is incompatible. This browser check does not establish native Back, airplane-mode, screen-reader or sustained-performance coverage.
 
 For the next Play candidate, test an in-place update from the existing 1.0.3 / build 41 installation without clearing storage or reinstalling. Record the visible version and saved records, inventory and preferences on the first launch, then fully close and reopen twice. The first launch can still be controlled by the outgoing worker; later launches must show the packaged version, preserve saves and work in airplane mode. Repeat on a phone and tablet. Do not report first-launch save compatibility as passed solely because the later launch is current.
 

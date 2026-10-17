@@ -2,9 +2,13 @@
 
 Use this checklist for every release candidate. Do not create or commit an upload keystore, passwords, or `keystore.properties`.
 
-Current candidate: **1.0.11, Android build 49 / iOS build 45 metadata** (October 10, 2026). The public browser edition remains 1.0.10. No iOS build or production publication is claimed. Existing checkmarks record historical work unless newer evidence is explicitly dated. Rerun applicable checks after any source change and against the exact artifact proposed for upload. [ITCH_RELEASE_AUDIT.md](ITCH_RELEASE_AUDIT.md) preserves the original 0.13.1 findings; current status is in [RELEASE_PROGRESS.md](RELEASE_PROGRESS.md).
+Current release: **1.0.11, Android build 49 / iOS build 45**, prepared October 10, 2026. Android production was published October 17; the public browser edition was published October 10. iOS build 45 was uploaded/processed October 12 and enabled for owner-only internal TestFlight testing; no iOS publication is claimed. Existing checkmarks record historical work unless newer evidence is explicitly dated. Rerun applicable checks after any source change and against the exact artifact proposed for upload. [ITCH_RELEASE_AUDIT.md](ITCH_RELEASE_AUDIT.md) preserves the original 0.13.1 findings; current status is in [RELEASE_PROGRESS.md](RELEASE_PROGRESS.md).
+
+Pending tablet release: **1.0.12 / Android build 50 / iOS build 46 metadata**, prepared October 17 for the tall-tablet layout correction and replacement tablet galleries. Automated suites, 15 Android layout cases, phone/tablet Android 15 emulator checks, signed bundle verification and Android lint pass. No new physical-device or Play-delivered update pass is claimed. Approval/publication status is tracked separately in `RELEASE_PROGRESS.md`.
 
 Production access was granted and verified in the live Console October 10, 2026. The owner authorized preparation, Internal testing, refreshed screenshots, production submission and publication following approval. Version 1.0.11 includes the merged review and viewport fixes; validate the exact signed candidate before rollout.
+
+Local implementation candidate: **1.0.13 / Android build 51 / iOS build 47 metadata**, prepared October 17 for Hindi and Punjabi/Gurmukhi localization. This candidate requires fluent-language and owner terminology review before any publication; its validation is separate from the pending tablet release. See the localization gates below and `docs/localization-review.md`.
 
 ## itch.io browser release
 
@@ -18,12 +22,21 @@ Production access was granted and verified in the live Console October 10, 2026.
 - [ ] Check keyboard focus/menus, text readability, reduced motion, slow loading and sustained performance on a lower-end device.
 - [x] Record artwork/code provenance and Sikh content approval. `CONTENT_REVIEW.md` records the Sikh creator's approval and confirmation that no outside assets were used; an outside review is optional.
 - [x] Prepare and review itch-specific copy, controls/save notes, support route, tags, cover, and screenshots. Hosted offline support and physical mobile claims remain unverified.
-- [ ] Complete host-specific offline and outbound-link checks on the published itch.io 1.0.10 build. Hosted launch and Arcade start passed September 30, 2026. Full hosted offline, mobile and mode checks remain open. A private/restricted preview was not used for this update.
-- [x] Record the 1.0.10 ZIP checksum, retain older ZIPs for rollback, and publish with owner authorization. Upload and release status are recorded in `RELEASE_PROGRESS.md`.
+- [ ] Complete host-specific offline, physical mobile and outbound-link checks on the published itch.io 1.0.11 build. October 10: exact ZIP tested first on a private itch draft; all four modes started and paused, Settings preserved pause, Help/badges opened, fullscreen entered, and reload worked. Published-version launch was checked separately. This does not certify natural full-mode completion or hosted offline behavior.
+- [x] Record the 1.0.11 ZIP checksum, retain older ZIPs for rollback, and publish with owner authorization. Refresh five screenshots, gameplay/features copy, controls, and download instructions; verify the saved public page. Upload and release status are recorded in `RELEASE_PROGRESS.md`.
 
 Google Play and iOS signing/store-console tasks below do not block a browser-only itch release.
 
 ## Release blockers
+
+For the **1.0.13 / Android 51 / iOS 47 metadata localization candidate**, historical checkmarks below do not establish translated-release readiness. Build 50's pending tablet submission remains separate.
+
+- [ ] Complete fluent Hindi and Punjabi/Gurmukhi review of every catalog entry in context, including both privacy surfaces and Play drafts; record reviewer findings and approval for the exact candidate.
+- [ ] Complete owner Sikh terminology review using `docs/localization-review.md`; retain the agreed fictional premise and welcome to all players.
+- [x] Verify catalog/placeholder parity, exact extraction counts, English-residue exceptions, device detection (including `pa-Arab` and `pa-PK` exclusion), switching, persistence, old saves, denied storage, and paused-run retention. October 17: localization unit/runtime and actual-browser checks pass; 341 entries / 2,150 English source words.
+- [ ] Test all modes, warnings, tutorials, badges, Help/Privacy, keyboard/controller/Android Back and accessibility labels in all three languages.
+- [x] Verify offline fonts/catalogs, direct-file opening, phone/tablet clipping and wrapping, and the tall-tablet gap regression against the final payload. October 17: exact ZIP Edge localization checks and 15 Android layout regressions pass; physical-device and fluent-review gates remain separate.
+- [ ] Complete applicable Android native and iOS checks; record unavailable physical-device and Xcode checks honestly. Do not submit or publish unreviewed translations.
 
 - [x] Endless, Arcade, Challenge, and Hard Mode routes pass automated reachability checks.
 - [x] Challenge contains exactly 50 reachable bowls and celebrates only after all 50 are collected.
@@ -66,7 +79,7 @@ Google Play and iOS signing/store-console tasks below do not block a browser-onl
 - [x] Complete the personal-account closed test with at least 12 continuously opted-in testers for 14 days, then apply for production access. Play Console confirmed all eligibility tasks complete and the application was submitted October 8, 2026 at 11:18 AM America/New_York. See https://support.google.com/googleplay/android-developer/answer/14151465.
 - [x] Receive production-access approval. Live Console verified October 10, 2026; production remains inactive until a release is approved and published.
 - [ ] Validate the final signed, Play-delivered candidate before production rollout. See `RELEASE_PROGRESS.md` for current artifact and review status.
-- [x] Submit first production release 49 and refreshed listing (October 10, 2026), with managed publishing enabled. Quick checks completed and Console confirms the changes are now in review. Approval and public publication remain pending; confirm all remaining launch checks before publishing approved changes.
+- [x] Submit first production release 49 and refreshed listing (October 10, 2026), with managed publishing enabled. Approval verified and all seven changes published October 17 with owner authorization. The separate post-launch short-description update is queued for review; it does not change the published release status.
 - [x] Deploy and reverify the hosted privacy-page navigation fix found October 10. PR #50 merged and GitHub Pages deployed successfully. The same returning browser opens the Privacy page after worker activation and returns to v1.0.11; no site data was cleared.
 
 ## Build verification
@@ -112,5 +125,7 @@ For iOS, use a submission-compatible Xcode and SDK (from April 28, 2026: Xcode 2
 For the store, use Android Studio's **Build > Generate Signed Bundle / APK > Android App Bundle** flow. Increment both `versionCode` and the visible version before every upload.
 
 ## Public launch record
+
+October 17, 2026: published the seven approved Google Play changes, including full production rollout of 1.0.11 / build 49, with explicit owner authorization. Console confirmed publication; the store page loads with current release notes and disclosures. Policy status reports no issues. No pre-launch report is available, and outstanding physical-device checks above remain unverified. Publication does not mark those checks passed. See `RELEASE_PROGRESS.md` for evidence and the separate post-launch copy update.
 
 September 11, 2026: owner authorized publication of 0.13.2 as a free public browser game with In development status. Public visibility was saved and verified after reload. Pending device, hosted offline, and outbound-link checks above remain follow-up work; publication does not mark them passed. See RELEASE_PROGRESS.md for payload checksum and rollback instructions.

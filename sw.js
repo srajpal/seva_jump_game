@@ -1,4 +1,4 @@
-const RELEASE_VERSION = '1.0.11';
+const RELEASE_VERSION = '1.0.13';
 const SCOPE_URL = new URL(self.registration.scope);
 const SCOPE_KEY = encodeURIComponent(SCOPE_URL.pathname);
 const CACHE_PREFIX = `seva-jump-${SCOPE_KEY}-`;
@@ -18,6 +18,19 @@ const APP_FILES = [
   './game.js',
   './manifest.webmanifest',
   './privacy.html',
+  './i18n.js',
+  './localization.css',
+  './locales/ui-en.js',
+  './locales/ui-hi.js',
+  './locales/ui-pa-Guru.js',
+  './locales/runtime-en.js',
+  './locales/runtime-hi.js',
+  './locales/runtime-pa-Guru.js',
+  './assets/fonts/NotoSansDevanagari.ttf',
+  './assets/fonts/NotoSansGurmukhi.ttf',
+  './assets/fonts/OFL-Devanagari.txt',
+  './assets/fonts/OFL-Gurmukhi.txt',
+  './assets/fonts/NOTICE.txt',
   './assets/app-icon-bird-v1.png',
   './assets/seva-jump-logo.png',
   './assets/badge-medals-v1.png',

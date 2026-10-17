@@ -1,0 +1,23 @@
+Seva Jump offline fonts
+
+Noto Sans Devanagari and Noto Sans Gurmukhi
+Copyright 2022 The Noto Project Authors.
+Licensed under the SIL Open Font License, Version 1.1.
+See OFL-Devanagari.txt and OFL-Gurmukhi.txt in this directory for the full
+copyright and license notices. The licenses apply to these fonts only.
+
+Downloaded October 17, 2026 from the official Google Fonts repository:
+https://github.com/google/fonts/tree/main/ofl/notosansdevanagari
+https://github.com/google/fonts/tree/main/ofl/notosansgurmukhi
+
+Original filenames: NotoSansDevanagari[wdth,wght].ttf and
+NotoSansGurmukhi[wdth,wght].ttf. These are unmodified variable-font binaries;
+the local filenames omit the axis suffix for simple packaging paths.
+
+SHA-256, NotoSansDevanagari.ttf:
+14ec4af41f27482216d1c2229f417ff9b1425e1babb014e57d1d40d03229853e
+SHA-256, NotoSansGurmukhi.ttf:
+1e6f728fa620e566f842d81e220265813faa12771214765d289c98e035adc5f2
+
+Fonts and licenses are bundled for offline use. The game does not contact
+Google Fonts or another font service at runtime.

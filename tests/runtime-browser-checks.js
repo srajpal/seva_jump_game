@@ -44,6 +44,7 @@ function makeRuntime(storage = {}, options = {}) {
     const classes = new Set();
     return {
       name, id: '', className: '', dataset: {}, children: [], isConnected: true, inert: false, textContent: '', innerHTML: '', checked: true,
+      style: { setProperty() {} },
       classList: { add: (...values) => values.forEach(value => classes.add(value)), remove: (...values) => values.forEach(value => classes.delete(value)), contains: value => classes.has(value), toggle(value, force) { if (force ?? !classes.has(value)) classes.add(value); else classes.delete(value); } },
       listeners: {}, addEventListener(type, handler) { this.listeners[type] = handler; }, setAttribute() {}, append(child) { this.children.push(child); child.isConnected = true; },
       querySelector(selector) { if (selector === 'button:not([disabled]), a[href], input:not([disabled]), [tabindex]:not([tabindex="-1"])') return this.children.find(child => child.focus) || null; return element(selector); },
@@ -57,7 +58,7 @@ function makeRuntime(storage = {}, options = {}) {
   const drawingContext = new Proxy({ imageSmoothingEnabled: false, measureText: () => ({ width: 0 }), ...options.drawingContext }, { get: (target, key) => target[key] || (() => {}), set: (target, key, value) => (target[key] = value, true) });
   const gameFrame = document.querySelector('.game-frame');
   Object.defineProperty(gameFrame, 'children', { get: () => Array.from(elements.entries()).filter(([key]) => key.startsWith('#') && (key.endsWith('-screen') || ['#game', '#game-tools', '#mobile-hud'].includes(key))).map(([, value]) => value) });
-  const localStorage = { getItem: storage.getItem || (() => storage.value ?? null), setItem: storage.setItem || ((key, value) => { storage.value = value; }), removeItem: storage.removeItem || (() => { delete storage.value; }) };
+  const localStorage = { getItem: storage.getItem || ((key) => key === 'sevaJump.language' ? storage.language ?? null : storage.value ?? null), setItem: storage.setItem || ((key, value) => { if (key === 'sevaJump.language') storage.language = value; else storage.value = value; }), removeItem: storage.removeItem || ((key) => { if (key === 'sevaJump.language') delete storage.language; else delete storage.value; }) };
   const window = { innerWidth: options.innerWidth ?? 450, innerHeight: options.innerHeight ?? 800, matchMedia: () => ({ matches: false }), addEventListener(type, handler) { windowListeners[type] = handler; }, close() {} };
   if (options.native) window.Capacitor = { isNativePlatform: () => true, getPlatform: () => 'android', Plugins: { App: options.appPlugin } };
   if (options.AudioContext) window.AudioContext = options.AudioContext;
@@ -71,10 +72,16 @@ function makeRuntime(storage = {}, options = {}) {
   }
   const context = { console, globalThis: null, window, document, navigator: { userAgent: '', getGamepads: options.getGamepads }, location: { protocol: 'file:' }, localStorage, Image: RuntimeImage, SEVA_CONFIG: config, SEVA_RULES: rules, requestAnimationFrame() {}, setTimeout(callback) { timeouts.set(++timerId, callback); return timerId; }, clearTimeout(id) { timeouts.delete(id); }, queueMicrotask, Math: runtimeMath, Date, Number, Object, Array, Set, JSON };
   context.globalThis = context; window.window = window; window.document = document;
+  vm.createContext(context);
+  for (const group of ['ui', 'runtime']) for (const locale of ['en', 'hi', 'pa-Guru']) {
+    const file = path.join(root, 'locales', `${group}-${locale}.js`);
+    vm.runInContext(fs.readFileSync(file, 'utf8'), context, { filename: file });
+  }
+  vm.runInContext(fs.readFileSync(path.join(root, 'i18n.js'), 'utf8'), context, { filename: 'i18n.js' });
   const instrumentedSource = gameSource.replace('  window.sevaJumpNativeBack = handleNativeBack;', `  ${runtimeHookSource}\n  window.sevaJumpNativeBack = handleNativeBack;`);
   assert.notEqual(instrumentedSource, gameSource, 'runtime test hook injection point must exist');
   vm.runInNewContext(instrumentedSource, context, { filename: 'game.js' });
-  return { hooks: context.__SEVA_RUNTIME_HOOKS__, elements, document, documentListeners, windowListeners, storage, images, timeouts };
+  return { hooks: context.__SEVA_RUNTIME_HOOKS__, i18n: context.SevaI18n, elements, document, documentListeners, windowListeners, storage, images, timeouts };
 }
 
 async function run() {
