@@ -16,4 +16,5 @@ jobs:
       - run: node --check game.js && node --check sw.js
       - run: npm test
       - run: npm run test:runtime
+      - run: npm run test:localization
       - run: npm run test:package

@@ -19,6 +19,10 @@
 		A1000000000000000000000B /* assets in Resources */ = {isa = PBXBuildFile; fileRef = A1000000000000000000001B /* assets */; };
 		A1000000000000000000000C /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = A1000000000000000000001C /* PrivacyInfo.xcprivacy */; };
 		A1000000000000000000000E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A1000000000000000000001D /* Assets.xcassets */; };
+		A10000000000000000000041 /* i18n.js in Resources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000051 /* i18n.js */; };
+		A10000000000000000000042 /* localization.css in Resources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000052 /* localization.css */; };
+		A10000000000000000000043 /* locales in Resources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000053 /* locales */; };
+
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -36,6 +40,10 @@
 		A1000000000000000000001B /* assets */ = {isa = PBXFileReference; lastKnownFileType = folder; name = assets; path = ../assets; sourceTree = SOURCE_ROOT; };
 		A1000000000000000000001C /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		A1000000000000000000001D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		A10000000000000000000051 /* i18n.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; name = i18n.js; path = ../i18n.js; sourceTree = SOURCE_ROOT; };
+		A10000000000000000000052 /* localization.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; name = localization.css; path = ../localization.css; sourceTree = SOURCE_ROOT; };
+		A10000000000000000000053 /* locales */ = {isa = PBXFileReference; lastKnownFileType = folder; name = locales; path = ../locales; sourceTree = SOURCE_ROOT; };
+
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -45,7 +53,7 @@
 /* Begin PBXGroup section */
 		A10000000000000000000022 = {isa = PBXGroup; children = (A10000000000000000000023 /* SevaJump */, A10000000000000000000024 /* Web */, A10000000000000000000025 /* Products */); sourceTree = "<group>"; };
 		A10000000000000000000023 /* SevaJump */ = {isa = PBXGroup; children = (A10000000000000000000011 /* AppDelegate.swift */, A10000000000000000000012 /* GameViewController.swift */, A1000000000000000000001C /* PrivacyInfo.xcprivacy */, A1000000000000000000001D /* Assets.xcassets */); path = SevaJump/App; sourceTree = "<group>"; };
-		A10000000000000000000024 /* Web */ = {isa = PBXGroup; children = (A10000000000000000000013 /* index.html */, A10000000000000000000014 /* styles.css */, A10000000000000000000015 /* game.js */, A10000000000000000000016 /* game-config.js */, A10000000000000000000017 /* game-rules.js */, A10000000000000000000018 /* manifest.webmanifest */, A10000000000000000000019 /* sw.js */, A1000000000000000000001A /* privacy.html */, A1000000000000000000001B /* assets */); name = Web; sourceTree = "<group>"; };
+		A10000000000000000000024 /* Web */ = {isa = PBXGroup; children = (A10000000000000000000013 /* index.html */, A10000000000000000000014 /* styles.css */, A10000000000000000000015 /* game.js */, A10000000000000000000016 /* game-config.js */, A10000000000000000000017 /* game-rules.js */, A10000000000000000000018 /* manifest.webmanifest */, A10000000000000000000019 /* sw.js */, A1000000000000000000001A /* privacy.html */, A1000000000000000000001B /* assets */, A10000000000000000000051 /* i18n.js */, A10000000000000000000052 /* localization.css */, A10000000000000000000053 /* locales */); name = Web; sourceTree = "<group>"; };
 		A10000000000000000000025 /* Products */ = {isa = PBXGroup; children = (A1000000000000000000000D /* Seva Jump.app */); name = Products; sourceTree = "<group>"; };
 /* End PBXGroup section */
 
@@ -58,7 +66,7 @@
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		A10000000000000000000029 /* Resources */ = {isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (A10000000000000000000003 /* index.html in Resources */, A10000000000000000000004 /* styles.css in Resources */, A10000000000000000000005 /* game.js in Resources */, A10000000000000000000006 /* game-config.js in Resources */, A10000000000000000000007 /* game-rules.js in Resources */, A10000000000000000000008 /* manifest.webmanifest in Resources */, A10000000000000000000009 /* sw.js in Resources */, A1000000000000000000000A /* privacy.html in Resources */, A1000000000000000000000B /* assets in Resources */, A1000000000000000000000C /* PrivacyInfo.xcprivacy in Resources */, A1000000000000000000000E /* Assets.xcassets in Resources */); runOnlyForDeploymentPostprocessing = 0; };
+		A10000000000000000000029 /* Resources */ = {isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (A10000000000000000000003 /* index.html in Resources */, A10000000000000000000004 /* styles.css in Resources */, A10000000000000000000005 /* game.js in Resources */, A10000000000000000000006 /* game-config.js in Resources */, A10000000000000000000007 /* game-rules.js in Resources */, A10000000000000000000008 /* manifest.webmanifest in Resources */, A10000000000000000000009 /* sw.js in Resources */, A1000000000000000000000A /* privacy.html in Resources */, A1000000000000000000000B /* assets in Resources */, A1000000000000000000000C /* PrivacyInfo.xcprivacy in Resources */, A1000000000000000000000E /* Assets.xcassets in Resources */, A10000000000000000000041 /* i18n.js in Resources */, A10000000000000000000042 /* localization.css in Resources */, A10000000000000000000043 /* locales in Resources */); runOnlyForDeploymentPostprocessing = 0; };
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -68,8 +76,8 @@
 /* Begin XCBuildConfiguration section */
 		A10000000000000000000031 /* Debug */ = {isa = XCBuildConfiguration; buildSettings = { ALWAYS_SEARCH_USER_PATHS = NO; CLANG_CXX_LANGUAGE_STANDARD = "gnu++20"; CLANG_ENABLE_MODULES = YES; CLANG_ENABLE_OBJC_ARC = YES; COPY_PHASE_STRIP = NO; DEBUG_INFORMATION_FORMAT = dwarf; ENABLE_TESTABILITY = YES; GCC_C_LANGUAGE_STANDARD = gnu17; GCC_DYNAMIC_NO_PIC = NO; GCC_OPTIMIZATION_LEVEL = 0; IPHONEOS_DEPLOYMENT_TARGET = 15.0; SDKROOT = iphoneos; SWIFT_OPTIMIZATION_LEVEL = "-Onone"; }; name = Debug; };
 		A10000000000000000000032 /* Release */ = {isa = XCBuildConfiguration; buildSettings = { ALWAYS_SEARCH_USER_PATHS = NO; CLANG_CXX_LANGUAGE_STANDARD = "gnu++20"; CLANG_ENABLE_MODULES = YES; CLANG_ENABLE_OBJC_ARC = YES; COPY_PHASE_STRIP = NO; DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym"; GCC_C_LANGUAGE_STANDARD = gnu17; IPHONEOS_DEPLOYMENT_TARGET = 15.0; SDKROOT = iphoneos; SWIFT_COMPILATION_MODE = wholemodule; }; name = Release; };
-		A10000000000000000000033 /* Debug */ = {isa = XCBuildConfiguration; buildSettings = { ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon; CODE_SIGN_STYLE = Automatic; DEVELOPMENT_TEAM = ""; GENERATE_INFOPLIST_FILE = NO; INFOPLIST_FILE = SevaJump/App/Info.plist; MARKETING_VERSION = 1.0.11; PRODUCT_BUNDLE_IDENTIFIER = org.sevajump.game; PRODUCT_NAME = "Seva Jump"; SWIFT_VERSION = 5.0; TARGETED_DEVICE_FAMILY = "1,2"; }; name = Debug; };
-		A10000000000000000000034 /* Release */ = {isa = XCBuildConfiguration; buildSettings = { ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon; CODE_SIGN_STYLE = Automatic; DEVELOPMENT_TEAM = ""; GENERATE_INFOPLIST_FILE = NO; INFOPLIST_FILE = SevaJump/App/Info.plist; MARKETING_VERSION = 1.0.11; PRODUCT_BUNDLE_IDENTIFIER = org.sevajump.game; PRODUCT_NAME = "Seva Jump"; SWIFT_VERSION = 5.0; TARGETED_DEVICE_FAMILY = "1,2"; }; name = Release; };
+		A10000000000000000000033 /* Debug */ = {isa = XCBuildConfiguration; buildSettings = { ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon; CODE_SIGN_STYLE = Automatic; DEVELOPMENT_TEAM = ""; GENERATE_INFOPLIST_FILE = NO; INFOPLIST_FILE = SevaJump/App/Info.plist; MARKETING_VERSION = 1.0.13; PRODUCT_BUNDLE_IDENTIFIER = org.sevajump.game; PRODUCT_NAME = "Seva Jump"; SWIFT_VERSION = 5.0; TARGETED_DEVICE_FAMILY = "1,2"; }; name = Debug; };
+		A10000000000000000000034 /* Release */ = {isa = XCBuildConfiguration; buildSettings = { ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon; CODE_SIGN_STYLE = Automatic; DEVELOPMENT_TEAM = ""; GENERATE_INFOPLIST_FILE = NO; INFOPLIST_FILE = SevaJump/App/Info.plist; MARKETING_VERSION = 1.0.13; PRODUCT_BUNDLE_IDENTIFIER = org.sevajump.game; PRODUCT_NAME = "Seva Jump"; SWIFT_VERSION = 5.0; TARGETED_DEVICE_FAMILY = "1,2"; }; name = Release; };
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */

@@ -2,11 +2,13 @@
 
 **A skyward seva adventure.**
 
-Current public [itch.io browser release](https://khalsagamestudio.itch.io/seva-jump): **v1.0.10**. Android **1.0.3 / build 41** is available in Google Play closed testing. Production access was granted and verified October 10, 2026. Android **1.0.11 / build 49** is available in Internal testing and submitted to the production review queue with managed publishing enabled; public publication is pending. iOS build 45 is metadata only. See `RELEASE_PROGRESS.md` for validation and publication details.
+Current public [itch.io browser release](https://khalsagamestudio.itch.io/seva-jump): **v1.0.11**, published October 10, 2026 with refreshed screenshots and gameplay/features copy. Android **1.0.11 / build 49** was published to [Google Play production](https://play.google.com/store/apps/details?id=org.sevajump.game) October 17, 2026 and remains available in Internal testing; closed testing remains on **1.0.3 / build 41**. Managed publishing remains enabled. iOS build 45 is metadata only. See `RELEASE_PROGRESS.md` for validation and publication details.
 
 The birds have flown away with the parshad. Choose a young Sikh boy or girl, leap from platform to platform, and bring it back in this cheerful browser game.
 
 Seva Jump is designed for ages 8-15, with touch-first controls, a calm Gurdwara-inspired setting, and a respectful introduction to a few Sikh terms used in the game.
+
+The local **1.0.13 / Android build 51** candidate adds English, Hindi (Devanagari) and Punjabi (Gurmukhi). It follows device language with an explicit choice on Home and in Settings; unsupported device languages use English. Catalogs and Noto fonts are bundled for offline use, and changing language preserves progress and a paused run. Hindi/Punjabi drafts require fluent-language and owner terminology review before publication; see [the reviewer pack](docs/localization-review.md). The separately submitted 1.0.12/build50 tablet update remains under review at the last recorded verification.
 
 ## Play
 
@@ -131,15 +133,19 @@ ARCHITECTURE.md      Runtime, packaging, and platform architecture
 
 ## Release status
 
+Android **1.0.12 / build 50** is the prepared tablet-layout update. It fixes the oversized blank area below gameplay on tall Android tablets and has matching replacement tablet screenshots. The public Play build remains **1.0.11 / 49** until the update is approved and published; follow `RELEASE_PROGRESS.md` for current submission status.
+
 The feature set is frozen for the current release candidate. Use [RELEASE_CHECKLIST.md](RELEASE_CHECKLIST.md) for regression testing and signing, [STORE_LISTING.md](STORE_LISTING.md) for the prepared Google Play copy and declarations, and [ITCH_LISTING.md](ITCH_LISTING.md) for the browser listing and upload plan.
 
-The September 11, 2026 itch.io audit records the problems found in v0.13.1. Current source, published builds, and outstanding checks are tracked separately in [RELEASE_PROGRESS.md](RELEASE_PROGRESS.md). The October review fixes are included in the 1.0.11 candidate and are newer than the published 1.0.10 browser ZIP and Play's 1.0.3 test build. Candidate preparation and store publication are recorded separately.
+The September 11, 2026 itch.io audit records the problems found in v0.13.1. Current source, published builds, and outstanding checks are tracked separately in [RELEASE_PROGRESS.md](RELEASE_PROGRESS.md). The October review fixes are included in the published 1.0.11 browser ZIP and Android candidate and are newer than Play's 1.0.3 closed-test build. The browser ZIP also includes the later hosted privacy-page routing fix. Candidate preparation and store publication are recorded separately.
 
-Native-store work still includes screenshots, signing credentials, console forms, device testing, and applicable store testing. Check [RELEASE_PROGRESS.md](RELEASE_PROGRESS.md) and the platform metadata before naming a native build ready. Localization remains planned follow-up work.
+Native-store work still includes screenshots, signing credentials, console forms, device testing, and applicable store testing. Check [RELEASE_PROGRESS.md](RELEASE_PROGRESS.md) and the platform metadata before naming a native build ready. The 1.0.13 localization candidate is implemented for review; its Hindi/Gurmukhi drafts require fluent-language and owner terminology approval before publication.
 
 ## License
 
 All rights reserved for now. Please do not reuse the game artwork or code without permission.
+
+Bundled Noto fonts have separate SIL Open Font License 1.1 terms; their original notices and source hashes are in `assets/fonts/`.
 
 ## Source and feedback
 

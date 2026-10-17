@@ -228,7 +228,9 @@ const SEVA_RULES = {
   },
   formatStat(value) {
     const number = Math.max(0, Math.floor(Number(value) || 0));
-    if (number < 10000) return number.toLocaleString();
+    // UI language never changes the agreed 0–9 digit style, including when the
+    // device locale uses another numbering system and the game falls back to English.
+    if (number < 10000) return number.toLocaleString('en-US');
     const units = [[1e15, 'Q'], [1e12, 'T'], [1e9, 'B'], [1e6, 'M'], [1e3, 'K']];
     const [size, suffix] = units.find(([threshold]) => number >= threshold);
     const compact = number / size;

@@ -2,13 +2,19 @@
 
 This document targets Google Play. For itch.io browser distribution, use [ITCH_LISTING.md](ITCH_LISTING.md). Current verification and remaining work are tracked in [RELEASE_PROGRESS.md](RELEASE_PROGRESS.md).
 
-October 10, 2026: submitted the full description below and refreshed phone/7-inch/10-inch tablet galleries with production 1.0.11 / build 49. Quick checks completed and Console confirms the changes are now in review; managed publishing is enabled. Not yet approved or published. New screenshots are labeled as using AI-created artwork, consistent with `CONTENT_REVIEW.md` and the existing icon/feature graphic declarations. The short description and app name already match this document.
+October 17, 2026: published the approved full description below and refreshed phone/7-inch/10-inch tablet galleries with production 1.0.11 / build 49. These changes were submitted October 10 and approved before publication. Managed publishing remains enabled. Screenshots are labeled as using AI-created artwork, consistent with `CONTENT_REVIEW.md` and the existing icon/feature graphic declarations. The owner chose to publish the approved listing first and optimize the short description separately afterward.
 
 ## Core listing
 
 **App name:** SevaJump
 
 **Short description:** Leap skyward, recover the parshad, and master four colorful jumping modes.
+
+**Post-launch short-description update (revised October 17; review/publication pending):** An offline pixel-art jumping game inspired by Sikhi, with four ways to play.
+
+The initial short-description submission included “no ads”; Console subsequently flagged that phrase as promotional wording. The revised text above removes it from the preview while retaining the accurate explanation in the full description. It was submitted alongside the corrected tablet galleries and production build 50 on October 17. Console confirms Changes in review, with quick checks still running before forwarding for review. Managed publishing remains on, so approval must be followed by publication. Build 49 and its previously approved listing are already published.
+
+The revised text uses 76 of 80 characters and brings the genre, offline play, visual style, Sikhi inspiration and four modes into the listing preview. The app name and full description are unchanged. This is an editorial improvement, not a measured conversion or search-ranking claim. Review reference: [Google Play listing best practices](https://support.google.com/googleplay/android-developer/answer/13393723?hl=en) and [metadata policy](https://support.google.com/googleplay/android-developer/answer/9898842?hl=en).
 
 **Full description:**
 
@@ -24,6 +30,10 @@ Four ways to play:
 - Hard Mode: tackle smaller moving and breakable platforms with earlier bird encounters.
 
 The About & Help section explains the controls, game items, accessibility settings, and the difference between Sikh and Sikhi. Learn about seva: serving others without expecting a reward. Inspired by Sikhi, this is one creator's make-believe adventure, made for everyone and intended to spark curiosity. It does not replace Sikh teachings. Help includes an optional link to learn more. Everyone is welcome to play. Progress, preferences, upgrades, badges, and statistics stay locally on your device and can be erased from Settings. Android backup is disabled, so progress is not restored after uninstalling and reinstalling the app.
+
+## Localization candidate drafts
+
+Hindi and Punjabi (Gurmukhi) descriptions and update notes for the **1.0.13 / build 51** candidate are in [docs/localization-play-drafts.md](docs/localization-play-drafts.md). They are unpublished drafts requiring fluent-language and owner terminology review using [the review pack](docs/localization-review.md). Do not replace or resubmit the existing 1.0.12/build50 review with unreviewed localized copy. Store language selection is separate from the game's internal locale identifiers. Privacy/Data safety behavior is unchanged; local language preference does not add data collection or a remote service.
 
 ## Suggested Play Console declarations
 
@@ -44,6 +54,8 @@ Live Console verification October 10, 2026: ten declarations are actioned and no
 
 ## Screenshot plan
 
+October 17 tablet refresh for **1.0.12 / build 50**: both tablet galleries now have four 1800 × 3200 captures ordered **Arcade / Home / Challenge / Upgrades**, submitted together with build 50 and pending review/publication. Images come from the signed candidate's extracted web payload and show its corrected tablet layout; Arcade uses the girl and Challenge uses the boy. Both gameplay images are natural opening runs, with no fabricated victory. AI-artwork labels are retained. Phone gallery, icon and feature graphic remain unchanged. Local captures and previous images are retained under ignored `screenshots/play-1.0.12/` and `screenshots/play-1.0.11/`.
+
 1. Home screen with both characters and all four modes visible.
 2. Active Arcade play showing platforms, collectibles, HUD, and Gurdwara backdrop.
 3. Challenge completion with the finish banner and fireworks.
@@ -54,6 +66,6 @@ Keep screenshots free of browser chrome, debug overlays, test currency, and noti
 
 ## Before submission
 
-Confirm the developer name, support email, website, and privacy-policy contact information in Play Console. Earlier creator approval does not certify subsequent changes. Apply [SIKHI_TEXT_REVIEW.md](SIKHI_TEXT_REVIEW.md) to the final copy and imagery before release; the September 27 text revisions were verified in the saved October 10 Console change, with publication pending review.
+Confirm the developer name, support email, website, and privacy-policy contact information in Play Console. Earlier creator approval does not certify subsequent changes. Apply [SIKHI_TEXT_REVIEW.md](SIKHI_TEXT_REVIEW.md) to the final copy and imagery before release; the September 27 text revisions were verified in the saved October 10 Console change and published October 17.
 
 October 10 contact check: Console support email `khalsagamestudio.apps@gmail.com` matches the live public policy; optional website and phone are empty. PR #50 fixed and deployed the worker-navigation defect. The same returning browser now opens the policy after worker activation, with a working return link to v1.0.11. No site data was cleared. Production approval and the remaining device/pre-launch checks stay separate.
