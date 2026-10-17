@@ -2,7 +2,7 @@
 
 **A skyward seva adventure.**
 
-Current public [itch.io browser release](https://khalsagamestudio.itch.io/seva-jump): **v1.0.11**, published October 10, 2026 with refreshed screenshots and gameplay/features copy. Android **1.0.11 / build 49** was published to [Google Play production](https://play.google.com/store/apps/details?id=org.sevajump.game) October 17, 2026 and remains available in Internal testing; closed testing remains on **1.0.3 / build 41**. Managed publishing remains enabled. iOS build 45 is metadata only. See `RELEASE_PROGRESS.md` for validation and publication details.
+Current public [itch.io browser release](https://khalsagamestudio.itch.io/seva-jump): **v1.0.11**, published October 10, 2026 with refreshed screenshots and gameplay/features copy. Android **1.0.11 / build 49** was published to [Google Play production](https://play.google.com/store/apps/details?id=org.sevajump.game) October 17, 2026 and remains available in Internal testing; closed testing remains on **1.0.3 / build 41**. Managed publishing remains enabled. iOS **1.0.11 / build 45** was uploaded and processed October 12 and is available for owner-only internal TestFlight testing; no iOS publication is claimed. See `RELEASE_PROGRESS.md` for validation and publication details.
 
 The birds have flown away with the parshad. Choose a young Sikh boy or girl, leap from platform to platform, and bring it back in this cheerful browser game.
 
@@ -47,11 +47,12 @@ The repository includes a dependency-free native iOS wrapper in
 `ios/SevaJump.xcodeproj`. It packages the same local HTML, JavaScript, CSS, and
 pixel art as the Android app, so gameplay and saved progress remain offline.
 
-With the full Xcode app installed (not Command Line Tools alone):
+With the full Xcode app installed (not Command Line Tools alone; App Store uploads currently require Xcode 26+ and the iOS 26+ SDK):
 
 1. Open `ios/SevaJump.xcodeproj` in Xcode.
-2. In **Signing & Capabilities**, select your Apple Developer team and use a
-   unique bundle identifier if `org.sevajump.game` is already registered.
+2. Sign into the owner's Apple account in Xcode Settings. In **Signing & Capabilities**,
+   use automatic signing with team `LSES4VT2GU`; `org.sevajump.game` is registered
+   to this team and matches the App Store Connect record.
 3. Choose an iPhone or iPad running iOS 15 or later, then run the **Seva Jump**
    scheme.
 4. For TestFlight or App Store distribution, use **Product > Archive**.

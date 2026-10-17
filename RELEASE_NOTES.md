@@ -19,13 +19,21 @@ Prepared and submitted for Google Play production review October 17, 2026; not y
 
 ## 1.0.11 — Android build 49 / iOS build 45 metadata
 
-Prepared October 10, 2026 and published to Google Play Internal testing that day. **Published to Google Play production October 17, 2026**, with the approved refreshed description and phone/tablet galleries; managed publishing remains enabled. Includes the merged October review fixes and all updates since Play's 1.0.3 / build 41. iOS metadata only, no Xcode build. Browser edition published on itch.io October 10, 2026, with five current screenshots and refreshed gameplay, features, controls, and offline-download instructions.
+Prepared October 10, 2026 and published to Google Play Internal testing that day. **Published to Google Play production October 17, 2026**, with the approved refreshed description and phone/tablet galleries; managed publishing remains enabled. Includes the merged October review fixes and all updates since Play's 1.0.3 / build 41. iOS first-release candidate preparation is recorded below. Browser edition published on itch.io October 10, 2026, with five current screenshots and refreshed gameplay, features, controls, and offline-download instructions.
 
 - Confirm or cancel pre-run upgrade choices with a controller; keyboard focus stays inside the panel when an upgrade is unowned.
 - Tap Settings row text to change its setting; the info and music-preview buttons retain their own actions.
 - Fetch refreshed artwork when installing a hosted browser cache, and remove old native caches so later launches use the installed app version.
 - Keep the play area and Pause control visible on older WebViews with compatible viewport sizing, including desktop fullscreen.
 - Includes the refreshed characters and artwork, clearer badges, pre-run upgrade choices, one-use consumables and gentler introductory Arcade birds from versions 1.0.4–1.0.10.
+
+iOS first-release preparation, October 12, 2026 (1.0.11 / build 45):
+
+- Play the four jumping modes on iPhone and iPad, with offline gameplay and local progress.
+- A clearer native Pause icon avoids duplicated symbols during play.
+- Pause an active run reliably when interrupted or switching away from the app.
+
+App Store copy/screenshots and declarations are saved. An App Store-signed IPA is locally verified using Xcode 26.3 / iOS 26.2 SDK; production-source iPhone/iPad simulator checks passed. Build 45 uploaded to App Store Connect October 12, 2026; processing completed and the build is available for owner-only internal TestFlight testing. No App Review submission or iOS publication is claimed. Physical-device checks remain unavailable.
 
 Hosted browser follow-up after Android artifact preparation: privacy-page navigation now opens the policy rather than the cached game's home page, including offline. This worker routing fix is included in the published itch.io 1.0.11 ZIP; it does not alter Android's native worker bypass and is not part of the uploaded build 49 payload.
 

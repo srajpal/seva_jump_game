@@ -2,7 +2,7 @@
 
 Use this checklist for every release candidate. Do not create or commit an upload keystore, passwords, or `keystore.properties`.
 
-Current release: **1.0.11, Android build 49 / iOS build 45 metadata**, prepared October 10, 2026. Android production was published October 17; the public browser edition was published October 10. No iOS build is claimed. Existing checkmarks record historical work unless newer evidence is explicitly dated. Rerun applicable checks after any source change and against the exact artifact proposed for upload. [ITCH_RELEASE_AUDIT.md](ITCH_RELEASE_AUDIT.md) preserves the original 0.13.1 findings; current status is in [RELEASE_PROGRESS.md](RELEASE_PROGRESS.md).
+Current release: **1.0.11, Android build 49 / iOS build 45**, prepared October 10, 2026. Android production was published October 17; the public browser edition was published October 10. iOS build 45 was uploaded/processed October 12 and enabled for owner-only internal TestFlight testing; no iOS publication is claimed. Existing checkmarks record historical work unless newer evidence is explicitly dated. Rerun applicable checks after any source change and against the exact artifact proposed for upload. [ITCH_RELEASE_AUDIT.md](ITCH_RELEASE_AUDIT.md) preserves the original 0.13.1 findings; current status is in [RELEASE_PROGRESS.md](RELEASE_PROGRESS.md).
 
 Pending tablet release: **1.0.12 / Android build 50 / iOS build 46 metadata**, prepared October 17 for the tall-tablet layout correction and replacement tablet galleries. Automated suites, 15 Android layout cases, phone/tablet Android 15 emulator checks, signed bundle verification and Android lint pass. No new physical-device or Play-delivered update pass is claimed. Approval/publication status is tracked separately in `RELEASE_PROGRESS.md`.
 
@@ -104,9 +104,23 @@ npm run android:debug
 
 Use `npm run test:browser` for browser coverage. Run it in Firefox, Chromium, and WebKit where available, and set `TEST_WEB_ROOT` to a fresh extraction of the final ZIP for artifact testing. Engine emulation is not a physical-device test; record skipped or engine-internal failures as unverified.
 
-For iOS, open `ios/SevaJump.xcodeproj`, select a signing team, then build the
-**Seva Jump** scheme on an iOS 15+ device or simulator. Archive from Xcode for
-TestFlight or App Store submission.
+For iOS, use a submission-compatible Xcode and SDK (from April 28, 2026: Xcode 26+ / iOS 26+ SDK). Xcode 26.3 supports macOS 15.6+, including this Mac's 15.8.1. See [Apple's requirement](https://developer.apple.com/news/upcoming-requirements/?id=04282026a) and [system requirements](https://developer.apple.com/xcode/system-requirements). Open `ios/SevaJump.xcodeproj`, sign into the owner's account and use automatic signing for team `LSES4VT2GU` / `org.sevajump.game`. Build the **Seva Jump** scheme on iPhone and iPad, then archive for App Store Connect. A successful unsigned simulator build does not validate signing, the upload SDK or physical-device behavior.
+
+### iOS first submission gates (October 12, 2026)
+
+- [x] Active membership, registered identifier and App Store Connect record.
+- [x] Version 1.0.11 copy, URLs, four iPhone and four iPad screenshots saved.
+- [x] Games/Casual, Data Not Collected, content rights and authorized private review contact saved.
+- [x] Free pricing, 173 launch regions excluding China mainland/Vietnam, EU non-trader and manual release saved.
+- [x] Configure project team and `ITSAppUsesNonExemptEncryption=false`; validate plist/project syntax.
+- [x] Required Node suites and unsigned Xcode 16.2 simulator Release compilation/package check passed October 12.
+- [x] Install Apple-signed Xcode 26.3 alongside the old Xcode at `/Applications/Xcode-26.3.app`.
+- [x] Owner completes Xcode 26.3 first launch/account sign-in; export and locally validate App Store-signed 1.0.11 / build 45 IPA with the iOS 26.2 SDK. Source archive is unsigned; distribution export is signed.
+- [x] Production-source Release iPhone 16 / iPad Pro 13-inch checks passed October 12 with iOS 26.2 SDK / iOS 26.3.1 runtime: modes, touch, pause/resume, backgrounding, reset, audio controls and save persistence.
+- [ ] Validate exact candidate on physical iPhone and iPad, including cold offline launch and retained saves. Owner has neither device available; retain as unverified.
+- [ ] Resolve age-rating guidance or explicitly retain the saved conservative 13+ rating for submission.
+- [x] Upload/processing completed and build 45 selected for version 1.0.11; owner-only internal TestFlight enabled October 12. Final App Review validation remains separate.
+- [ ] Obtain owner direction for the final review submission; retain manual release for publication.
 
 For the store, use Android Studio's **Build > Generate Signed Bundle / APK > Android App Bundle** flow. Increment both `versionCode` and the visible version before every upload.
 

@@ -1,6 +1,6 @@
 # SevaJump store listing
 
-This document targets Google Play. For itch.io browser distribution, use [ITCH_LISTING.md](ITCH_LISTING.md). Current verification and remaining work are tracked in [RELEASE_PROGRESS.md](RELEASE_PROGRESS.md).
+This document targets Google Play. For Apple App Store preparation, use [APP_STORE_LISTING.md](APP_STORE_LISTING.md). For itch.io browser distribution, use [ITCH_LISTING.md](ITCH_LISTING.md). Current verification and remaining work are tracked in [RELEASE_PROGRESS.md](RELEASE_PROGRESS.md).
 
 October 17, 2026: published the approved full description below and refreshed phone/7-inch/10-inch tablet galleries with production 1.0.11 / build 49. These changes were submitted October 10 and approved before publication. Managed publishing remains enabled. Screenshots are labeled as using AI-created artwork, consistent with `CONTENT_REVIEW.md` and the existing icon/feature graphic declarations. The owner chose to publish the approved listing first and optimize the short description separately afterward.
 
