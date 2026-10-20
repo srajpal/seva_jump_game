@@ -1,0 +1,5322 @@
+{
+  "status": "Draft translations — not approved for publication",
+  "entries": 341,
+  "sourceWords": 2150,
+  "countingMethod": "Whitespace-delimited English tokens, including placeholders; deduplicated catalog IDs. Store listing drafts are separate.",
+  "strings": [
+    {
+      "id": "game.badge.arcade-complete.description",
+      "en": "Complete Arcade Mode.",
+      "hi": "आर्केड मोड पूरा करें।",
+      "pa-Guru": "ਆਰਕੇਡ ਮੋਡ ਪੂਰਾ ਕਰੋ।",
+      "placeholders": [],
+      "references": [
+        "game.js:143"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.badge.arcade-complete.title",
+      "en": "Banner Breaker",
+      "hi": "बैनर पार करने वाले",
+      "pa-Guru": "ਬੈਨਰ ਪਾਰ ਕਰਨ ਵਾਲੇ",
+      "placeholders": [],
+      "references": [
+        "game.js:143"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.badge.bird-defender.description",
+      "en": "Block 3 bird collisions.",
+      "hi": "पक्षियों से 3 टक्करें रोकें।",
+      "pa-Guru": "ਪੰਛੀਆਂ ਨਾਲ 3 ਟੱਕਰਾਂ ਰੋਕੋ।",
+      "placeholders": [],
+      "references": [
+        "game.js:141"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.badge.bird-defender.title",
+      "en": "Bird Defender",
+      "hi": "पक्षी टक्कर रक्षक",
+      "pa-Guru": "ਪੰਛੀ ਟੱਕਰ ਰੱਖਿਅਕ",
+      "placeholders": [],
+      "references": [
+        "game.js:141"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.badge.boost-master.description",
+      "en": "Collect 25 boosts total.",
+      "hi": "कुल 25 बूस्ट लें।",
+      "pa-Guru": "ਕੁੱਲ 25 ਬੂਸਟ ਲਓ।",
+      "placeholders": [],
+      "references": [
+        "game.js:142"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.badge.boost-master.title",
+      "en": "Boost Master",
+      "hi": "बूस्ट माहिर",
+      "pa-Guru": "ਬੂਸਟ ਮਾਹਰ",
+      "placeholders": [],
+      "references": [
+        "game.js:142"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.badge.both-feet-in.description",
+      "en": "Finish Arcade with each character.",
+      "hi": "हर पात्र के साथ आर्केड पूरा करें।",
+      "pa-Guru": "ਹਰੇਕ ਪਾਤਰ ਨਾਲ ਆਰਕੇਡ ਪੂਰਾ ਕਰੋ।",
+      "placeholders": [],
+      "references": [
+        "game.js:146"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.badge.both-feet-in.title",
+      "en": "Both Feet In",
+      "hi": "दोनों का साथ",
+      "pa-Guru": "ਦੋਵਾਂ ਦਾ ਸਾਥ",
+      "placeholders": [],
+      "references": [
+        "game.js:146"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.badge.challenge-complete.description",
+      "en": "Collect all 50 in Challenge.",
+      "hi": "चुनौती में सभी 50 लें।",
+      "pa-Guru": "ਚੁਣੌਤੀ ਵਿੱਚ ਸਾਰੇ 50 ਲਓ।",
+      "placeholders": [],
+      "references": [
+        "game.js:147"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.badge.challenge-complete.title",
+      "en": "Challenge Champion",
+      "hi": "चुनौती विजेता",
+      "pa-Guru": "ਚੁਣੌਤੀ ਜੇਤੂ",
+      "placeholders": [],
+      "references": [
+        "game.js:147"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.badge.comeback-kid.description",
+      "en": "Finish Arcade after a Falcon Save.",
+      "hi": "बाज़ से बचाव के बाद आर्केड पूरा करें।",
+      "pa-Guru": "ਬਾਜ਼ ਵੱਲੋਂ ਬਚਾਅ ਤੋਂ ਬਾਅਦ ਆਰਕੇਡ ਪੂਰਾ ਕਰੋ।",
+      "placeholders": [],
+      "references": [
+        "game.js:145"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.badge.comeback-kid.title",
+      "en": "Comeback Kid",
+      "hi": "फिर से जीत",
+      "pa-Guru": "ਮੁੜ ਜਿੱਤ",
+      "placeholders": [],
+      "references": [
+        "game.js:145"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.badge.count",
+      "en": "{earned} of {total} earned",
+      "hi": "{total} में से {earned} मिले",
+      "pa-Guru": "{total} ਵਿੱਚੋਂ {earned} ਮਿਲੇ",
+      "placeholders": [
+        "earned",
+        "total"
+      ],
+      "references": [
+        "game.js:362"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.badge.earned",
+      "en": "Earned",
+      "hi": "मिला",
+      "pa-Guru": "ਮਿਲਿਆ",
+      "placeholders": [],
+      "references": [
+        "game.js:363"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.badge.endless-1000.description",
+      "en": "Reach 1,000 in Endless Run.",
+      "hi": "अंतहीन दौड़ में 1,000 तक पहुँचें।",
+      "pa-Guru": "ਬੇਅੰਤ ਦੌੜ ਵਿੱਚ 1,000 ਤੱਕ ਪਹੁੰਚੋ।",
+      "placeholders": [],
+      "references": [
+        "game.js:144"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.badge.endless-1000.title",
+      "en": "Endless Explorer",
+      "hi": "अंतहीन खोजी",
+      "pa-Guru": "ਬੇਅੰਤ ਖੋਜੀ",
+      "placeholders": [],
+      "references": [
+        "game.js:144"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.badge.endless-2000.description",
+      "en": "Reach 2,000 in Endless Run.",
+      "hi": "अंतहीन दौड़ में 2,000 तक पहुँचें।",
+      "pa-Guru": "ਬੇਅੰਤ ਦੌੜ ਵਿੱਚ 2,000 ਤੱਕ ਪਹੁੰਚੋ।",
+      "placeholders": [],
+      "references": [
+        "game.js:148"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.badge.endless-2000.title",
+      "en": "Sky Legend",
+      "hi": "आसमान के महारथी",
+      "pa-Guru": "ਅਸਮਾਨ ਦੇ ਮਹਾਰਥੀ",
+      "placeholders": [],
+      "references": [
+        "game.js:148"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.badge.first-run.description",
+      "en": "Finish your first run.",
+      "hi": "अपनी पहली दौड़ पूरी करें।",
+      "pa-Guru": "ਆਪਣੀ ਪਹਿਲੀ ਦੌੜ ਪੂਰੀ ਕਰੋ।",
+      "placeholders": [],
+      "references": [
+        "game.js:136"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.badge.first-run.title",
+      "en": "First Leap",
+      "hi": "पहली छलाँग",
+      "pa-Guru": "ਪਹਿਲੀ ਛਾਲ",
+      "placeholders": [],
+      "references": [
+        "game.js:136"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.badge.keepClimbing",
+      "en": "Keep climbing",
+      "hi": "ऊपर बढ़ते रहें",
+      "pa-Guru": "ਉੱਪਰ ਚੜ੍ਹਦੇ ਰਹੋ",
+      "placeholders": [],
+      "references": [
+        "game.js:363"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.badge.parshad-50.description",
+      "en": "Collect 50 parshad bowls total.",
+      "hi": "कुल 50 परशाद के कटोरे लें।",
+      "pa-Guru": "ਕੁੱਲ 50 ਪ੍ਰਸ਼ਾਦ ਦੇ ਕਟੋਰੇ ਲਓ।",
+      "placeholders": [],
+      "references": [
+        "game.js:139"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.badge.parshad-50.title",
+      "en": "Bowl Collector",
+      "hi": "कटोरे इकट्ठा करने वाले",
+      "pa-Guru": "ਕਟੋਰੇ ਇਕੱਠੇ ਕਰਨ ਵਾਲੇ",
+      "placeholders": [],
+      "references": [
+        "game.js:139"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.badge.perfect-arcade.description",
+      "en": "Finish Arcade with every parshad bowl.",
+      "hi": "हर परशाद के कटोरे के साथ आर्केड पूरा करें।",
+      "pa-Guru": "ਹਰੇਕ ਪ੍ਰਸ਼ਾਦ ਦੇ ਕਟੋਰੇ ਨਾਲ ਆਰਕੇਡ ਪੂਰਾ ਕਰੋ।",
+      "placeholders": [],
+      "references": [
+        "game.js:149"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.badge.perfect-arcade.title",
+      "en": "Perfect Arcade",
+      "hi": "संपूर्ण आर्केड",
+      "pa-Guru": "ਸੰਪੂਰਨ ਆਰਕੇਡ",
+      "placeholders": [],
+      "references": [
+        "game.js:149"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.badge.power-seeker.description",
+      "en": "Collect 5 boosts total.",
+      "hi": "कुल 5 बूस्ट लें।",
+      "pa-Guru": "ਕੁੱਲ 5 ਬੂਸਟ ਲਓ।",
+      "placeholders": [],
+      "references": [
+        "game.js:138"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.badge.power-seeker.title",
+      "en": "Boost Seeker",
+      "hi": "बूस्ट खोजी",
+      "pa-Guru": "ਬੂਸਟ ਖੋਜੀ",
+      "placeholders": [],
+      "references": [
+        "game.js:138"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.badge.sky-starter.description",
+      "en": "Reach 100 points.",
+      "hi": "100 अंक पाएँ।",
+      "pa-Guru": "100 ਅੰਕ ਬਣਾਓ।",
+      "placeholders": [],
+      "references": [
+        "game.js:137"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.badge.sky-starter.title",
+      "en": "Sky Starter",
+      "hi": "आसमान की शुरुआत",
+      "pa-Guru": "ਅਸਮਾਨ ਦੀ ਸ਼ੁਰੂਆਤ",
+      "placeholders": [],
+      "references": [
+        "game.js:137"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.badge.tokens-10.description",
+      "en": "Collect 10 Khanda tokens total.",
+      "hi": "कुल 10 खंडा टोकन लें।",
+      "pa-Guru": "ਕੁੱਲ 10 ਖੰਡਾ ਟੋਕਨ ਲਓ।",
+      "placeholders": [],
+      "references": [
+        "game.js:140"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.badge.tokens-10.title",
+      "en": "Khanda Keeper",
+      "hi": "खंडा संग्राहक",
+      "pa-Guru": "ਖੰਡਾ ਸੰਗ੍ਰਹਿਕ",
+      "placeholders": [],
+      "references": [
+        "game.js:140"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.canvas.finish",
+      "en": "FINISH",
+      "hi": "अंत",
+      "pa-Guru": "ਅੰਤ",
+      "placeholders": [],
+      "references": [
+        "game.js:944"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.canvas.ohMan",
+      "en": "Oh man!",
+      "hi": "अरे!",
+      "pa-Guru": "ਓਹ!",
+      "placeholders": [],
+      "references": [
+        "game.js:978"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.canvas.unavailable",
+      "en": "This browser cannot draw the game. Try reopening it in a browser with canvas support.",
+      "hi": "यह ब्राउज़र गेम नहीं दिखा सकता। कैनवस समर्थित ब्राउज़र में इसे फिर खोलें।",
+      "pa-Guru": "ਇਹ ਬ੍ਰਾਊਜ਼ਰ ਗੇਮ ਨਹੀਂ ਦਿਖਾ ਸਕਦਾ। ਕੈਨਵਸ ਸਹਾਇਤਾ ਵਾਲੇ ਬ੍ਰਾਊਜ਼ਰ ਵਿੱਚ ਇਸ ਨੂੰ ਮੁੜ ਖੋਲ੍ਹੋ।",
+      "placeholders": [],
+      "references": [
+        "game.js:27",
+        "game.js:28"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.effect.shield",
+      "en": "DHAL SHIELD!",
+      "hi": "ढाल!",
+      "pa-Guru": "ਢਾਲ!",
+      "placeholders": [],
+      "references": [
+        "game.js:897"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.fullscreen.enter",
+      "en": "Enter fullscreen",
+      "hi": "पूर्ण स्क्रीन खोलें",
+      "pa-Guru": "ਪੂਰੀ ਸਕ੍ਰੀਨ ਖੋਲ੍ਹੋ",
+      "placeholders": [],
+      "references": [
+        "game.js:1094",
+        "game.js:1302"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.fullscreen.exit",
+      "en": "Exit fullscreen",
+      "hi": "पूर्ण स्क्रीन से बाहर आएँ",
+      "pa-Guru": "ਪੂਰੀ ਸਕ੍ਰੀਨ ਤੋਂ ਬਾਹਰ ਆਓ",
+      "placeholders": [],
+      "references": [
+        "game.js:1094",
+        "game.js:1302"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.fullscreen.unavailable",
+      "en": "Fullscreen is unavailable in this browser or embed",
+      "hi": "इस ब्राउज़र या एम्बेड में पूर्ण स्क्रीन उपलब्ध नहीं है",
+      "pa-Guru": "ਇਸ ਬ੍ਰਾਊਜ਼ਰ ਜਾਂ ਏਮਬੈੱਡ ਵਿੱਚ ਪੂਰੀ ਸਕ੍ਰੀਨ ਉਪਲਬਧ ਨਹੀਂ ਹੈ",
+      "placeholders": [],
+      "references": [
+        "game.js:1091"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.hud.items",
+      "en": "Parshad {parshad} · Khanda {tokens}",
+      "hi": "परशाद {parshad} · खंडा {tokens}",
+      "pa-Guru": "ਪ੍ਰਸ਼ਾਦ {parshad} · ਖੰਡਾ {tokens}",
+      "placeholders": [
+        "parshad",
+        "tokens"
+      ],
+      "references": [
+        "game.js:891",
+        "game.js:995"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.message.backInSky",
+      "en": "Back in the sky!",
+      "hi": "फिर आसमान में!",
+      "pa-Guru": "ਮੁੜ ਅਸਮਾਨ ਵਿੱਚ!",
+      "placeholders": [],
+      "references": [
+        "game.js:649"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.message.birdBlocked",
+      "en": "BIRD BLOCKED!",
+      "hi": "पक्षी की टक्कर रोकी!",
+      "pa-Guru": "ਪੰਛੀ ਦੀ ਟੱਕਰ ਰੋਕੀ!",
+      "placeholders": [],
+      "references": [
+        "game.js:610"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.message.birdHit",
+      "en": "BIRD HIT!",
+      "hi": "पक्षी से टक्कर!",
+      "pa-Guru": "ਪੰਛੀ ਨਾਲ ਟੱਕਰ!",
+      "placeholders": [],
+      "references": [
+        "game.js:610"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.message.falconProtected",
+      "en": "The falcon kept you safe!",
+      "hi": "बाज़ ने आपको बचाया!",
+      "pa-Guru": "ਬਾਜ਼ ਨੇ ਤੁਹਾਨੂੰ ਬਚਾਇਆ!",
+      "placeholders": [],
+      "references": [
+        "game.js:606"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.message.falconSave",
+      "en": "FALCON SAVE!",
+      "hi": "बाज़ ने बचाया!",
+      "pa-Guru": "ਬਾਜ਼ ਨੇ ਬਚਾਇਆ!",
+      "placeholders": [],
+      "references": [
+        "game.js:636",
+        "game.js:897"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.message.finishAhead",
+      "en": "The finish banner is ahead!",
+      "hi": "अंतिम बैनर सामने है!",
+      "pa-Guru": "ਅੰਤਲਾ ਬੈਨਰ ਅੱਗੇ ਹੈ!",
+      "placeholders": [],
+      "references": [
+        "game.js:766"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.message.helperPlatforms",
+      "en": "Helper platforms!",
+      "hi": "सहायक प्लेटफ़ॉर्म!",
+      "pa-Guru": "ਮਦਦਗਾਰ ਪਲੇਟਫਾਰਮ!",
+      "placeholders": [],
+      "references": [
+        "game.js:685"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.message.karaExtended",
+      "en": "Kara boost · flight extended!",
+      "hi": "कड़े का उछाल · उड़ान बढ़ी!",
+      "pa-Guru": "ਕੜੇ ਦਾ ਉਛਾਲ · ਉਡਾਣ ਵਧੀ!",
+      "placeholders": [],
+      "references": [
+        "game.js:794"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.message.karaJump",
+      "en": "Kara boost · one higher jump!",
+      "hi": "कड़े का उछाल · एक ऊँची छलाँग!",
+      "pa-Guru": "ਕੜੇ ਦਾ ਉਛਾਲ · ਇੱਕ ਉੱਚੀ ਛਾਲ!",
+      "placeholders": [],
+      "references": [
+        "game.js:794"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.message.missedBowl",
+      "en": "A bowl was missed - restart to collect all {target}",
+      "hi": "एक कटोरा छूट गया - सभी {target} लेने के लिए फिर शुरू करें",
+      "pa-Guru": "ਇੱਕ ਕਟੋਰਾ ਛੁੱਟ ਗਿਆ - ਸਾਰੇ {target} ਲੈਣ ਲਈ ਮੁੜ ਸ਼ੁਰੂ ਕਰੋ",
+      "placeholders": [
+        "target"
+      ],
+      "references": [
+        "game.js:787",
+        "game.js:1012"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.message.nishanFlight",
+      "en": "Nishan boost · guided flight + protection!",
+      "hi": "निशान की उड़ान · निर्देशित उड़ान + सुरक्षा!",
+      "pa-Guru": "ਨਿਸ਼ਾਨ ਦੀ ਉਡਾਣ · ਦਿਸ਼ਾ ਵਾਲੀ ਉਡਾਣ + ਸੁਰੱਖਿਆ!",
+      "placeholders": [],
+      "references": [
+        "game.js:794"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.message.nishanProtected",
+      "en": "Nishan boost protected you!",
+      "hi": "निशान की उड़ान ने आपको बचाया!",
+      "pa-Guru": "ਨਿਸ਼ਾਨ ਦੀ ਉਡਾਣ ਨੇ ਤੁਹਾਨੂੰ ਬਚਾਇਆ!",
+      "placeholders": [],
+      "references": [
+        "game.js:622"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.message.shieldActivated",
+      "en": "Dhal Shield activated! You are protected for 4 seconds.",
+      "hi": "ढाल सक्रिय! आप 4 सेकंड तक सुरक्षित हैं।",
+      "pa-Guru": "ਢਾਲ ਚਾਲੂ! ਤੁਸੀਂ 4 ਸਕਿੰਟ ਲਈ ਸੁਰੱਖਿਅਤ ਹੋ।",
+      "placeholders": [],
+      "references": [
+        "game.js:625"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.message.shieldProtecting",
+      "en": "Dhal Shield is still protecting you!",
+      "hi": "ढाल अभी भी आपकी रक्षा कर रही है!",
+      "pa-Guru": "ਢਾਲ ਅਜੇ ਵੀ ਤੁਹਾਡੀ ਰੱਖਿਆ ਕਰ ਰਹੀ ਹੈ!",
+      "placeholders": [],
+      "references": [
+        "game.js:606"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.message.springAssist",
+      "en": "Spring assist!",
+      "hi": "स्प्रिंग से मदद!",
+      "pa-Guru": "ਸਪ੍ਰਿੰਗ ਦੀ ਮਦਦ!",
+      "placeholders": [],
+      "references": [
+        "game.js:678"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.message.start.arcade",
+      "en": "Arcade · reach {target}",
+      "hi": "आर्केड · {target} तक पहुँचें",
+      "pa-Guru": "ਆਰਕੇਡ · {target} ਤੱਕ ਪਹੁੰਚੋ",
+      "placeholders": [
+        "target"
+      ],
+      "references": [],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.message.start.challenge",
+      "en": "Challenge · collect all {target} parshad",
+      "hi": "चुनौती · सभी {target} परशाद के कटोरे लें",
+      "pa-Guru": "ਚੁਣੌਤੀ · ਸਾਰੇ {target} ਪ੍ਰਸ਼ਾਦ ਦੇ ਕਟੋਰੇ ਲਓ",
+      "placeholders": [
+        "target"
+      ],
+      "references": [],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.message.start.endless",
+      "en": "Endless Run · Keep climbing",
+      "hi": "अंतहीन दौड़ · ऊपर बढ़ते रहें",
+      "pa-Guru": "ਬੇਅੰਤ ਦੌੜ · ਉੱਪਰ ਚੜ੍ਹਦੇ ਰਹੋ",
+      "placeholders": [],
+      "references": [],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.message.start.hard",
+      "en": "Hard Mode · fragile routes ahead",
+      "hi": "कठिन मोड · आगे टूटने वाले रास्ते हैं",
+      "pa-Guru": "ਔਖਾ ਮੋਡ · ਅੱਗੇ ਟੁੱਟਣ ਵਾਲੇ ਰਸਤੇ ਹਨ",
+      "placeholders": [],
+      "references": [],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.message.stuck",
+      "en": "Stuck · no platform in reach",
+      "hi": "अटक गए · पहुँच में कोई प्लेटफ़ॉर्म नहीं",
+      "pa-Guru": "ਫਸ ਗਏ · ਪਹੁੰਚ ਵਿੱਚ ਕੋਈ ਪਲੇਟਫਾਰਮ ਨਹੀਂ",
+      "placeholders": [],
+      "references": [
+        "game.js:673",
+        "game.js:994"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.mode.arcade",
+      "en": "Arcade",
+      "hi": "आर्केड",
+      "pa-Guru": "ਆਰਕੇਡ",
+      "placeholders": [],
+      "references": [],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.mode.bowls",
+      "en": " BOWLS",
+      "hi": " कटोरे",
+      "pa-Guru": " ਕਟੋਰੇ",
+      "placeholders": [],
+      "references": [
+        "game.js:998"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.mode.challenge",
+      "en": "Challenge",
+      "hi": "चुनौती",
+      "pa-Guru": "ਚੁਣੌਤੀ",
+      "placeholders": [],
+      "references": [],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.mode.climb",
+      "en": "CLIMB",
+      "hi": "ऊपर बढ़ें",
+      "pa-Guru": "ਉੱਪਰ ਚੜ੍ਹੋ",
+      "placeholders": [],
+      "references": [
+        "game.js:891"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.mode.endless",
+      "en": "Endless",
+      "hi": "अंतहीन",
+      "pa-Guru": "ਬੇਅੰਤ",
+      "placeholders": [],
+      "references": [],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.mode.hard",
+      "en": "Hard",
+      "hi": "कठिन",
+      "pa-Guru": "ਔਖਾ",
+      "placeholders": [],
+      "references": [],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.mode.keepClimbing",
+      "en": "KEEP CLIMBING",
+      "hi": "ऊपर बढ़ते रहें",
+      "pa-Guru": "ਉੱਪਰ ਚੜ੍ਹਦੇ ਰਹੋ",
+      "placeholders": [],
+      "references": [
+        "game.js:998"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.mode.missed",
+      "en": " · MISSED",
+      "hi": " · छूट गया",
+      "pa-Guru": " · ਛੁੱਟ ਗਿਆ",
+      "placeholders": [],
+      "references": [
+        "game.js:891",
+        "game.js:998"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.mode.short.arcade",
+      "en": "ARCADE",
+      "hi": "आर्केड",
+      "pa-Guru": "ਆਰਕੇਡ",
+      "placeholders": [],
+      "references": [
+        "game.js:891"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.mode.short.challenge",
+      "en": "CHALLENGE",
+      "hi": "चुनौती",
+      "pa-Guru": "ਚੁਣੌਤੀ",
+      "placeholders": [],
+      "references": [
+        "game.js:891"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.mode.short.endless",
+      "en": "ENDLESS",
+      "hi": "अंतहीन",
+      "pa-Guru": "ਬੇਅੰਤ",
+      "placeholders": [],
+      "references": [
+        "game.js:891"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.mode.short.hard",
+      "en": "HARD",
+      "hi": "कठिन",
+      "pa-Guru": "ਔਖਾ",
+      "placeholders": [],
+      "references": [
+        "game.js:891"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.mode.title.arcade",
+      "en": "ARCADE MODE",
+      "hi": "आर्केड मोड",
+      "pa-Guru": "ਆਰਕੇਡ ਮੋਡ",
+      "placeholders": [],
+      "references": [
+        "game.js:997"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.mode.title.challenge",
+      "en": "CHALLENGE MODE",
+      "hi": "चुनौती मोड",
+      "pa-Guru": "ਚੁਣੌਤੀ ਮੋਡ",
+      "placeholders": [],
+      "references": [
+        "game.js:997"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.mode.title.endless",
+      "en": "ENDLESS RUN",
+      "hi": "अंतहीन दौड़",
+      "pa-Guru": "ਬੇਅੰਤ ਦੌੜ",
+      "placeholders": [],
+      "references": [
+        "game.js:997"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.mode.title.hard",
+      "en": "HARD MODE",
+      "hi": "कठिन मोड",
+      "pa-Guru": "ਔਖਾ ਮੋਡ",
+      "placeholders": [],
+      "references": [
+        "game.js:997"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.record.best",
+      "en": "Best score",
+      "hi": "सर्वश्रेष्ठ स्कोर",
+      "pa-Guru": "ਸਭ ਤੋਂ ਵਧੀਆ ਸਕੋਰ",
+      "placeholders": [],
+      "references": [
+        "game.js:358"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.result.arcadeComplete",
+      "en": "Arcade complete!",
+      "hi": "आर्केड पूरा!",
+      "pa-Guru": "ਆਰਕੇਡ ਪੂਰਾ!",
+      "placeholders": [],
+      "references": [
+        "game.js:593"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.result.arcadeGoal",
+      "en": "Reach 1,000 points to break through the finish banner.",
+      "hi": "अंतिम बैनर पार करने के लिए 1,000 अंक पाएँ।",
+      "pa-Guru": "ਅੰਤਲਾ ਬੈਨਰ ਪਾਰ ਕਰਨ ਲਈ 1,000 ਅੰਕ ਬਣਾਓ।",
+      "placeholders": [],
+      "references": [
+        "game.js:598"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.result.arcadeWin",
+      "en": "You reached 1,000 and broke through the finish banner!",
+      "hi": "आपने 1,000 अंक बनाए और अंतिम बैनर पार किया!",
+      "pa-Guru": "ਤੁਸੀਂ 1,000 ਅੰਕ ਬਣਾਏ ਅਤੇ ਅੰਤਲਾ ਬੈਨਰ ਪਾਰ ਕੀਤਾ!",
+      "placeholders": [],
+      "references": [
+        "game.js:598"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.result.challengeComplete",
+      "en": "Challenge complete!",
+      "hi": "चुनौती पूरी!",
+      "pa-Guru": "ਚੁਣੌਤੀ ਪੂਰੀ!",
+      "placeholders": [],
+      "references": [
+        "game.js:593"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.result.challengeProgress",
+      "en": "Challenge progress",
+      "hi": "चुनौती की प्रगति",
+      "pa-Guru": "ਚੁਣੌਤੀ ਦੀ ਤਰੱਕੀ",
+      "placeholders": [],
+      "references": [
+        "game.js:593"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.result.challengeScore",
+      "en": "You collected {count} of 50 parshad bowls · {stars} {rating} / 5 stars",
+      "hi": "आपने 50 में से {count} परशाद के कटोरे लिए · {stars} {rating} / 5 सितारे",
+      "pa-Guru": "ਤੁਸੀਂ 50 ਵਿੱਚੋਂ {count} ਪ੍ਰਸ਼ਾਦ ਦੇ ਕਟੋਰੇ ਲਏ · {stars} {rating} / 5 ਤਾਰੇ",
+      "placeholders": [
+        "count",
+        "stars",
+        "rating"
+      ],
+      "references": [
+        "game.js:598"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.result.challengeWin",
+      "en": "You reached the finish with all 50 parshad bowls! ★★★★★",
+      "hi": "आप सभी 50 परशाद के कटोरों के साथ अंत तक पहुँचे! ★★★★★",
+      "pa-Guru": "ਤੁਸੀਂ ਸਾਰੇ 50 ਪ੍ਰਸ਼ਾਦ ਦੇ ਕਟੋਰਿਆਂ ਨਾਲ ਅੰਤ ਤੱਕ ਪਹੁੰਚੇ! ★★★★★",
+      "placeholders": [],
+      "references": [
+        "game.js:598"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.result.endless",
+      "en": "Endless Run keeps going. Come back and beat your personal best.",
+      "hi": "अंतहीन दौड़ चलती रहती है। फिर आएँ और अपना सर्वश्रेष्ठ स्कोर पार करें।",
+      "pa-Guru": "ਬੇਅੰਤ ਦੌੜ ਚੱਲਦੀ ਰਹਿੰਦੀ ਹੈ। ਮੁੜ ਆਓ ਅਤੇ ਆਪਣਾ ਸਭ ਤੋਂ ਵਧੀਆ ਸਕੋਰ ਪਾਰ ਕਰੋ।",
+      "placeholders": [],
+      "references": [
+        "game.js:598"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.result.hard",
+      "en": "Hard Mode keeps climbing with only small moving and breakable platforms.",
+      "hi": "कठिन मोड में केवल छोटे, हिलते और टूटने वाले प्लेटफ़ॉर्म पर चढ़ते रहें।",
+      "pa-Guru": "ਔਖੇ ਮੋਡ ਵਿੱਚ ਸਿਰਫ਼ ਛੋਟੇ, ਹਿਲਦੇ ਅਤੇ ਟੁੱਟਣ ਵਾਲੇ ਪਲੇਟਫਾਰਮਾਂ ਉੱਤੇ ਚੜ੍ਹਦੇ ਰਹੋ।",
+      "placeholders": [],
+      "references": [
+        "game.js:598"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.result.newBest",
+      "en": "New personal best!",
+      "hi": "नया व्यक्तिगत सर्वश्रेष्ठ!",
+      "pa-Guru": "ਨਵਾਂ ਨਿੱਜੀ ਸਰਵੋਤਮ!",
+      "placeholders": [],
+      "references": [
+        "game.js:595"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.result.personalBest",
+      "en": "Personal best · {score}",
+      "hi": "व्यक्तिगत सर्वश्रेष्ठ · {score}",
+      "pa-Guru": "ਨਿੱਜੀ ਸਰਵੋਤਮ · {score}",
+      "placeholders": [
+        "score"
+      ],
+      "references": [
+        "game.js:595"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.result.runComplete",
+      "en": "Run complete",
+      "hi": "दौड़ पूरी",
+      "pa-Guru": "ਦੌੜ ਪੂਰੀ",
+      "placeholders": [],
+      "references": [
+        "game.js:593"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.score",
+      "en": "Score {score}",
+      "hi": "स्कोर {score}",
+      "pa-Guru": "ਸਕੋਰ {score}",
+      "placeholders": [
+        "score"
+      ],
+      "references": [
+        "game.js:594",
+        "game.js:891",
+        "game.js:995"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.settings.helpingHand",
+      "en": "Helping Hand",
+      "hi": "सहायक हाथ",
+      "pa-Guru": "ਮਦਦਗਾਰ ਹੱਥ",
+      "placeholders": [],
+      "references": [
+        "game.js:1217"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.settings.reducedMotion",
+      "en": "Reduced motion",
+      "hi": "कम हलचल",
+      "pa-Guru": "ਘੱਟ ਹਿਲਜੁਲ",
+      "placeholders": [],
+      "references": [
+        "game.js:1217"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.stat.arcadeWins",
+      "en": "Arcade wins",
+      "hi": "आर्केड जीत",
+      "pa-Guru": "ਆਰਕੇਡ ਜਿੱਤਾਂ",
+      "placeholders": [],
+      "references": [
+        "game.js:374"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.stat.averageScore",
+      "en": "Average score",
+      "hi": "औसत स्कोर",
+      "pa-Guru": "ਔਸਤ ਸਕੋਰ",
+      "placeholders": [],
+      "references": [
+        "game.js:370"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.stat.birdCollisions",
+      "en": "Bird collisions",
+      "hi": "पक्षियों से टक्करें",
+      "pa-Guru": "ਪੰਛੀਆਂ ਨਾਲ ਟੱਕਰਾਂ",
+      "placeholders": [],
+      "references": [
+        "game.js:374"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.stat.birdsBlocked",
+      "en": "Birds blocked",
+      "hi": "रोकी गई पक्षी टक्करें",
+      "pa-Guru": "ਰੋਕੀਆਂ ਪੰਛੀ ਟੱਕਰਾਂ",
+      "placeholders": [],
+      "references": [
+        "game.js:371"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.stat.birdsSeen",
+      "en": "Birds seen",
+      "hi": "दिखे पक्षी",
+      "pa-Guru": "ਦਿਸੇ ਪੰਛੀ",
+      "placeholders": [],
+      "references": [
+        "game.js:371"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.stat.boostsCollected",
+      "en": "Boosts collected",
+      "hi": "मिले बूस्ट",
+      "pa-Guru": "ਮਿਲੇ ਬੂਸਟ",
+      "placeholders": [],
+      "references": [
+        "game.js:371"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.stat.challengeIncomplete",
+      "en": "Challenge incomplete",
+      "hi": "अधूरी चुनौती",
+      "pa-Guru": "ਅਧੂਰੀ ਚੁਣੌਤੀ",
+      "placeholders": [],
+      "references": [
+        "game.js:374"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.stat.challengeWins",
+      "en": "Challenge wins",
+      "hi": "चुनौती जीत",
+      "pa-Guru": "ਚੁਣੌਤੀ ਜਿੱਤਾਂ",
+      "placeholders": [],
+      "references": [
+        "game.js:374"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.stat.falls",
+      "en": "Falls",
+      "hi": "गिरना",
+      "pa-Guru": "ਡਿੱਗਣਾ",
+      "placeholders": [],
+      "references": [
+        "game.js:374"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.stat.finishes",
+      "en": "Course finishes",
+      "hi": "पूरे किए रास्ते",
+      "pa-Guru": "ਪੂਰੇ ਕੀਤੇ ਰਸਤੇ",
+      "placeholders": [],
+      "references": [
+        "game.js:374"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.stat.height",
+      "en": "Height",
+      "hi": "ऊँचाई",
+      "pa-Guru": "ਉਚਾਈ",
+      "placeholders": [],
+      "references": [
+        "game.js:370",
+        "game.js:596"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.stat.heightClimbed",
+      "en": "Height climbed",
+      "hi": "चढ़ी ऊँचाई",
+      "pa-Guru": "ਚੜ੍ਹੀ ਉਚਾਈ",
+      "placeholders": [],
+      "references": [
+        "game.js:370"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.stat.jumps",
+      "en": "Jumps",
+      "hi": "छलाँगें",
+      "pa-Guru": "ਛਾਲਾਂ",
+      "placeholders": [],
+      "references": [
+        "game.js:369"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.stat.khandaEarned",
+      "en": "Khanda earned",
+      "hi": "मिले खंडा टोकन",
+      "pa-Guru": "ਮਿਲੇ ਖੰਡਾ ਟੋਕਨ",
+      "placeholders": [],
+      "references": [
+        "game.js:370",
+        "game.js:596"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.stat.leftEarly",
+      "en": "Left early",
+      "hi": "बीच में छोड़ा",
+      "pa-Guru": "ਵਿਚਕਾਰ ਛੱਡਿਆ",
+      "placeholders": [],
+      "references": [
+        "game.js:374"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.stat.parshad",
+      "en": "Parshad",
+      "hi": "परशाद",
+      "pa-Guru": "ਪ੍ਰਸ਼ਾਦ",
+      "placeholders": [],
+      "references": [
+        "game.js:370",
+        "game.js:596"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.stat.runs",
+      "en": "Runs",
+      "hi": "दौड़ें",
+      "pa-Guru": "ਦੌੜਾਂ",
+      "placeholders": [],
+      "references": [
+        "game.js:369"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.stat.shieldsUsed",
+      "en": "Dhal Shields used",
+      "hi": "इस्तेमाल की गई ढालें",
+      "pa-Guru": "ਵਰਤੀਆਂ ਢਾਲਾਂ",
+      "placeholders": [],
+      "references": [
+        "game.js:374"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.storage.eraseFailed",
+      "en": "Saved progress could not be erased. Your progress is reset for this session only.",
+      "hi": "सहेजी गई प्रगति मिटाई नहीं जा सकी। प्रगति केवल इस सत्र के लिए रीसेट हुई है।",
+      "pa-Guru": "ਸੰਭਾਲੀ ਤਰੱਕੀ ਮਿਟਾਈ ਨਹੀਂ ਜਾ ਸਕੀ। ਤਰੱਕੀ ਸਿਰਫ਼ ਇਸ ਸੈਸ਼ਨ ਲਈ ਰੀਸੈੱਟ ਹੋਈ ਹੈ।",
+      "placeholders": [],
+      "references": [
+        "game.js:200"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.storage.unavailable",
+      "en": "Progress can’t be saved in this browser. You can keep playing for this session.",
+      "hi": "इस ब्राउज़र में प्रगति सहेजी नहीं जा सकती। आप इस सत्र में खेलना जारी रख सकते हैं।",
+      "pa-Guru": "ਇਸ ਬ੍ਰਾਊਜ਼ਰ ਵਿੱਚ ਤਰੱਕੀ ਸੰਭਾਲੀ ਨਹੀਂ ਜਾ ਸਕਦੀ। ਤੁਸੀਂ ਇਸ ਸੈਸ਼ਨ ਵਿੱਚ ਖੇਡਣਾ ਜਾਰੀ ਰੱਖ ਸਕਦੇ ਹੋ।",
+      "placeholders": [],
+      "references": [
+        "game.js:5",
+        "game.js:174"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.stuck.action",
+      "en": "Keep trying, or pause to restart or leave.",
+      "hi": "कोशिश जारी रखें, या फिर शुरू करने या छोड़ने के लिए रोकें।",
+      "pa-Guru": "ਕੋਸ਼ਿਸ਼ ਜਾਰੀ ਰੱਖੋ, ਜਾਂ ਮੁੜ ਸ਼ੁਰੂ ਕਰਨ ਜਾਂ ਛੱਡਣ ਲਈ ਰੋਕੋ।",
+      "placeholders": [],
+      "references": [
+        "game.js:1038"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.stuck.detail",
+      "en": "No more platforms within reach.",
+      "hi": "अब पहुँच में कोई प्लेटफ़ॉर्म नहीं है।",
+      "pa-Guru": "ਹੁਣ ਪਹੁੰਚ ਵਿੱਚ ਕੋਈ ਪਲੇਟਫਾਰਮ ਨਹੀਂ ਹੈ।",
+      "placeholders": [],
+      "references": [
+        "game.js:1037"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.stuck.title",
+      "en": "Uh-oh! Looks like you’re stuck!",
+      "hi": "अरे! लगता है आप अटक गए!",
+      "pa-Guru": "ਓਹ! ਲੱਗਦਾ ਹੈ ਤੁਸੀਂ ਫਸ ਗਏ!",
+      "placeholders": [],
+      "references": [
+        "game.js:1035"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.tutorial.birds.copy",
+      "en": "Avoid birds, use boosts when you find them, and keep climbing. Your first run starts now!",
+      "hi": "पक्षियों से बचें, मिलने पर बूस्ट इस्तेमाल करें और ऊपर बढ़ते रहें। आपकी पहली दौड़ अब शुरू होती है!",
+      "pa-Guru": "ਪੰਛੀਆਂ ਤੋਂ ਬਚੋ, ਮਿਲਣ ਉੱਤੇ ਬੂਸਟ ਵਰਤੋ ਅਤੇ ਉੱਪਰ ਚੜ੍ਹਦੇ ਰਹੋ। ਤੁਹਾਡੀ ਪਹਿਲੀ ਦੌੜ ਹੁਣ ਸ਼ੁਰੂ ਹੁੰਦੀ ਹੈ!",
+      "placeholders": [],
+      "references": [
+        "game.js:1072"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.tutorial.birds.title",
+      "en": "Watch for birds",
+      "hi": "पक्षियों से सावधान रहें",
+      "pa-Guru": "ਪੰਛੀਆਂ ਤੋਂ ਸਾਵਧਾਨ ਰਹੋ",
+      "placeholders": [],
+      "references": [
+        "game.js:1072"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.tutorial.collect.copy",
+      "en": "Land on platforms, collect glowing parshad bowls for score, and earn Khanda tokens for upgrades.",
+      "hi": "प्लेटफ़ॉर्म पर उतरें, अंक पाने के लिए चमकते परशाद के कटोरे लें और अपग्रेड के लिए खंडा टोकन पाएँ।",
+      "pa-Guru": "ਪਲੇਟਫਾਰਮਾਂ ਉੱਤੇ ਉਤਰੋ, ਅੰਕਾਂ ਲਈ ਚਮਕਦੇ ਪ੍ਰਸ਼ਾਦ ਦੇ ਕਟੋਰੇ ਲਓ ਅਤੇ ਅੱਪਗ੍ਰੇਡਾਂ ਲਈ ਖੰਡਾ ਟੋਕਨ ਕਮਾਓ।",
+      "placeholders": [],
+      "references": [
+        "game.js:1071"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.tutorial.collect.title",
+      "en": "Land and collect",
+      "hi": "उतरें और इकट्ठा करें",
+      "pa-Guru": "ਉਤਰੋ ਅਤੇ ਇਕੱਠਾ ਕਰੋ",
+      "placeholders": [],
+      "references": [
+        "game.js:1071"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.tutorial.guide.copy",
+      "en": "Drag anywhere across the game to move left and right while your jumper bounces automatically.",
+      "hi": "खिलाड़ी अपने आप उछलता है। उसे बाएँ-दाएँ ले जाने के लिए गेम पर कहीं भी उँगली खिसकाएँ।",
+      "pa-Guru": "ਖਿਡਾਰੀ ਆਪਣੇ ਆਪ ਉੱਛਲਦਾ ਹੈ। ਉਸ ਨੂੰ ਖੱਬੇ-ਸੱਜੇ ਲਿਜਾਣ ਲਈ ਗੇਮ ਉੱਤੇ ਕਿਤੇ ਵੀ ਉਂਗਲ ਖਿਸਕਾਓ।",
+      "placeholders": [],
+      "references": [
+        "game.js:1070"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.tutorial.guide.title",
+      "en": "Guide your jumper",
+      "hi": "अपने खिलाड़ी को दिशा दें",
+      "pa-Guru": "ਆਪਣੇ ਖਿਡਾਰੀ ਨੂੰ ਦਿਸ਼ਾ ਦਿਓ",
+      "placeholders": [],
+      "references": [
+        "game.js:1070"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.tutorial.jump",
+      "en": "Let’s jump!",
+      "hi": "चलो छलाँग लगाएँ!",
+      "pa-Guru": "ਆਓ ਛਾਲ ਮਾਰੀਏ!",
+      "placeholders": [],
+      "references": [
+        "game.js:1079"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.tutorial.next",
+      "en": "Next",
+      "hi": "आगे",
+      "pa-Guru": "ਅੱਗੇ",
+      "placeholders": [],
+      "references": [
+        "game.js:1079"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.tutorial.step",
+      "en": "{step} of {total}",
+      "hi": "{total} में से {step}",
+      "pa-Guru": "{total} ਵਿੱਚੋਂ {step}",
+      "placeholders": [
+        "step",
+        "total"
+      ],
+      "references": [
+        "game.js:1077"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.upgrade.buy",
+      "en": "Buy · {cost}",
+      "hi": "खरीदें · {cost}",
+      "pa-Guru": "ਖਰੀਦੋ · {cost}",
+      "placeholders": [
+        "cost"
+      ],
+      "references": [
+        "game.js:349",
+        "game.js:350",
+        "game.js:352"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.upgrade.level",
+      "en": "Level: {level} / 5",
+      "hi": "स्तर: {level} / 5",
+      "pa-Guru": "ਪੱਧਰ: {level} / 5",
+      "placeholders": [
+        "level"
+      ],
+      "references": [
+        "game.js:351"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.upgrade.max",
+      "en": "Max level",
+      "hi": "अधिकतम स्तर",
+      "pa-Guru": "ਵੱਧ ਤੋਂ ਵੱਧ ਪੱਧਰ",
+      "placeholders": [],
+      "references": [
+        "game.js:352",
+        "game.js:1196"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.upgrade.maxNotice",
+      "en": "Power Jump is already at its maximum level.",
+      "hi": "ऊँची छलाँग पहले से अधिकतम स्तर पर है।",
+      "pa-Guru": "ਉੱਚੀ ਛਾਲ ਪਹਿਲਾਂ ਹੀ ਸਭ ਤੋਂ ਉੱਚੇ ਪੱਧਰ ਉੱਤੇ ਹੈ।",
+      "placeholders": [],
+      "references": [
+        "game.js:1196"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.upgrade.needTokens",
+      "en": "You need {count} more Khanda tokens.",
+      "hi": "आपको {count} और खंडा टोकन चाहिए।",
+      "pa-Guru": "ਤੁਹਾਨੂੰ {count} ਹੋਰ ਖੰਡਾ ਟੋਕਨ ਚਾਹੀਦੇ ਹਨ।",
+      "placeholders": [
+        "count"
+      ],
+      "references": [
+        "game.js:1198"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.upgrade.off",
+      "en": "Off",
+      "hi": "बंद",
+      "pa-Guru": "ਬੰਦ",
+      "placeholders": [],
+      "references": [
+        "game.js:204",
+        "game.js:870",
+        "game.js:891"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.upgrade.owned",
+      "en": "Owned: {count}",
+      "hi": "आपके पास: {count}",
+      "pa-Guru": "ਤੁਹਾਡੇ ਕੋਲ: {count}",
+      "placeholders": [
+        "count"
+      ],
+      "references": [
+        "game.js:347",
+        "game.js:348"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.upgrade.purchased",
+      "en": "Upgrade purchased!",
+      "hi": "अपग्रेड खरीदा गया!",
+      "pa-Guru": "ਅੱਪਗ੍ਰੇਡ ਖਰੀਦਿਆ ਗਿਆ!",
+      "placeholders": [],
+      "references": [
+        "game.js:1199"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.upgrade.runLevel",
+      "en": "Level {level}",
+      "hi": "स्तर {level}",
+      "pa-Guru": "ਪੱਧਰ {level}",
+      "placeholders": [
+        "level"
+      ],
+      "references": [
+        "game.js:1155",
+        "game.js:1300"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.upgrade.runOwned",
+      "en": "{count} owned",
+      "hi": "आपके पास {count}",
+      "pa-Guru": "ਤੁਹਾਡੇ ਕੋਲ {count}",
+      "placeholders": [
+        "count"
+      ],
+      "references": [
+        "game.js:1155",
+        "game.js:1300"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "game.upgrade.used",
+      "en": "Used",
+      "hi": "इस्तेमाल हुआ",
+      "pa-Guru": "ਵਰਤਿਆ",
+      "placeholders": [],
+      "references": [
+        "game.js:204"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.0.of.14.earned",
+      "en": "0 of 14 earned",
+      "hi": "14 में से 0 मिले",
+      "pa-Guru": "14 ਵਿੱਚੋਂ 0 ਮਿਲੇ",
+      "placeholders": [],
+      "references": [
+        "index.html:135"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.1.of.3",
+      "en": "1 of 3",
+      "hi": "3 में से 1",
+      "pa-Guru": "3 ਵਿੱਚੋਂ 1",
+      "placeholders": [],
+      "references": [
+        "index.html:81"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.a.growing.record.of.your.climbs.on",
+      "en": "A growing record of your climbs on this device.",
+      "hi": "इस डिवाइस पर आपकी चढ़ाइयों का बढ़ता रिकॉर्ड।",
+      "pa-Guru": "ਇਸ ਡਿਵਾਈਸ ਉੱਤੇ ਤੁਹਾਡੀਆਂ ਚੜ੍ਹਾਈਆਂ ਦਾ ਵਧਦਾ ਰਿਕਾਰਡ।",
+      "placeholders": [],
+      "references": [
+        "index.html:142"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.a.learner.and.disciple.of.the.guru",
+      "en": "A learner and disciple of the Guru who follows Sikhi.",
+      "hi": "गुरु का शिक्षार्थी और शिष्य जो सिखी पर चलता है।",
+      "pa-Guru": "ਗੁਰੂ ਦਾ ਸਿਖਿਆਰਥੀ ਅਤੇ ਸਿੱਖ ਜੋ ਸਿੱਖੀ ਉੱਤੇ ਚੱਲਦਾ ਹੈ।",
+      "placeholders": [],
+      "references": [
+        "index.html:195"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.a.note.from.the.creator",
+      "en": "A note from the creator",
+      "hi": "निर्माता की ओर से",
+      "pa-Guru": "ਬਣਾਉਣ ਵਾਲੇ ਵੱਲੋਂ",
+      "placeholders": [],
+      "references": [
+        "index.html:205"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.a.playful.jumping.adventure.inspired.by.sikhi",
+      "en": "A playful jumping adventure inspired by Sikhi and its values of equality, kindness, and seva. Everyone is welcome to play.",
+      "hi": "सिखी और उसके समानता, दया और सेवा के मूल्यों से प्रेरित छलाँगों भरा मज़ेदार सफ़र। खेलने के लिए सबका स्वागत है।",
+      "pa-Guru": "ਸਿੱਖੀ ਅਤੇ ਇਸ ਦੇ ਬਰਾਬਰੀ, ਦਇਆ ਅਤੇ ਸੇਵਾ ਦੇ ਮੁੱਲਾਂ ਤੋਂ ਪ੍ਰੇਰਿਤ ਛਾਲਾਂ ਭਰਿਆ ਮਜ਼ੇਦਾਰ ਸਫ਼ਰ। ਖੇਡਣ ਲਈ ਸਭ ਦਾ ਸੁਆਗਤ ਹੈ।",
+      "placeholders": [],
+      "references": [
+        "index.html:173"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.a.shield.in.the.game.it.blocks",
+      "en": "A shield; in the game, it blocks one bird collision.",
+      "hi": "एक ढाल; खेल में यह पक्षी से एक टक्कर रोकती है।",
+      "pa-Guru": "ਇੱਕ ਢਾਲ; ਖੇਡ ਵਿੱਚ ਇਹ ਪੰਛੀ ਨਾਲ ਇੱਕ ਟੱਕਰ ਰੋਕਦੀ ਹੈ।",
+      "placeholders": [],
+      "references": [
+        "index.html:203"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.a.short.guided.flight.you.steer.plus",
+      "en": "A short guided flight you steer, plus 5 seconds of bird protection.",
+      "hi": "एक छोटी निर्देशित उड़ान जिसे आप दिशा देते हैं, साथ ही पक्षियों से 5 सेकंड की सुरक्षा।",
+      "pa-Guru": "ਇੱਕ ਛੋਟੀ ਨਿਰਦੇਸ਼ਿਤ ਉਡਾਣ ਜਿਸ ਨੂੰ ਤੁਸੀਂ ਦਿਸ਼ਾ ਦਿੰਦੇ ਹੋ, ਨਾਲ ਹੀ ਪੰਛੀਆਂ ਤੋਂ 5 ਸਕਿੰਟਾਂ ਦੀ ਸੁਰੱਖਿਆ।",
+      "placeholders": [],
+      "references": [
+        "index.html:180"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.a.sikh.place.of.worship.learning.and",
+      "en": "A Sikh place of worship, learning, and community gathering, open to everyone.",
+      "hi": "सिखों की उपासना, सीखने और समुदाय के मिलने का स्थान, जहाँ सबका स्वागत है।",
+      "pa-Guru": "ਸਿੱਖਾਂ ਦੀ ਉਪਾਸਨਾ, ਸਿੱਖਣ ਅਤੇ ਸੰਗਤ ਦੇ ਮਿਲਣ ਦਾ ਸਥਾਨ, ਜਿੱਥੇ ਸਭ ਦਾ ਸੁਆਗਤ ਹੈ।",
+      "placeholders": [],
+      "references": [
+        "index.html:199"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.a.skyward.seva.adventure",
+      "en": "A skyward seva adventure",
+      "hi": "आसमान की ओर सेवा का सफ़र",
+      "pa-Guru": "ਅਸਮਾਨ ਵੱਲ ਸੇਵਾ ਦਾ ਸਫ਼ਰ",
+      "placeholders": [],
+      "references": [
+        "index.html:38"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.a.steel.bracelet.one.of.the.sikh",
+      "en": "A steel bracelet, one of the Sikh articles of faith.",
+      "hi": "स्टील का कड़ा, सिख आस्था के चिह्नों में से एक।",
+      "pa-Guru": "ਸਟੀਲ ਦਾ ਕੜਾ, ਸਿੱਖ ਆਸਥਾ ਦੇ ਚਿੰਨ੍ਹਾਂ ਵਿੱਚੋਂ ਇੱਕ।",
+      "placeholders": [],
+      "references": [
+        "index.html:200"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.a.widely.recognized.sikh.emblem",
+      "en": "A widely recognized Sikh emblem.",
+      "hi": "एक व्यापक रूप से पहचाना जाने वाला सिख चिह्न।",
+      "pa-Guru": "ਇੱਕ ਵਿਆਪਕ ਤੌਰ ਉੱਤੇ ਪਛਾਣਿਆ ਜਾਣ ਵਾਲਾ ਸਿੱਖ ਚਿੰਨ੍ਹ।",
+      "placeholders": [],
+      "references": [
+        "index.html:202"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.about.help",
+      "en": "About & Help",
+      "hi": "परिचय और मदद",
+      "pa-Guru": "ਜਾਣ-ਪਛਾਣ ਅਤੇ ਮਦਦ",
+      "placeholders": [],
+      "references": [
+        "index.html:60",
+        "index.html:106"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.about.helping.hand",
+      "en": "About Helping Hand",
+      "hi": "सहायक हाथ के बारे में",
+      "pa-Guru": "ਮਦਦਗਾਰ ਹੱਥ ਬਾਰੇ",
+      "placeholders": [],
+      "references": [
+        "index.html:106"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.about.reduced.motion",
+      "en": "About Reduced motion",
+      "hi": "कम हलचल के बारे में",
+      "pa-Guru": "ਘੱਟ ਹਿਲਜੁਲ ਬਾਰੇ",
+      "placeholders": [],
+      "references": [
+        "index.html:107"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.about.seva.jump",
+      "en": "About Seva Jump",
+      "hi": "Seva Jump के बारे में",
+      "pa-Guru": "Seva Jump ਬਾਰੇ",
+      "placeholders": [],
+      "references": [
+        "index.html:168"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.adds.to.your.score",
+      "en": "Adds to your score.",
+      "hi": "आपका स्कोर बढ़ाता है।",
+      "pa-Guru": "ਤੁਹਾਡਾ ਸਕੋਰ ਵਧਾਉਂਦਾ ਹੈ।",
+      "placeholders": [],
+      "references": [
+        "index.html:176"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.arcade.mode",
+      "en": "Arcade Mode",
+      "hi": "आर्केड मोड",
+      "pa-Guru": "ਆਰਕੇਡ ਮੋਡ",
+      "placeholders": [],
+      "references": [
+        "index.html:53"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.avoid.them.unless.you.are.protected",
+      "en": "Avoid them unless you are protected.",
+      "hi": "सुरक्षा न हो तो इनसे बचें।",
+      "pa-Guru": "ਸੁਰੱਖਿਆ ਨਾ ਹੋਵੇ ਤਾਂ ਇਨ੍ਹਾਂ ਤੋਂ ਬਚੋ।",
+      "placeholders": [],
+      "references": [
+        "index.html:183"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.back",
+      "en": "Back",
+      "hi": "वापस",
+      "pa-Guru": "ਵਾਪਸ",
+      "placeholders": [],
+      "references": [
+        "index.html:119",
+        "index.html:137",
+        "index.html:149",
+        "index.html:165",
+        "index.html:217",
+        "index.html:242",
+        "index.html:254",
+        "privacy.html:49"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.back.to.about",
+      "en": "Back to About",
+      "hi": "परिचय पर वापस जाएँ",
+      "pa-Guru": "ਜਾਣ-ਪਛਾਣ ਉੱਤੇ ਵਾਪਸ ਜਾਓ",
+      "placeholders": [],
+      "references": [
+        "index.html:242"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.back.to.main.screen",
+      "en": "Back to main screen",
+      "hi": "मुख्य स्क्रीन पर वापस जाएँ",
+      "pa-Guru": "ਮੁੱਖ ਸਕ੍ਰੀਨ ਉੱਤੇ ਵਾਪਸ ਜਾਓ",
+      "placeholders": [],
+      "references": [
+        "index.html:137",
+        "index.html:149",
+        "index.html:165",
+        "index.html:217"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.back.to.seva.jump",
+      "en": "Back to Seva Jump",
+      "hi": "Seva Jump पर वापस जाएँ",
+      "pa-Guru": "Seva Jump ਉੱਤੇ ਵਾਪਸ ਜਾਓ",
+      "placeholders": [],
+      "references": [
+        "privacy.html:49"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.badge.earned",
+      "en": "Badge earned!",
+      "hi": "बैज मिला!",
+      "pa-Guru": "ਬੈਜ ਮਿਲਿਆ!",
+      "placeholders": [],
+      "references": [
+        "index.html:153"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.badges",
+      "en": "Badges",
+      "hi": "बैज",
+      "pa-Guru": "ਬੈਜ",
+      "placeholders": [],
+      "references": [
+        "index.html:60",
+        "index.html:134",
+        "game.js:1082",
+        "game.js:1135",
+        "game.js:1159",
+        "game.js:1160",
+        "game.js:1161",
+        "game.js:1162",
+        "game.js:1180",
+        "game.js:1190",
+        "game.js:1191"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.birds",
+      "en": "Birds",
+      "hi": "पक्षी",
+      "pa-Guru": "ਪੰਛੀ",
+      "placeholders": [],
+      "references": [
+        "index.html:171",
+        "index.html:183"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.birds.have.scattered.the.parshad.leap.through",
+      "en": "Birds have scattered the parshad. Leap through the sky, collect it, and help bring it back.",
+      "hi": "पक्षियों ने परशाद बिखेर दिया है। आसमान में छलाँग लगाएँ, उसे इकट्ठा करें और वापस लाने में मदद करें।",
+      "pa-Guru": "ਪੰਛੀਆਂ ਨੇ ਪ੍ਰਸ਼ਾਦ ਖਿਲਾਰ ਦਿੱਤਾ ਹੈ। ਅਸਮਾਨ ਵਿੱਚ ਛਾਲ ਮਾਰੋ, ਉਸ ਨੂੰ ਇਕੱਠਾ ਕਰੋ ਅਤੇ ਵਾਪਸ ਲਿਆਉਣ ਵਿੱਚ ਮਦਦ ਕਰੋ।",
+      "placeholders": [],
+      "references": [
+        "index.html:171"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.block.one.bird.collision",
+      "en": "Block one bird collision.",
+      "hi": "पक्षी से एक टक्कर रोकें।",
+      "pa-Guru": "ਪੰਛੀ ਨਾਲ ਇੱਕ ਟੱਕਰ ਰੋਕੋ।",
+      "placeholders": [],
+      "references": [
+        "index.html:161"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.blocks.one.bird.collision",
+      "en": "Blocks one bird collision.",
+      "hi": "पक्षी से एक टक्कर रोकता है।",
+      "pa-Guru": "ਪੰਛੀ ਨਾਲ ਇੱਕ ਟੱਕਰ ਰੋਕਦਾ ਹੈ।",
+      "placeholders": [],
+      "references": [
+        "index.html:182"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.bright.welcoming.games.inspired.by.sikh.culture",
+      "en": "Bright, welcoming games inspired by Sikh culture and the values of Sikhi.",
+      "hi": "सिख संस्कृति और सिखी के मूल्यों से प्रेरित उजले, सबका स्वागत करने वाले खेल।",
+      "pa-Guru": "ਸਿੱਖ ਸੱਭਿਆਚਾਰ ਅਤੇ ਸਿੱਖੀ ਦੇ ਮੁੱਲਾਂ ਤੋਂ ਪ੍ਰੇਰਿਤ ਰੌਸ਼ਨ, ਸਭ ਦਾ ਸੁਆਗਤ ਕਰਨ ਵਾਲੀਆਂ ਖੇਡਾਂ।",
+      "placeholders": [],
+      "references": [
+        "index.html:213"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.browser.saves.belong.to.this.browser.and",
+      "en": "Browser saves belong to this browser and site. Clearing site data can erase them. If saving is unavailable, you can still play for the current session.",
+      "hi": "ब्राउज़र में सहेजी गई प्रगति इसी ब्राउज़र और साइट की होती है। साइट का डेटा साफ़ करने से यह मिट सकती है। सहेजना उपलब्ध न हो तो भी आप मौजूदा सत्र में खेल सकते हैं।",
+      "pa-Guru": "ਬ੍ਰਾਊਜ਼ਰ ਵਿੱਚ ਸੰਭਾਲੀ ਤਰੱਕੀ ਇਸੇ ਬ੍ਰਾਊਜ਼ਰ ਅਤੇ ਸਾਈਟ ਦੀ ਹੁੰਦੀ ਹੈ। ਸਾਈਟ ਦਾ ਡਾਟਾ ਸਾਫ਼ ਕਰਨ ਨਾਲ ਇਹ ਮਿਟ ਸਕਦੀ ਹੈ। ਸੰਭਾਲਣਾ ਉਪਲਬਧ ਨਾ ਹੋਵੇ ਤਾਂ ਵੀ ਤੁਸੀਂ ਮੌਜੂਦਾ ਸੈਸ਼ਨ ਵਿੱਚ ਖੇਡ ਸਕਦੇ ਹੋ।",
+      "placeholders": [],
+      "references": [
+        "index.html:227",
+        "privacy.html:29"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.buy",
+      "en": "Buy",
+      "hi": "खरीदें",
+      "pa-Guru": "ਖਰੀਦੋ",
+      "placeholders": [],
+      "references": [
+        "index.html:160",
+        "index.html:161",
+        "index.html:162",
+        "game.js:349",
+        "game.js:350",
+        "game.js:352",
+        "game.js:353",
+        "game.js:1210"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.catch.one.fall.during.a.run",
+      "en": "Catch one fall during a run.",
+      "hi": "दौर में एक बार गिरने से बचाएँ।",
+      "pa-Guru": "ਦੌਰ ਵਿੱਚ ਇੱਕ ਵਾਰ ਡਿੱਗਣ ਤੋਂ ਬਚਾਓ।",
+      "placeholders": [],
+      "references": [
+        "index.html:160"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.catches.one.fall.during.a.run",
+      "en": "Catches one fall during a run.",
+      "hi": "दौर में एक बार गिरने से बचाता है।",
+      "pa-Guru": "ਦੌਰ ਵਿੱਚ ਇੱਕ ਵਾਰ ਡਿੱਗਣ ਤੋਂ ਬਚਾਉਂਦਾ ਹੈ।",
+      "placeholders": [],
+      "references": [
+        "index.html:181"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.challenge.mode",
+      "en": "Challenge Mode",
+      "hi": "चुनौती मोड",
+      "pa-Guru": "ਚੁਣੌਤੀ ਮੋਡ",
+      "placeholders": [],
+      "references": [
+        "index.html:54"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.changes.to.this.policy",
+      "en": "Changes to this policy",
+      "hi": "इस नीति में बदलाव",
+      "pa-Guru": "ਇਸ ਨੀਤੀ ਵਿੱਚ ਬਦਲਾਅ",
+      "placeholders": [],
+      "references": [
+        "privacy.html:47"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.changes.will.be.shown.with.a.revised",
+      "en": "Changes will be shown with a revised date and reflected in applicable store disclosures. External websites and email services operate under their own privacy policies.",
+      "hi": "बदलाव संशोधित तारीख के साथ दिखाए जाएँगे और लागू स्टोर घोषणाओं में भी दिखाई देंगे। बाहरी वेबसाइट और ईमेल सेवाएँ अपनी गोपनीयता नीतियों के तहत काम करती हैं।",
+      "pa-Guru": "ਬਦਲਾਅ ਸੋਧੀ ਤਾਰੀਖ ਨਾਲ ਦਿਖਾਏ ਜਾਣਗੇ ਅਤੇ ਲਾਗੂ ਸਟੋਰ ਘੋਸ਼ਣਾਵਾਂ ਵਿੱਚ ਵੀ ਦਰਸਾਏ ਜਾਣਗੇ। ਬਾਹਰੀ ਵੈੱਬਸਾਈਟਾਂ ਅਤੇ ਈਮੇਲ ਸੇਵਾਵਾਂ ਆਪਣੀਆਂ ਪਰਦੇਦਾਰੀ ਨੀਤੀਆਂ ਹੇਠ ਕੰਮ ਕਰਦੀਆਂ ਹਨ।",
+      "placeholders": [],
+      "references": [
+        "index.html:240"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.children",
+      "en": "Children",
+      "hi": "बच्चे",
+      "pa-Guru": "ਬੱਚੇ",
+      "placeholders": [],
+      "references": [
+        "index.html:234",
+        "privacy.html:42"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.choose.a.mode.to.start.your.skyward",
+      "en": "Choose a mode to start your skyward seva adventure.",
+      "hi": "आसमान की ओर सेवा का सफ़र शुरू करने के लिए एक मोड चुनें।",
+      "pa-Guru": "ਅਸਮਾਨ ਵੱਲ ਸੇਵਾ ਦਾ ਸਫ਼ਰ ਸ਼ੁਰੂ ਕਰਨ ਲਈ ਇੱਕ ਮੋਡ ਚੁਣੋ।",
+      "placeholders": [],
+      "references": [
+        "index.html:57"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.choose.game.mode",
+      "en": "Choose game mode",
+      "hi": "खेलने का तरीका चुनें",
+      "pa-Guru": "ਖੇਡਣ ਦਾ ਢੰਗ ਚੁਣੋ",
+      "placeholders": [],
+      "references": [
+        "index.html:51"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.choose.your.character",
+      "en": "Choose your character",
+      "hi": "अपना पात्र चुनें",
+      "pa-Guru": "ਆਪਣਾ ਪਾਤਰ ਚੁਣੋ",
+      "placeholders": [],
+      "references": [
+        "index.html:44"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.classic",
+      "en": "Classic",
+      "hi": "क्लासिक",
+      "pa-Guru": "ਕਲਾਸਿਕ",
+      "placeholders": [],
+      "references": [
+        "index.html:104"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.climb.as.far.as.you.can",
+      "en": "Climb as far as you can",
+      "hi": "जितना हो सके ऊपर जाएँ",
+      "pa-Guru": "ਜਿੰਨਾ ਹੋ ਸਕੇ ਉੱਪਰ ਜਾਓ",
+      "placeholders": [],
+      "references": [
+        "index.html:52"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.close.app",
+      "en": "Close app",
+      "hi": "ऐप बंद करें",
+      "pa-Guru": "ਐਪ ਬੰਦ ਕਰੋ",
+      "placeholders": [],
+      "references": [
+        "index.html:260"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.close.the.game",
+      "en": "Close the game?",
+      "hi": "खेल बंद करें?",
+      "pa-Guru": "ਖੇਡ ਬੰਦ ਕਰੀਏ?",
+      "placeholders": [],
+      "references": [
+        "index.html:258"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.collect.all.50.parshad.bowls",
+      "en": "Collect all 50 parshad bowls",
+      "hi": "परशाद के सभी 50 कटोरे इकट्ठा करें",
+      "pa-Guru": "ਪ੍ਰਸ਼ਾਦ ਦੇ ਸਾਰੇ 50 ਕਟੋਰੇ ਇਕੱਠੇ ਕਰੋ",
+      "placeholders": [],
+      "references": [
+        "index.html:54"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.collect.jump.protect",
+      "en": "Collect, jump, protect",
+      "hi": "इकट्ठा करें, कूदें, बचाएँ",
+      "pa-Guru": "ਇਕੱਠਾ ਕਰੋ, ਛਾਲ ਮਾਰੋ, ਬਚਾਓ",
+      "placeholders": [],
+      "references": [
+        "index.html:174"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.comfort.and.sound",
+      "en": "Comfort and sound",
+      "hi": "आराम और आवाज़",
+      "pa-Guru": "ਆਰਾਮ ਅਤੇ ਆਵਾਜ਼",
+      "placeholders": [],
+      "references": [
+        "index.html:99"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.confirm.reset",
+      "en": "Confirm reset",
+      "hi": "रीसेट की पुष्टि करें",
+      "pa-Guru": "ਰੀਸੈੱਟ ਦੀ ਪੁਸ਼ਟੀ ਕਰੋ",
+      "placeholders": [],
+      "references": [
+        "index.html:128"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.contact",
+      "en": "Contact",
+      "hi": "संपर्क करें",
+      "pa-Guru": "ਸੰਪਰਕ ਕਰੋ",
+      "placeholders": [],
+      "references": [
+        "privacy.html:45"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.controller",
+      "en": "Controller",
+      "hi": "कंट्रोलर",
+      "pa-Guru": "ਕੰਟਰੋਲਰ",
+      "placeholders": [],
+      "references": [
+        "index.html:190"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.curious.about.sikhi",
+      "en": "Curious about Sikhi?",
+      "hi": "सिखी के बारे में जिज्ञासा है?",
+      "pa-Guru": "ਸਿੱਖੀ ਬਾਰੇ ਜਾਣਨ ਦੀ ਇੱਛਾ ਹੈ?",
+      "placeholders": [],
+      "references": [
+        "index.html:208"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.delete.all.saved.scores.upgrades.badges.and",
+      "en": "Delete all saved scores, upgrades, badges, and settings.",
+      "hi": "सभी सहेजे गए स्कोर, अपग्रेड, बैज और सेटिंग्स मिटाएँ।",
+      "pa-Guru": "ਸਾਰੇ ਸੰਭਾਲੇ ਸਕੋਰ, ਅੱਪਗ੍ਰੇਡ, ਬੈਜ ਅਤੇ ਸੈਟਿੰਗਾਂ ਮਿਟਾਓ।",
+      "placeholders": [],
+      "references": [
+        "index.html:116"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.desktop",
+      "en": "Desktop",
+      "hi": "डेस्कटॉप",
+      "pa-Guru": "ਡੈਸਕਟਾਪ",
+      "placeholders": [],
+      "references": [
+        "index.html:189"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.developed.by.khalsa.game.studio",
+      "en": "Developed by Khalsa Game Studio",
+      "hi": "Khalsa Game Studio द्वारा बनाया गया",
+      "pa-Guru": "Khalsa Game Studio ਵੱਲੋਂ ਬਣਾਇਆ ਗਿਆ",
+      "placeholders": [],
+      "references": [
+        "index.html:212"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.developer.information",
+      "en": "Developer information",
+      "hi": "डेवलपर की जानकारी",
+      "pa-Guru": "ਡਿਵੈਲਪਰ ਦੀ ਜਾਣਕਾਰੀ",
+      "placeholders": [],
+      "references": [
+        "index.html:211"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.device.language",
+      "en": "Device language",
+      "hi": "डिवाइस की भाषा",
+      "pa-Guru": "ਡਿਵਾਈਸ ਦੀ ਭਾਸ਼ਾ",
+      "placeholders": [],
+      "references": [
+        "index.html:62",
+        "index.html:102",
+        "privacy.html:21"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.dhal",
+      "en": "Dhal",
+      "hi": "ढाल",
+      "pa-Guru": "ਢਾਲ",
+      "placeholders": [],
+      "references": [
+        "index.html:27",
+        "index.html:161",
+        "index.html:182",
+        "index.html:203",
+        "index.html:249"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.dhal.shield",
+      "en": "Dhal Shield",
+      "hi": "ढाल की सुरक्षा",
+      "pa-Guru": "ਢਾਲ ਦੀ ਸੁਰੱਖਿਆ",
+      "placeholders": [],
+      "references": [
+        "index.html:27",
+        "index.html:161",
+        "index.html:182",
+        "index.html:249"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.drag.anywhere.across.the.game.to.guide",
+      "en": "Drag anywhere across the game to guide your jumper left and right.",
+      "hi": "अपने खिलाड़ी को बाएँ-दाएँ ले जाने के लिए खेल में कहीं भी खींचें।",
+      "pa-Guru": "ਆਪਣੇ ਖਿਡਾਰੀ ਨੂੰ ਖੱਬੇ-ਸੱਜੇ ਲਿਜਾਣ ਲਈ ਖੇਡ ਵਿੱਚ ਕਿਤੇ ਵੀ ਖਿੱਚੋ।",
+      "placeholders": [],
+      "references": [
+        "index.html:188"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.drag.anywhere.across.the.game.to.move",
+      "en": "Drag anywhere across the game to move left and right while your jumper bounces automatically.",
+      "hi": "आपका खिलाड़ी अपने आप उछलता है। उसे बाएँ-दाएँ ले जाने के लिए खेल में कहीं भी खींचें।",
+      "pa-Guru": "ਤੁਹਾਡਾ ਖਿਡਾਰੀ ਆਪਣੇ ਆਪ ਉੱਛਲਦਾ ਹੈ। ਉਸ ਨੂੰ ਖੱਬੇ-ਸੱਜੇ ਲਿਜਾਣ ਲਈ ਖੇਡ ਵਿੱਚ ਕਿਤੇ ਵੀ ਖਿੱਚੋ।",
+      "placeholders": [],
+      "references": [
+        "index.html:83"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.drag.with.a.mouse.or.steer.with",
+      "en": "Drag with a mouse or steer with A/D or the arrow keys. Enter or Space starts Endless from Home; focused buttons keep their usual action. Escape pauses. Use ⛶ during play for fullscreen.",
+      "hi": "माउस से खींचें या A/D या तीर कुंजियों से दिशा दें। मुख्य स्क्रीन से Enter या Space अंतहीन मोड शुरू करता है; फ़ोकस वाले बटन अपना सामान्य काम करते हैं। Escape खेल रोकता है। खेलते समय पूरी स्क्रीन के लिए ⛶ दबाएँ।",
+      "pa-Guru": "ਮਾਊਸ ਨਾਲ ਖਿੱਚੋ ਜਾਂ A/D ਜਾਂ ਤੀਰ ਵਾਲੀਆਂ ਕੁੰਜੀਆਂ ਨਾਲ ਦਿਸ਼ਾ ਦਿਓ। ਮੁੱਖ ਸਕ੍ਰੀਨ ਤੋਂ Enter ਜਾਂ Space ਬੇਅੰਤ ਮੋਡ ਸ਼ੁਰੂ ਕਰਦਾ ਹੈ; ਫੋਕਸ ਵਾਲੇ ਬਟਨ ਆਪਣਾ ਆਮ ਕੰਮ ਕਰਦੇ ਹਨ। Escape ਖੇਡ ਰੋਕਦਾ ਹੈ। ਖੇਡਦੇ ਸਮੇਂ ਪੂਰੀ ਸਕ੍ਰੀਨ ਲਈ ⛶ ਦਬਾਓ।",
+      "placeholders": [],
+      "references": [
+        "index.html:189"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.email",
+      "en": "Email",
+      "hi": "ईमेल करें",
+      "pa-Guru": "ਈਮੇਲ ਕਰੋ",
+      "placeholders": [],
+      "references": [
+        "index.html:237"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.endless",
+      "en": "ENDLESS",
+      "hi": "अंतहीन",
+      "pa-Guru": "ਬੇਅੰਤ",
+      "placeholders": [],
+      "references": [
+        "index.html:30",
+        "index.html:52"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.endless.run",
+      "en": "Endless Run",
+      "hi": "अंतहीन सफ़र",
+      "pa-Guru": "ਬੇਅੰਤ ਸਫ਼ਰ",
+      "placeholders": [],
+      "references": [
+        "index.html:52"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.enter.fullscreen",
+      "en": "Enter fullscreen",
+      "hi": "पूरी स्क्रीन खोलें",
+      "pa-Guru": "ਪੂਰੀ ਸਕ੍ਰੀਨ ਖੋਲ੍ਹੋ",
+      "placeholders": [],
+      "references": [
+        "index.html:33"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.explore.sikhi.at.sikhri.external.website",
+      "en": "Explore Sikhi at SikhRI (external website)",
+      "hi": "SikhRI पर सिखी के बारे में जानें (बाहरी वेबसाइट)",
+      "pa-Guru": "SikhRI ਉੱਤੇ ਸਿੱਖੀ ਬਾਰੇ ਜਾਣੋ (ਬਾਹਰੀ ਵੈੱਬਸਾਈਟ)",
+      "placeholders": [],
+      "references": [
+        "index.html:210"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.falcon.save",
+      "en": "Falcon Save",
+      "hi": "बाज़ की मदद",
+      "pa-Guru": "ਬਾਜ਼ ਦੀ ਮਦਦ",
+      "placeholders": [],
+      "references": [
+        "index.html:26",
+        "index.html:160",
+        "index.html:181",
+        "index.html:248"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.first.run.guide",
+      "en": "First-run guide",
+      "hi": "पहली बार खेलने की गाइड",
+      "pa-Guru": "ਪਹਿਲੀ ਵਾਰ ਖੇਡਣ ਦੀ ਗਾਈਡ",
+      "placeholders": [],
+      "references": [
+        "index.html:79"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.for.privacy.questions.or.deletion.requests.for",
+      "en": "for privacy questions or deletion requests for information you have sent us. Your email address and message are processed through our email provider to respond and may remain until deleted. You can request deletion, subject to legal retention obligations. This is separate from gameplay; the game sends no automatic diagnostic or gameplay reports.",
+      "hi": "पर गोपनीयता के सवाल या हमें भेजी जानकारी मिटाने के अनुरोध भेजें। जवाब देने के लिए आपका ईमेल पता और संदेश हमारे ईमेल प्रदाता के माध्यम से इस्तेमाल होते हैं और मिटाए जाने तक रह सकते हैं। कानूनी रूप से जानकारी रखने की ज़िम्मेदारियों के अधीन, आप इसे मिटाने का अनुरोध कर सकते हैं। यह खेल खेलने से अलग है; खेल कोई स्वचालित निदान या खेल रिपोर्ट नहीं भेजता।",
+      "pa-Guru": "ਉੱਤੇ ਪਰਦੇਦਾਰੀ ਦੇ ਸਵਾਲ ਜਾਂ ਸਾਨੂੰ ਭੇਜੀ ਜਾਣਕਾਰੀ ਮਿਟਾਉਣ ਦੀਆਂ ਬੇਨਤੀਆਂ ਭੇਜੋ। ਜਵਾਬ ਦੇਣ ਲਈ ਤੁਹਾਡਾ ਈਮੇਲ ਪਤਾ ਅਤੇ ਸੁਨੇਹਾ ਸਾਡੇ ਈਮੇਲ ਪ੍ਰਦਾਤਾ ਰਾਹੀਂ ਵਰਤੇ ਜਾਂਦੇ ਹਨ ਅਤੇ ਮਿਟਾਏ ਜਾਣ ਤੱਕ ਰਹਿ ਸਕਦੇ ਹਨ। ਕਾਨੂੰਨੀ ਤੌਰ ਉੱਤੇ ਜਾਣਕਾਰੀ ਰੱਖਣ ਦੀਆਂ ਜ਼ਿੰਮੇਵਾਰੀਆਂ ਦੇ ਅਧੀਨ, ਤੁਸੀਂ ਇਸ ਨੂੰ ਮਿਟਾਉਣ ਦੀ ਬੇਨਤੀ ਕਰ ਸਕਦੇ ਹੋ। ਇਹ ਖੇਡ ਖੇਡਣ ਤੋਂ ਵੱਖਰਾ ਹੈ; ਖੇਡ ਕੋਈ ਆਟੋਮੈਟਿਕ ਨਿਦਾਨ ਜਾਂ ਖੇਡ ਰਿਪੋਰਟ ਨਹੀਂ ਭੇਜਦੀ।",
+      "placeholders": [],
+      "references": [
+        "index.html:237"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.game.mission",
+      "en": "Game mission",
+      "hi": "खेल का उद्देश्य",
+      "pa-Guru": "ਖੇਡ ਦਾ ਮਕਸਦ",
+      "placeholders": [],
+      "references": [
+        "index.html:169"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.game.paused",
+      "en": "Game paused",
+      "hi": "खेल रुका हुआ है",
+      "pa-Guru": "ਖੇਡ ਰੁਕੀ ਹੋਈ ਹੈ",
+      "placeholders": [],
+      "references": [
+        "index.html:89"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.game.settings",
+      "en": "Game settings",
+      "hi": "खेल की सेटिंग्स",
+      "pa-Guru": "ਖੇਡ ਦੀਆਂ ਸੈਟਿੰਗਾਂ",
+      "placeholders": [],
+      "references": [
+        "index.html:101"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.game.version.1.0.13",
+      "en": "Game version 1.0.13",
+      "hi": "खेल का संस्करण 1.0.13",
+      "pa-Guru": "ਖੇਡ ਦਾ ਵਰਜਨ 1.0.13",
+      "placeholders": [],
+      "references": [
+        "index.html:63"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.gives.one.higher.jump",
+      "en": "Gives one higher jump.",
+      "hi": "एक और ऊँची छलाँग देता है।",
+      "pa-Guru": "ਇੱਕ ਹੋਰ ਉੱਚੀ ਛਾਲ ਦਿੰਦਾ ਹੈ।",
+      "placeholders": [],
+      "references": [
+        "index.html:179"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.got.it",
+      "en": "Got it",
+      "hi": "समझ गए",
+      "pa-Guru": "ਸਮਝ ਗਏ",
+      "placeholders": [],
+      "references": [
+        "index.html:125"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.grass.is.steady.spring.launches.moving.shifts",
+      "en": "Grass is steady; spring launches, moving shifts, and wood breaks.",
+      "hi": "घास वाला मंच स्थिर है; स्प्रिंग उछालता है, चलता मंच खिसकता है और लकड़ी टूटती है।",
+      "pa-Guru": "ਘਾਹ ਵਾਲਾ ਮੰਚ ਥਿਰ ਹੈ; ਸਪਰਿੰਗ ਉਛਾਲਦਾ ਹੈ, ਚੱਲਦਾ ਮੰਚ ਖਿਸਕਦਾ ਹੈ ਅਤੇ ਲੱਕੜ ਟੁੱਟਦੀ ਹੈ।",
+      "placeholders": [],
+      "references": [
+        "index.html:178"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.guide.your.jumper",
+      "en": "Guide your jumper",
+      "hi": "अपने खिलाड़ी को दिशा दें",
+      "pa-Guru": "ਆਪਣੇ ਖਿਡਾਰੀ ਨੂੰ ਦਿਸ਼ਾ ਦਿਓ",
+      "placeholders": [],
+      "references": [
+        "index.html:82"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.gurdwara",
+      "en": "Gurdwara",
+      "hi": "गुरुद्वारा",
+      "pa-Guru": "ਗੁਰਦੁਆਰਾ",
+      "placeholders": [],
+      "references": [
+        "index.html:199"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.hard.mode",
+      "en": "Hard Mode",
+      "hi": "कठिन मोड",
+      "pa-Guru": "ਔਖਾ ਮੋਡ",
+      "placeholders": [],
+      "references": [
+        "index.html:55",
+        "index.html:184"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.help",
+      "en": "Help!",
+      "hi": "मदद करें!",
+      "pa-Guru": "ਮਦਦ ਕਰੋ!",
+      "placeholders": [],
+      "references": [
+        "index.html:42",
+        "index.html:106",
+        "index.html:109",
+        "index.html:111",
+        "game.js:215",
+        "game.js:1217",
+        "game.js:1220"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.helping.hand",
+      "en": "Helping Hand",
+      "hi": "सहायक हाथ",
+      "pa-Guru": "ਮਦਦਗਾਰ ਹੱਥ",
+      "placeholders": [],
+      "references": [
+        "index.html:106",
+        "index.html:109",
+        "index.html:111"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.helping.hand.applies.to.endless.and.arcade",
+      "en": "Helping Hand applies to Endless and Arcade only.",
+      "hi": "सहायक हाथ केवल अंतहीन और आर्केड मोड में काम करता है।",
+      "pa-Guru": "ਮਦਦਗਾਰ ਹੱਥ ਸਿਰਫ਼ ਬੇਅੰਤ ਅਤੇ ਆਰਕੇਡ ਮੋਡ ਵਿੱਚ ਕੰਮ ਕਰਦਾ ਹੈ।",
+      "placeholders": [],
+      "references": [
+        "index.html:109"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.helping.hand.steps.in.when.you.are",
+      "en": "Helping Hand steps in when you are stuck bouncing with no platform in reach in Endless or Arcade: after about three seconds your platform turns into a spring, or helper platforms appear. Challenge and Hard show a persistent warning instead; keep trying or use Pause to restart or leave.",
+      "hi": "अंतहीन या आर्केड में कोई मंच पहुँच में न होने पर आप एक ही जगह उछलते रह जाएँ, तो सहायक हाथ मदद करता है: लगभग तीन सेकंड बाद आपका मंच स्प्रिंग बन जाता है या मदद के लिए मंच आ जाते हैं। चुनौती और कठिन मोड में इसके बजाय चेतावनी बनी रहती है; कोशिश जारी रखें या खेल रोककर फिर शुरू करें या बाहर जाएँ।",
+      "pa-Guru": "ਬੇਅੰਤ ਜਾਂ ਆਰਕੇਡ ਵਿੱਚ ਕੋਈ ਮੰਚ ਪਹੁੰਚ ਵਿੱਚ ਨਾ ਹੋਣ ਕਰਕੇ ਤੁਸੀਂ ਇੱਕੋ ਥਾਂ ਉੱਛਲਦੇ ਰਹਿ ਜਾਓ, ਤਾਂ ਮਦਦਗਾਰ ਹੱਥ ਮਦਦ ਕਰਦਾ ਹੈ: ਲਗਭਗ ਤਿੰਨ ਸਕਿੰਟਾਂ ਬਾਅਦ ਤੁਹਾਡਾ ਮੰਚ ਸਪਰਿੰਗ ਬਣ ਜਾਂਦਾ ਹੈ ਜਾਂ ਮਦਦ ਲਈ ਮੰਚ ਆ ਜਾਂਦੇ ਹਨ। ਚੁਣੌਤੀ ਅਤੇ ਔਖੇ ਮੋਡ ਵਿੱਚ ਇਸ ਦੀ ਥਾਂ ਚੇਤਾਵਨੀ ਬਣੀ ਰਹਿੰਦੀ ਹੈ; ਕੋਸ਼ਿਸ਼ ਜਾਰੀ ਰੱਖੋ ਜਾਂ ਖੇਡ ਰੋਕ ਕੇ ਫਿਰ ਸ਼ੁਰੂ ਕਰੋ ਜਾਂ ਬਾਹਰ ਜਾਓ।",
+      "placeholders": [],
+      "references": [
+        "index.html:111"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.here.karah.parshad.a.blessed.sweet.offering",
+      "en": "Here, karah parshad: a blessed sweet offering shared equally with everyone, Sikh or non-Sikh.",
+      "hi": "यहाँ कड़ाह परशाद: एक पवित्र मीठा प्रसाद जो सभी को बराबर बाँटा जाता है, चाहे सिख हों या नहीं।",
+      "pa-Guru": "ਇੱਥੇ ਕੜਾਹ ਪ੍ਰਸ਼ਾਦ: ਇੱਕ ਪਵਿੱਤਰ ਮਿੱਠਾ ਪ੍ਰਸ਼ਾਦ ਜੋ ਸਭ ਨੂੰ ਬਰਾਬਰ ਵੰਡਿਆ ਜਾਂਦਾ ਹੈ, ਭਾਵੇਂ ਸਿੱਖ ਹੋਣ ਜਾਂ ਨਾ ਹੋਣ।",
+      "placeholders": [],
+      "references": [
+        "index.html:198"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.how.runs.ended",
+      "en": "How runs ended",
+      "hi": "दौर कैसे खत्म हुए",
+      "pa-Guru": "ਦੌਰ ਕਿਵੇਂ ਮੁੱਕੇ",
+      "placeholders": [],
+      "references": [
+        "index.html:146"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.how.to.play",
+      "en": "How to play",
+      "hi": "कैसे खेलें",
+      "pa-Guru": "ਕਿਵੇਂ ਖੇਡੀਏ",
+      "placeholders": [],
+      "references": [
+        "index.html:187"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.i.am.a.follower.of.sikhi.and",
+      "en": "I am a follower of Sikhi, and this game is my creative idea, inspired by Sikhi and made for everyone. Familiar symbols become playful parts of a make-believe adventure. I hope they spark questions, not tell you what to believe. The game does not replace Sikh teachings or learning from others.",
+      "hi": "मैं सिखी का अनुयायी हूँ। यह खेल मेरा रचनात्मक विचार है, जो सिखी से प्रेरित है और सबके लिए बनाया गया है। परिचित चिह्न इस काल्पनिक रोमांच के मज़ेदार हिस्से बनते हैं। मेरी आशा है कि वे आपके मन में सवाल जगाएँ, न कि यह बताएँ कि आपको क्या मानना चाहिए। यह खेल सिख शिक्षाओं या दूसरों से सीखने की जगह नहीं लेता।",
+      "pa-Guru": "ਮੈਂ ਸਿੱਖੀ ਦਾ ਪੈਰੋਕਾਰ ਹਾਂ। ਇਹ ਖੇਡ ਮੇਰਾ ਰਚਨਾਤਮਕ ਵਿਚਾਰ ਹੈ, ਜੋ ਸਿੱਖੀ ਤੋਂ ਪ੍ਰੇਰਿਤ ਹੈ ਅਤੇ ਸਭ ਲਈ ਬਣਾਈ ਗਈ ਹੈ। ਜਾਣੇ-ਪਛਾਣੇ ਚਿੰਨ੍ਹ ਇਸ ਕਾਲਪਨਿਕ ਰੋਮਾਂਚ ਦੇ ਮਜ਼ੇਦਾਰ ਹਿੱਸੇ ਬਣਦੇ ਹਨ। ਮੇਰੀ ਆਸ ਹੈ ਕਿ ਇਹ ਤੁਹਾਡੇ ਮਨ ਵਿੱਚ ਸਵਾਲ ਜਗਾਉਣ, ਨਾ ਕਿ ਇਹ ਦੱਸਣ ਕਿ ਤੁਹਾਨੂੰ ਕੀ ਮੰਨਣਾ ਚਾਹੀਦਾ ਹੈ। ਇਹ ਖੇਡ ਸਿੱਖ ਸਿੱਖਿਆਵਾਂ ਜਾਂ ਦੂਜਿਆਂ ਤੋਂ ਸਿੱਖਣ ਦੀ ਥਾਂ ਨਹੀਂ ਲੈਂਦੀ।",
+      "placeholders": [],
+      "references": [
+        "index.html:206"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.i.welcome.corrections.to.facts.and.feedback",
+      "en": "I welcome corrections to facts and feedback about anything that gives the wrong impression. People may see the creative choices differently, and we can disagree respectfully.",
+      "hi": "तथ्यों में सुधार और किसी गलत धारणा के बारे में आपकी राय का स्वागत है। लोग रचनात्मक विकल्पों को अलग तरह से देख सकते हैं, और हम सम्मान के साथ असहमत हो सकते हैं।",
+      "pa-Guru": "ਤੱਥਾਂ ਵਿੱਚ ਸੁਧਾਰ ਅਤੇ ਕਿਸੇ ਗਲਤ ਧਾਰਨਾ ਬਾਰੇ ਤੁਹਾਡੀ ਰਾਏ ਦਾ ਸੁਆਗਤ ਹੈ। ਲੋਕ ਰਚਨਾਤਮਕ ਚੋਣਾਂ ਨੂੰ ਵੱਖਰੇ ਤਰੀਕੇ ਨਾਲ ਵੇਖ ਸਕਦੇ ਹਨ, ਅਤੇ ਅਸੀਂ ਸਤਿਕਾਰ ਨਾਲ ਅਸਹਿਮਤ ਹੋ ਸਕਦੇ ਹਾਂ।",
+      "placeholders": [],
+      "references": [
+        "index.html:207"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.increase.jump.height.by.10",
+      "en": "Increase jump height by 10%.",
+      "hi": "छलाँग की ऊँचाई 10% बढ़ाएँ।",
+      "pa-Guru": "ਛਾਲ ਦੀ ਉਚਾਈ 10% ਵਧਾਓ।",
+      "placeholders": [],
+      "references": [
+        "index.html:162"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.jump.again",
+      "en": "Jump again",
+      "hi": "फिर छलाँग लगाएँ",
+      "pa-Guru": "ਫਿਰ ਛਾਲ ਮਾਰੋ",
+      "placeholders": [],
+      "references": [
+        "index.html:73"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.kara",
+      "en": "Kara",
+      "hi": "कड़ा",
+      "pa-Guru": "ਕੜਾ",
+      "placeholders": [],
+      "references": [
+        "index.html:179",
+        "index.html:200"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.kara.boost",
+      "en": "Kara boost",
+      "hi": "कड़े का उछाल",
+      "pa-Guru": "ਕੜੇ ਦਾ ਉਛਾਲ",
+      "placeholders": [],
+      "references": [
+        "index.html:179"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.keep.my.progress",
+      "en": "Keep my progress",
+      "hi": "मेरी प्रगति रखें",
+      "pa-Guru": "ਮੇਰੀ ਤਰੱਕੀ ਰੱਖੋ",
+      "placeholders": [],
+      "references": [
+        "index.html:131"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.keep.playing",
+      "en": "Keep playing",
+      "hi": "खेलते रहें",
+      "pa-Guru": "ਖੇਡਦੇ ਰਹੋ",
+      "placeholders": [],
+      "references": [
+        "index.html:260"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.keeps.gameplay.the.same.while.making.decorative",
+      "en": "keeps gameplay the same while making decorative movement still, including character bobbing, hovering, fireworks, and transitions.",
+      "hi": "खेल को वैसा ही रखती है और सजावटी हलचल को स्थिर करती है, जैसे पात्र का हिलना, मंडराना, आतिशबाज़ी और इंटरफ़ेस के बदलाव।",
+      "pa-Guru": "ਖੇਡ ਨੂੰ ਉਸੇ ਤਰ੍ਹਾਂ ਰੱਖਦੀ ਹੈ ਅਤੇ ਸਜਾਵਟੀ ਹਿਲਜੁਲ ਨੂੰ ਥਿਰ ਕਰਦੀ ਹੈ, ਜਿਵੇਂ ਪਾਤਰ ਦਾ ਹਿਲਣਾ, ਮੰਡਰਾਉਣਾ, ਆਤਿਸ਼ਬਾਜ਼ੀ ਅਤੇ ਇੰਟਰਫੇਸ ਦੇ ਬਦਲਾਅ।",
+      "placeholders": [],
+      "references": [
+        "index.html:192"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.khanda",
+      "en": "Khanda",
+      "hi": "खंडा",
+      "pa-Guru": "ਖੰਡਾ",
+      "placeholders": [],
+      "references": [
+        "index.html:156",
+        "index.html:177",
+        "index.html:202"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.khanda.token",
+      "en": "Khanda token",
+      "hi": "खंडा टोकन",
+      "pa-Guru": "ਖੰਡਾ ਟੋਕਨ",
+      "placeholders": [],
+      "references": [
+        "index.html:156",
+        "index.html:177"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.khanda.tokens",
+      "en": "Khanda tokens:",
+      "hi": "खंडा टोकन:",
+      "pa-Guru": "ਖੰਡਾ ਟੋਕਨ:",
+      "placeholders": [],
+      "references": [
+        "index.html:156"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.language",
+      "en": "Language",
+      "hi": "भाषा",
+      "pa-Guru": "ਭਾਸ਼ਾ",
+      "placeholders": [],
+      "references": [
+        "index.html:62",
+        "index.html:102",
+        "privacy.html:21",
+        "i18n.js:43"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.languageSaveWarning",
+      "en": "Language choice could not be saved. It applies for this session.",
+      "hi": "भाषा की पसंद सहेजी नहीं जा सकी। यह इस सत्र के लिए लागू है।",
+      "pa-Guru": "ਭਾਸ਼ਾ ਦੀ ਚੋਣ ਸੰਭਾਲੀ ਨਹੀਂ ਜਾ ਸਕੀ। ਇਹ ਇਸ ਸੈਸ਼ਨ ਲਈ ਲਾਗੂ ਹੈ।",
+      "placeholders": [],
+      "references": [
+        "i18n.js:43"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.last.updated.september.26.2026",
+      "en": "Last updated: September 26, 2026",
+      "hi": "पिछला अपडेट: 26 सितंबर, 2026",
+      "pa-Guru": "ਪਿਛਲਾ ਅੱਪਡੇਟ: 26 ਸਤੰਬਰ, 2026",
+      "placeholders": [],
+      "references": [
+        "index.html:222",
+        "privacy.html:24"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.learn.about.sikhi",
+      "en": "Learn about Sikhi",
+      "hi": "सिखी के बारे में जानें",
+      "pa-Guru": "ਸਿੱਖੀ ਬਾਰੇ ਜਾਣੋ",
+      "placeholders": [],
+      "references": [
+        "index.html:193"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.leaving.seva.jump",
+      "en": "Leaving Seva Jump",
+      "hi": "Seva Jump से बाहर निकलना",
+      "pa-Guru": "Seva Jump ਤੋਂ ਬਾਹਰ ਜਾਣਾ",
+      "placeholders": [],
+      "references": [
+        "index.html:257"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.level.0.5",
+      "en": "Level: 0 / 5",
+      "hi": "स्तर: 0 / 5",
+      "pa-Guru": "ਪੱਧਰ: 0 / 5",
+      "placeholders": [],
+      "references": [
+        "index.html:162"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.lifetime.statistics",
+      "en": "Lifetime statistics",
+      "hi": "अब तक के आँकड़े",
+      "pa-Guru": "ਹੁਣ ਤੱਕ ਦੇ ਅੰਕੜੇ",
+      "placeholders": [],
+      "references": [
+        "index.html:144"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.local.progress.remains.until.you.reset.it",
+      "en": "Local progress remains until you reset it or the app or browser storage is cleared. On Android, you can also clear the app's storage in device Settings. We do not receive a copy and cannot recover deleted progress. There are no accounts or cloud saves.",
+      "hi": "स्थानीय प्रगति तब तक रहती है जब तक आप इसे रीसेट न करें या ऐप या ब्राउज़र का स्टोरेज साफ़ न हो। Android पर आप डिवाइस की सेटिंग्स में ऐप का स्टोरेज भी साफ़ कर सकते हैं। हमें इसकी प्रति नहीं मिलती और हम मिटाई गई प्रगति वापस नहीं ला सकते। कोई खाता या क्लाउड सेव नहीं है।",
+      "pa-Guru": "ਸਥਾਨਕ ਤਰੱਕੀ ਉਦੋਂ ਤੱਕ ਰਹਿੰਦੀ ਹੈ ਜਦੋਂ ਤੱਕ ਤੁਸੀਂ ਇਸ ਨੂੰ ਰੀਸੈੱਟ ਨਹੀਂ ਕਰਦੇ ਜਾਂ ਐਪ ਜਾਂ ਬ੍ਰਾਊਜ਼ਰ ਦੀ ਸਟੋਰੇਜ ਸਾਫ਼ ਨਹੀਂ ਹੁੰਦੀ। Android ਉੱਤੇ ਤੁਸੀਂ ਡਿਵਾਈਸ ਦੀਆਂ ਸੈਟਿੰਗਾਂ ਵਿੱਚ ਐਪ ਦੀ ਸਟੋਰੇਜ ਵੀ ਸਾਫ਼ ਕਰ ਸਕਦੇ ਹੋ। ਸਾਨੂੰ ਇਸ ਦੀ ਨਕਲ ਨਹੀਂ ਮਿਲਦੀ ਅਤੇ ਅਸੀਂ ਮਿਟਾਈ ਤਰੱਕੀ ਵਾਪਸ ਨਹੀਂ ਲਿਆ ਸਕਦੇ। ਕੋਈ ਖਾਤਾ ਜਾਂ ਕਲਾਊਡ ਸੇਵ ਨਹੀਂ ਹੈ।",
+      "placeholders": [],
+      "references": [
+        "index.html:229",
+        "privacy.html:31"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.local.progress.remains.until.you.reset.it.2",
+      "en": "Local progress remains until you reset it or the app or browser storage is cleared. On Android, you can also clear the app's storage in device Settings. We do not receive a copy of your saved progress and cannot recover it after deletion. The game has no account or cloud save.",
+      "hi": "स्थानीय प्रगति तब तक रहती है जब तक आप इसे रीसेट न करें या ऐप या ब्राउज़र का स्टोरेज साफ़ न हो। Android पर आप डिवाइस की सेटिंग्स में ऐप का स्टोरेज भी साफ़ कर सकते हैं। हमें आपकी सहेजी प्रगति की प्रति नहीं मिलती और मिटने के बाद हम इसे वापस नहीं ला सकते। खेल में कोई खाता या क्लाउड सेव नहीं है।",
+      "pa-Guru": "ਸਥਾਨਕ ਤਰੱਕੀ ਉਦੋਂ ਤੱਕ ਰਹਿੰਦੀ ਹੈ ਜਦੋਂ ਤੱਕ ਤੁਸੀਂ ਇਸ ਨੂੰ ਰੀਸੈੱਟ ਨਹੀਂ ਕਰਦੇ ਜਾਂ ਐਪ ਜਾਂ ਬ੍ਰਾਊਜ਼ਰ ਦੀ ਸਟੋਰੇਜ ਸਾਫ਼ ਨਹੀਂ ਹੁੰਦੀ। Android ਉੱਤੇ ਤੁਸੀਂ ਡਿਵਾਈਸ ਦੀਆਂ ਸੈਟਿੰਗਾਂ ਵਿੱਚ ਐਪ ਦੀ ਸਟੋਰੇਜ ਵੀ ਸਾਫ਼ ਕਰ ਸਕਦੇ ਹੋ। ਸਾਨੂੰ ਤੁਹਾਡੀ ਸੰਭਾਲੀ ਤਰੱਕੀ ਦੀ ਨਕਲ ਨਹੀਂ ਮਿਲਦੀ ਅਤੇ ਮਿਟਣ ਤੋਂ ਬਾਅਦ ਅਸੀਂ ਇਸ ਨੂੰ ਵਾਪਸ ਨਹੀਂ ਲਿਆ ਸਕਦੇ। ਖੇਡ ਵਿੱਚ ਕੋਈ ਖਾਤਾ ਜਾਂ ਕਲਾਊਡ ਸੇਵ ਨਹੀਂ ਹੈ।",
+      "placeholders": [],
+      "references": [
+        "privacy.html:31"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.main.screen",
+      "en": "Main screen",
+      "hi": "मुख्य स्क्रीन",
+      "pa-Guru": "ਮੁੱਖ ਸਕ੍ਰੀਨ",
+      "placeholders": [],
+      "references": [
+        "index.html:74",
+        "index.html:95"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.more.game.options",
+      "en": "More game options",
+      "hi": "खेल के और विकल्प",
+      "pa-Guru": "ਖੇਡ ਦੇ ਹੋਰ ਵਿਕਲਪ",
+      "placeholders": [],
+      "references": [
+        "index.html:58"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.more.to.explore",
+      "en": "More to explore",
+      "hi": "और जानें",
+      "pa-Guru": "ਹੋਰ ਜਾਣੋ",
+      "placeholders": [],
+      "references": [
+        "index.html:59"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.music",
+      "en": "Music",
+      "hi": "संगीत",
+      "pa-Guru": "ਸੰਗੀਤ",
+      "placeholders": [],
+      "references": [
+        "index.html:103",
+        "index.html:104",
+        "game.js:212",
+        "game.js:216",
+        "game.js:250",
+        "game.js:307",
+        "game.js:323",
+        "game.js:329",
+        "game.js:1212",
+        "game.js:1214",
+        "game.js:1218"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.music.style",
+      "en": "Music style",
+      "hi": "संगीत की शैली",
+      "pa-Guru": "ਸੰਗੀਤ ਦੀ ਸ਼ੈਲੀ",
+      "placeholders": [],
+      "references": [
+        "index.html:104"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.next",
+      "en": "Next",
+      "hi": "आगे",
+      "pa-Guru": "ਅੱਗੇ",
+      "placeholders": [],
+      "references": [
+        "index.html:85"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.nice.climb",
+      "en": "Nice climb!",
+      "hi": "बढ़िया चढ़ाई!",
+      "pa-Guru": "ਵਧੀਆ ਚੜ੍ਹਾਈ!",
+      "placeholders": [],
+      "references": [
+        "index.html:66"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.nishan.boost",
+      "en": "Nishan boost",
+      "hi": "निशान की उड़ान",
+      "pa-Guru": "ਨਿਸ਼ਾਨ ਦੀ ਉਡਾਣ",
+      "placeholders": [],
+      "references": [
+        "index.html:180"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.nishan.sahib",
+      "en": "Nishan Sahib",
+      "hi": "निशान साहिब",
+      "pa-Guru": "ਨਿਸ਼ਾਨ ਸਾਹਿਬ",
+      "placeholders": [],
+      "references": [
+        "index.html:201"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.no.accounts.or.sign.in",
+      "en": "No accounts or sign-in",
+      "hi": "कोई खाता या साइन-इन नहीं",
+      "pa-Guru": "ਕੋਈ ਖਾਤਾ ਜਾਂ ਸਾਈਨ-ਇਨ ਨਹੀਂ",
+      "placeholders": [],
+      "references": [
+        "index.html:233",
+        "privacy.html:36"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.no.advertising",
+      "en": "No advertising",
+      "hi": "कोई विज्ञापन नहीं",
+      "pa-Guru": "ਕੋਈ ਇਸ਼ਤਿਹਾਰ ਨਹੀਂ",
+      "placeholders": [],
+      "references": [
+        "index.html:233",
+        "privacy.html:37"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.no.advertising.or.purchases",
+      "en": "No advertising or purchases",
+      "hi": "कोई विज्ञापन या खरीदारी नहीं",
+      "pa-Guru": "ਕੋਈ ਇਸ਼ਤਿਹਾਰ ਜਾਂ ਖਰੀਦਦਾਰੀ ਨਹੀਂ",
+      "placeholders": [],
+      "references": [
+        "index.html:233"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.no.analytics.or.tracking.cookies",
+      "en": "No analytics or tracking cookies",
+      "hi": "कोई विश्लेषण या ट्रैकिंग कुकी नहीं",
+      "pa-Guru": "ਕੋਈ ਵਿਸ਼ਲੇਸ਼ਣ ਜਾਂ ਟ੍ਰੈਕਿੰਗ ਕੁਕੀ ਨਹੀਂ",
+      "placeholders": [],
+      "references": [
+        "index.html:233",
+        "privacy.html:39"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.no.collection.of.location.contacts.photos.microphone",
+      "en": "No collection of location, contacts, photos, microphone, or camera data",
+      "hi": "स्थान, संपर्क, फ़ोटो, माइक्रोफ़ोन या कैमरा डेटा इकट्ठा नहीं होता",
+      "pa-Guru": "ਟਿਕਾਣਾ, ਸੰਪਰਕ, ਫ਼ੋਟੋ, ਮਾਈਕ੍ਰੋਫ਼ੋਨ ਜਾਂ ਕੈਮਰਾ ਡਾਟਾ ਇਕੱਠਾ ਨਹੀਂ ਹੁੰਦਾ",
+      "placeholders": [],
+      "references": [
+        "index.html:233",
+        "privacy.html:40"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.no.in.app.purchases",
+      "en": "No in-app purchases",
+      "hi": "ऐप में कोई खरीदारी नहीं",
+      "pa-Guru": "ਐਪ ਵਿੱਚ ਕੋਈ ਖਰੀਦਦਾਰੀ ਨਹੀਂ",
+      "placeholders": [],
+      "references": [
+        "privacy.html:38"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.one.falcon.save.and.one.dhal.shield",
+      "en": "One Falcon Save and one Dhal Shield per run, used only when activated. Unused items are kept. Choices are remembered; collected boosts still work.",
+      "hi": "हर दौर में एक बाज़ की मदद और एक ढाल की सुरक्षा, केवल सक्रिय होने पर इस्तेमाल होते हैं। बिना इस्तेमाल की चीज़ें बची रहती हैं। आपकी पसंद याद रखी जाती है; इकट्ठे किए बूस्ट फिर भी काम करते हैं।",
+      "pa-Guru": "ਹਰ ਦੌਰ ਵਿੱਚ ਇੱਕ ਬਾਜ਼ ਦੀ ਮਦਦ ਅਤੇ ਇੱਕ ਢਾਲ ਦੀ ਸੁਰੱਖਿਆ, ਸਿਰਫ਼ ਸਰਗਰਮ ਹੋਣ ਉੱਤੇ ਵਰਤੇ ਜਾਂਦੇ ਹਨ। ਨਾ ਵਰਤੀਆਂ ਚੀਜ਼ਾਂ ਬਚੀਆਂ ਰਹਿੰਦੀਆਂ ਹਨ। ਤੁਹਾਡੀ ਚੋਣ ਯਾਦ ਰੱਖੀ ਜਾਂਦੀ ਹੈ; ਇਕੱਠੇ ਕੀਤੇ ਬੂਸਟ ਫਿਰ ਵੀ ਕੰਮ ਕਰਦੇ ਹਨ।",
+      "placeholders": [],
+      "references": [
+        "index.html:252"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.only.small.moving.and.breakable.routes.birds",
+      "en": "Only small moving and breakable routes. Birds arrive earlier, one per screen.",
+      "hi": "केवल छोटे चलते और टूटने वाले रास्ते। पक्षी पहले आ जाते हैं, हर स्क्रीन पर एक।",
+      "pa-Guru": "ਸਿਰਫ਼ ਛੋਟੇ ਚੱਲਦੇ ਅਤੇ ਟੁੱਟਣ ਵਾਲੇ ਰਸਤੇ। ਪੰਛੀ ਪਹਿਲਾਂ ਆ ਜਾਂਦੇ ਹਨ, ਹਰ ਸਕ੍ਰੀਨ ਉੱਤੇ ਇੱਕ।",
+      "placeholders": [],
+      "references": [
+        "index.html:184"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.owned.0",
+      "en": "Owned: 0",
+      "hi": "आपके पास: 0",
+      "pa-Guru": "ਤੁਹਾਡੇ ਕੋਲ: 0",
+      "placeholders": [],
+      "references": [
+        "index.html:160",
+        "index.html:161"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.owned.upgrades",
+      "en": "Owned upgrades",
+      "hi": "आपके अपग्रेड",
+      "pa-Guru": "ਤੁਹਾਡੇ ਅੱਪਗ੍ਰੇਡ",
+      "placeholders": [],
+      "references": [
+        "index.html:25"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.parshad",
+      "en": "Parshad",
+      "hi": "परशाद",
+      "pa-Guru": "ਪ੍ਰਸ਼ਾਦ",
+      "placeholders": [],
+      "references": [
+        "index.html:24",
+        "index.html:176",
+        "index.html:198"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.parshad.0.khanda.0",
+      "en": "Parshad 0 · Khanda 0",
+      "hi": "परशाद 0 · खंडा 0",
+      "pa-Guru": "ਪ੍ਰਸ਼ਾਦ 0 · ਖੰਡਾ 0",
+      "placeholders": [],
+      "references": [
+        "index.html:24"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.parshad.bowl",
+      "en": "Parshad bowl",
+      "hi": "परशाद का कटोरा",
+      "pa-Guru": "ਪ੍ਰਸ਼ਾਦ ਦਾ ਕਟੋਰਾ",
+      "placeholders": [],
+      "references": [
+        "index.html:176"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.pause.game",
+      "en": "Pause game",
+      "hi": "खेल रोकें",
+      "pa-Guru": "ਖੇਡ ਰੋਕੋ",
+      "placeholders": [],
+      "references": [
+        "index.html:34"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.personal.best.scores",
+      "en": "Personal best scores",
+      "hi": "आपके सर्वश्रेष्ठ स्कोर",
+      "pa-Guru": "ਤੁਹਾਡੇ ਸਭ ਤੋਂ ਵਧੀਆ ਸਕੋਰ",
+      "placeholders": [],
+      "references": [
+        "index.html:143"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.phone.or.tablet",
+      "en": "Phone or tablet",
+      "hi": "फ़ोन या टैबलेट",
+      "pa-Guru": "ਫ਼ੋਨ ਜਾਂ ਟੈਬਲੇਟ",
+      "placeholders": [],
+      "references": [
+        "index.html:188"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.platforms",
+      "en": "Platforms",
+      "hi": "मंच",
+      "pa-Guru": "ਮੰਚ",
+      "placeholders": [],
+      "references": [
+        "index.html:178"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.play.a.sample.of.this.music.style",
+      "en": "Play a sample of this music style",
+      "hi": "इस संगीत शैली का नमूना सुनें",
+      "pa-Guru": "ਇਸ ਸੰਗੀਤ ਸ਼ੈਲੀ ਦਾ ਨਮੂਨਾ ਸੁਣੋ",
+      "placeholders": [],
+      "references": [
+        "index.html:104"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.play.as.the.young.sikh.boy",
+      "en": "Play as the young Sikh boy",
+      "hi": "सिख लड़का बनकर खेलें",
+      "pa-Guru": "ਸਿੱਖ ਮੁੰਡਾ ਬਣ ਕੇ ਖੇਡੋ",
+      "placeholders": [],
+      "references": [
+        "index.html:47"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.play.as.the.young.sikh.girl",
+      "en": "Play as the young Sikh girl",
+      "hi": "सिख लड़की बनकर खेलें",
+      "pa-Guru": "ਸਿੱਖ ਕੁੜੀ ਬਣ ਕੇ ਖੇਡੋ",
+      "placeholders": [],
+      "references": [
+        "index.html:46"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.playing.on.another.website",
+      "en": "Playing on another website",
+      "hi": "दूसरी वेबसाइट पर खेलना",
+      "pa-Guru": "ਦੂਜੀ ਵੈੱਬਸਾਈਟ ਉੱਤੇ ਖੇਡਣਾ",
+      "placeholders": [],
+      "references": [
+        "index.html:230",
+        "privacy.html:32"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.please.do.not.send.passwords.or.sensitive",
+      "en": "Please do not send passwords or sensitive information. Children should ask a parent or guardian to contact us.",
+      "hi": "कृपया पासवर्ड या संवेदनशील जानकारी न भेजें। बच्चे अपने माता-पिता या अभिभावक से हमें संपर्क करने के लिए कहें।",
+      "pa-Guru": "ਕਿਰਪਾ ਕਰਕੇ ਪਾਸਵਰਡ ਜਾਂ ਸੰਵੇਦਨਸ਼ੀਲ ਜਾਣਕਾਰੀ ਨਾ ਭੇਜੋ। ਬੱਚੇ ਆਪਣੇ ਮਾਪਿਆਂ ਜਾਂ ਸਰਪ੍ਰਸਤ ਨੂੰ ਸਾਡੇ ਨਾਲ ਸੰਪਰਕ ਕਰਨ ਲਈ ਕਹਿਣ।",
+      "placeholders": [],
+      "references": [
+        "index.html:238"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.policy.updates",
+      "en": "Policy updates",
+      "hi": "नीति के अपडेट",
+      "pa-Guru": "ਨੀਤੀ ਦੇ ਅੱਪਡੇਟ",
+      "placeholders": [],
+      "references": [
+        "index.html:239"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.power.jump",
+      "en": "Power Jump",
+      "hi": "ऊँची छलाँग",
+      "pa-Guru": "ਉੱਚੀ ਛਾਲ",
+      "placeholders": [],
+      "references": [
+        "index.html:28",
+        "index.html:162",
+        "index.html:250"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.privacy",
+      "en": "Privacy",
+      "hi": "गोपनीयता",
+      "pa-Guru": "ਪਰਦੇਦਾਰੀ",
+      "placeholders": [],
+      "references": [
+        "index.html:216",
+        "index.html:221",
+        "index.html:236",
+        "privacy.html:7",
+        "privacy.html:23",
+        "privacy.html:44",
+        "game.js:1082",
+        "game.js:1159",
+        "game.js:1160",
+        "game.js:1162",
+        "game.js:1163",
+        "game.js:1171"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.privacy.questions.and.support",
+      "en": "Privacy questions and support",
+      "hi": "गोपनीयता के सवाल और सहायता",
+      "pa-Guru": "ਪਰਦੇਦਾਰੀ ਦੇ ਸਵਾਲ ਅਤੇ ਸਹਾਇਤਾ",
+      "placeholders": [],
+      "references": [
+        "index.html:236",
+        "privacy.html:44"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.privacy.seva.jump",
+      "en": "Privacy | Seva Jump",
+      "hi": "गोपनीयता | Seva Jump",
+      "pa-Guru": "ਪਰਦੇਦਾਰੀ | Seva Jump",
+      "placeholders": [],
+      "references": [
+        "privacy.html:7"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.reach.1.000.to.complete.the.run",
+      "en": "Reach 1,000 to complete the run",
+      "hi": "दौर पूरा करने के लिए 1,000 तक पहुँचें",
+      "pa-Guru": "ਦੌਰ ਪੂਰਾ ਕਰਨ ਲਈ 1,000 ਤੱਕ ਪਹੁੰਚੋ",
+      "placeholders": [],
+      "references": [
+        "index.html:53"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.records",
+      "en": "Records",
+      "hi": "रिकॉर्ड",
+      "pa-Guru": "ਰਿਕਾਰਡ",
+      "placeholders": [],
+      "references": [
+        "index.html:60",
+        "index.html:141"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.records.stats",
+      "en": "Records & Stats",
+      "hi": "रिकॉर्ड और आँकड़े",
+      "pa-Guru": "ਰਿਕਾਰਡ ਅਤੇ ਅੰਕੜੇ",
+      "placeholders": [],
+      "references": [
+        "index.html:141"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.reduced.motion",
+      "en": "Reduced motion",
+      "hi": "कम हलचल",
+      "pa-Guru": "ਘੱਟ ਹਿਲਜੁਲ",
+      "placeholders": [],
+      "references": [
+        "index.html:107",
+        "index.html:112",
+        "index.html:192"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.reduced.motion.2",
+      "en": "Reduced Motion",
+      "hi": "कम हलचल",
+      "pa-Guru": "ਘੱਟ ਹਿਲਜੁਲ",
+      "placeholders": [],
+      "references": [
+        "index.html:192"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.reduced.motion.makes.decorative.effects.still.character",
+      "en": "Reduced Motion makes decorative effects still: character bobbing, net hovering, finish-banner floating, fireworks expansion, and interface transitions.",
+      "hi": "कम हलचल सजावटी प्रभावों को स्थिर करती है: पात्र का ऊपर-नीचे हिलना, जाल का मंडराना, समापन बैनर का तैरना, आतिशबाज़ी का फैलना और इंटरफ़ेस के बदलाव।",
+      "pa-Guru": "ਘੱਟ ਹਿਲਜੁਲ ਸਜਾਵਟੀ ਪ੍ਰਭਾਵਾਂ ਨੂੰ ਥਿਰ ਕਰਦੀ ਹੈ: ਪਾਤਰ ਦਾ ਉੱਪਰ-ਹੇਠਾਂ ਹਿਲਣਾ, ਜਾਲ ਦਾ ਮੰਡਰਾਉਣਾ, ਸਮਾਪਤੀ ਬੈਨਰ ਦਾ ਤੈਰਨਾ, ਆਤਿਸ਼ਬਾਜ਼ੀ ਦਾ ਫੈਲਣਾ ਅਤੇ ਇੰਟਰਫੇਸ ਦੇ ਬਦਲਾਅ।",
+      "placeholders": [],
+      "references": [
+        "index.html:112"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.replay.first.run.guide",
+      "en": "Replay first-run guide",
+      "hi": "पहली बार खेलने की गाइड फिर देखें",
+      "pa-Guru": "ਪਹਿਲੀ ਵਾਰ ਖੇਡਣ ਦੀ ਗਾਈਡ ਫਿਰ ਵੇਖੋ",
+      "placeholders": [],
+      "references": [
+        "index.html:113"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.reset.all.progress",
+      "en": "Reset all progress",
+      "hi": "सारी प्रगति मिटाएँ",
+      "pa-Guru": "ਸਾਰੀ ਤਰੱਕੀ ਮਿਟਾਓ",
+      "placeholders": [],
+      "references": [
+        "index.html:117"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.reset.this.device",
+      "en": "Reset this device",
+      "hi": "इस डिवाइस पर रीसेट करें",
+      "pa-Guru": "ਇਸ ਡਿਵਾਈਸ ਉੱਤੇ ਰੀਸੈੱਟ ਕਰੋ",
+      "placeholders": [],
+      "references": [
+        "index.html:115"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.restart.run",
+      "en": "Restart run",
+      "hi": "दौर फिर शुरू करें",
+      "pa-Guru": "ਦੌਰ ਫਿਰ ਸ਼ੁਰੂ ਕਰੋ",
+      "placeholders": [],
+      "references": [
+        "index.html:94"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.resume",
+      "en": "Resume",
+      "hi": "जारी रखें",
+      "pa-Guru": "ਜਾਰੀ ਰੱਖੋ",
+      "placeholders": [],
+      "references": [
+        "index.html:92",
+        "game.js:1211"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.retention.and.deletion",
+      "en": "Retention and deletion",
+      "hi": "रखना और मिटाना",
+      "pa-Guru": "ਰੱਖਣਾ ਅਤੇ ਮਿਟਾਉਣਾ",
+      "placeholders": [],
+      "references": [
+        "index.html:228",
+        "privacy.html:30"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.run.complete",
+      "en": "Run complete",
+      "hi": "दौर पूरा",
+      "pa-Guru": "ਦੌਰ ਪੂਰਾ",
+      "placeholders": [],
+      "references": [
+        "index.html:67"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.run.results",
+      "en": "Run results",
+      "hi": "दौर के नतीजे",
+      "pa-Guru": "ਦੌਰ ਦੇ ਨਤੀਜੇ",
+      "placeholders": [],
+      "references": [
+        "index.html:70"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.score.0",
+      "en": "Score 0",
+      "hi": "स्कोर 0",
+      "pa-Guru": "ਸਕੋਰ 0",
+      "placeholders": [],
+      "references": [
+        "index.html:24"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.serving.others.with.love.and.humility.without",
+      "en": "Serving others with love and humility, without expecting a reward.",
+      "hi": "बिना किसी इनाम की उम्मीद के, प्रेम और नम्रता से दूसरों की सेवा करना।",
+      "pa-Guru": "ਬਿਨਾਂ ਕਿਸੇ ਇਨਾਮ ਦੀ ਉਮੀਦ ਦੇ, ਪਿਆਰ ਅਤੇ ਨਿਮਰਤਾ ਨਾਲ ਦੂਜਿਆਂ ਦੀ ਸੇਵਾ ਕਰਨੀ।",
+      "placeholders": [],
+      "references": [
+        "index.html:197"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.setting",
+      "en": "Setting",
+      "hi": "सेटिंग",
+      "pa-Guru": "ਸੈਟਿੰਗ",
+      "placeholders": [],
+      "references": [
+        "index.html:60",
+        "index.html:93",
+        "index.html:100",
+        "index.html:122",
+        "index.html:123",
+        "game.js:219",
+        "game.js:222",
+        "game.js:223",
+        "game.js:224",
+        "game.js:1082",
+        "game.js:1132",
+        "game.js:1135",
+        "game.js:1145",
+        "game.js:1146",
+        "game.js:1159",
+        "game.js:1160",
+        "game.js:1161",
+        "game.js:1162",
+        "game.js:1175",
+        "game.js:1179"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.settings",
+      "en": "Settings",
+      "hi": "सेटिंग्स",
+      "pa-Guru": "ਸੈਟਿੰਗਾਂ",
+      "placeholders": [],
+      "references": [
+        "index.html:60",
+        "index.html:93",
+        "index.html:100",
+        "index.html:122",
+        "game.js:219",
+        "game.js:222",
+        "game.js:223",
+        "game.js:224",
+        "game.js:1082",
+        "game.js:1132",
+        "game.js:1135",
+        "game.js:1145",
+        "game.js:1146",
+        "game.js:1159",
+        "game.js:1160",
+        "game.js:1161",
+        "game.js:1162",
+        "game.js:1175",
+        "game.js:1179"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.seva",
+      "en": "Seva",
+      "hi": "सेवा",
+      "pa-Guru": "ਸੇਵਾ",
+      "placeholders": [],
+      "references": [
+        "index.html:20",
+        "index.html:21",
+        "index.html:197",
+        "index.html:224",
+        "privacy.html:25"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.seva.jump.game",
+      "en": "Seva Jump game",
+      "hi": "Seva Jump खेल",
+      "pa-Guru": "Seva Jump ਖੇਡ",
+      "placeholders": [],
+      "references": [
+        "index.html:20",
+        "index.html:21"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.seva.jump.game.drag.or.use.a",
+      "en": "Seva Jump game. Drag or use A/D or Left and Right Arrow keys to steer. Press Escape to pause.",
+      "hi": "Seva Jump खेल। दिशा बदलने के लिए खींचें या A/D या बाएँ और दाएँ तीर कुंजियों का उपयोग करें। रोकने के लिए Escape दबाएँ।",
+      "pa-Guru": "Seva Jump ਖੇਡ। ਦਿਸ਼ਾ ਬਦਲਣ ਲਈ ਖਿੱਚੋ ਜਾਂ A/D ਜਾਂ ਖੱਬੇ ਅਤੇ ਸੱਜੇ ਤੀਰ ਵਾਲੀਆਂ ਕੁੰਜੀਆਂ ਵਰਤੋ। ਰੋਕਣ ਲਈ Escape ਦਬਾਓ।",
+      "placeholders": [],
+      "references": [
+        "index.html:21"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.seva.jump.requires.a.browser.with.canvas",
+      "en": "Seva Jump requires a browser with canvas support.",
+      "hi": "Seva Jump के लिए canvas समर्थित ब्राउज़र चाहिए।",
+      "pa-Guru": "Seva Jump ਲਈ canvas ਦਾ ਸਮਰਥਨ ਕਰਨ ਵਾਲਾ ਬ੍ਰਾਊਜ਼ਰ ਚਾਹੀਦਾ ਹੈ।",
+      "placeholders": [],
+      "references": [
+        "index.html:21"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.seva.jump.sevajump.is.a.free.game",
+      "en": "Seva Jump (SevaJump) is a free game from Khalsa Game Studio, listed on Google Play as Khalsa Game Studio Games. The game does not collect, transmit, sell, or share personal information.",
+      "hi": "Seva Jump (SevaJump), Khalsa Game Studio का एक मुफ़्त खेल है। यह Google Play पर Khalsa Game Studio Games के नाम से सूचीबद्ध है। खेल व्यक्तिगत जानकारी इकट्ठी, प्रेषित, बेचता या साझा नहीं करता।",
+      "pa-Guru": "Seva Jump (SevaJump), Khalsa Game Studio ਦੀ ਇੱਕ ਮੁਫ਼ਤ ਖੇਡ ਹੈ। ਇਹ Google Play ਉੱਤੇ Khalsa Game Studio Games ਦੇ ਨਾਂ ਹੇਠ ਦਰਜ ਹੈ। ਖੇਡ ਨਿੱਜੀ ਜਾਣਕਾਰੀ ਇਕੱਠੀ, ਭੇਜਦੀ, ਵੇਚਦੀ ਜਾਂ ਸਾਂਝੀ ਨਹੀਂ ਕਰਦੀ।",
+      "placeholders": [],
+      "references": [
+        "privacy.html:25"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.seva.jump.sevajump.is.a.free.offline",
+      "en": "Seva Jump (SevaJump) is a free, offline-friendly game from Khalsa Game Studio, listed on Google Play as Khalsa Game Studio Games. The game does not collect, transmit, sell, or share personal information.",
+      "hi": "Seva Jump (SevaJump), Khalsa Game Studio का एक मुफ़्त, ऑफ़लाइन खेलने योग्य खेल है। यह Google Play पर Khalsa Game Studio Games के नाम से सूचीबद्ध है। खेल व्यक्तिगत जानकारी इकट्ठी, प्रेषित, बेचता या साझा नहीं करता।",
+      "pa-Guru": "Seva Jump (SevaJump), Khalsa Game Studio ਦੀ ਇੱਕ ਮੁਫ਼ਤ, ਆਫ਼ਲਾਈਨ ਖੇਡੀ ਜਾ ਸਕਣ ਵਾਲੀ ਖੇਡ ਹੈ। ਇਹ Google Play ਉੱਤੇ Khalsa Game Studio Games ਦੇ ਨਾਂ ਹੇਠ ਦਰਜ ਹੈ। ਖੇਡ ਨਿੱਜੀ ਜਾਣਕਾਰੀ ਇਕੱਠੀ, ਭੇਜਦੀ, ਵੇਚਦੀ ਜਾਂ ਸਾਂਝੀ ਨਹੀਂ ਕਰਦੀ।",
+      "placeholders": [],
+      "references": [
+        "index.html:224"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.sikh",
+      "en": "Sikh",
+      "hi": "सिख",
+      "pa-Guru": "ਸਿੱਖ",
+      "placeholders": [],
+      "references": [
+        "index.html:195",
+        "index.html:196"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.sikhi",
+      "en": "Sikhi",
+      "hi": "सिखी",
+      "pa-Guru": "ਸਿੱਖੀ",
+      "placeholders": [],
+      "references": [
+        "index.html:196"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.skip.guide",
+      "en": "Skip guide",
+      "hi": "गाइड छोड़ें",
+      "pa-Guru": "ਗਾਈਡ ਛੱਡੋ",
+      "placeholders": [],
+      "references": [
+        "index.html:86"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.small.shifting.breakable.routes",
+      "en": "Small, shifting, breakable routes",
+      "hi": "छोटे, हिलते और टूटने वाले रास्ते",
+      "pa-Guru": "ਛੋਟੇ, ਹਿਲਦੇ ਅਤੇ ਟੁੱਟਣ ਵਾਲੇ ਰਸਤੇ",
+      "placeholders": [],
+      "references": [
+        "index.html:55"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.sound.effects",
+      "en": "Sound effects",
+      "hi": "ध्वनि प्रभाव",
+      "pa-Guru": "ਧੁਨੀ ਪ੍ਰਭਾਵ",
+      "placeholders": [],
+      "references": [
+        "index.html:105"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.sound.isn.t.available.in.this.browser",
+      "en": "Sound isn’t available in this browser. You can still play.",
+      "hi": "इस ब्राउज़र में आवाज़ उपलब्ध नहीं है। आप फिर भी खेल सकते हैं।",
+      "pa-Guru": "ਇਸ ਬ੍ਰਾਊਜ਼ਰ ਵਿੱਚ ਆਵਾਜ਼ ਉਪਲਬਧ ਨਹੀਂ ਹੈ। ਤੁਸੀਂ ਫਿਰ ਵੀ ਖੇਡ ਸਕਦੇ ਹੋ।",
+      "placeholders": [],
+      "references": [
+        "index.html:110"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.spend.these.on.upgrades",
+      "en": "Spend these on upgrades.",
+      "hi": "इनसे अपग्रेड खरीदें।",
+      "pa-Guru": "ਇਨ੍ਹਾਂ ਨਾਲ ਅੱਪਗ੍ਰੇਡ ਖਰੀਦੋ।",
+      "placeholders": [],
+      "references": [
+        "index.html:177"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.start.fresh",
+      "en": "Start fresh?",
+      "hi": "नई शुरुआत करें?",
+      "pa-Guru": "ਨਵੀਂ ਸ਼ੁਰੂਆਤ ਕਰੀਏ?",
+      "placeholders": [],
+      "references": [
+        "index.html:129"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.start.run",
+      "en": "Start run",
+      "hi": "दौर शुरू करें",
+      "pa-Guru": "ਦੌਰ ਸ਼ੁਰੂ ਕਰੋ",
+      "placeholders": [],
+      "references": [
+        "index.html:253"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.support.correspondence.may.remain.in.our.email",
+      "en": "Support correspondence may remain in our email account until deleted. You can request its deletion at the address above; any information that must be retained to meet legal obligations is an exception. The game does not automatically send diagnostic reports or gameplay data with your message.",
+      "hi": "सहायता से जुड़ा पत्राचार मिटाए जाने तक हमारे ईमेल खाते में रह सकता है। आप ऊपर दिए पते पर इसे मिटाने का अनुरोध कर सकते हैं; कानूनी ज़िम्मेदारियाँ पूरी करने के लिए रखी जाने वाली जानकारी इसका अपवाद है। खेल आपके संदेश के साथ अपने आप निदान रिपोर्ट या खेल का डेटा नहीं भेजता।",
+      "pa-Guru": "ਸਹਾਇਤਾ ਨਾਲ ਸਬੰਧਤ ਪੱਤਰ-ਵਿਹਾਰ ਮਿਟਾਏ ਜਾਣ ਤੱਕ ਸਾਡੇ ਈਮੇਲ ਖਾਤੇ ਵਿੱਚ ਰਹਿ ਸਕਦਾ ਹੈ। ਤੁਸੀਂ ਉੱਪਰ ਦਿੱਤੇ ਪਤੇ ਉੱਤੇ ਇਸ ਨੂੰ ਮਿਟਾਉਣ ਦੀ ਬੇਨਤੀ ਕਰ ਸਕਦੇ ਹੋ; ਕਾਨੂੰਨੀ ਜ਼ਿੰਮੇਵਾਰੀਆਂ ਪੂਰੀਆਂ ਕਰਨ ਲਈ ਰੱਖੀ ਜਾਣ ਵਾਲੀ ਜਾਣਕਾਰੀ ਇਸ ਤੋਂ ਛੋਟ ਹੈ। ਖੇਡ ਤੁਹਾਡੇ ਸੁਨੇਹੇ ਨਾਲ ਆਪਣੇ ਆਪ ਨਿਦਾਨ ਰਿਪੋਰਟ ਜਾਂ ਖੇਡ ਦਾ ਡਾਟਾ ਨਹੀਂ ਭੇਜਦੀ।",
+      "placeholders": [],
+      "references": [
+        "privacy.html:46"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.switch.off.anything.you.want.to.save",
+      "en": "Switch off anything you want to save or try without.",
+      "hi": "जिसे बचाकर रखना हो या जिसके बिना आज़माना हो, उसे बंद करें।",
+      "pa-Guru": "ਜਿਸ ਨੂੰ ਬਚਾ ਕੇ ਰੱਖਣਾ ਹੋਵੇ ਜਾਂ ਜਿਸ ਤੋਂ ਬਿਨਾਂ ਅਜ਼ਮਾਉਣਾ ਹੋਵੇ, ਉਸ ਨੂੰ ਬੰਦ ਕਰੋ।",
+      "placeholders": [],
+      "references": [
+        "index.html:246"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.take.a.breath",
+      "en": "Take a breath",
+      "hi": "थोड़ा आराम करें",
+      "pa-Guru": "ਥੋੜ੍ਹਾ ਆਰਾਮ ਕਰੋ",
+      "placeholders": [],
+      "references": [
+        "index.html:90"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.tap.a.character.to.choose.your.jumper",
+      "en": "Tap a character to choose your jumper",
+      "hi": "अपना खिलाड़ी चुनने के लिए किसी पात्र पर टैप करें",
+      "pa-Guru": "ਆਪਣਾ ਖਿਡਾਰੀ ਚੁਣਨ ਲਈ ਕਿਸੇ ਪਾਤਰ ਨੂੰ ਛੋਹਵੋ",
+      "placeholders": [],
+      "references": [
+        "index.html:49"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.the.birds.have.scattered.the.parshad.bowls",
+      "en": "The birds have scattered the parshad bowls. Help bring them back.",
+      "hi": "पक्षियों ने परशाद के कटोरे बिखेर दिए हैं। उन्हें वापस लाने में मदद करें।",
+      "pa-Guru": "ਪੰਛੀਆਂ ਨੇ ਪ੍ਰਸ਼ਾਦ ਦੇ ਕਟੋਰੇ ਖਿਲਾਰ ਦਿੱਤੇ ਹਨ। ਉਨ੍ਹਾਂ ਨੂੰ ਵਾਪਸ ਲਿਆਉਣ ਵਿੱਚ ਮਦਦ ਕਰੋ।",
+      "placeholders": [],
+      "references": [
+        "index.html:42"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.the.game.does.not.collect.personal.information",
+      "en": "The game does not collect personal information from children or adults.",
+      "hi": "खेल बच्चों या वयस्कों से व्यक्तिगत जानकारी इकट्ठी नहीं करता।",
+      "pa-Guru": "ਖੇਡ ਬੱਚਿਆਂ ਜਾਂ ਵੱਡਿਆਂ ਤੋਂ ਨਿੱਜੀ ਜਾਣਕਾਰੀ ਇਕੱਠੀ ਨਹੀਂ ਕਰਦੀ।",
+      "placeholders": [],
+      "references": [
+        "index.html:235",
+        "privacy.html:43"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.the.game.itself.has.no.tracking.a",
+      "en": "The game itself has no tracking. A website hosting the game, such as itch.io, may process information under its own privacy policy.",
+      "hi": "खेल खुद कोई ट्रैकिंग नहीं करता। itch.io जैसी खेल होस्ट करने वाली वेबसाइट अपनी गोपनीयता नीति के तहत जानकारी का इस्तेमाल कर सकती है।",
+      "pa-Guru": "ਖੇਡ ਆਪ ਕੋਈ ਟ੍ਰੈਕਿੰਗ ਨਹੀਂ ਕਰਦੀ। itch.io ਵਰਗੀ ਖੇਡ ਹੋਸਟ ਕਰਨ ਵਾਲੀ ਵੈੱਬਸਾਈਟ ਆਪਣੀ ਪਰਦੇਦਾਰੀ ਨੀਤੀ ਹੇਠ ਜਾਣਕਾਰੀ ਵਰਤ ਸਕਦੀ ਹੈ।",
+      "placeholders": [],
+      "references": [
+        "index.html:231",
+        "privacy.html:33"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.the.game.itself.has.no.tracking.a.2",
+      "en": "The game itself has no tracking. A website that hosts the game, such as itch.io, may process information under its own privacy policy. Optional links to Khalsa Game Studio and learning resources open external websites with their own privacy policies.",
+      "hi": "खेल खुद कोई ट्रैकिंग नहीं करता। itch.io जैसी खेल होस्ट करने वाली वेबसाइट अपनी गोपनीयता नीति के तहत जानकारी का इस्तेमाल कर सकती है। Khalsa Game Studio और सीखने के संसाधनों के वैकल्पिक लिंक बाहरी वेबसाइट खोलते हैं, जिनकी अपनी गोपनीयता नीतियाँ हैं।",
+      "pa-Guru": "ਖੇਡ ਆਪ ਕੋਈ ਟ੍ਰੈਕਿੰਗ ਨਹੀਂ ਕਰਦੀ। itch.io ਵਰਗੀ ਖੇਡ ਹੋਸਟ ਕਰਨ ਵਾਲੀ ਵੈੱਬਸਾਈਟ ਆਪਣੀ ਪਰਦੇਦਾਰੀ ਨੀਤੀ ਹੇਠ ਜਾਣਕਾਰੀ ਵਰਤ ਸਕਦੀ ਹੈ। Khalsa Game Studio ਅਤੇ ਸਿੱਖਣ ਦੇ ਸਰੋਤਾਂ ਦੇ ਚੋਣਵੇਂ ਲਿੰਕ ਬਾਹਰੀ ਵੈੱਬਸਾਈਟਾਂ ਖੋਲ੍ਹਦੇ ਹਨ, ਜਿਨ੍ਹਾਂ ਦੀਆਂ ਆਪਣੀਆਂ ਪਰਦੇਦਾਰੀ ਨੀਤੀਆਂ ਹਨ।",
+      "placeholders": [],
+      "references": [
+        "privacy.html:33"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.the.sikh.flag.seen.outside.gurdwaras",
+      "en": "The Sikh flag, seen outside Gurdwaras.",
+      "hi": "सिख ध्वज, जो गुरुद्वारों के बाहर दिखता है।",
+      "pa-Guru": "ਸਿੱਖ ਝੰਡਾ, ਜੋ ਗੁਰਦੁਆਰਿਆਂ ਦੇ ਬਾਹਰ ਦਿਸਦਾ ਹੈ।",
+      "placeholders": [],
+      "references": [
+        "index.html:201"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.the.sikh.path.of.learning.and.living",
+      "en": "The Sikh path of learning and living by the teachings of the Gurus, beginning with Guru Nanak Sahib.",
+      "hi": "गुरु नानक साहिब से शुरू हुई गुरुओं की शिक्षाओं के अनुसार सीखने और जीवन जीने का सिख मार्ग।",
+      "pa-Guru": "ਗੁਰੂ ਨਾਨਕ ਸਾਹਿਬ ਤੋਂ ਸ਼ੁਰੂ ਹੋਈਆਂ ਗੁਰੂਆਂ ਦੀਆਂ ਸਿੱਖਿਆਵਾਂ ਅਨੁਸਾਰ ਸਿੱਖਣ ਅਤੇ ਜੀਵਨ ਜਿਊਣ ਦਾ ਸਿੱਖ ਮਾਰਗ।",
+      "placeholders": [],
+      "references": [
+        "index.html:196"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.this.optional.link.needs.internet.access.and",
+      "en": ". This optional link needs internet access and opens outside the game. SikhRI is independent of Seva Jump.",
+      "hi": "। इस वैकल्पिक लिंक के लिए इंटरनेट चाहिए और यह खेल के बाहर खुलता है। SikhRI, Seva Jump से स्वतंत्र है।",
+      "pa-Guru": "। ਇਸ ਚੋਣਵੇਂ ਲਿੰਕ ਲਈ ਇੰਟਰਨੈੱਟ ਚਾਹੀਦਾ ਹੈ ਅਤੇ ਇਹ ਖੇਡ ਦੇ ਬਾਹਰ ਖੁੱਲ੍ਹਦਾ ਹੈ। SikhRI, Seva Jump ਤੋਂ ਸੁਤੰਤਰ ਹੈ।",
+      "placeholders": [],
+      "references": [
+        "index.html:210"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.this.permanently.deletes.your.scores.upgrades.badges",
+      "en": "This permanently deletes your scores, upgrades, badges, statistics, and settings from this device.",
+      "hi": "इससे इस डिवाइस पर आपके स्कोर, अपग्रेड, बैज, आँकड़े और सेटिंग्स हमेशा के लिए मिट जाएँगे।",
+      "pa-Guru": "ਇਸ ਨਾਲ ਇਸ ਡਿਵਾਈਸ ਉੱਤੇ ਤੁਹਾਡੇ ਸਕੋਰ, ਅੱਪਗ੍ਰੇਡ, ਬੈਜ, ਅੰਕੜੇ ਅਤੇ ਸੈਟਿੰਗਾਂ ਹਮੇਸ਼ਾ ਲਈ ਮਿਟ ਜਾਣਗੇ।",
+      "placeholders": [],
+      "references": [
+        "index.html:130"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.updates.will.appear.here.with.a.revised",
+      "en": "Updates will appear here with a revised date. Any future change to the game's data practices will be reflected in this policy and applicable store disclosures.",
+      "hi": "अपडेट यहाँ संशोधित तारीख के साथ दिखेंगे। भविष्य में खेल के डेटा इस्तेमाल के तरीकों में कोई बदलाव इस नीति और लागू स्टोर घोषणाओं में दिखाई देगा।",
+      "pa-Guru": "ਅੱਪਡੇਟ ਇੱਥੇ ਸੋਧੀ ਤਾਰੀਖ ਨਾਲ ਦਿਸਣਗੇ। ਭਵਿੱਖ ਵਿੱਚ ਖੇਡ ਦੇ ਡਾਟਾ ਵਰਤਣ ਦੇ ਤਰੀਕਿਆਂ ਵਿੱਚ ਕੋਈ ਬਦਲਾਅ ਇਸ ਨੀਤੀ ਅਤੇ ਲਾਗੂ ਸਟੋਰ ਘੋਸ਼ਣਾਵਾਂ ਵਿੱਚ ਦਰਸਾਇਆ ਜਾਵੇਗਾ।",
+      "placeholders": [],
+      "references": [
+        "privacy.html:48"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.upgrades",
+      "en": "Upgrades",
+      "hi": "अपग्रेड",
+      "pa-Guru": "ਅੱਪਗ੍ਰੇਡ",
+      "placeholders": [],
+      "references": [
+        "index.html:60",
+        "index.html:75",
+        "index.html:157",
+        "index.html:245",
+        "game.js:1082",
+        "game.js:1135",
+        "game.js:1159",
+        "game.js:1160",
+        "game.js:1161",
+        "game.js:1162",
+        "game.js:1180"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.upgrades.for.this.run",
+      "en": "Upgrades for this run",
+      "hi": "इस दौर के लिए अपग्रेड",
+      "pa-Guru": "ਇਸ ਦੌਰ ਲਈ ਅੱਪਗ੍ਰੇਡ",
+      "placeholders": [],
+      "references": [
+        "index.html:245"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.use.a.standard.gamepad.s.left.stick",
+      "en": "Use a standard gamepad's left stick or D-pad to steer. A starts Endless from Home, confirms the pre-run upgrade choices, or resumes a paused run. B or Start pauses, or goes back from the upgrade choices.",
+      "hi": "दिशा देने के लिए सामान्य गेमपैड की बाईं स्टिक या D-pad इस्तेमाल करें। A मुख्य स्क्रीन से अंतहीन मोड शुरू करता है, दौर से पहले अपग्रेड की पसंद की पुष्टि करता है या रुका दौर जारी करता है। B या Start खेल रोकता है या अपग्रेड की पसंद से वापस जाता है।",
+      "pa-Guru": "ਦਿਸ਼ਾ ਦੇਣ ਲਈ ਆਮ ਗੇਮਪੈਡ ਦੀ ਖੱਬੀ ਸਟਿੱਕ ਜਾਂ D-pad ਵਰਤੋ। A ਮੁੱਖ ਸਕ੍ਰੀਨ ਤੋਂ ਬੇਅੰਤ ਮੋਡ ਸ਼ੁਰੂ ਕਰਦਾ ਹੈ, ਦੌਰ ਤੋਂ ਪਹਿਲਾਂ ਅੱਪਗ੍ਰੇਡ ਦੀ ਚੋਣ ਦੀ ਪੁਸ਼ਟੀ ਕਰਦਾ ਹੈ ਜਾਂ ਰੁਕਿਆ ਦੌਰ ਜਾਰੀ ਕਰਦਾ ਹੈ। B ਜਾਂ Start ਖੇਡ ਰੋਕਦਾ ਹੈ ਜਾਂ ਅੱਪਗ੍ਰੇਡ ਦੀ ਚੋਣ ਤੋਂ ਵਾਪਸ ਜਾਂਦਾ ਹੈ।",
+      "placeholders": [],
+      "references": [
+        "index.html:190"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.use.these.numbers.to.follow.your.progress",
+      "en": "Use these numbers to follow your progress from run to run.",
+      "hi": "इन आँकड़ों से हर दौर के बाद अपनी प्रगति देखें।",
+      "pa-Guru": "ਇਨ੍ਹਾਂ ਅੰਕੜਿਆਂ ਨਾਲ ਹਰ ਦੌਰ ਤੋਂ ਬਾਅਦ ਆਪਣੀ ਤਰੱਕੀ ਵੇਖੋ।",
+      "placeholders": [],
+      "references": [
+        "index.html:148"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.use.tokens.earned.during.runs.power.jump",
+      "en": "Use tokens earned during runs. Power Jump is permanent; the other upgrades are used once.",
+      "hi": "दौरों में मिले टोकन इस्तेमाल करें। ऊँची छलाँग हमेशा के लिए रहती है; बाकी अपग्रेड एक बार काम आते हैं।",
+      "pa-Guru": "ਦੌਰਾਂ ਵਿੱਚ ਮਿਲੇ ਟੋਕਨ ਵਰਤੋ। ਉੱਚੀ ਛਾਲ ਹਮੇਸ਼ਾ ਲਈ ਰਹਿੰਦੀ ਹੈ; ਬਾਕੀ ਅੱਪਗ੍ਰੇਡ ਇੱਕ ਵਾਰ ਕੰਮ ਆਉਂਦੇ ਹਨ।",
+      "placeholders": [],
+      "references": [
+        "index.html:158"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.varied",
+      "en": "Varied",
+      "hi": "विविध",
+      "pa-Guru": "ਵੰਨ-ਸੁਵੰਨਾ",
+      "placeholders": [],
+      "references": [
+        "index.html:104"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.visit.khalsa.game.studio",
+      "en": "Visit Khalsa Game Studio ↗",
+      "hi": "Khalsa Game Studio पर जाएँ ↗",
+      "pa-Guru": "Khalsa Game Studio ਵੇਖੋ ↗",
+      "placeholders": [],
+      "references": [
+        "index.html:19"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.what.stays.on.your.device",
+      "en": "What stays on your device",
+      "hi": "आपके डिवाइस पर क्या रहता है",
+      "pa-Guru": "ਤੁਹਾਡੇ ਡਿਵਾਈਸ ਉੱਤੇ ਕੀ ਰਹਿੰਦਾ ਹੈ",
+      "placeholders": [],
+      "references": [
+        "index.html:225",
+        "privacy.html:27"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.what.we.do.not.use",
+      "en": "What we do not use",
+      "hi": "हम क्या इस्तेमाल नहीं करते",
+      "pa-Guru": "ਅਸੀਂ ਕੀ ਨਹੀਂ ਵਰਤਦੇ",
+      "placeholders": [],
+      "references": [
+        "index.html:232",
+        "privacy.html:34"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.with.privacy.questions.or.deletion.requests.for",
+      "en": "with privacy questions or deletion requests for information you have sent us. If you email us, your email address and anything you choose to send are processed through our email provider to respond to your request. This is separate from gameplay. Please do not send passwords or sensitive personal information; children should ask a parent or guardian to contact us.",
+      "hi": "पर गोपनीयता के सवाल या हमें भेजी जानकारी मिटाने के अनुरोध भेजें। यदि आप हमें ईमेल करते हैं, तो आपके अनुरोध का जवाब देने के लिए आपका ईमेल पता और आपके द्वारा भेजी जानकारी हमारे ईमेल प्रदाता के माध्यम से इस्तेमाल होती है। यह खेल खेलने से अलग है। कृपया पासवर्ड या संवेदनशील व्यक्तिगत जानकारी न भेजें; बच्चे अपने माता-पिता या अभिभावक से संपर्क करने के लिए कहें।",
+      "pa-Guru": "ਉੱਤੇ ਪਰਦੇਦਾਰੀ ਦੇ ਸਵਾਲ ਜਾਂ ਸਾਨੂੰ ਭੇਜੀ ਜਾਣਕਾਰੀ ਮਿਟਾਉਣ ਦੀਆਂ ਬੇਨਤੀਆਂ ਭੇਜੋ। ਜੇ ਤੁਸੀਂ ਸਾਨੂੰ ਈਮੇਲ ਕਰਦੇ ਹੋ, ਤਾਂ ਤੁਹਾਡੀ ਬੇਨਤੀ ਦਾ ਜਵਾਬ ਦੇਣ ਲਈ ਤੁਹਾਡਾ ਈਮੇਲ ਪਤਾ ਅਤੇ ਤੁਹਾਡੇ ਵੱਲੋਂ ਭੇਜੀ ਜਾਣਕਾਰੀ ਸਾਡੇ ਈਮੇਲ ਪ੍ਰਦਾਤਾ ਰਾਹੀਂ ਵਰਤੀ ਜਾਂਦੀ ਹੈ। ਇਹ ਖੇਡ ਖੇਡਣ ਤੋਂ ਵੱਖਰਾ ਹੈ। ਕਿਰਪਾ ਕਰਕੇ ਪਾਸਵਰਡ ਜਾਂ ਸੰਵੇਦਨਸ਼ੀਲ ਨਿੱਜੀ ਜਾਣਕਾਰੀ ਨਾ ਭੇਜੋ; ਬੱਚੇ ਆਪਣੇ ਮਾਪਿਆਂ ਜਾਂ ਸਰਪ੍ਰਸਤ ਨੂੰ ਸੰਪਰਕ ਕਰਨ ਲਈ ਕਹਿਣ।",
+      "placeholders": [],
+      "references": [
+        "privacy.html:45"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.wondering.about.a.kara.a.gurdwara.or",
+      "en": "Wondering about a kara, a Gurdwara, or seva? Explore the Sikh Research Institute (SikhRI), or visit a local Gurdwara and ask about its teachings and visitor customs. Younger players can explore with a parent or trusted adult.",
+      "hi": "कड़े, गुरुद्वारे या सेवा के बारे में जानना चाहते हैं? Sikh Research Institute (SikhRI) देखें, या स्थानीय गुरुद्वारे में जाकर शिक्षाओं और आगंतुकों के तौर-तरीकों के बारे में पूछें। छोटे खिलाड़ी माता-पिता या किसी भरोसेमंद वयस्क के साथ जान सकते हैं।",
+      "pa-Guru": "ਕੜੇ, ਗੁਰਦੁਆਰੇ ਜਾਂ ਸੇਵਾ ਬਾਰੇ ਜਾਣਨਾ ਚਾਹੁੰਦੇ ਹੋ? Sikh Research Institute (SikhRI) ਵੇਖੋ, ਜਾਂ ਸਥਾਨਕ ਗੁਰਦੁਆਰੇ ਜਾ ਕੇ ਸਿੱਖਿਆਵਾਂ ਅਤੇ ਆਉਣ ਵਾਲਿਆਂ ਦੇ ਰਿਵਾਜਾਂ ਬਾਰੇ ਪੁੱਛੋ। ਛੋਟੇ ਖਿਡਾਰੀ ਮਾਪਿਆਂ ਜਾਂ ਕਿਸੇ ਭਰੋਸੇਯੋਗ ਵੱਡੇ ਨਾਲ ਜਾਣ ਸਕਦੇ ਹਨ।",
+      "placeholders": [],
+      "references": [
+        "index.html:209"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.yes.reset.everything",
+      "en": "Yes, reset everything",
+      "hi": "हाँ, सब रीसेट करें",
+      "pa-Guru": "ਹਾਂ, ਸਭ ਰੀਸੈੱਟ ਕਰੋ",
+      "placeholders": [],
+      "references": [
+        "index.html:131"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.your.completed.run.progress.is.saved.on",
+      "en": "Your completed-run progress is saved on this device when storage is available. The current run will end.",
+      "hi": "स्टोरेज उपलब्ध होने पर पूरे किए दौरों की प्रगति इस डिवाइस पर सहेजी जाती है। मौजूदा दौर खत्म हो जाएगा।",
+      "pa-Guru": "ਸਟੋਰੇਜ ਉਪਲਬਧ ਹੋਣ ਉੱਤੇ ਪੂਰੇ ਕੀਤੇ ਦੌਰਾਂ ਦੀ ਤਰੱਕੀ ਇਸ ਡਿਵਾਈਸ ਉੱਤੇ ਸੰਭਾਲੀ ਜਾਂਦੀ ਹੈ। ਮੌਜੂਦਾ ਦੌਰ ਮੁੱਕ ਜਾਵੇਗਾ।",
+      "placeholders": [],
+      "references": [
+        "index.html:259"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.your.journey",
+      "en": "Your journey",
+      "hi": "आपका सफ़र",
+      "pa-Guru": "ਤੁਹਾਡਾ ਸਫ਼ਰ",
+      "placeholders": [],
+      "references": [
+        "index.html:140"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.your.mission",
+      "en": "Your mission",
+      "hi": "आपका मिशन",
+      "pa-Guru": "ਤੁਹਾਡਾ ਮਿਸ਼ਨ",
+      "placeholders": [],
+      "references": [
+        "index.html:171"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.your.scores.settings.upgrades.badges.and.statistics",
+      "en": "Your scores, settings, upgrades, badges, and statistics are stored only on your device to remember your progress. You can erase them with Reset all progress in Settings.",
+      "hi": "आपकी प्रगति याद रखने के लिए आपके स्कोर, सेटिंग्स, अपग्रेड, बैज और आँकड़े केवल आपके डिवाइस पर रखे जाते हैं। सेटिंग्स में सारी प्रगति मिटाएँ से आप इन्हें मिटा सकते हैं।",
+      "pa-Guru": "ਤੁਹਾਡੀ ਤਰੱਕੀ ਯਾਦ ਰੱਖਣ ਲਈ ਤੁਹਾਡੇ ਸਕੋਰ, ਸੈਟਿੰਗਾਂ, ਅੱਪਗ੍ਰੇਡ, ਬੈਜ ਅਤੇ ਅੰਕੜੇ ਸਿਰਫ਼ ਤੁਹਾਡੇ ਡਿਵਾਈਸ ਉੱਤੇ ਰੱਖੇ ਜਾਂਦੇ ਹਨ। ਸੈਟਿੰਗਾਂ ਵਿੱਚ ਸਾਰੀ ਤਰੱਕੀ ਮਿਟਾਓ ਨਾਲ ਤੁਸੀਂ ਇਨ੍ਹਾਂ ਨੂੰ ਮਿਟਾ ਸਕਦੇ ਹੋ।",
+      "placeholders": [],
+      "references": [
+        "index.html:226",
+        "privacy.html:28"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    },
+    {
+      "id": "ui.your.scores.settings.upgrades.badges.and.statistics.2",
+      "en": "Your scores, settings, upgrades, badges, and statistics are stored locally on the device where you play. The game uses them only to remember your progress. You can erase them with Reset all progress in Settings.",
+      "hi": "आपके स्कोर, सेटिंग्स, अपग्रेड, बैज और आँकड़े उसी डिवाइस पर स्थानीय रूप से रखे जाते हैं जिस पर आप खेलते हैं। खेल इन्हें केवल आपकी प्रगति याद रखने के लिए इस्तेमाल करता है। सेटिंग्स में सारी प्रगति मिटाएँ से आप इन्हें मिटा सकते हैं।",
+      "pa-Guru": "ਤੁਹਾਡੇ ਸਕੋਰ, ਸੈਟਿੰਗਾਂ, ਅੱਪਗ੍ਰੇਡ, ਬੈਜ ਅਤੇ ਅੰਕੜੇ ਉਸੇ ਡਿਵਾਈਸ ਉੱਤੇ ਸਥਾਨਕ ਤੌਰ ਉੱਤੇ ਰੱਖੇ ਜਾਂਦੇ ਹਨ ਜਿਸ ਉੱਤੇ ਤੁਸੀਂ ਖੇਡਦੇ ਹੋ। ਖੇਡ ਇਨ੍ਹਾਂ ਨੂੰ ਸਿਰਫ਼ ਤੁਹਾਡੀ ਤਰੱਕੀ ਯਾਦ ਰੱਖਣ ਲਈ ਵਰਤਦੀ ਹੈ। ਸੈਟਿੰਗਾਂ ਵਿੱਚ ਸਾਰੀ ਤਰੱਕੀ ਮਿਟਾਓ ਨਾਲ ਤੁਸੀਂ ਇਨ੍ਹਾਂ ਨੂੰ ਮਿਟਾ ਸਕਦੇ ਹੋ।",
+      "placeholders": [],
+      "references": [
+        "privacy.html:28"
+      ],
+      "review": {
+        "hindi": "pending",
+        "gurmukhi": "pending",
+        "ownerTerminology": "pending"
+      }
+    }
+  ]
+}

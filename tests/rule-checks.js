@@ -2,6 +2,11 @@ const assert = require('node:assert/strict');
 const config = require('../game-config.js');
 const rules = require('../game-rules.js');
 
+assert.equal(rules.androidTabletCanvasWidth(900, 1600), 494, 'tall tablet fits the playfield between HUD and footer');
+assert.equal(rules.androidTabletCanvasWidth(800, 1280), 563, 'standard tablet uses the available height');
+assert.equal(rules.androidTabletCanvasWidth(960, 1280), 640, 'wide tablet retains the maximum course width');
+assert.equal(rules.androidTabletCanvasWidth(600, 2000), 450, 'very tall viewport retains the minimum playable course width');
+
 for (const type of ['pigeon', 'sparrow', 'swift']) for (const direction of [-1, 1]) {
   const player = { x: 200, y: 300 };
   for (const height of [-48, -15, 24]) {
@@ -259,5 +264,14 @@ for (const value of [0, 9_999, 10_000, 123_456, 9_999_999, 123_456_789, Number.M
 }
 assert.equal(rules.formatStat(123_456), '123K');
 assert.equal(rules.formatStat(1_234_567), '1.2M');
+// Simulate a device whose default number formatting uses Arabic-Indic digits.
+// The game's explicit 0–9 policy must hold independently of the host locale.
+const originalLocaleString = Number.prototype.toLocaleString;
+try {
+  Number.prototype.toLocaleString = function(locale, options) {
+    return originalLocaleString.call(this, locale || 'ar-EG', options);
+  };
+  assert.equal(rules.formatStat(1234), '1,234', 'record/stat numbers retain familiar 0–9 digits on every device');
+} finally { Number.prototype.toLocaleString = originalLocaleString; }
 
 console.log(`Rule checks passed. Challenge contains exactly ${placed} parshad bowls across its first 150 platforms.`);

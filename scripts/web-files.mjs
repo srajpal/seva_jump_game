@@ -2,6 +2,12 @@
 export const webFiles = [
   'index.html', 'styles.css', 'game.js', 'game-config.js', 'game-rules.js',
   'manifest.webmanifest', 'sw.js', 'privacy.html',
+  'i18n.js', 'localization.css',
+  'locales/ui-en.js', 'locales/ui-hi.js', 'locales/ui-pa-Guru.js',
+  'locales/runtime-en.js', 'locales/runtime-hi.js', 'locales/runtime-pa-Guru.js',
+  'assets/fonts/NotoSansDevanagari.ttf', 'assets/fonts/NotoSansGurmukhi.ttf',
+  'assets/fonts/OFL-Devanagari.txt', 'assets/fonts/OFL-Gurmukhi.txt',
+  'assets/fonts/NOTICE.txt',
   'assets/app-icon-bird-v1.png',
   'assets/seva-jump-logo.png',
   'assets/badge-medals-v1.png',
