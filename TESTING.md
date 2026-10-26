@@ -56,7 +56,7 @@ Run `node tests/android-layout-checks.cjs` with the same Playwright setup for An
 
 ## Release artifact
 
-Run `node tests/home-fit-checks.cjs` with the same Playwright setup to check Home in all three languages. Ordinary phone sizes down to 360×640 and Android safe-area/tablet cases must fit without scrolling; 320×568 retains scrolling with reachable language controls. Captures are saved under ignored `screenshots/home-fit/`.
+Run `node tests/home-fit-checks.cjs` with the same Playwright setup to check Home in all three languages. It covers representative Android widths and iPhone-sized viewports (360×780 through 440×956), simulated safe areas using the iOS wrapper's presentation CSS, and 1.15×/1.5× text. Ordinary phones must fit without scrolling or overlapping controls; very short screens and much larger accessibility text may scroll, with the language control and version reachable. Captures are saved under ignored `screenshots/home-fit/`. These Edge simulations do not replace a WKWebView/Xcode run on an iPhone.
 
 ```powershell
 npm run itch:build
@@ -106,3 +106,9 @@ Use the processed TestFlight build when available. Run this on each device and r
 Test the exact ZIP on the actual itch draft, including mobile fullscreen and browser save restrictions. Record the build/hash, browser/device, outcome and any exceptions in `RELEASE_PROGRESS.md`. Keep incomplete checks open; passing simulations do not establish host behavior, human completion, accessibility for every player, or long-term performance.
 
 Additional packaged-candidate journeys: `node tests/final-release-journeys.cjs` (same Playwright environment). Mode entry, purchases, preferences, and persistence use UI actions; win/loss results use controlled test state and do not certify natural complete playthroughs.
+
+## First-run keyboard hint and store review links
+
+Run `node tests/review-onboarding-checks.cjs` with Playwright available (`PLAYWRIGHT_MODULE` can point to its installed package). The check uses Edge by default, checks all three languages in browser and simulated Android/iOS presentation, and captures guide/settings screens under ignored `screenshots/review-onboarding/`. It verifies first-step-only keyboard text, store URL selection, hidden browser links, Android bridge dispatch and Settings returning to an already paused run. Native markers are test-injected, never shipped test hooks.
+
+On Android, test the actual Write a review action in Settings and About & Help on a Play-enabled device; verify Google Play opens and returning preserves the paused run. Also test the HTTPS fallback on a device without the Play Store. On iPhone/iPad, verify WKWebView hands the App Store review link to the system and leaves the game paused on return. An iOS Xcode/device pass and a successful store review submission cannot be established by the browser simulation. No popup quota, rating outcome or review submission is inferred.

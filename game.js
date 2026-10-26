@@ -11,6 +11,19 @@
   const androidPlatform = window.Capacitor?.getPlatform?.() === 'android'
     || Boolean(window.SevaJumpAndroid) || /\bwv\b/.test(navigator.userAgent);
   document.documentElement.classList.toggle('android-app', androidPlatform);
+  const reviewUrl = (window.Capacitor?.getPlatform?.() === 'android' || Boolean(window.SevaJumpAndroid)) ? 'https://play.google.com/store/apps/details?id=org.sevajump.game'
+    : window.Capacitor?.getPlatform?.() === 'ios' ? 'https://apps.apple.com/app/id6822047487?action=write-review' : null;
+  for (const link of document.querySelectorAll('[data-store-review]')) {
+    if (!reviewUrl) continue;
+    link.href = reviewUrl;
+    link.classList.remove('hidden');
+    link.addEventListener('click', event => {
+      if (androidPlatform && window.SevaJumpAndroid?.openStoreReview) {
+        event.preventDefault();
+        window.SevaJumpAndroid.openStoreReview();
+      }
+    });
+  }
   function setNativeGameplayActive(active) {
     window.SevaJumpAndroid?.setGameplayActive?.(Boolean(active));
   }
@@ -41,7 +54,7 @@
   let gamepadSteer = 0, gamepadButtons = { a: false, pause: false }, gamepadFocused = true;
   const ui = {
     runUpgrades: document.querySelector("#run-upgrades-screen"),
-    home: document.querySelector('#home-screen'), end: document.querySelector('#end-screen'), upgrades: document.querySelector('#upgrades-screen'), about: document.querySelector('#about-screen'), tutorial: document.querySelector('#tutorial-screen'), tutorialIcon: document.querySelector('#tutorial-icon'), tutorialStep: document.querySelector('#tutorial-step'), tutorialHeading: document.querySelector('#tutorial-heading'), tutorialCopy: document.querySelector('#tutorial-copy'), tutorialDots: document.querySelector('#tutorial-dots'), tutorialNext: document.querySelector('#tutorial-next-button'), tutorialSkip: document.querySelector('#tutorial-skip-button'), pause: document.querySelector('#pause-screen'), gameTools: document.querySelector('#game-tools'), mobileHud: document.querySelector('#mobile-hud'), mobileScore: document.querySelector('#mobile-score'), mobileItems: document.querySelector('#mobile-items'), mobileMode: document.querySelector('#mobile-mode'), mobileFalcon: document.querySelector('#mobile-falcon'), mobileShield: document.querySelector('#mobile-shield'), mobilePower: document.querySelector('#mobile-power'),
+    home: document.querySelector('#home-screen'), end: document.querySelector('#end-screen'), upgrades: document.querySelector('#upgrades-screen'), about: document.querySelector('#about-screen'), tutorial: document.querySelector('#tutorial-screen'), tutorialIcon: document.querySelector('#tutorial-icon'), tutorialStep: document.querySelector('#tutorial-step'), tutorialHeading: document.querySelector('#tutorial-heading'), tutorialCopy: document.querySelector('#tutorial-copy'), tutorialKeyboard: document.querySelector('#tutorial-keyboard'), tutorialDots: document.querySelector('#tutorial-dots'), tutorialNext: document.querySelector('#tutorial-next-button'), tutorialSkip: document.querySelector('#tutorial-skip-button'), pause: document.querySelector('#pause-screen'), gameTools: document.querySelector('#game-tools'), mobileHud: document.querySelector('#mobile-hud'), mobileScore: document.querySelector('#mobile-score'), mobileItems: document.querySelector('#mobile-items'), mobileMode: document.querySelector('#mobile-mode'), mobileFalcon: document.querySelector('#mobile-falcon'), mobileShield: document.querySelector('#mobile-shield'), mobilePower: document.querySelector('#mobile-power'),
     score: document.querySelector('#end-score'), endHeading: document.querySelector('#end-heading'), endBest: document.querySelector('#end-best'), runBreakdown: document.querySelector('#run-breakdown'), endGoal: document.querySelector('#end-goal'), homeRecords: document.querySelector('#home-records'), endless: document.querySelector('#endless-button'), arcade: document.querySelector('#arcade-button'), challenge: document.querySelector('#challenge-button'), hard: document.querySelector('#hard-button'), modeChoices: document.querySelectorAll('.mode-actions button'),
     restart: document.querySelector('#restart-button'), choices: document.querySelectorAll('.scene-character'),
     sceneGirl: document.querySelector('.scene-girl'), sceneBoy: document.querySelector('.scene-boy'),
@@ -1073,6 +1086,7 @@
   ];
   function renderTutorial() {
     const step = TUTORIAL_STEPS[tutorialIndex];
+    ui.tutorialKeyboard.hidden = tutorialIndex !== 0;
     ui.tutorialIcon.textContent = step.icon; ui.tutorialHeading.textContent = t(step.title); ui.tutorialCopy.textContent = t(step.copy);
     ui.tutorialStep.textContent = t('game.tutorial.step', { step: tutorialIndex + 1, total: TUTORIAL_STEPS.length });
     ui.tutorialDots.querySelectorAll('span').forEach((dot, index) => dot.classList.toggle('active', index === tutorialIndex));
@@ -1142,8 +1156,16 @@
     else showHome();
     syncModalAccessibility();
   }
+  function updateHomeFit() {
+    const content = ui.home.querySelector('.home-content');
+    ui.home.classList.remove('home-scroll');
+    if (ui.home.classList.contains('hidden') || !window.matchMedia('(hover: none) and (pointer: coarse) and (min-height: 721px), (max-width: 599px) and (min-height: 721px)').matches) return;
+    const contentEnd = content.lastElementChild.getBoundingClientRect().bottom;
+    const contentBottom = content.getBoundingClientRect().bottom;
+    ui.home.classList.toggle('home-scroll', contentEnd > contentBottom + 1 || ui.home.scrollHeight > ui.home.clientHeight + 1);
+  }
   function openSettings(from) { menuVisible = true; menuDirty = true; setNativeGameplayActive(false); settingsReturn = from; if (from === 'pause') ui.pause.classList.add('hidden'); else ui.home.classList.add('hidden'); ui.settings.classList.remove('hidden'); syncModalAccessibility(); }
-  function closeSettings() { menuDirty = true; ui.settings.classList.add('hidden'); if (settingsReturn === 'pause' && state?.paused) ui.pause.classList.remove('hidden'); else ui.home.classList.remove('hidden'); syncModalAccessibility(); }
+  function closeSettings() { menuDirty = true; ui.settings.classList.add('hidden'); if (settingsReturn === 'pause' && state?.paused) ui.pause.classList.remove('hidden'); else ui.home.classList.remove('hidden'); syncModalAccessibility(); updateHomeFit(); }
   function leaveRunEarly() { if (state?.running && state.paused && !state.ending) { profile.stats.leftEarly++; saveProfile(); } showHome(); }
   function restartPausedRun() { const mode = state?.mode || 'endless'; leaveRunEarly(); start(mode); }
   function start(mode, confirmed = false) {
@@ -1157,7 +1179,7 @@
       ui.runUpgrades.classList.remove('hidden'); syncModalAccessibility(); return;
     }
     ui.runUpgrades.classList.add('hidden'); menuVisible = false; menuDirty = true; getAudio(); reset(mode); ui.home.classList.add('hidden'); ui.end.classList.add('hidden'); ui.end.classList.remove('visible'); ui.upgrades.classList.add('hidden'); ui.about.classList.add('hidden'); ui.privacy.classList.add('hidden'); ui.badges.classList.add('hidden'); ui.stats.classList.add('hidden'); ui.settings.classList.add('hidden'); ui.resetConfirm.classList.add('hidden'); ui.infoScreen.classList.add('hidden'); ui.exitConfirm.classList.add('hidden'); ui.pause.classList.add('hidden'); if (!profile.tutorialComplete) return showTutorial(); setNativeGameplayActive(true); startAudio(); ui.tutorial.classList.add('hidden'); ui.gameTools.classList.remove('hidden'); syncModalAccessibility(); }
-  function showHome() { ui.runUpgrades.classList.add('hidden'); menuVisible = true; menuDirty = true; setNativeGameplayActive(false); clearInput(); if (state) state.running = false; stopMusic(); ui.mobileHud.classList.add('hidden'); updateRecordsUI(); ui.home.classList.remove('hidden'); ui.end.classList.add('hidden'); ui.end.classList.remove('visible'); ui.upgrades.classList.add('hidden'); ui.about.classList.add('hidden'); ui.privacy.classList.add('hidden'); ui.badges.classList.add('hidden'); ui.stats.classList.add('hidden'); ui.tutorial.classList.add('hidden'); ui.settings.classList.add('hidden'); ui.resetConfirm.classList.add('hidden'); ui.infoScreen.classList.add('hidden'); ui.exitConfirm.classList.add('hidden'); ui.pause.classList.add('hidden'); ui.gameTools.classList.add('hidden'); syncModalAccessibility(); }
+  function showHome() { ui.runUpgrades.classList.add('hidden'); menuVisible = true; menuDirty = true; setNativeGameplayActive(false); clearInput(); if (state) state.running = false; stopMusic(); ui.mobileHud.classList.add('hidden'); updateRecordsUI(); ui.home.classList.remove('hidden'); ui.end.classList.add('hidden'); ui.end.classList.remove('visible'); ui.upgrades.classList.add('hidden'); ui.about.classList.add('hidden'); ui.privacy.classList.add('hidden'); ui.badges.classList.add('hidden'); ui.stats.classList.add('hidden'); ui.tutorial.classList.add('hidden'); ui.settings.classList.add('hidden'); ui.resetConfirm.classList.add('hidden'); ui.infoScreen.classList.add('hidden'); ui.exitConfirm.classList.add('hidden'); ui.pause.classList.add('hidden'); ui.gameTools.classList.add('hidden'); syncModalAccessibility(); updateHomeFit(); }
   function showUpgrades() { menuVisible = true; menuDirty = true; setNativeGameplayActive(false); clearInput(); if (state) state.running = false; stopMusic(); updateUpgradeUI(); ui.home.classList.add('hidden'); ui.end.classList.add('hidden'); ui.upgrades.classList.remove('hidden'); ui.about.classList.add('hidden'); ui.badges.classList.add('hidden'); ui.stats.classList.add('hidden'); ui.settings.classList.add('hidden'); ui.pause.classList.add('hidden'); ui.gameTools.classList.add('hidden'); syncModalAccessibility(); }
   function showAbout() { menuVisible = true; menuDirty = true; setNativeGameplayActive(false); clearInput(); if (state) state.running = false; stopMusic(); ui.home.classList.add('hidden'); ui.end.classList.add('hidden'); ui.upgrades.classList.add('hidden'); ui.about.classList.remove('hidden'); ui.privacy.classList.add('hidden'); ui.badges.classList.add('hidden'); ui.stats.classList.add('hidden'); ui.settings.classList.add('hidden'); ui.pause.classList.add('hidden'); ui.gameTools.classList.add('hidden'); syncModalAccessibility(); }
   function showPrivacy() { menuVisible = true; menuDirty = true; setNativeGameplayActive(false); ui.about.classList.add('hidden'); ui.privacy.classList.remove('hidden'); syncModalAccessibility(); }
@@ -1283,6 +1305,8 @@
     if (['ArrowLeft', 'ArrowRight'].includes(key) && state?.running && !state.paused) { keys.add(key); e.preventDefault(); }
   });
   document.addEventListener('keyup', e => keys.delete(steeringKey(e.key)));
+  window.addEventListener('resize', updateHomeFit);
+  window.addEventListener('load', updateHomeFit, { once: true });
   window.addEventListener('blur', () => { gamepadFocused = false; const wasActive = state?.running && !state.paused; clearInput(); if (wasActive) pauseGame(); });
   window.addEventListener('focus', () => { gamepadFocused = true; });
   document.addEventListener('visibilitychange', () => { if (document.hidden) { const wasActive = state?.running && !state.paused; clearInput(); if (wasActive) pauseGame(); } });
@@ -1301,7 +1325,7 @@
     }
     const fullscreenLabel = t(document.fullscreenElement ? 'game.fullscreen.exit' : 'game.fullscreen.enter');
     fullscreenButton.setAttribute('aria-label', fullscreenLabel); fullscreenButton.title = fullscreenLabel;
-    hudText.clear(); updateMobileHud(); menuDirty = true;
+    hudText.clear(); updateMobileHud(); menuDirty = true; updateHomeFit();
   });
   window.sevaJumpNativeBack = handleNativeBack; window.Capacitor?.Plugins?.App?.addListener?.('backButton', handleNativeBack); setNativeGameplayActive(false); applyPreferences(); setSelectedCharacter(selectedCharacter); reset(); state.running = false; updateUpgradeUI(); updateRecordsUI(); renderBadges(); renderStats(); requestAnimationFrame(loop);
   // The native apps package every file, and a worker would replay the previous

@@ -284,3 +284,9 @@ h2 { font-size: 2.3rem; }.eyebrow { margin: 0 0 7px; color: #a85e30; font-weight
 #run-upgrades-screen .pause-settings span { display: grid; gap: 3px; }
 #run-upgrades-screen small { font-size: .72rem; font-weight: normal; }
 #run-upgrades-screen .help { max-width: 320px; }
+
+/* Optional store navigation stays secondary and uses the native store app. */
+.review-link { display: inline-block; min-height: 44px; padding: 10px 14px; text-align: center; text-decoration: none; font-size: .8rem; }
+.review-link.hidden { display: none; }
+.settings-screen > .review-link { margin-bottom: 16px; }
+.settings-screen > .reset-panel { margin-bottom: 16px; }

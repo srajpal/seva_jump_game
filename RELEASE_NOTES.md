@@ -2,12 +2,16 @@
 
 ## 1.0.13 — Android build 51 / iOS build 47 metadata
 
-Localization candidate prepared October 17, 2026; not submitted or published. Hindi and Punjabi translations are drafts requiring fluent-language and owner terminology review before publication. iOS metadata only; no Xcode build is claimed. Validation and artifact status are tracked separately in `RELEASE_PROGRESS.md`.
+Localization candidate prepared October 17, 2026; not submitted or published. The existing Punjabi catalog was approved by the owner October 26; two new UI strings and Hindi review remain pending. iOS metadata only; no Xcode build is claimed. Validation and artifact status are tracked separately in `RELEASE_PROGRESS.md`.
 
+- Adds computer steering keys to the first-run guide.
+- Adds an optional Write a review link in Settings and About & Help in the installed Android and iOS apps.
 - Adds Hindi (Devanagari) and Punjabi (Gurmukhi) throughout menus, help, privacy information and gameplay messages, while retaining English.
 - Follows your device language, with a language choice on Home and in Settings. Changing language keeps your progress and paused game.
 - Includes offline fonts and more room for translated text and Indic vowel marks.
 - Keeps Home within ordinary phone screens by adapting artwork and spacing; tiny screens can still scroll.
+- Makes the Home language selector smaller and less prominent while keeping it easy to tap.
+- Refines Punjabi wording and instructions following an initial language review; the existing Punjabi catalog was approved by the owner October 26; two new UI strings and Hindi review remain pending.
 
 ## 1.0.12 — Android build 50 / iOS build 46 metadata
 

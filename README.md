@@ -8,7 +8,7 @@ The birds have flown away with the parshad. Choose a young Sikh boy or girl, lea
 
 Seva Jump is designed for ages 8-15, with touch-first controls, a calm Gurdwara-inspired setting, and a respectful introduction to a few Sikh terms used in the game.
 
-The local **1.0.13 / Android build 51** candidate adds English, Hindi (Devanagari) and Punjabi (Gurmukhi). It follows device language with an explicit choice on Home and in Settings; unsupported device languages use English. Catalogs and Noto fonts are bundled for offline use, and changing language preserves progress and a paused run. Hindi/Punjabi drafts require fluent-language and owner terminology review before publication; see [the reviewer pack](docs/localization-review.md). The separately submitted 1.0.12/build50 tablet update remains under review at the last recorded verification.
+The local **1.0.13 / Android build 51** candidate adds English, Hindi (Devanagari) and Punjabi (Gurmukhi). It follows device language with an explicit choice on Home and in Settings; unsupported device languages use English. Catalogs and Noto fonts are bundled for offline use, and changing language preserves progress and a paused run. The existing 341 Punjabi entries were approved by the owner October 26; two new UI strings and Hindi remain pending fluent-language and owner terminology review before publication; see [the reviewer pack](docs/localization-review.md). This candidate is separate from the tablet update.
 
 ## Play
 
@@ -20,7 +20,9 @@ Touch dragging is relative to where each touch begins: lift and reposition your 
 
 On Android, Back returns through menus and dismisses dialogs. During play it pauses; from Pause it resumes. Back from Home returns to the Android launcher without a close confirmation. Landings require the feet to overlap the visible platform surface; bird collisions cover the character's head and body while allowing space around wing tips and outstretched hands.
 
-New players receive a short three-step guide after choosing their first mode. It can be replayed later from Settings.
+New players receive a short three-step guide after choosing their first mode. The first step explains dragging and computer steering with ← → or A/D. It can be replayed later from Settings.
+
+Installed Android and iOS apps include an optional **Write a review** link in Settings and About & Help. Android opens the Google Play app (or its website if needed); iOS opens the App Store review page. Browser play hides these links. This user-initiated action needs a store connection; gameplay remains offline, with no automatic rating prompt or added review SDK.
 
 The game is self-contained: no login, ads, purchases, or network connection are needed to play from local files. Hosted play uses a service worker for offline caching. The original September 2026 browser audit is preserved in [ITCH_RELEASE_AUDIT.md](ITCH_RELEASE_AUDIT.md); follow the current fixes and remaining verification in [RELEASE_PROGRESS.md](RELEASE_PROGRESS.md).
 
@@ -140,7 +142,7 @@ The feature set is frozen for the current release candidate. Use [RELEASE_CHECKL
 
 The September 11, 2026 itch.io audit records the problems found in v0.13.1. Current source, published builds, and outstanding checks are tracked separately in [RELEASE_PROGRESS.md](RELEASE_PROGRESS.md). The October review fixes are included in the published 1.0.11 browser ZIP and Android candidate and are newer than Play's 1.0.3 closed-test build. The browser ZIP also includes the later hosted privacy-page routing fix. Candidate preparation and store publication are recorded separately.
 
-Native-store work still includes screenshots, signing credentials, console forms, device testing, and applicable store testing. Check [RELEASE_PROGRESS.md](RELEASE_PROGRESS.md) and the platform metadata before naming a native build ready. The 1.0.13 localization candidate is implemented for review; its Hindi/Gurmukhi drafts require fluent-language and owner terminology approval before publication.
+Native-store work still includes screenshots, signing credentials, console forms, device testing, and applicable store testing. Check [RELEASE_PROGRESS.md](RELEASE_PROGRESS.md) and the platform metadata before naming a native build ready. The 1.0.13 localization candidate is implemented for review; the original 341 Punjabi entries are approved by the owner; two new UI strings, Hindi and remaining release validation are pending.
 
 ## License
 

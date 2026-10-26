@@ -8,7 +8,7 @@ Pending tablet release: **1.0.12 / Android build 50 / iOS build 46 metadata**, p
 
 Production access was granted and verified in the live Console October 10, 2026. The owner authorized preparation, Internal testing, refreshed screenshots, production submission and publication following approval. Version 1.0.11 includes the merged review and viewport fixes; validate the exact signed candidate before rollout.
 
-Local implementation candidate: **1.0.13 / Android build 51 / iOS build 47 metadata**, prepared October 17 for Hindi and Punjabi/Gurmukhi localization. This candidate requires fluent-language and owner terminology review before any publication; its validation is separate from the pending tablet release. See the localization gates below and `docs/localization-review.md`.
+Local implementation candidate: **1.0.13 / Android build 51 / iOS build 47 metadata**, prepared October 17 for Hindi and Punjabi/Gurmukhi localization. The original Punjabi catalog was approved by the owner October 26; two new UI strings, Hindi review and the remaining release checks are still required before publication; its validation is separate from the tablet release. See the localization gates below and `docs/localization-review.md`.
 
 ## itch.io browser release
 
@@ -31,7 +31,9 @@ Google Play and iOS signing/store-console tasks below do not block a browser-onl
 
 For the **1.0.13 / Android 51 / iOS 47 metadata localization candidate**, historical checkmarks below do not establish translated-release readiness. Build 50's pending tablet submission remains separate.
 
-- [ ] Complete fluent Hindi and Punjabi/Gurmukhi review of every catalog entry in context, including both privacy surfaces and Play drafts; record reviewer findings and approval for the exact candidate.
+- [x] Owner approved the original 341 Punjabi/Gurmukhi entries October 26, 2026; baseline checksums are in `docs/localization-review.md`.
+- [ ] Review the two added Punjabi guide/review-link strings and validate native store navigation on Android/iOS.
+- [ ] Complete Hindi review and separately review Play listing drafts; native-device/layout validation remains separate from wording approval.
 - [ ] Complete owner Sikh terminology review using `docs/localization-review.md`; retain the agreed fictional premise and welcome to all players.
 - [x] Verify catalog/placeholder parity, exact extraction counts, English-residue exceptions, device detection (including `pa-Arab` and `pa-PK` exclusion), switching, persistence, old saves, denied storage, and paused-run retention. October 17: localization unit/runtime and actual-browser checks pass; 341 entries / 2,150 English source words.
 - [ ] Test all modes, warnings, tutorials, badges, Help/Privacy, keyboard/controller/Android Back and accessibility labels in all three languages.

@@ -2,6 +2,9 @@
 (function (root) {
   root.SevaJumpCatalogs = root.SevaJumpCatalogs || {};
   Object.assign(root.SevaJumpCatalogs["hi"] = root.SevaJumpCatalogs["hi"] || {}, {
+  "ui.tutorial.keyboard": "कंप्यूटर पर चलने के लिए ← → या A/D का इस्तेमाल करें।",
+  "ui.write.review": "समीक्षा लिखें",
+
   "ui.visit.khalsa.game.studio": "Khalsa Game Studio पर जाएँ ↗",
   "ui.seva.jump.game": "Seva Jump खेल",
   "ui.seva.jump.game.drag.or.use.a": "Seva Jump खेल। दिशा बदलने के लिए खींचें या A/D या बाएँ और दाएँ तीर कुंजियों का उपयोग करें। रोकने के लिए Escape दबाएँ।",

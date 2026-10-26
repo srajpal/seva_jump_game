@@ -20,7 +20,8 @@ for (const entry of entries) {
   const old = previousById.get(entry.id);
   if (old && ['en', 'hi', 'pa-Guru'].every(locale => old[locale] === entry[locale])) entry.review = old.review;
 }
-const inventory = { status: 'Draft translations — not approved for publication', entries: entries.length, sourceWords: entries.reduce((sum, entry) => sum + (entry.en.match(/\S+/g) || []).length, 0), countingMethod: 'Whitespace-delimited English tokens, including placeholders; deduplicated catalog IDs. Store listing drafts are separate.', strings: entries };
+const acceptedPunjabi = entries.filter(entry => entry.review.gurmukhi === 'accepted by owner').length;
+const inventory = { status: entries.every(entry => entry.review.gurmukhi === 'accepted by owner') ? 'Punjabi accepted by owner; Hindi review pending; release validation remains separate.' : `${acceptedPunjabi} Punjabi entries accepted by owner; ${entries.length - acceptedPunjabi} pending review; Hindi review pending.`, entries: entries.length, sourceWords: entries.reduce((sum, entry) => sum + (entry.en.match(/\S+/g) || []).length, 0), countingMethod: 'Whitespace-delimited English tokens, including placeholders; deduplicated catalog IDs. Store listing drafts are separate.', strings: entries };
 fs.mkdirSync(path.join(root, 'docs'), { recursive: true });
 fs.writeFileSync(destination, JSON.stringify(inventory, null, 2) + '\n');
 console.log(`${inventory.entries} entries; ${inventory.sourceWords} source words. Inventory written to docs/localization-inventory.json`);
