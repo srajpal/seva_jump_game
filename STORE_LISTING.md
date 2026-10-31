@@ -44,7 +44,7 @@ Adds computer controls to the first-run guide and an optional Write a review lin
 Your progress stays on your device.
 ```
 
-The upload-ready notes file is `dist/SevaJump-1.0.13-build51-play-release-notes.txt`. Signed artifact hashes and remaining Play-delivered/device validation are in `RELEASE_PROGRESS.md`. Preparation does not imply a Console upload, review submission or production publication.
+The upload-ready notes file is `dist/SevaJump-1.0.13-build51-play-release-notes.txt`. Signed artifact hashes and remaining Play-delivered/device validation are in `RELEASE_PROGRESS.md`. October 31 status: the signed bundle and these English update notes were published to Internal testing at approximately 4:02 PM America/New_York; Console confirms availability to internal testers. No production review submission or rollout occurred.
 
 ## Localization candidate drafts
 

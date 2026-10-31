@@ -2,7 +2,7 @@
 
 Use this checklist for every release candidate. Do not create or commit an upload keystore, passwords, or `keystore.properties`.
 
-Current Android production release: **1.0.12 / build 50**, published October 23, 2026. Public browser **1.0.11** was published October 10. iOS **1.0.11** is released on the App Store according to the owner October 31; exact publication date/released build number are unverified. Build 45 was previously uploaded/processed October 12. Existing checkmarks record historical work unless newer evidence is explicitly dated. Rerun applicable checks after any source change and against the exact artifact proposed for upload. [ITCH_RELEASE_AUDIT.md](ITCH_RELEASE_AUDIT.md) preserves the original 0.13.1 findings; current status is in [RELEASE_PROGRESS.md](RELEASE_PROGRESS.md).
+Current Android production release: **1.0.12 / build 50**, published October 23, 2026. Internal testing **1.0.13 / build 51** was published October 31. Public browser **1.0.11** was published October 10. iOS **1.0.11** is released on the App Store according to the owner October 31; exact publication date/released build number are unverified. Build 45 was previously uploaded/processed October 12. Existing checkmarks record historical work unless newer evidence is explicitly dated. Rerun applicable checks after any source change and against the exact artifact proposed for upload. [ITCH_RELEASE_AUDIT.md](ITCH_RELEASE_AUDIT.md) preserves the original 0.13.1 findings; current status is in [RELEASE_PROGRESS.md](RELEASE_PROGRESS.md).
 
 Published tablet release: **1.0.12 / Android build 50 / iOS build 46 metadata**, prepared October 17 for the tall-tablet layout correction and replacement tablet galleries; Google Play production publication confirmed October 23 at full rollout. Automated suites, 15 Android layout cases, phone/tablet Android 15 emulator checks, signed bundle verification and Android lint pass. No new physical-device or Play-delivered update pass is claimed. Validation and publication evidence are tracked separately in `RELEASE_PROGRESS.md`.
 
@@ -43,7 +43,8 @@ For the **1.0.13 / Android 51 / iOS 47 metadata localization candidate**, histor
 - [x] Verify offline fonts/catalogs, direct-file opening, phone/tablet clipping and wrapping, and the tall-tablet gap regression against the final payload. October 31: exact ZIP Edge localization/offline checks, 26 Home-fit cases in each language, and 15 Android layout regressions pass; physical-device validation remains separate from owner wording approval.
 - [x] October 31: Android15 QA emulator phone/tablet localization, debug in-place update/save retention, Back/system bars, cold airplane-mode launch and HTTPS review fallback pass.
 - [x] October 31: build/sign the production 1.0.13/build51 AAB and release APK, verify upload certificate, version metadata and all 49 packaged web/Capacitor files; Android release lint reports 0 errors. Artifact hashes are in `RELEASE_PROGRESS.md`.
-- [ ] Upload the exact signed AAB to Play testing; validate the Play-delivered physical phone/tablet update and review its pre-launch report before production rollout.
+- [x] Upload and publish the exact signed AAB to Play Internal testing. October 31 at 4:02 PM America/New_York: Console confirms 51 (1.0.13) available to internal testers; checksum and proof are in `RELEASE_PROGRESS.md`.
+- [ ] Validate the Play-delivered physical phone/tablet update and review its pre-launch report before production rollout.
 - [ ] Complete physical accessibility/screen-reader review and sustained natural playthroughs.
 - [ ] For the separate iOS update, rebuild/validate 1.0.13/build47 in Xcode and on iPhone/iPad. This preparation made no iOS build.
 
