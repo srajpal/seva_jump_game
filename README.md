@@ -2,13 +2,13 @@
 
 **A skyward seva adventure.**
 
-Current public [itch.io browser release](https://khalsagamestudio.itch.io/seva-jump): **v1.0.11**, published October 10, 2026 with refreshed screenshots and gameplay/features copy. Android **1.0.11 / build 49** was published to [Google Play production](https://play.google.com/store/apps/details?id=org.sevajump.game) October 17, 2026 and remains available in Internal testing; closed testing remains on **1.0.3 / build 41**. Managed publishing remains enabled. iOS **1.0.11 / build 45** was uploaded and processed October 12 and is available for owner-only internal TestFlight testing; no iOS publication is claimed. See `RELEASE_PROGRESS.md` for validation and publication details.
+Current public [itch.io browser release](https://khalsagamestudio.itch.io/seva-jump): **v1.0.11**, published October 10, 2026 with refreshed screenshots and gameplay/features copy. Android **1.0.12 / build 50** was published to [Google Play production](https://play.google.com/store/apps/details?id=org.sevajump.game) October 23, 2026 at full rollout, with the tablet-layout fix, replacement tablet galleries and revised short description. Last verified testing releases remain **1.0.11 / build 49** in Internal testing and **1.0.3 / build 41** in closed testing. Managed publishing remains enabled. iOS **1.0.11** is released on the App Store, confirmed by the owner October 31; the exact publication date and released build number have not been independently verified. Build 45 was previously uploaded/processed October 12. See `RELEASE_PROGRESS.md` for validation and publication details.
 
 The birds have flown away with the parshad. Choose a young Sikh boy or girl, leap from platform to platform, and bring it back in this cheerful browser game.
 
 Seva Jump is designed for ages 8-15, with touch-first controls, a calm Gurdwara-inspired setting, and a respectful introduction to a few Sikh terms used in the game.
 
-The local **1.0.13 / Android build 51** candidate adds English, Hindi (Devanagari) and Punjabi (Gurmukhi). It follows device language with an explicit choice on Home and in Settings; unsupported device languages use English. Catalogs and Noto fonts are bundled for offline use, and changing language preserves progress and a paused run. The existing 341 Punjabi entries were approved by the owner October 26; two new UI strings and Hindi remain pending fluent-language and owner terminology review before publication; see [the reviewer pack](docs/localization-review.md). This candidate is separate from the tablet update.
+The local **1.0.13 / Android build 51** candidate adds English, Hindi (Devanagari) and Punjabi (Gurmukhi). It follows device language with an explicit choice on Home and in Settings; unsupported device languages use English. Catalogs and Noto fonts are bundled for offline use, and changing language preserves progress and a paused run. All 343 Punjabi and Hindi game entries are owner-approved as of October 31 (Hindi approved for now); release validation and translated store-copy review remain separate; see [the reviewer pack](docs/localization-review.md). This candidate is separate from the published 1.0.12/build50 tablet update.
 
 ## Play
 
@@ -136,13 +136,13 @@ ARCHITECTURE.md      Runtime, packaging, and platform architecture
 
 ## Release status
 
-Android **1.0.12 / build 50** is the prepared tablet-layout update. It fixes the oversized blank area below gameplay on tall Android tablets and has matching replacement tablet screenshots. The public Play build remains **1.0.11 / 49** until the update is approved and published; follow `RELEASE_PROGRESS.md` for current submission status.
+Android **1.0.12 / build 50** was published October 23, 2026. It fixes the oversized blank area below gameplay on tall Android tablets and has matching replacement tablet screenshots. Google Play confirmed publication at full rollout; store propagation and fresh Play-delivered update checks remain separate. Follow `RELEASE_PROGRESS.md` for validation and publication evidence.
 
 The feature set is frozen for the current release candidate. Use [RELEASE_CHECKLIST.md](RELEASE_CHECKLIST.md) for regression testing and signing, [STORE_LISTING.md](STORE_LISTING.md) for the prepared Google Play copy and declarations, and [ITCH_LISTING.md](ITCH_LISTING.md) for the browser listing and upload plan.
 
 The September 11, 2026 itch.io audit records the problems found in v0.13.1. Current source, published builds, and outstanding checks are tracked separately in [RELEASE_PROGRESS.md](RELEASE_PROGRESS.md). The October review fixes are included in the published 1.0.11 browser ZIP and Android candidate and are newer than Play's 1.0.3 closed-test build. The browser ZIP also includes the later hosted privacy-page routing fix. Candidate preparation and store publication are recorded separately.
 
-Native-store work still includes screenshots, signing credentials, console forms, device testing, and applicable store testing. Check [RELEASE_PROGRESS.md](RELEASE_PROGRESS.md) and the platform metadata before naming a native build ready. The 1.0.13 localization candidate is implemented for review; the original 341 Punjabi entries are approved by the owner; two new UI strings, Hindi and remaining release validation are pending.
+Remaining work for the next native update includes store upload and physical-device/store validation. Check [RELEASE_PROGRESS.md](RELEASE_PROGRESS.md) and the platform metadata before naming a native build ready. The 1.0.13 localization candidate has owner approval for all 343 Punjabi and Hindi game entries as of October 31 (Hindi approved for now). The signed Android upload bundle is prepared and locally validated; upload and physical Play-delivered update checks remain. iOS 1.0.11 is released according to the owner; 1.0.13/build47 remains metadata only until rebuilt in Xcode.
 
 ## License
 

@@ -1,6 +1,6 @@
 # Google Play localization drafts
 
-Prepared October 17, 2026 for **1.0.13 / Android build 51**. **Unreviewed drafts: do not upload or publish.** Fluent Hindi and Punjabi/Gurmukhi review plus owner Sikh terminology review are required. The separately submitted English short description, tablet galleries and build 50 remain unchanged. Source meaning is the current full description in `STORE_LISTING.md`; these drafts do not change Play declarations or promise a published localized release.
+Prepared October 17, 2026 for **1.0.13 / Android build 51**. **Unreviewed store-copy drafts: do not upload or publish.** October 31: all 343 Punjabi and Hindi game entries are owner-approved (Hindi approved for now); that approval does not extend to these separate store descriptions. Fluent Hindi and Punjabi/Gurmukhi review plus owner Sikh terminology review are required. The separately submitted English short description, tablet galleries and build 50 remain unchanged. Source meaning is the current full description in `STORE_LISTING.md`; these drafts do not change Play declarations or promise a published localized release.
 
 The established store app name remains **SevaJump**, and the in-game brand/logo remains **Seva Jump**. Short descriptions omit the “no ads” promotional phrase previously flagged by Console; the full descriptions keep the factual explanation. Confirm field limits and the correct Punjabi/Gurmukhi listing locale in Console at eventual submission. Internal `pa-Guru` is not assumed to be a Console locale identifier. Digits remain 0–9.
 

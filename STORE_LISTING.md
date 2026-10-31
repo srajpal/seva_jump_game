@@ -31,9 +31,24 @@ Four ways to play:
 
 The About & Help section explains the controls, game items, accessibility settings, and the difference between Sikh and Sikhi. Learn about seva: serving others without expecting a reward. Inspired by Sikhi, this is one creator's make-believe adventure, made for everyone and intended to spark curiosity. It does not replace Sikh teachings. Help includes an optional link to learn more. Everyone is welcome to play. Progress, preferences, upgrades, badges, and statistics stay locally on your device and can be erased from Settings. Android backup is disabled, so progress is not restored after uninstalling and reinstalling the app.
 
+## 1.0.13 / build 51 Google Play upload preparation — October 31, 2026
+
+The game catalogs are owner-approved in Punjabi and Hindi (Hindi approved for now). Prepare this binary with the existing English listing; translated listing drafts still require separate approval. Keep existing privacy/Data safety declarations: language preference is local and no data collection was added.
+
+**English update notes:**
+
+```text
+Adds Hindi and Punjabi alongside English, with a language choice on Home and in Settings.
+Offline fonts and improved layouts make translated text easier to read.
+Adds computer controls to the first-run guide and an optional Write a review link.
+Your progress stays on your device.
+```
+
+The upload-ready notes file is `dist/SevaJump-1.0.13-build51-play-release-notes.txt`. Signed artifact hashes and remaining Play-delivered/device validation are in `RELEASE_PROGRESS.md`. Preparation does not imply a Console upload, review submission or production publication.
+
 ## Localization candidate drafts
 
-Hindi and Punjabi (Gurmukhi) descriptions and update notes for the **1.0.13 / build 51** candidate are in [docs/localization-play-drafts.md](docs/localization-play-drafts.md). They are unpublished drafts requiring fluent-language and owner terminology review using [the review pack](docs/localization-review.md). Do not replace or resubmit the existing 1.0.12/build50 review with unreviewed localized copy. Store language selection is separate from the game's internal locale identifiers. Privacy/Data safety behavior is unchanged; local language preference does not add data collection or a remote service.
+Hindi and Punjabi (Gurmukhi) descriptions and update notes for the **1.0.13 / build 51** candidate are in [docs/localization-play-drafts.md](docs/localization-play-drafts.md). They are unpublished store-copy drafts requiring separate review. All 343 Punjabi and Hindi game entries are owner-approved October 31 (Hindi approved for now); this does not approve the separate listing drafts. See [the review pack](docs/localization-review.md). The published 1.0.12/build50 listing retains English; do not submit unreviewed localized copy. Store language selection is separate from the game's internal locale identifiers. Privacy/Data safety behavior is unchanged; local language preference does not add data collection or a remote service.
 
 ## Suggested Play Console declarations
 

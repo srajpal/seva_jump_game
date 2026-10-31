@@ -21,7 +21,9 @@ for (const entry of entries) {
   if (old && ['en', 'hi', 'pa-Guru'].every(locale => old[locale] === entry[locale])) entry.review = old.review;
 }
 const acceptedPunjabi = entries.filter(entry => entry.review.gurmukhi === 'accepted by owner').length;
-const inventory = { status: entries.every(entry => entry.review.gurmukhi === 'accepted by owner') ? 'Punjabi accepted by owner; Hindi review pending; release validation remains separate.' : `${acceptedPunjabi} Punjabi entries accepted by owner; ${entries.length - acceptedPunjabi} pending review; Hindi review pending.`, entries: entries.length, sourceWords: entries.reduce((sum, entry) => sum + (entry.en.match(/\S+/g) || []).length, 0), countingMethod: 'Whitespace-delimited English tokens, including placeholders; deduplicated catalog IDs. Store listing drafts are separate.', strings: entries };
+const acceptedHindi = entries.filter(entry => entry.review.hindi === 'accepted by owner').length;
+const languageStatus = (name, accepted) => accepted === entries.length ? `${name} accepted by owner` : `${accepted} ${name} entries accepted by owner; ${entries.length - accepted} pending review`;
+const inventory = { status: `${languageStatus('Punjabi', acceptedPunjabi)}; ${languageStatus('Hindi', acceptedHindi)}; release validation remains separate.`, entries: entries.length, sourceWords: entries.reduce((sum, entry) => sum + (entry.en.match(/\S+/g) || []).length, 0), countingMethod: 'Whitespace-delimited English tokens, including placeholders; deduplicated catalog IDs. Store listing drafts are separate.', strings: entries };
 fs.mkdirSync(path.join(root, 'docs'), { recursive: true });
 fs.writeFileSync(destination, JSON.stringify(inventory, null, 2) + '\n');
 console.log(`${inventory.entries} entries; ${inventory.sourceWords} source words. Inventory written to docs/localization-inventory.json`);

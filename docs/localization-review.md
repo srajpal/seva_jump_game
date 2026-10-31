@@ -1,8 +1,19 @@
 # Seva Jump localization reviewer pack
 
-Prepared October 17, 2026 for the local **1.0.13 / Android build 51 / iOS build 47 metadata** candidate. Current status (October 26): **341 Punjabi entries approved; two additions and Hindi review pending**. This pack does not approve or change the separately submitted 1.0.12/build50 tablet update. No translation service was purchased.
+Prepared October 17, 2026 for the local **1.0.13 / Android build 51 / iOS build 47 metadata** candidate. Current status (October 31): **all 343 Punjabi and Hindi game entries accepted by owner; Hindi approved for now**. This pack does not approve or change the separately submitted 1.0.12/build50 tablet update. No translation service was purchased.
 
-## October 26 new guide and store review strings
+## October 31 owner approval for the release
+
+The owner approved both added Punjabi strings (`ui.tutorial.keyboard`, `ui.write.review`) and stated that Hindi is approved for now. All 343 current game entries in each language, including the current in-game Sikh terminology, are recorded as `accepted by owner`. Hindi acceptance is provisional owner approval for this candidate, not independent fluent-language certification. Future wording changes require a relevant recheck. Translated Play listing drafts are outside this game-catalog approval. Native/device checks and publication remain separate.
+
+Approved current catalog SHA-256 values:
+
+- `locales/ui-hi.js`: `ed9046969e85adbdc81fe1d79f14eeeea6d6e81c44ddccfdc7b555d96a9555c7`
+- `locales/runtime-hi.js`: `ff7ad32b6e9c44fbea9aff997800d9b7a48ff017c21a33e79256abc81dc6ad0a`
+- `locales/ui-pa-Guru.js`: `d54cd0fb0f82faef947407d468c375dd3b868cbc0c0c57a0889f960f3e5a9fe2`
+- `locales/runtime-pa-Guru.js`: `d2138c4a455d3a7942314a1f28f89f1f561030325d96e8dad82a146600febc05`
+
+## October 26 new guide and store review strings (historical)
 
 Added `ui.tutorial.keyboard` and `ui.write.review` in English, Hindi and Punjabi. These two new Punjabi entries are pending review; the previously accepted 341 entries and their wording remain unchanged. The historical hashes below identify the approved catalog before these additions, not the expanded catalog. The current inventory is 343 entries and 2,163 English source words. Hindi remains pending throughout. Store review links are shown only in installed Android/iOS apps, so review their text in native presentation as well as browser QA fixtures.
 
@@ -15,7 +26,7 @@ Approved catalog SHA-256 values:
 - `locales/ui-pa-Guru.js`: `a25d2d9f4f444f3d87fe97f165c3a7706acbb070a3a3c5733260acd70981d489`
 - `locales/runtime-pa-Guru.js`: `d2138c4a455d3a7942314a1f28f89f1f561030325d96e8dad82a146600febc05`
 
-## October 22 Punjabi corrections and second review
+## October 22 Punjabi corrections and second review (historical)
 
 Applied 35 Punjabi entries from the returned Word review, with owner-authorized grammar cleanup, removal of a duplicated word, consistent finish-banner wording, and retention of ਪੈਰੋਕਾਰ for the creator’s “follower of Sikhi.” The returned document left coverage blank, so unchanged text is not treated as verified. Hindi remains pending with no catalog edits. Revised Punjabi entries are `corrected / needs recheck`; neither language is approved for publication.
 
@@ -54,7 +65,7 @@ Do not use fake records or fabricated victories in release screenshots. QA-only 
 
 ## Sikh terminology glossary for owner review
 
-The English meaning and creative direction come from `SIKHI_TEXT_REVIEW.md`. Punjabi catalog wording was accepted by the owner October 26; the Hindi script spellings below remain drafting guidance, **not an owner-approved Hindi glossary**. Compare with the actual catalog text and settle one spelling per language before publication. The current English short spelling remains “parshad”; script spelling is a language decision, not a mechanical transliteration requirement.
+The English meaning and creative direction come from `SIKHI_TEXT_REVIEW.md`. Punjabi catalog wording was accepted by the owner October 26 and the remaining strings October 31; Hindi game wording and terminology were accepted for now October 31. This table remains contextual guidance; the actual catalogs and October 31 hashes identify the approved game text. Compare with the actual catalog text and settle one spelling per language before publication. The current English short spelling remains “parshad”; script spelling is a language decision, not a mechanical transliteration requirement.
 
 | English | Hindi draft | Punjabi draft | Meaning and constraint |
 | --- | --- | --- | --- |
@@ -82,9 +93,9 @@ Use these status values: **open**, **corrected / needs recheck**, **accepted by 
 
 | Gate | Status | Required record |
 | --- | --- | --- |
-| Fluent Hindi review | Pending | Reviewed revision, date, findings and approval; child-friendly Hindi and Devanagari shaping checked in context. |
-| Punjabi/Gurmukhi language approval | Original 341 entries accepted; two additions pending | Approved baseline hashes recorded above; device and shaping validation remain separate. |
-| Owner Sikh terminology review | Punjabi catalog accepted; Hindi pending | Current Punjabi wording is covered by October 26 owner approval. Hindi glossary/store-copy decisions remain open. |
+| Hindi game language approval | All 343 entries accepted by owner for now October 31 | Current catalog hashes above; provisional owner acceptance, not independent fluent-language certification. |
+| Punjabi/Gurmukhi game language approval | All 343 entries accepted by owner October 31 | Current catalog hashes above; device and shaping validation remain separate. |
+| Owner Sikh terminology review | Current game wording accepted in both languages | October 31 owner acceptance covers the game catalogs; separate translated store-copy review remains open. |
 | Technical automated checks | See `RELEASE_PROGRESS.md` | Exact suite results after final edits, including parity and package coverage. |
 | Physical Android phone/tablet | Pending | Actual device/update/offline/accessibility results; desktop emulation is not physical-device certification. |
 | iPhone/iPad / Xcode | Pending | Build plus device layout/offline/save checks; metadata/resource inspection alone is not a native pass. |
