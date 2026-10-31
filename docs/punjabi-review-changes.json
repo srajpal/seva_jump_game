@@ -1,0 +1,478 @@
+{
+  "date": "2026-10-22",
+  "status": "Applied reviewer suggestions with owner-authorized cleanup; second Punjabi review pending. Hindi review pending.",
+  "changes": [
+    {
+      "id": "ui.game.version.1.0.13",
+      "en": "Game version 1.0.13",
+      "before": "ਖੇਡ ਦਾ ਵਰਜਨ 1.0.13",
+      "after": "ਖੇਡ ਦਾ ਸੰਸਕਰਨ 1.0.13",
+      "ranges": [
+        [
+          7,
+          14
+        ]
+      ]
+    },
+    {
+      "id": "ui.reach.1.000.to.complete.the.run",
+      "en": "Reach 1,000 to complete the run",
+      "before": "ਦੌਰ ਪੂਰਾ ਕਰਨ ਲਈ 1,000 ਤੱਕ ਪਹੁੰਚੋ",
+      "after": "ਦੌੜ ਪੂਰੀ ਕਰਨ ਲਈ 1,000 ਤੱਕ ਪਹੁੰਚੋ",
+      "ranges": [
+        [
+          0,
+          9
+        ]
+      ]
+    },
+    {
+      "id": "ui.tap.a.character.to.choose.your.jumper",
+      "en": "Tap a character to choose your jumper",
+      "before": "ਆਪਣਾ ਖਿਡਾਰੀ ਚੁਣਨ ਲਈ ਕਿਸੇ ਪਾਤਰ ਨੂੰ ਛੋਹਵੋ",
+      "after": "ਆਪਣਾ ਖਿਡਾਰੀ ਚੁਣਨ ਲਈ ਕਿਸੇ ਪਾਤਰ ਉੱਤੇ ਟੱਚ ਕਰੋ",
+      "ranges": [
+        [
+          30,
+          42
+        ]
+      ]
+    },
+    {
+      "id": "game.canvas.unavailable",
+      "en": "This browser cannot draw the game. Try reopening it in a browser with canvas support.",
+      "before": "ਇਹ ਬ੍ਰਾਊਜ਼ਰ ਗੇਮ ਨਹੀਂ ਦਿਖਾ ਸਕਦਾ। ਕੈਨਵਸ ਸਹਾਇਤਾ ਵਾਲੇ ਬ੍ਰਾਊਜ਼ਰ ਵਿੱਚ ਇਸ ਨੂੰ ਮੁੜ ਖੋਲ੍ਹੋ।",
+      "after": "ਇਹ ਬ੍ਰਾਊਜ਼ਰ ਗੇਮ ਨਹੀਂ ਦਿਖਾ ਸਕਦਾ। ਕੈਨਵਸ ਸਮਰਥਿਤ ਬ੍ਰਾਊਜ਼ਰ ਵਿੱਚ ਇਸ ਨੂੰ ਦੁਬਾਰਾ ਖੋਲ੍ਹੋ।",
+      "ranges": [
+        [
+          38,
+          45
+        ],
+        [
+          66,
+          73
+        ]
+      ]
+    },
+    {
+      "id": "game.fullscreen.enter",
+      "en": "Enter fullscreen",
+      "before": "ਪੂਰੀ ਸਕ੍ਰੀਨ ਖੋਲ੍ਹੋ",
+      "after": "ਫੁੱਲਸਕ੍ਰੀਨ ਖੋਲ੍ਹੋ",
+      "ranges": [
+        [
+          0,
+          11
+        ]
+      ]
+    },
+    {
+      "id": "game.fullscreen.exit",
+      "en": "Exit fullscreen",
+      "before": "ਪੂਰੀ ਸਕ੍ਰੀਨ ਤੋਂ ਬਾਹਰ ਆਓ",
+      "after": "ਫੁੱਲਸਕ੍ਰੀਨ ਤੋਂ ਬਾਹਰ ਆਓ",
+      "ranges": [
+        [
+          0,
+          11
+        ]
+      ]
+    },
+    {
+      "id": "game.fullscreen.unavailable",
+      "en": "Fullscreen is unavailable in this browser or embed",
+      "before": "ਇਸ ਬ੍ਰਾਊਜ਼ਰ ਜਾਂ ਏਮਬੈੱਡ ਵਿੱਚ ਪੂਰੀ ਸਕ੍ਰੀਨ ਉਪਲਬਧ ਨਹੀਂ ਹੈ",
+      "after": "ਇਸ ਬ੍ਰਾਊਜ਼ਰ ਜਾਂ ਏਮਬੈੱਡ ਵਿੱਚ ਫੁੱਲਸਕ੍ਰੀਨ ਉਪਲਬਧ ਨਹੀਂ ਹੈ",
+      "ranges": [
+        [
+          28,
+          39
+        ]
+      ]
+    },
+    {
+      "id": "game.message.finishAhead",
+      "en": "The finish banner is ahead!",
+      "before": "ਅੰਤਲਾ ਬੈਨਰ ਅੱਗੇ ਹੈ!",
+      "after": "ਸਮਾਪਤੀ ਬੈਨਰ ਸਾਹਮਣੇ ਹੈ!",
+      "ranges": [
+        [
+          0,
+          7
+        ],
+        [
+          12,
+          19
+        ]
+      ]
+    },
+    {
+      "id": "game.stuck.action",
+      "en": "Keep trying, or pause to restart or leave.",
+      "before": "ਕੋਸ਼ਿਸ਼ ਜਾਰੀ ਰੱਖੋ, ਜਾਂ ਮੁੜ ਸ਼ੁਰੂ ਕਰਨ ਜਾਂ ਛੱਡਣ ਲਈ ਰੋਕੋ।",
+      "after": "ਕੋਸ਼ਿਸ਼ ਜਾਰੀ ਰੱਖੋ, ਜਾਂ ਮੁੜ ਸ਼ੁਰੂ ਕਰਨ ਜਾਂ ਬਾਹਰ ਨਿਕਲਣ ਲਈ ਰੋਕੋ।",
+      "ranges": [
+        [
+          41,
+          52
+        ]
+      ]
+    },
+    {
+      "id": "ui.enter.fullscreen",
+      "en": "Enter fullscreen",
+      "before": "ਪੂਰੀ ਸਕ੍ਰੀਨ ਖੋਲ੍ਹੋ",
+      "after": "ਫੁੱਲਸਕ੍ਰੀਨ ਖੋਲ੍ਹੋ",
+      "ranges": [
+        [
+          0,
+          11
+        ]
+      ]
+    },
+    {
+      "id": "ui.seva.jump.requires.a.browser.with.canvas",
+      "en": "Seva Jump requires a browser with canvas support.",
+      "before": "Seva Jump ਲਈ canvas ਦਾ ਸਮਰਥਨ ਕਰਨ ਵਾਲਾ ਬ੍ਰਾਊਜ਼ਰ ਚਾਹੀਦਾ ਹੈ।",
+      "after": "Seva Jump ਲਈ canvas ਦਾ ਸਮਰਥਿਤ ਬ੍ਰਾਊਜ਼ਰ ਚਾਹੀਦਾ ਹੈ।",
+      "ranges": [
+        [
+          23,
+          30
+        ]
+      ]
+    },
+    {
+      "id": "game.tutorial.guide.copy",
+      "en": "Drag anywhere across the game to move left and right while your jumper bounces automatically.",
+      "before": "ਖਿਡਾਰੀ ਆਪਣੇ ਆਪ ਉੱਛਲਦਾ ਹੈ। ਉਸ ਨੂੰ ਖੱਬੇ-ਸੱਜੇ ਲਿਜਾਣ ਲਈ ਗੇਮ ਉੱਤੇ ਕਿਤੇ ਵੀ ਉਂਗਲ ਖਿਸਕਾਓ।",
+      "after": "ਖਿਡਾਰੀ ਆਪਣੇ ਆਪ ਉੱਛਲਦਾ ਹੈ। ਉਸ ਨੂੰ ਖੱਬੇ-ਸੱਜੇ ਲਿਜਾਉਣ ਲਈ ਗੇਮ ਉੱਤੇ ਕਿਤੇ ਵੀ ਉਂਗਲ ਨਾਲ ਲਿਜਾਓ।",
+      "ranges": [
+        [
+          43,
+          50
+        ],
+        [
+          75,
+          85
+        ]
+      ]
+    },
+    {
+      "id": "ui.drag.anywhere.across.the.game.to.move",
+      "en": "Drag anywhere across the game to move left and right while your jumper bounces automatically.",
+      "before": "ਤੁਹਾਡਾ ਖਿਡਾਰੀ ਆਪਣੇ ਆਪ ਉੱਛਲਦਾ ਹੈ। ਉਸ ਨੂੰ ਖੱਬੇ-ਸੱਜੇ ਲਿਜਾਣ ਲਈ ਖੇਡ ਵਿੱਚ ਕਿਤੇ ਵੀ ਖਿੱਚੋ।",
+      "after": "ਤੁਹਾਡਾ ਖਿਡਾਰੀ ਆਪਣੇ ਆਪ ਉੱਛਲਦਾ ਹੈ। ਉਸ ਨੂੰ ਖੱਬੇ-ਸੱਜੇ ਲਿਜਾਉਣ ਲਈ ਗੇਮ ਉੱਤੇ ਕਿਤੇ ਵੀ ਉਂਗਲ ਨਾਲ ਲਿਜਾਓ",
+      "ranges": [
+        [
+          50,
+          57
+        ],
+        [
+          60,
+          69
+        ],
+        [
+          77,
+          91
+        ]
+      ]
+    },
+    {
+      "id": "ui.one.falcon.save.and.one.dhal.shield",
+      "en": "One Falcon Save and one Dhal Shield per run, used only when activated. Unused items are kept. Choices are remembered; collected boosts still work.",
+      "before": "ਹਰ ਦੌਰ ਵਿੱਚ ਇੱਕ ਬਾਜ਼ ਦੀ ਮਦਦ ਅਤੇ ਇੱਕ ਢਾਲ ਦੀ ਸੁਰੱਖਿਆ, ਸਿਰਫ਼ ਸਰਗਰਮ ਹੋਣ ਉੱਤੇ ਵਰਤੇ ਜਾਂਦੇ ਹਨ। ਨਾ ਵਰਤੀਆਂ ਚੀਜ਼ਾਂ ਬਚੀਆਂ ਰਹਿੰਦੀਆਂ ਹਨ। ਤੁਹਾਡੀ ਚੋਣ ਯਾਦ ਰੱਖੀ ਜਾਂਦੀ ਹੈ; ਇਕੱਠੇ ਕੀਤੇ ਬੂਸਟ ਫਿਰ ਵੀ ਕੰਮ ਕਰਦੇ ਹਨ।",
+      "after": "ਹਰ ਦੌੜ ਵਿੱਚ ਇੱਕ ਬਾਜ਼ ਦੀ ਮਦਦ ਅਤੇ ਇੱਕ ਢਾਲ ਦੀ ਸੁਰੱਖਿਆ, ਸਿਰਫ਼ ਸਰਗਰਮ ਹੋਣ ਉੱਤੇ ਵਰਤੇ ਜਾਂਦੇ ਹਨ। ਨਾ ਵਰਤੀਆਂ ਚੀਜ਼ਾਂ ਬਚੀਆਂ ਰਹਿੰਦੀਆਂ ਹਨ। ਤੁਹਾਡੀ ਚੋਣ ਯਾਦ ਰੱਖੀ ਜਾਂਦੀ ਹੈ; ਇਕੱਠੇ ਕੀਤੇ ਬੂਸਟ ਫਿਰ ਵੀ ਕੰਮ ਕਰਦੇ ਹਨ।",
+      "ranges": [
+        [
+          3,
+          7
+        ]
+      ]
+    },
+    {
+      "id": "ui.start.run",
+      "en": "Start run",
+      "before": "ਦੌਰ ਸ਼ੁਰੂ ਕਰੋ",
+      "after": "ਦੌੜ ਸ਼ੁਰੂ ਕਰੋ",
+      "ranges": [
+        [
+          0,
+          4
+        ]
+      ]
+    },
+    {
+      "id": "ui.upgrades.for.this.run",
+      "en": "Upgrades for this run",
+      "before": "ਇਸ ਦੌਰ ਲਈ ਅੱਪਗ੍ਰੇਡ",
+      "after": "ਇਸ ਦੌੜ ਲਈ ਅੱਪਗ੍ਰੇਡ",
+      "ranges": [
+        [
+          3,
+          7
+        ]
+      ]
+    },
+    {
+      "id": "ui.restart.run",
+      "en": "Restart run",
+      "before": "ਦੌਰ ਫਿਰ ਸ਼ੁਰੂ ਕਰੋ",
+      "after": "ਦੌੜ ਫਿਰ ਸ਼ੁਰੂ ਕਰੋ",
+      "ranges": [
+        [
+          0,
+          4
+        ]
+      ]
+    },
+    {
+      "id": "game.result.arcadeGoal",
+      "en": "Reach 1,000 points to break through the finish banner.",
+      "before": "ਅੰਤਲਾ ਬੈਨਰ ਪਾਰ ਕਰਨ ਲਈ 1,000 ਅੰਕ ਬਣਾਓ।",
+      "after": "ਸਮਾਪਤੀ ਬੈਨਰ ਪਾਰ ਕਰਨ ਲਈ 1,000 ਅੰਕ ਬਣਾਓ।",
+      "ranges": [
+        [
+          0,
+          7
+        ]
+      ]
+    },
+    {
+      "id": "game.result.arcadeWin",
+      "en": "You reached 1,000 and broke through the finish banner!",
+      "before": "ਤੁਸੀਂ 1,000 ਅੰਕ ਬਣਾਏ ਅਤੇ ਅੰਤਲਾ ਬੈਨਰ ਪਾਰ ਕੀਤਾ!",
+      "after": "ਤੁਸੀਂ 1,000 ਅੰਕ ਬਣਾਏ ਅਤੇ ਸਮਾਪਤੀ ਬੈਨਰ ਪਾਰ ਕੀਤਾ!",
+      "ranges": [
+        [
+          25,
+          32
+        ]
+      ]
+    },
+    {
+      "id": "ui.run.complete",
+      "en": "Run complete",
+      "before": "ਦੌਰ ਪੂਰਾ",
+      "after": "ਦੌੜ ਪੂਰੀ",
+      "ranges": [
+        [
+          0,
+          8
+        ]
+      ]
+    },
+    {
+      "id": "ui.run.results",
+      "en": "Run results",
+      "before": "ਦੌਰ ਦੇ ਨਤੀਜੇ",
+      "after": "ਦੌੜ ਦੇ ਨਤੀਜੇ",
+      "ranges": [
+        [
+          0,
+          4
+        ]
+      ]
+    },
+    {
+      "id": "game.storage.eraseFailed",
+      "en": "Saved progress could not be erased. Your progress is reset for this session only.",
+      "before": "ਸੰਭਾਲੀ ਤਰੱਕੀ ਮਿਟਾਈ ਨਹੀਂ ਜਾ ਸਕੀ। ਤਰੱਕੀ ਸਿਰਫ਼ ਇਸ ਸੈਸ਼ਨ ਲਈ ਰੀਸੈੱਟ ਹੋਈ ਹੈ।",
+      "after": "ਸੁਰੱਖਿਅਤ ਕੀਤੀ ਤਰੱਕੀ ਮਿਟਾਈ ਨਹੀਂ ਜਾ ਸਕੀ। ਤਰੱਕੀ ਸਿਰਫ਼ ਇਸ ਸੈਸ਼ਨ ਲਈ ਰੀਸੈੱਟ ਹੋਈ ਹੈ।",
+      "ranges": [
+        [
+          0,
+          14
+        ]
+      ]
+    },
+    {
+      "id": "game.storage.unavailable",
+      "en": "Progress can’t be saved in this browser. You can keep playing for this session.",
+      "before": "ਇਸ ਬ੍ਰਾਊਜ਼ਰ ਵਿੱਚ ਤਰੱਕੀ ਸੰਭਾਲੀ ਨਹੀਂ ਜਾ ਸਕਦੀ। ਤੁਸੀਂ ਇਸ ਸੈਸ਼ਨ ਵਿੱਚ ਖੇਡਣਾ ਜਾਰੀ ਰੱਖ ਸਕਦੇ ਹੋ।",
+      "after": "ਇਸ ਬ੍ਰਾਊਜ਼ਰ ਵਿੱਚ ਤਰੱਕੀ ਸੁਰੱਖਿਅਤ ਨਹੀਂ ਕੀਤੀ ਜਾ ਸਕਦੀ। ਤੁਸੀਂ ਇਸ ਸੈਸ਼ਨ ਵਿੱਚ ਖੇਡਣਾ ਜਾਰੀ ਰੱਖ ਸਕਦੇ ਹੋ।",
+      "ranges": [
+        [
+          23,
+          32
+        ],
+        [
+          37,
+          42
+        ]
+      ]
+    },
+    {
+      "id": "ui.reduced.motion.makes.decorative.effects.still.character",
+      "en": "Reduced Motion makes decorative effects still: character bobbing, net hovering, finish-banner floating, fireworks expansion, and interface transitions.",
+      "before": "ਘੱਟ ਹਿਲਜੁਲ ਸਜਾਵਟੀ ਪ੍ਰਭਾਵਾਂ ਨੂੰ ਥਿਰ ਕਰਦੀ ਹੈ: ਪਾਤਰ ਦਾ ਉੱਪਰ-ਹੇਠਾਂ ਹਿਲਣਾ, ਜਾਲ ਦਾ ਮੰਡਰਾਉਣਾ, ਸਮਾਪਤੀ ਬੈਨਰ ਦਾ ਤੈਰਨਾ, ਆਤਿਸ਼ਬਾਜ਼ੀ ਦਾ ਫੈਲਣਾ ਅਤੇ ਇੰਟਰਫੇਸ ਦੇ ਬਦਲਾਅ।",
+      "after": "ਘੱਟ ਹਿਲਜੁਲ ਸਜਾਵਟੀ ਪ੍ਰਭਾਵਾਂ ਨੂੰ ਸਥਿਰ ਕਰਦੀ ਹੈ: ਪਾਤਰ ਦਾ ਉੱਪਰ-ਹੇਠਾਂ ਹਿਲਣਾ, ਜਾਲ ਦਾ ਮੰਡਰਾਉਣਾ, ਸਮਾਪਤੀ ਬੈਨਰ ਦਾ ਤੈਰਨਾ, ਆਤਿਸ਼ਬਾਜ਼ੀ ਦਾ ਫੈਲਣਾ ਅਤੇ ਇੰਟਰਫੇਸ ਦੇ ਬਦਲਾਅ।",
+      "ranges": [
+        [
+          31,
+          36
+        ]
+      ]
+    },
+    {
+      "id": "ui.how.runs.ended",
+      "en": "How runs ended",
+      "before": "ਦੌਰ ਕਿਵੇਂ ਮੁੱਕੇ",
+      "after": "ਦੌੜਾਂ ਕਿਵੇਂ ਮੁੱਕੀਆਂ",
+      "ranges": [
+        [
+          0,
+          6
+        ],
+        [
+          12,
+          19
+        ]
+      ]
+    },
+    {
+      "id": "ui.use.these.numbers.to.follow.your.progress",
+      "en": "Use these numbers to follow your progress from run to run.",
+      "before": "ਇਨ੍ਹਾਂ ਅੰਕੜਿਆਂ ਨਾਲ ਹਰ ਦੌਰ ਤੋਂ ਬਾਅਦ ਆਪਣੀ ਤਰੱਕੀ ਵੇਖੋ।",
+      "after": "ਇਨ੍ਹਾਂ ਅੰਕੜਿਆਂ ਨਾਲ ਹਰ ਦੌੜ ਤੋਂ ਬਾਅਦ ਆਪਣੀ ਤਰੱਕੀ ਵੇਖੋ।",
+      "ranges": [
+        [
+          22,
+          26
+        ]
+      ]
+    },
+    {
+      "id": "ui.catch.one.fall.during.a.run",
+      "en": "Catch one fall during a run.",
+      "before": "ਦੌਰ ਵਿੱਚ ਇੱਕ ਵਾਰ ਡਿੱਗਣ ਤੋਂ ਬਚਾਓ।",
+      "after": "ਦੌੜ ਵਿੱਚ ਇੱਕ ਵਾਰ ਡਿੱਗਣ ਤੋਂ ਬਚਾਓ।",
+      "ranges": [
+        [
+          0,
+          4
+        ]
+      ]
+    },
+    {
+      "id": "ui.use.tokens.earned.during.runs.power.jump",
+      "en": "Use tokens earned during runs. Power Jump is permanent; the other upgrades are used once.",
+      "before": "ਦੌਰਾਂ ਵਿੱਚ ਮਿਲੇ ਟੋਕਨ ਵਰਤੋ। ਉੱਚੀ ਛਾਲ ਹਮੇਸ਼ਾ ਲਈ ਰਹਿੰਦੀ ਹੈ; ਬਾਕੀ ਅੱਪਗ੍ਰੇਡ ਇੱਕ ਵਾਰ ਕੰਮ ਆਉਂਦੇ ਹਨ।",
+      "after": "ਦੌੜਾਂ ਵਿੱਚ ਮਿਲੇ ਟੋਕਨ ਵਰਤੋ। ਉੱਚੀ ਛਾਲ ਹਮੇਸ਼ਾ ਲਈ ਰਹਿੰਦੀ ਹੈ; ਬਾਕੀ ਅੱਪਗ੍ਰੇਡ ਇੱਕ ਵਾਰ ਕੰਮ ਆਉਂਦੇ ਹਨ।",
+      "ranges": [
+        [
+          0,
+          6
+        ]
+      ]
+    },
+    {
+      "id": "ui.a.sikh.place.of.worship.learning.and",
+      "en": "A Sikh place of worship, learning, and community gathering, open to everyone.",
+      "before": "ਸਿੱਖਾਂ ਦੀ ਉਪਾਸਨਾ, ਸਿੱਖਣ ਅਤੇ ਸੰਗਤ ਦੇ ਮਿਲਣ ਦਾ ਸਥਾਨ, ਜਿੱਥੇ ਸਭ ਦਾ ਸੁਆਗਤ ਹੈ।",
+      "after": "ਸਿੱਖਾਂ ਲਈ ਭਗਤੀ, ਸਿਖਲਾਈ ਅਤੇ ਸੰਗਤ ਦੇ ਮਿਲਣ ਦਾ ਸਥਾਨ, ਜਿੱਥੇ ਸਭ ਦਾ ਸੁਆਗਤ ਹੈ।",
+      "ranges": [
+        [
+          7,
+          23
+        ]
+      ]
+    },
+    {
+      "id": "ui.catches.one.fall.during.a.run",
+      "en": "Catches one fall during a run.",
+      "before": "ਦੌਰ ਵਿੱਚ ਇੱਕ ਵਾਰ ਡਿੱਗਣ ਤੋਂ ਬਚਾਉਂਦਾ ਹੈ।",
+      "after": "ਦੌੜ ਵਿੱਚ ਇੱਕ ਵਾਰ ਡਿੱਗਣ ਤੋਂ ਬਚਾਉਂਦਾ ਹੈ।",
+      "ranges": [
+        [
+          0,
+          4
+        ]
+      ]
+    },
+    {
+      "id": "ui.drag.anywhere.across.the.game.to.guide",
+      "en": "Drag anywhere across the game to guide your jumper left and right.",
+      "before": "ਆਪਣੇ ਖਿਡਾਰੀ ਨੂੰ ਖੱਬੇ-ਸੱਜੇ ਲਿਜਾਣ ਲਈ ਖੇਡ ਵਿੱਚ ਕਿਤੇ ਵੀ ਖਿੱਚੋ।",
+      "after": "ਆਪਣੇ ਖਿਡਾਰੀ ਨੂੰ ਖੱਬੇ-ਸੱਜੇ ਲਿਜਾਉਣ ਲਈ ਗੇਮ ਵਿੱਚ ਕਿਤੇ ਵੀ ਉਂਗਲ ਨਾਲ ਲਿਜਾਓ।",
+      "ranges": [
+        [
+          26,
+          33
+        ],
+        [
+          36,
+          40
+        ],
+        [
+          53,
+          68
+        ]
+      ]
+    },
+    {
+      "id": "ui.drag.with.a.mouse.or.steer.with",
+      "en": "Drag with a mouse or steer with A/D or the arrow keys. Enter or Space starts Endless from Home; focused buttons keep their usual action. Escape pauses. Use ⛶ during play for fullscreen.",
+      "before": "ਮਾਊਸ ਨਾਲ ਖਿੱਚੋ ਜਾਂ A/D ਜਾਂ ਤੀਰ ਵਾਲੀਆਂ ਕੁੰਜੀਆਂ ਨਾਲ ਦਿਸ਼ਾ ਦਿਓ। ਮੁੱਖ ਸਕ੍ਰੀਨ ਤੋਂ Enter ਜਾਂ Space ਬੇਅੰਤ ਮੋਡ ਸ਼ੁਰੂ ਕਰਦਾ ਹੈ; ਫੋਕਸ ਵਾਲੇ ਬਟਨ ਆਪਣਾ ਆਮ ਕੰਮ ਕਰਦੇ ਹਨ। Escape ਖੇਡ ਰੋਕਦਾ ਹੈ। ਖੇਡਦੇ ਸਮੇਂ ਪੂਰੀ ਸਕ੍ਰੀਨ ਲਈ ⛶ ਦਬਾਓ।",
+      "after": "ਮਾਊਸ ਨਾਲ ਖਿੱਚੋ ਜਾਂ A/D ਜਾਂ ਤੀਰ ਵਾਲੀਆਂ ਕੁੰਜੀਆਂ ਨਾਲ ਦਿਸ਼ਾ ਦਿਓ। ਮੁੱਖ ਸਕ੍ਰੀਨ ਤੋਂ Enter ਜਾਂ Space ਬੇਅੰਤ ਮੋਡ ਸ਼ੁਰੂ ਕਰਦਾ ਹੈ; ਫੋਕਸ ਵਾਲੇ ਬਟਨ ਆਪਣਾ ਆਮ ਕੰਮ ਕਰਦੇ ਹਨ। Escape ਖੇਡ ਰੋਕਦਾ ਹੈ। ਖੇਡਦੇ ਸਮੇਂ ਫੁੱਲਸਕ੍ਰੀਨ ਲਈ ⛶ ਦਬਾਓ।",
+      "ranges": [
+        [
+          185,
+          196
+        ]
+      ]
+    },
+    {
+      "id": "ui.i.am.a.follower.of.sikhi.and",
+      "en": "I am a follower of Sikhi, and this game is my creative idea, inspired by Sikhi and made for everyone. Familiar symbols become playful parts of a make-believe adventure. I hope they spark questions, not tell you what to believe. The game does not replace Sikh teachings or learning from others.",
+      "before": "ਮੈਂ ਸਿੱਖੀ ਦਾ ਪੈਰੋਕਾਰ ਹਾਂ। ਇਹ ਖੇਡ ਮੇਰਾ ਰਚਨਾਤਮਕ ਵਿਚਾਰ ਹੈ, ਜੋ ਸਿੱਖੀ ਤੋਂ ਪ੍ਰੇਰਿਤ ਹੈ ਅਤੇ ਸਭ ਲਈ ਬਣਾਈ ਗਈ ਹੈ। ਜਾਣੇ-ਪਛਾਣੇ ਚਿੰਨ੍ਹ ਇਸ ਕਾਲਪਨਿਕ ਰੋਮਾਂਚ ਦੇ ਮਜ਼ੇਦਾਰ ਹਿੱਸੇ ਬਣਦੇ ਹਨ। ਮੇਰੀ ਆਸ ਹੈ ਕਿ ਇਹ ਤੁਹਾਡੇ ਮਨ ਵਿੱਚ ਸਵਾਲ ਜਗਾਉਣ, ਨਾ ਕਿ ਇਹ ਦੱਸਣ ਕਿ ਤੁਹਾਨੂੰ ਕੀ ਮੰਨਣਾ ਚਾਹੀਦਾ ਹੈ। ਇਹ ਖੇਡ ਸਿੱਖ ਸਿੱਖਿਆਵਾਂ ਜਾਂ ਦੂਜਿਆਂ ਤੋਂ ਸਿੱਖਣ ਦੀ ਥਾਂ ਨਹੀਂ ਲੈਂਦੀ।",
+      "after": "ਮੈਂ ਸਿੱਖੀ ਦਾ ਪੈਰੋਕਾਰ ਹਾਂ। ਇਹ ਖੇਡ ਮੇਰਾ ਰਚਨਾਤਮਕ ਵਿਚਾਰ ਹੈ, ਜੋ ਸਿੱਖੀ ਤੋਂ ਪ੍ਰੇਰਿਤ ਹੈ ਅਤੇ ਸਭ ਲਈ ਬਣਾਈ ਗਈ ਹੈ। ਜਾਣੇ-ਪਛਾਣੇ ਚਿੰਨ੍ਹ ਇਸ ਕਾਲਪਨਿਕ ਰੋਮਾਂਚ ਦੇ ਮਜ਼ੇਦਾਰ ਹਿੱਸੇ ਬਣਦੇ ਹਨ। ਮੇਰੀ ਆਸ ਹੈ ਕਿ ਇਹ ਤੁਹਾਡੇ ਮਨ ਵਿੱਚ ਸਵਾਲ ਜਗਾਉਣ, ਨਾ ਕਿ ਇਹ ਦੱਸਣ ਕਿ ਤੁਹਾਨੂੰ ਕੀ ਮੰਨਣਾ ਚਾਹੀਦਾ ਹੈ। ਇਹ ਖੇਡ ਸਿੱਖ ਸਿੱਖਿਆਵਾਂ ਜਾਂ ਦੂਜਿਆਂ ਤੋਂ ਸਿੱਖਣ ਦਾ ਬਦਲ ਨਹੀਂ ਹੈ।",
+      "ranges": [
+        [
+          296,
+          303
+        ],
+        [
+          308,
+          311
+        ]
+      ]
+    },
+    {
+      "id": "ui.use.a.standard.gamepad.s.left.stick",
+      "en": "Use a standard gamepad's left stick or D-pad to steer. A starts Endless from Home, confirms the pre-run upgrade choices, or resumes a paused run. B or Start pauses, or goes back from the upgrade choices.",
+      "before": "ਦਿਸ਼ਾ ਦੇਣ ਲਈ ਆਮ ਗੇਮਪੈਡ ਦੀ ਖੱਬੀ ਸਟਿੱਕ ਜਾਂ D-pad ਵਰਤੋ। A ਮੁੱਖ ਸਕ੍ਰੀਨ ਤੋਂ ਬੇਅੰਤ ਮੋਡ ਸ਼ੁਰੂ ਕਰਦਾ ਹੈ, ਦੌਰ ਤੋਂ ਪਹਿਲਾਂ ਅੱਪਗ੍ਰੇਡ ਦੀ ਚੋਣ ਦੀ ਪੁਸ਼ਟੀ ਕਰਦਾ ਹੈ ਜਾਂ ਰੁਕਿਆ ਦੌਰ ਜਾਰੀ ਕਰਦਾ ਹੈ। B ਜਾਂ Start ਖੇਡ ਰੋਕਦਾ ਹੈ ਜਾਂ ਅੱਪਗ੍ਰੇਡ ਦੀ ਚੋਣ ਤੋਂ ਵਾਪਸ ਜਾਂਦਾ ਹੈ।",
+      "after": "ਦਿਸ਼ਾ ਦੇਣ ਲਈ ਆਮ ਗੇਮਪੈਡ ਦੀ ਖੱਬੀ ਸਟਿੱਕ ਜਾਂ D-pad ਵਰਤੋ। A ਮੁੱਖ ਸਕ੍ਰੀਨ ਤੋਂ ਬੇਅੰਤ ਮੋਡ ਸ਼ੁਰੂ ਕਰਦਾ ਹੈ, ਦੌੜ ਤੋਂ ਪਹਿਲਾਂ ਅੱਪਗ੍ਰੇਡ ਦੀ ਚੋਣ ਦੀ ਪੁਸ਼ਟੀ ਕਰਦਾ ਹੈ ਜਾਂ ਰੁਕੀ ਦੌੜ ਜਾਰੀ ਕਰਦਾ ਹੈ। B ਜਾਂ Start ਖੇਡ ਰੋਕਦਾ ਹੈ ਜਾਂ ਅੱਪਗ੍ਰੇਡ ਦੀ ਚੋਣ ਤੋਂ ਵਾਪਸ ਜਾਂਦਾ ਹੈ।",
+      "ranges": [
+        [
+          96,
+          100
+        ],
+        [
+          149,
+          158
+        ]
+      ]
+    },
+    {
+      "id": "ui.your.completed.run.progress.is.saved.on",
+      "en": "Your completed-run progress is saved on this device when storage is available. The current run will end.",
+      "before": "ਸਟੋਰੇਜ ਉਪਲਬਧ ਹੋਣ ਉੱਤੇ ਪੂਰੇ ਕੀਤੇ ਦੌਰਾਂ ਦੀ ਤਰੱਕੀ ਇਸ ਡਿਵਾਈਸ ਉੱਤੇ ਸੰਭਾਲੀ ਜਾਂਦੀ ਹੈ। ਮੌਜੂਦਾ ਦੌਰ ਮੁੱਕ ਜਾਵੇਗਾ।",
+      "after": "ਸਟੋਰੇਜ ਉਪਲਬਧ ਹੋਣ ਉੱਤੇ ਪੂਰੀਆਂ ਕੀਤੀਆਂ ਦੌੜਾਂ ਦੀ ਤਰੱਕੀ ਇਸ ਡਿਵਾਈਸ ਉੱਤੇ ਸੰਭਾਲੀ ਜਾਂਦੀ ਹੈ। ਮੌਜੂਦਾ ਦੌੜ ਮੁੱਕ ਜਾਵੇਗੀ।",
+      "ranges": [
+        [
+          22,
+          42
+        ],
+        [
+          90,
+          94
+        ],
+        [
+          99,
+          106
+        ]
+      ]
+    }
+  ]
+}

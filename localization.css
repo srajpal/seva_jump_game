@@ -1,0 +1,105 @@
+@font-face {
+  font-family: "Noto Sans Devanagari";
+  src: url("assets/fonts/NotoSansDevanagari.ttf") format("truetype");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Noto Sans Gurmukhi";
+  src: url("assets/fonts/NotoSansGurmukhi.ttf") format("truetype");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+.language-select { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 4px 8px; max-width: 100%; margin: 5px 0; color: #24483f; font-size: .8rem; }
+.language-select select { min-width: 0; max-width: 100%; padding: 5px 8px; border: 2px solid #527165; border-radius: 8px; background: #fff9ee; color: #24483f; font: inherit; line-height: 1.6; }
+.language-select option { font-family: "Noto Sans Devanagari", "Noto Sans Gurmukhi", system-ui, sans-serif; }
+.home-screen .language-select { gap: 2px 4px; margin: 0; font-size: .75rem; color: #527165; }
+.home-screen .language-select select {
+  min-height: 44px;
+  padding: 3px 5px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: transparent;
+  color: #24483f;
+  cursor: pointer;
+}
+.home-screen .language-select select:hover { border-color: #a9b9a9; background: #fff9ee66; }
+.home-screen .language-select select:focus-visible { background: #fff9ee; }
+[data-language-status] { flex-basis: 100%; color: #7c321d; }
+:where(select):focus-visible { outline: 3px solid #1d6fa5; outline-offset: 3px; }
+/* Indic marks need their full ascent/descent, and tracking disrupts conjuncts. */
+html:lang(hi), html:lang(pa-Guru) { font-family: var(--game-font), sans-serif; }
+html:is(:lang(hi), :lang(pa-Guru)) :is(button, select, input, .privacy-link) { font-family: var(--game-font), sans-serif; }
+html:is(:lang(hi), :lang(pa-Guru)) :is(p, li, dd, dt, label, small, strong, b, h2, h3, button, select, .eyebrow, .home-records, .mode-actions span, .home-utilities > p) { line-height: 1.6; letter-spacing: normal; }
+html:is(:lang(hi), :lang(pa-Guru)) :is(.stats-summary strong, .death-breakdown strong, .mobile-hud-score span) { white-space: normal; overflow: visible; }
+html:is(:lang(hi), :lang(pa-Guru)) .home-screen { gap: 10px; }
+html:is(:lang(hi), :lang(pa-Guru)) .pause-settings { width: min(100%, 340px); }
+html:is(:lang(hi), :lang(pa-Guru)) .pause-settings label { flex-wrap: wrap; }
+html:is(:lang(hi), :lang(pa-Guru)) .pause-settings label > span { flex: 1; }
+html:is(:lang(hi), :lang(pa-Guru)) .glossary div { grid-template-columns: minmax(70px, .35fr) 1fr; }
+html:is(:lang(hi), :lang(pa-Guru)) .mobile-hud-mode { max-width: calc(100% - 24px); white-space: normal; }
+html:is(:lang(hi), :lang(pa-Guru)) .mobile-hud-upgrades > span { height: auto; min-height: 34px; }
+html:is(:lang(hi), :lang(pa-Guru)) .mobile-hud-upgrades b { overflow-wrap: anywhere; }
+html:is(:lang(hi), :lang(pa-Guru)) .upgrade-card { grid-template-columns: minmax(0, 1fr) auto; }
+html:is(:lang(hi), :lang(pa-Guru)) .upgrade-card h3 { flex-wrap: wrap; }
+html:is(:lang(hi), :lang(pa-Guru)) :is(.stats-summary span, .death-breakdown span) { line-height: 1.6; letter-spacing: normal; }
+
+/* Fit Home controls first; shrink decorative artwork before allowing scrolling.
+   Keep overflow available for tiny viewports and enlarged accessibility text. */
+@media (hover: none) and (pointer: coarse) and (max-height: 960px), (max-width: 599px) and (max-height: 960px) {
+  .home-screen, html:is(:lang(hi), :lang(pa-Guru)) .home-screen {
+    gap: 4px;
+    padding-top: max(12px, var(--safe-top));
+    padding-bottom: max(12px, var(--safe-bottom));
+  }
+  .home-content { gap: 4px; }
+  .home-screen .language-select { margin: 0; }
+  .home-screen .language-select select { min-height: 44px; }
+  .home-utilities { gap: 4px; padding-top: 5px; }
+  .home-scene {
+    --home-art-height: clamp(60px, calc(100vh - 676px), 158px);
+    height: var(--home-art-height);
+    min-height: 0;
+  }
+  .home-scene .scene-character { height: calc(var(--home-art-height) - 7px) !important; min-width: 44px; top: 5px; }
+  .home-scene .scene-character svg { width: auto !important; }
+  .home-scene .scene-bowl { width: calc(var(--home-art-height) * .47); left: calc(50% - var(--home-art-height) * .235); }
+  .home-screen .game-logo {
+    height: clamp(56px, calc(100vh - 620px), 112px);
+    height: clamp(56px, calc(100dvh - 620px), 112px);
+  }
+  @supports (height: 100dvh) {
+    .home-scene { --home-art-height: clamp(60px, calc(100dvh - 676px), 158px); }
+  }
+}
+
+/* Let decorative Home art give up space when translated or enlarged text grows.
+   On very short screens, retain normal menu scrolling instead of compressing art. */
+@media (hover: none) and (pointer: coarse) and (min-height: 721px), (max-width: 599px) and (min-height: 721px) {
+  .home-screen .home-content {
+    flex: 0 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .home-screen .home-content > :not(h1, .home-scene) { flex: 0 0 auto; }
+  .home-screen .home-content h1 { flex: 0 1 112px; min-height: 56px; height: 112px; }
+  .home-screen .story-card { width: min(100%, 330px); }
+  .home-screen .game-logo { height: 100%; max-height: 112px; }
+  .home-screen .home-scene { flex: 0 1 158px; height: 158px; min-height: 60px; }
+  .home-screen .scene-character { height: calc(100% - 7px) !important; }
+  .home-screen .scene-character svg { width: auto !important; }
+  .home-screen .scene-bowl { height: 47%; width: auto; left: 50%; transform: translateX(-50%); }
+  .home-screen.home-scroll .home-content { flex: 0 0 auto; }
+  .home-screen.home-scroll .home-content h1 { flex: 0 0 56px; height: 56px; }
+  .home-screen.home-scroll .home-scene { flex: 0 0 60px; height: 60px; }
+}
+
+/* Keep the character choice secondary to the mode buttons on phone screens. */
+@media (max-width: 599px) and (min-height: 721px) {
+  .home-screen .home-scene { width: min(100%, 270px); flex-basis: 124px; height: 124px; }
+}
+

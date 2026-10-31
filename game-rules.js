@@ -1,6 +1,13 @@
 const RULE_CONFIG = typeof module !== 'undefined' ? require('./game-config.js') : globalThis.SEVA_CONFIG;
 
 const SEVA_RULES = {
+  androidTabletCanvasWidth(viewportWidth, viewportHeight) {
+    // Match the Android HUD/footer space in styles.css. Keep the established
+    // 800-unit vertical course and stay inside the phone/tablet width bounds.
+    const hudHeight = viewportWidth >= 700 && viewportHeight >= 900 ? 96 : 74;
+    const availableHeight = Math.max(1, viewportHeight - hudHeight - 48);
+    return Math.max(450, Math.min(640, Math.floor(viewportWidth * 800 / availableHeight)));
+  },
   platformSurface(platform, x = platform.x) {
     const inset = platform.w * (RULE_CONFIG.platformSurfaceInsets[platform.type] ?? .03);
     return { left: x + inset, right: x + platform.w - inset };
@@ -221,7 +228,9 @@ const SEVA_RULES = {
   },
   formatStat(value) {
     const number = Math.max(0, Math.floor(Number(value) || 0));
-    if (number < 10000) return number.toLocaleString();
+    // UI language never changes the agreed 0–9 digit style, including when the
+    // device locale uses another numbering system and the game falls back to English.
+    if (number < 10000) return number.toLocaleString('en-US');
     const units = [[1e15, 'Q'], [1e12, 'T'], [1e9, 'B'], [1e6, 'M'], [1e3, 'K']];
     const [size, suffix] = units.find(([threshold]) => number >= threshold);
     const compact = number / size;

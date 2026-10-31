@@ -30,8 +30,8 @@ export async function loadPayload(projectRoot = root) {
     entries.push({ name, data: await readFile(resolve(projectRoot, name)) });
   }
   const allowed = new Set(webFiles);
-  for (const { name, data } of entries.filter(e => !e.name.endsWith('.png'))) {
-    for (const match of data.toString().matchAll(/assets\/[a-zA-Z0-9_.-]+\.[a-zA-Z0-9]+/g)) {
+  for (const { name, data } of entries.filter(e => /\.(?:html|css|js|webmanifest)$/.test(e.name))) {
+    for (const match of data.toString().matchAll(/assets\/[a-zA-Z0-9_./-]+\.[a-zA-Z0-9]+/g)) {
       if (!allowed.has(match[0])) throw new Error(`${name} references unpackaged asset: ${match[0]}`);
     }
   }

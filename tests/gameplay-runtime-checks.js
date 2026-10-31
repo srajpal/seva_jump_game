@@ -330,6 +330,7 @@ for (const native of [false, true]) {
   assert.ok(painted.some(item => item.text === 'Uh-oh! Looks like you’re stuck!'), 'persistent banner renders on desktop and native with expired transient messages');
   state.stuckBanner = false;
   for (const message of ['A bowl was missed - restart to collect all 50', 'Stuck · no platform in reach', 'FALCON SAVE!', 'Back in the sky!', 'Bird hit!']) {
+    state.messageId = message.startsWith('A bowl') ? 'game.message.missedBowl' : message.startsWith('Stuck') ? 'game.message.stuck' : 'game.message.birdHit';
     state.message = message; state.messageTimer = 2; painted.length = 0; messages.hooks.draw();
     const item = painted.find(item => item.text === message);
     if (message.startsWith('A bowl')) assert.equal(item?.y, 180);

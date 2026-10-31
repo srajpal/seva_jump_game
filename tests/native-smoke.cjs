@@ -78,6 +78,12 @@ fs.mkdirSync(output, { recursive: true });
       return frame.scrollTop === 0 && hud.top >= 0 && canvas.top >= hud.bottom
         && canvas.bottom <= innerHeight;
     }), 'Canvas focus keeps the HUD visible and the whole playfield inside the viewport');
+    assert(await page.evaluate(() => {
+      if (innerWidth < 600) return true;
+      const canvas = document.querySelector('canvas').getBoundingClientRect();
+      const safeBottom = parseFloat(document.documentElement.style.getPropertyValue('--android-safe-bottom')) || 0;
+      return innerHeight - canvas.bottom <= 50 + safeBottom;
+    }), 'Tablet has only a compact footer below gameplay');
     await page.waitForFunction(() => {
       const button = document.querySelector('#pause-button').getBoundingClientRect();
       const safe = parseFloat(document.documentElement.style.getPropertyValue('--android-safe-top'));

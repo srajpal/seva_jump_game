@@ -4,47 +4,53 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="theme-color" content="#bce7ef" />
-    <title>Privacy | Seva Jump</title>
+    <title data-i18n="ui.privacy.seva.jump">Privacy | Seva Jump</title>
     <style>
       :root { font-family: "Trebuchet MS", system-ui, sans-serif; color: #24483f; background: #bce7ef; }
       body { display: grid; min-height: 100vh; margin: 0; padding: 24px 16px; box-sizing: border-box; background: linear-gradient(#dff3f7, #fff4df); }
-      main { width: min(100%, 620px); margin: auto; padding: 26px; border: 2px solid #cdb78f; border-radius: 20px; background: #fffaf0; box-shadow: 0 5px 0 #d9c49c; }
+      main { box-sizing: border-box; width: min(100%, 620px); margin: auto; padding: 26px; border: 2px solid #cdb78f; border-radius: 20px; background: #fffaf0; box-shadow: 0 5px 0 #d9c49c; }
       h1 { margin: 0 0 8px; font-size: clamp(2rem, 9vw, 3rem); } h2 { margin: 22px 0 6px; color: #a85e30; font-size: 1.05rem; }
       p, li { color: #4e4438; line-height: 1.5; } a { color: #a85e30; font-weight: 900; }
       .eyebrow { margin: 0; color: #a85e30; font-size: .75rem; font-weight: 900; letter-spacing: .1em; text-transform: uppercase; }
       .updated { color: #685d50; font-size: .8rem; }
     </style>
+    <link rel="stylesheet" href="localization.css?v=1.0.13" />
   </head>
   <body>
     <main>
+      <label class="language-control language-select" for="privacy-language-select"><span data-i18n="ui.language">Language</span><select id="privacy-language-select" data-language-select aria-label="Language" data-i18n-aria-label="ui.language"><option value="device" data-i18n="ui.device.language">Device language</option><option value="en" lang="en">English</option><option value="hi" lang="hi">हिन्दी</option><option value="pa-Guru" lang="pa-Guru">ਪੰਜਾਬੀ (ਗੁਰਮੁਖੀ)</option></select></label>
       <p class="eyebrow">Seva Jump</p>
-      <h1>Privacy</h1>
-      <p class="updated">Last updated: September 26, 2026</p>
-      <p>Seva Jump (SevaJump) is a free game from Khalsa Game Studio, listed on Google Play as Khalsa Game Studio Games. The game does not collect, transmit, sell, or share personal information.</p>
+      <h1 data-i18n="ui.privacy">Privacy</h1>
+      <p class="updated" data-i18n="ui.last.updated.september.26.2026">Last updated: September 26, 2026</p>
+      <p data-i18n="ui.seva.jump.sevajump.is.a.free.game">Seva Jump (SevaJump) is a free game from Khalsa Game Studio, listed on Google Play as Khalsa Game Studio Games. The game does not collect, transmit, sell, or share personal information.</p>
       <p><a href="https://www.khalsagamestudio.com/">Khalsa Game Studio</a></p>
-      <h2>What stays on your device</h2>
-      <p>Your scores, settings, upgrades, badges, and statistics are stored locally on the device where you play. The game uses them only to remember your progress. You can erase them with Reset all progress in Settings.</p>
-      <p>Browser saves belong to this browser and site. Clearing site data can erase them. If saving is unavailable, you can still play for the current session.</p>
-      <h2>Retention and deletion</h2>
-      <p>Local progress remains until you reset it or the app or browser storage is cleared. On Android, you can also clear the app's storage in device Settings. We do not receive a copy of your saved progress and cannot recover it after deletion. The game has no account or cloud save.</p>
-      <h2>Playing on another website</h2>
-      <p>The game itself has no tracking. A website that hosts the game, such as itch.io, may process information under its own privacy policy. Optional links to Khalsa Game Studio and learning resources open external websites with their own privacy policies.</p>
-      <h2>What we do not use</h2>
+      <h2 data-i18n="ui.what.stays.on.your.device">What stays on your device</h2>
+      <p data-i18n="ui.your.scores.settings.upgrades.badges.and.statistics.2">Your scores, settings, upgrades, badges, and statistics are stored locally on the device where you play. The game uses them only to remember your progress. You can erase them with Reset all progress in Settings.</p>
+      <p data-i18n="ui.browser.saves.belong.to.this.browser.and">Browser saves belong to this browser and site. Clearing site data can erase them. If saving is unavailable, you can still play for the current session.</p>
+      <h2 data-i18n="ui.retention.and.deletion">Retention and deletion</h2>
+      <p data-i18n="ui.local.progress.remains.until.you.reset.it.2">Local progress remains until you reset it or the app or browser storage is cleared. On Android, you can also clear the app's storage in device Settings. We do not receive a copy of your saved progress and cannot recover it after deletion. The game has no account or cloud save.</p>
+      <h2 data-i18n="ui.playing.on.another.website">Playing on another website</h2>
+      <p data-i18n="ui.the.game.itself.has.no.tracking.a.2">The game itself has no tracking. A website that hosts the game, such as itch.io, may process information under its own privacy policy. Optional links to Khalsa Game Studio and learning resources open external websites with their own privacy policies.</p>
+      <h2 data-i18n="ui.what.we.do.not.use">What we do not use</h2>
       <ul>
-        <li>No accounts or sign-in</li>
-        <li>No advertising</li>
-        <li>No in-app purchases</li>
-        <li>No analytics or tracking cookies</li>
-        <li>No collection of location, contacts, photos, microphone, or camera data</li>
+        <li data-i18n="ui.no.accounts.or.sign.in">No accounts or sign-in</li>
+        <li data-i18n="ui.no.advertising">No advertising</li>
+        <li data-i18n="ui.no.in.app.purchases">No in-app purchases</li>
+        <li data-i18n="ui.no.analytics.or.tracking.cookies">No analytics or tracking cookies</li>
+        <li data-i18n="ui.no.collection.of.location.contacts.photos.microphone">No collection of location, contacts, photos, microphone, or camera data</li>
       </ul>
-      <h2>Children</h2>
-      <p>The game does not collect personal information from children or adults.</p>
-      <h2>Privacy questions and support</h2>
-      <p>Contact <a href="mailto:khalsagamestudio.apps@gmail.com">khalsagamestudio.apps@gmail.com</a> with privacy questions or deletion requests for information you have sent us. If you email us, your email address and anything you choose to send are processed through our email provider to respond to your request. This is separate from gameplay. Please do not send passwords or sensitive personal information; children should ask a parent or guardian to contact us.</p>
-      <p>Support correspondence may remain in our email account until deleted. You can request its deletion at the address above; any information that must be retained to meet legal obligations is an exception. The game does not automatically send diagnostic reports or gameplay data with your message.</p>
-      <h2>Changes to this policy</h2>
-      <p>Updates will appear here with a revised date. Any future change to the game's data practices will be reflected in this policy and applicable store disclosures.</p>
-      <p><a href="index.html">Back to Seva Jump</a></p>
+      <h2 data-i18n="ui.children">Children</h2>
+      <p data-i18n="ui.the.game.does.not.collect.personal.information">The game does not collect personal information from children or adults.</p>
+      <h2 data-i18n="ui.privacy.questions.and.support">Privacy questions and support</h2>
+      <p><span data-i18n="ui.contact">Contact</span> <a href="mailto:khalsagamestudio.apps@gmail.com">khalsagamestudio.apps@gmail.com</a> <span data-i18n="ui.with.privacy.questions.or.deletion.requests.for">with privacy questions or deletion requests for information you have sent us. If you email us, your email address and anything you choose to send are processed through our email provider to respond to your request. This is separate from gameplay. Please do not send passwords or sensitive personal information; children should ask a parent or guardian to contact us.</span></p>
+      <p data-i18n="ui.support.correspondence.may.remain.in.our.email">Support correspondence may remain in our email account until deleted. You can request its deletion at the address above; any information that must be retained to meet legal obligations is an exception. The game does not automatically send diagnostic reports or gameplay data with your message.</p>
+      <h2 data-i18n="ui.changes.to.this.policy">Changes to this policy</h2>
+      <p data-i18n="ui.updates.will.appear.here.with.a.revised">Updates will appear here with a revised date. Any future change to the game's data practices will be reflected in this policy and applicable store disclosures.</p>
+      <p><a href="index.html" data-i18n="ui.back.to.seva.jump">Back to Seva Jump</a></p>
     </main>
+    <script src="locales/ui-en.js?v=1.0.13"></script>
+    <script src="locales/ui-hi.js?v=1.0.13"></script>
+    <script src="locales/ui-pa-Guru.js?v=1.0.13"></script>
+    <script src="i18n.js?v=1.0.13"></script>
   </body>
 </html>

@@ -1,8 +1,29 @@
 # Release notes
 
-## 1.0.11 — Android build 49 / iOS build 45 metadata
+## 1.0.13 — Android build 51 / iOS build 47 metadata
 
-Prepared October 10, 2026. Published to Google Play Internal testing that day; submitted the first production release and refreshed listing to Google's review queue with managed publishing enabled. Production approval and public publication remain pending. Includes the merged October review fixes and all updates since Play's 1.0.3 / build 41. iOS first-release candidate preparation is recorded below. The public itch.io edition remains 1.0.10.
+Localization candidate initially prepared October 17, 2026; Android release preparation October 31, 2026. All 343 Punjabi and Hindi game entries are owner-approved October 31 (Hindi approved for now). Published to Google Play Internal testing October 31, 2026 at approximately 4:02 PM America/New_York; not submitted to production or publicly rolled out. iOS metadata only; no 1.0.13 Xcode build is claimed. Validation and artifact status are tracked separately in `RELEASE_PROGRESS.md`.
+
+- Adds computer steering keys to the first-run guide.
+- Adds an optional Write a review link in Settings and About & Help in the installed Android and iOS apps.
+- Adds Hindi (Devanagari) and Punjabi (Gurmukhi) throughout menus, help, privacy information and gameplay messages, while retaining English.
+- Follows your device language, with a language choice on Home and in Settings. Changing language keeps your progress and paused game.
+- Includes offline fonts and more room for translated text and Indic vowel marks.
+- Keeps Home within ordinary phone screens by adapting artwork and spacing; tiny screens can still scroll.
+- Makes the Home language selector smaller and less prominent while keeping it easy to tap.
+- Refines Punjabi wording and instructions following language review.
+
+## 1.0.12 — Android build 50 / iOS build 46 metadata
+
+Prepared and submitted for Google Play production review October 17, 2026; published to Google Play production October 23, 2026 at full rollout. Tablet layout correction; validation and publication status are tracked in `RELEASE_PROGRESS.md`. iOS metadata only; its tablet layout is unchanged and no Xcode build is claimed.
+
+- Android tablet gameplay now fits tall portrait screens with a compact footer instead of a large empty region below the scene.
+- Artwork keeps its proportions, and jump height, physics and mode goals are unchanged.
+- Refreshed tablet store screenshots show the corrected layout.
+
+## 1.0.11 — Android build 49 / iOS build 45 preparation
+
+Prepared October 10, 2026 and published to Google Play Internal testing that day. **Published to Google Play production October 17, 2026**, with the approved refreshed description and phone/tablet galleries; managed publishing remains enabled. Includes the merged October review fixes and all updates since Play's 1.0.3 / build 41. The owner confirmed October 31 that iOS 1.0.11 is released on the App Store; its exact publication date and released build number are unverified. Earlier iOS build 45 preparation is recorded below. Browser edition published on itch.io October 10, 2026, with five current screenshots and refreshed gameplay, features, controls, and offline-download instructions.
 
 - Confirm or cancel pre-run upgrade choices with a controller; keyboard focus stays inside the panel when an upgrade is unowned.
 - Tap Settings row text to change its setting; the info and music-preview buttons retain their own actions.
@@ -16,9 +37,9 @@ iOS first-release preparation, October 12, 2026 (1.0.11 / build 45):
 - A clearer native Pause icon avoids duplicated symbols during play.
 - Pause an active run reliably when interrupted or switching away from the app.
 
-App Store copy/screenshots and declarations are saved. An App Store-signed IPA is locally verified using Xcode 26.3 / iOS 26.2 SDK; production-source iPhone/iPad simulator checks passed. Build 45 uploaded to App Store Connect October 12, 2026; processing completed and the build is available for owner-only internal TestFlight testing. No App Review submission or iOS publication is claimed. Physical-device checks remain unavailable.
+App Store copy/screenshots and declarations are saved. An App Store-signed IPA is locally verified using Xcode 26.3 / iOS 26.2 SDK; production-source iPhone/iPad simulator checks passed. Build 45 uploaded to App Store Connect October 12, 2026 and processing completed for owner-only internal TestFlight testing. The owner confirmed October 31 that iOS 1.0.11 is released on the App Store; the exact publication date and released build number are unverified. Earlier physical-device checks were unavailable.
 
-Hosted browser follow-up after Android artifact preparation: privacy-page navigation now opens the policy rather than the cached game's home page, including offline. This worker routing fix does not alter Android's native worker bypass and is not part of the uploaded build 49 payload.
+Hosted browser follow-up after Android artifact preparation: privacy-page navigation now opens the policy rather than the cached game's home page, including offline. This worker routing fix is included in the published itch.io 1.0.11 ZIP; it does not alter Android's native worker bypass and is not part of the uploaded build 49 payload.
 
 Android update check: an existing installation may show the previous version on its first launch after updating while the outgoing worker unregisters. Reopening must use the new packaged version and retain saved progress. A direct debug update on the physical K70 PRO tablet confirmed this transition October 9. On October 10 the owner reported successful Play-delivered 1.0.11 version, retained-save and airplane-mode checks on another device; the connected Pixel 6 still has Play 1.0.3. Identified physical phone/tablet coverage remains incomplete. Release packaging now rejects incomplete signing settings; the test autopilot's pointer handling is also corrected.
 

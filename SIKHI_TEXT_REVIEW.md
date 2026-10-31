@@ -21,6 +21,10 @@ Outstanding optional art polish: the parshad bowl's round-piece appearance versu
 
 Implemented locally: creator's note and optional SikhRI link in About & Help, plus contributor guidance and aligned local listing copy. Allegorical item imagery and mechanics remain unchanged. Avatar continuity and colour updates were subsequently implemented as recorded in the avatar review. No external publication occurred.
 
+## Localization review for 1.0.13
+
+The Hindi/Devanagari and Punjabi/Gurmukhi candidate has a [bilingual terminology glossary and contextual reviewer pack](docs/localization-review.md). On October 31, the owner approved both remaining Punjabi strings and accepted Hindi for now, covering all 343 current game entries and their terminology. This records owner acceptance, not independent fluent-language or religious certification. Translated Play listing drafts remain separate and unapproved. Preserve the creator's accepted allegorical premise, welcome to everyone and optional learning invitation; record language corrections and owner decisions separately from historical recommendations.
+
 ## Terminology guidance
 
 Completion update: the supplied MHTML article was read on September 27, including its English argument, translated passages, conclusion, and references. The earlier full-article access gap is closed. This was an editorial comparison, not an independent verification of the author's historical claims or Gurmukhi translations. The current game definitions need no further change based on that comparison. External publication remains outstanding; the later creator direction above resolves the allegory question.

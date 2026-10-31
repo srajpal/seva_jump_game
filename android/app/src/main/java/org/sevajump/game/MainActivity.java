@@ -1,6 +1,9 @@
 package org.sevajump.game;
 
 import android.os.Bundle;
+import android.content.Intent;
+import android.content.ActivityNotFoundException;
+import android.net.Uri;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 
@@ -84,6 +87,23 @@ public class MainActivity extends BridgeActivity {
     }
 
     private final class GameWindowBridge {
+        @JavascriptInterface
+        public void openStoreReview() {
+            runOnUiThread(() -> {
+                try {
+                    startActivity(new Intent(Intent.ACTION_VIEW,
+                        Uri.parse("market://details?id=org.sevajump.game")));
+                } catch (ActivityNotFoundException noPlayStore) {
+                    try {
+                        startActivity(new Intent(Intent.ACTION_VIEW,
+                            Uri.parse("https://play.google.com/store/apps/details?id=org.sevajump.game")));
+                    } catch (ActivityNotFoundException noBrowser) {
+                        // Keep the game usable on devices without a store or browser.
+                    }
+                }
+            });
+        }
+
         @JavascriptInterface
         public void setGameplayActive(boolean active) {
             runOnUiThread(() -> {
