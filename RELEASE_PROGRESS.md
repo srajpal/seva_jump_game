@@ -1,5 +1,14 @@
 # Seva Jump release progress
 
+
+## November 1, 2026 — itch.io description and store devlog updated
+
+- Owner requested checking both store mentions and supplied the Google Play/App Store URLs. The description had neither; the existing October17 devlog mentioned only Google Play. Verified the public Google Play listing and Apple listing (iPhone/iPad), then saved both links in the description and itch.io's App store links fields. Public page now displays the mobile links and **Also available on** store buttons.
+- Updated existing devlog1713113 to **Seva Jump is now on Google Play and the App Store**, adding a dated November1 introduction, both store links and a clear note that browser/app progress does not sync. Original publication date, attachment and Published state retained. [Current devlog](https://khalsagamestudio.itch.io/seva-jump/devlog/1713113/seva-jump-is-now-on-google-play-and-the-app-store); old Google-only URL redirects successfully.
+- Reopened public pages and verified saved copy and both exact store URLs. Evidence: ignored `screenshots/itch-store-links-2026-11-01/description-published.png` and `devlog-published.png`; prior-copy HTML retained alongside them. Exact updated copy and promotion record are in `ITCH_LISTING.md` and `PROMOTION_PLAN.md`.
+- Browser game and offline download remain1.0.11. No new game build/upload, Google Play publication, iOS submission or other social/outreach action occurred in this task. This update makes no claim that the pending1.0.13 Android production release is public.
+
+
 ## October 31, 2026 — Google Play 1.0.13 / build 51 submitted for production review
 
 - With owner authorization, promoted the existing **51 (1.0.13)** Internal testing bundle to Production and submitted exactly **one production change** at approximately **4:24 PM America/New_York**. Console confirms **Changes in review**, **Running quick checks for commonly found issues**, and automatic forwarding for review after successful checks. This records submission, not passed quick checks, completed Google review, approval or publication. [Publishing overview](https://play.google.com/console/u/2/developers/7088734711289805133/app/4973543107979121743/publishing).
