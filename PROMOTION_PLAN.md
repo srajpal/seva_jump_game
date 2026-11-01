@@ -2,6 +2,13 @@
 
 Started September 11, 2026. Daily reminder: 10:00 AM America/New_York. Spend 15 to 20 minutes on one useful action. A daily action does not mean a daily advertisement in each community.
 
+
+## November 1, 2026 — itch.io mobile-store availability update published
+
+- Updated the existing [store announcement](https://khalsagamestudio.itch.io/seva-jump/devlog/1713113/seva-jump-is-now-on-google-play-and-the-app-store) (post1713113) to **Seva Jump is now on Google Play and the App Store**, with a dated November1 Apple addition, Android/iPhone/iPad links and separate local progress wording. Original October17 publication date and attachment retained; old Google-only URL redirects successfully. This updates one existing post rather than creating another announcement. No new views, likes or conversion figures were measured.
+- Added both supplied store URLs near the top of the [main description](https://khalsagamestudio.itch.io/seva-jump) and in itch.io's App store links fields. Reopened public pages and verified text, exact destinations and store buttons. Browser release remains1.0.11; no game ZIP, store release, other social post or private outreach changed. Current exact copy and evidence are in `ITCH_LISTING.md` and ignored `screenshots/itch-store-links-2026-11-01/`.
+
+
 ## Priority destinations
 
 ### September 27, 2026: resolve itch.io search indexing first
