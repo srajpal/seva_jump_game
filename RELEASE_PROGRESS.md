@@ -1,5 +1,13 @@
 # Seva Jump release progress
 
+## November 5, 2026 — Play developer website verified; organization conversion not yet performed
+
+- Owner asked to verify the studio website before converting the existing Personal Play developer account to Organization, and asked whether conversion would hide a personal address. Official guidance confirms that the verified organization legal address remains public; using a home address as the business address would still expose that address. Conversion requires the organization's D-U-N-S/legal identity and an organizational payments profile; it is separate from the saved Trader declaration.
+- Play initially had **https://www.khalsagamestudio.com/** and a disabled **Change account type** control. Sent a verification request, then found the existing **https://khalsagamestudio.com/** URL-prefix property under the studio's Search Console account, whose Settings explicitly confirms **You are a verified owner**. Updated only the account Website field to that exact non-www property and saved, then sent the matching Play verification request.
+- In Search Console, verified the pending request was **Play Developer Account / Khalsa Game Studio Games / https://khalsagamestudio.com/** from the developer account, and approved it. Associated services now shows that exact Play account and URL, with **No pending requests**. Play Account details independently confirms **Website verified**, and **Change account type** is enabled. Account type is still **Personal**; no organization profile was created or linked, and no legal identity, address, trader declaration or account type was changed.
+- Generic ignored proof: `screenshots/play-website-verification-2026-11-05/website-verified.png` (website-only crop) and `search-console-association.png`. Private account-page captures are outside the repository and are not committed. No DNS, website-code, app build, store-listing, testing-track or Apple change was needed. Owner's November 5 instruction to leave the other app's combined trader/tester queue pending remains in force.
+
+
 ## November 4, 2026 — Google account trader declaration completed; SevaJump app confirmation submitted
 
 - Owner requested Google first. Prepared the Personal developer account's **Trader** selection, verified the owner-provided public phone, and left the final public-contact consent and legal self-certification unchecked for the owner. The owner completed the final screen and reported completion. Independently verified Account details **Trader / Update trader status**, with **Save changes** disabled and the undeclared-status banner absent. No contact values, SMS codes or private profile screenshots are committed.

@@ -66,6 +66,12 @@ November 4 follow-through: the owner completed the final account public-profile 
 
 The owner remains responsible for accurate account/app status. Keep personal contact details, verification codes and documents out of this repository. Apple DSA status is a separate declaration and was not changed; the October 12 non-trader entry remains historical evidence requiring reassessment if the studio/app's commercial purpose changes.
 
+## November 5, 2026 — website verified for requested Organization conversion
+
+Play Account details now verifies **https://khalsagamestudio.com/** and enables **Change account type**. Matched the Website field to the existing non-www Search Console URL-prefix property and approved the exact Play Developer Account association using its already verified studio owner. The account remains **Personal / Trader**; website verification alone does not convert the account or change its public legal address. Evidence is in `RELEASE_PROGRESS.md`.
+
+For the requested conversion, provide a verified organization identity/D-U-N-S number, organization payments profile and required business/contact documents, then complete Google's verification/linking flow. An Organization account displays its verified legal business address publicly: conversion will not hide a home address if that address is also the business address. [Conversion requirements](https://support.google.com/googleplay/android-developer/answer/16260648?hl=en), [organization public-profile requirements](https://support.google.com/googleplay/android-developer/answer/13628312?hl=en). Keep private business verification documents and contact details outside this repository. No conversion or address change has been performed.
+
 ## Suggested Play Console declarations
 
 These are preparation notes, not a substitute for reviewing the final Play Console questions and every bundled SDK.
