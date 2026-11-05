@@ -2,7 +2,7 @@
 
 ## 1.0.13 — Android build 51 / iOS build 47 metadata
 
-Localization candidate initially prepared October 17, 2026; Android release preparation October 31, 2026. All 343 Punjabi and Hindi game entries are owner-approved October 31 (Hindi approved for now). Published to Google Play Internal testing October 31, 2026 at approximately 4:02 PM America/New_York; submitted for Google Play production review October 31 at approximately 4:24 PM America/New_York, with quick checks running and managed publishing retained. Not approved or publicly rolled out. iOS metadata only; no 1.0.13 Xcode build is claimed. Validation and artifact status are tracked separately in `RELEASE_PROGRESS.md`.
+Localization candidate initially prepared October 17, 2026; Android release preparation October 31. All 343 Punjabi and Hindi game entries are owner-approved October 31 (Hindi approved for now). Published to Google Play Internal testing October 31 and submitted for production review that day. **Published to Google Play production November 4, 2026 at 7:25 PM America/New_York**, with 100% rollout in all 178 targeted countries/regions; managed publishing remains enabled. The English full-description language addition was submitted separately November 4, with quick checks running, and is not yet approved/published. iOS metadata only; no 1.0.13 Xcode build is claimed. Validation, checksums and publication evidence are tracked in `RELEASE_PROGRESS.md`.
 
 - Adds computer steering keys to the first-run guide.
 - Adds an optional Write a review link in Settings and About & Help in the installed Android and iOS apps.
