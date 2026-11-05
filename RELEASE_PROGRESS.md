@@ -1,5 +1,13 @@
 # Seva Jump release progress
 
+## November 4, 2026 — Google account trader declaration completed; SevaJump app confirmation submitted
+
+- Owner requested Google first. Prepared the Personal developer account's **Trader** selection, verified the owner-provided public phone, and left the final public-contact consent and legal self-certification unchecked for the owner. The owner completed the final screen and reported completion. Independently verified Account details **Trader / Update trader status**, with **Save changes** disabled and the undeclared-status banner absent. No contact values, SMS codes or private profile screenshots are committed.
+- SevaJump App content then showed one required **App-level trader status and Terms of Service** declaration. The form defaults to the account's inherited **Yes, my trader status applies to this app**. Retained that answer and saved it. Terms of Service is explicitly **If available** in the live form; the optional URL remains blank. No new Terms document was authored or accepted.
+- Submitted exactly **one** SevaJump change: **Trader status / Complete app-level trader status declaration**. Verified **Changes in review / Running quick checks for commonly found issues**, with forwarding for review after successful checks. This records submission, not completed checks, Google approval or public publication. **Managed publishing remains on**, so approval must be followed by a separate publication step. [SevaJump publishing overview](https://play.google.com/console/u/2/developers/7088734711289805133/app/4973543107979121743/publishing). Generic, ignored evidence: `screenshots/play-trader-status-2026-11-04/seva-submitted.png`.
+- This record covers the account declaration and SevaJump submission, not completed declarations for every other app. Other apps require separate confirmation and unrelated pending changes must not be submitted without owner direction. No binary upload, new release, localized-listing submission or Apple declaration change was performed. The earlier November 4 advisory-only record below remains historical.
+
+
 ## November 4, 2026 — Hindi/Punjabi store copy reviewed and prepared
 
 - At owner request, completed a Codex editorial/meaning/terminology review of `docs/localization-play-drafts.md` against the published 1.0.13/build51 game, accepted catalogs, English listing and creator direction. Aligned character/menu labels, standardized Hindi Settings, moved language availability before modes, clarified the no-in-app-purchases statement, retained local-save/backup and optional-curiosity wording, and brought both update-note drafts into line with all four English release-note points.
