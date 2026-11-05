@@ -2,13 +2,13 @@
 
 Use this checklist for every release candidate. Do not create or commit an upload keystore, passwords, or `keystore.properties`.
 
-Current Android production release: **1.0.12 / build 50**, published October 23, 2026. Internal testing **1.0.13 / build 51** was published October 31 and the same build submitted for production review that day at approximately 4:24 PM America/New_York; quick checks/review are pending and managed publishing remains on. Public browser **1.0.11** was published October 10. iOS **1.0.11** is released on the App Store according to the owner October 31; exact publication date/released build number are unverified. Build 45 was previously uploaded/processed October 12. Existing checkmarks record historical work unless newer evidence is explicitly dated. Rerun applicable checks after any source change and against the exact artifact proposed for upload. [ITCH_RELEASE_AUDIT.md](ITCH_RELEASE_AUDIT.md) preserves the original 0.13.1 findings; current status is in [RELEASE_PROGRESS.md](RELEASE_PROGRESS.md).
+Current Android production release: **1.0.13 / build 51**, published November 4, 2026 at 7:25 PM America/New_York; Console confirms Available on Google Play, 100% rollout and all 178 existing countries/regions. The same bundle was published to Internal testing and submitted for production review October 31. Managed publishing remains on. The English description language addition was submitted separately November 4 with quick checks running; approval/publication remain pending. Public browser **1.0.11** was published October 10. iOS **1.0.11** is released on the App Store according to the owner October 31; exact publication date/released build number are unverified. Existing checkmarks record historical work unless newer evidence is explicitly dated. Rerun applicable checks after source changes and against the exact artifact proposed for upload. [ITCH_RELEASE_AUDIT.md](ITCH_RELEASE_AUDIT.md) preserves the original findings; current evidence and outstanding validation are in [RELEASE_PROGRESS.md](RELEASE_PROGRESS.md).
 
 Published tablet release: **1.0.12 / Android build 50 / iOS build 46 metadata**, prepared October 17 for the tall-tablet layout correction and replacement tablet galleries; Google Play production publication confirmed October 23 at full rollout. Automated suites, 15 Android layout cases, phone/tablet Android 15 emulator checks, signed bundle verification and Android lint pass. No new physical-device or Play-delivered update pass is claimed. Validation and publication evidence are tracked separately in `RELEASE_PROGRESS.md`.
 
 Production access was granted and verified in the live Console October 10, 2026. The owner authorized preparation, Internal testing, refreshed screenshots, production submission and publication following approval. Version 1.0.11 includes the merged review and viewport fixes; validate the exact signed candidate before rollout.
 
-Local implementation candidate: **1.0.13 / Android build 51 / iOS build 47 metadata**, initially prepared October 17 for Hindi and Punjabi/Gurmukhi localization; signed Android upload bundle prepared and locally validated October 31. All 343 Punjabi and Hindi game entries are owner-approved October 31 (Hindi approved for now); the remaining release checks are still required before publication; its validation is separate from the published tablet release. See the localization gates below and `docs/localization-review.md`.
+Published localization release: **1.0.13 / Android build 51 / iOS build 47 metadata**, initially prepared October 17, signed/validated October 31 and published to Android production November 4. All 343 Punjabi and Hindi game entries are owner-approved October 31 (Hindi approved for now). Publication does not complete the remaining physical-device, accessibility or sustained-play checks below. iOS remains a separate unbuilt update. See `docs/localization-review.md`.
 
 ## itch.io browser release
 
@@ -29,7 +29,7 @@ Google Play and iOS signing/store-console tasks below do not block a browser-onl
 
 ## Release blockers
 
-For the **1.0.13 / Android 51 / iOS 47 metadata localization candidate**, historical checkmarks below do not establish translated-release readiness. Build 50's published tablet update remains separate.
+For **1.0.13 / Android 51 / iOS 47 metadata**, Android publication was confirmed November 4. Remaining unchecked items record unverified validation or separate store/iOS work; publication does not establish that they passed.
 
 - [x] Owner approved the original 341 Punjabi/Gurmukhi entries October 26, 2026; baseline checksums are in `docs/localization-review.md`.
 - [x] Owner approved both added Punjabi guide/review-link strings October 31, 2026; all 343 Punjabi game entries are accepted.
@@ -44,9 +44,10 @@ For the **1.0.13 / Android 51 / iOS 47 metadata localization candidate**, histor
 - [x] October 31: Android15 QA emulator phone/tablet localization, debug in-place update/save retention, Back/system bars, cold airplane-mode launch and HTTPS review fallback pass.
 - [x] October 31: build/sign the production 1.0.13/build51 AAB and release APK, verify upload certificate, version metadata and all 49 packaged web/Capacitor files; Android release lint reports 0 errors. Artifact hashes are in `RELEASE_PROGRESS.md`.
 - [x] Upload and publish the exact signed AAB to Play Internal testing. October 31 at 4:02 PM America/New_York: Console confirms 51 (1.0.13) available to internal testers; checksum and proof are in `RELEASE_PROGRESS.md`.
-- [x] October 31: owner authorized production review submission; promoted existing build51 with English notes and submitted exactly one Production change. Quick checks/review are pending; managed publishing remains on.
-- [ ] Receive Google approval and complete the separate managed-publication step.
-- [ ] Validate the Play-delivered physical phone/tablet update and review its pre-launch report before production rollout.
+- [x] October 31: owner authorized production review submission; promoted existing build51 with English notes and submitted exactly one Production change. Approval was confirmed November 4; managed publishing remains on.
+- [x] November 4: approval confirmed and managed publication completed with owner authorization. Console shows build51 Available on Google Play, released at 7:25 PM America/New_York, 100% rollout in all 178 targeted countries/regions.
+- [ ] Publish the separately submitted English description language addition after approval. November 4: saved/submitted exactly one full-description change; quick checks running.
+- [ ] Validate the Play-delivered physical phone/tablet update and review its pre-launch report. This pre-rollout validation was not completed before the owner-authorized November 4 publication; do not mark it passed.
 - [ ] Complete physical accessibility/screen-reader review and sustained natural playthroughs.
 - [ ] For the separate iOS update, rebuild/validate 1.0.13/build47 in Xcode and on iPhone/iPad. This preparation made no iOS build.
 

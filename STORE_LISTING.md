@@ -16,11 +16,13 @@ The initial short-description submission included “no ads”; Console subseque
 
 The revised text uses 76 of 80 characters and brings the genre, offline play, visual style, Sikhi inspiration and four modes into the listing preview. The app name and full description are unchanged. This is an editorial improvement, not a measured conversion or search-ranking claim. Review reference: [Google Play listing best practices](https://support.google.com/googleplay/android-developer/answer/13393723?hl=en) and [metadata policy](https://support.google.com/googleplay/android-developer/answer/9898842?hl=en).
 
-**Full description:**
+**Full description (English; November 4 language addition submitted for review):**
 
 The birds have scattered the parshad! Choose your jumper and climb through peaceful, Gurdwara-inspired skies to help bring it back.
 
 SevaJump is a cheerful, touch-friendly jumping adventure designed for ages 8-15. Steer through bright pixel-art scenery, collect parshad bowls and Khanda tokens, avoid flying birds, and unlock helpful upgrades. The game has no ads, purchases, or accounts, and gameplay does not need an internet connection.
+
+Play in English, Hindi or Punjabi, with a language choice on Home and in Settings.
 
 Four ways to play:
 
@@ -30,6 +32,12 @@ Four ways to play:
 - Hard Mode: tackle smaller moving and breakable platforms with earlier bird encounters.
 
 The About & Help section explains the controls, game items, accessibility settings, and the difference between Sikh and Sikhi. Learn about seva: serving others without expecting a reward. Inspired by Sikhi, this is one creator's make-believe adventure, made for everyone and intended to spark curiosity. It does not replace Sikh teachings. Help includes an optional link to learn more. Everyone is welcome to play. Progress, preferences, upgrades, badges, and statistics stay locally on your device and can be erased from Settings. Android backup is disabled, so progress is not restored after uninstalling and reinstalling the app.
+
+## November 4, 2026 — production publication and English language description
+
+Google Play confirms **1.0.13/build51 Available on Google Play**, released November 4 at **7:25 PM America/New_York**, with **100% rollout** in all 178 existing countries/regions. The published update uses the English release notes below. Managed publishing remains on.
+
+The full description above adds only **Play in English, Hindi or Punjabi, with a language choice on Home and in Settings.** before Four ways to play. Owner authorized this sentence; saved and submitted exactly one default English full-description change at approximately 7:28 PM America/New_York. Console shows Changes in review with quick checks running and forwarding after successful checks. The prior description remains public until this copy is approved and published. Short description, assets and declarations were retained; Hindi/Punjabi listing drafts remain separately unapproved. Evidence and remaining device validation are in `RELEASE_PROGRESS.md`.
 
 ## 1.0.13 / build 51 Google Play upload preparation — October 31, 2026
 
@@ -44,11 +52,11 @@ Adds computer controls to the first-run guide and an optional Write a review lin
 Your progress stays on your device.
 ```
 
-The upload-ready notes file is `dist/SevaJump-1.0.13-build51-play-release-notes.txt`. Signed artifact hashes and remaining Play-delivered/device validation are in `RELEASE_PROGRESS.md`. October 31 status: the signed bundle and these English update notes were published to Internal testing at approximately 4:02 PM America/New_York; Console confirms availability to internal testers. Production review submission followed at approximately 4:24 PM America/New_York: exactly one Production change, with quick checks running and managed publishing retained. No production approval or public rollout is claimed.
+The upload-ready notes file is `dist/SevaJump-1.0.13-build51-play-release-notes.txt`. Signed artifact hashes and remaining Play-delivered/device validation are in `RELEASE_PROGRESS.md`. October 31 status: the signed bundle and these English update notes were published to Internal testing at approximately 4:02 PM America/New_York; Console confirms availability to internal testers. Production review submission followed at approximately 4:24 PM America/New_York: exactly one Production change, with quick checks running and managed publishing retained. Subsequently approved and published November 4 at 7:25 PM America/New_York; see the dated publication record above.
 
 ## Localization candidate drafts
 
-Hindi and Punjabi (Gurmukhi) descriptions and update notes for the **1.0.13 / build 51** candidate are in [docs/localization-play-drafts.md](docs/localization-play-drafts.md). They are unpublished store-copy drafts requiring separate review. All 343 Punjabi and Hindi game entries are owner-approved October 31 (Hindi approved for now); this does not approve the separate listing drafts. See [the review pack](docs/localization-review.md). The published 1.0.12/build50 listing retains English; do not submit unreviewed localized copy. Store language selection is separate from the game's internal locale identifiers. Privacy/Data safety behavior is unchanged; local language preference does not add data collection or a remote service.
+Hindi and Punjabi (Gurmukhi) descriptions and update notes for the **1.0.13 / build 51** candidate are in [docs/localization-play-drafts.md](docs/localization-play-drafts.md). They are unpublished store-copy drafts requiring separate review. All 343 Punjabi and Hindi game entries are owner-approved October 31 (Hindi approved for now); this does not approve the separate listing drafts. See [the review pack](docs/localization-review.md). The published 1.0.13/build51 listing retains English; do not submit unreviewed localized copy. Store language selection is separate from the game's internal locale identifiers. Privacy/Data safety behavior is unchanged; local language preference does not add data collection or a remote service.
 
 ## Suggested Play Console declarations
 

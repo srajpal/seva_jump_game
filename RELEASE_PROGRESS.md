@@ -1,5 +1,13 @@
 # Seva Jump release progress
 
+## November 4, 2026 — Google Play 1.0.13 / build 51 published; description change submitted
+
+- Owner authorized publication and the proposed English description addition. Before publication, Console showed exactly one approved change: **Production / 51 (1.0.13) / Start full rollout**. Publication is confirmed at **7:25 PM America/New_York**: release details show **Available on Google Play**, **Production**, **100% rollout**, and availability in **178 of 178 countries/regions** on 19,547 supported devices. Publishing overview shows **Last published on November 4, 2026**, and the approved-release queue cleared. Managed publishing remains **on**. [Release details](https://play.google.com/console/u/2/developers/7088734711289805133/app/4973543107979121743/tracks/4698338097705956803/releases/3/details).
+- Published the existing approved bundle and English update notes; no rebuild, new upload or version change. Retained `dist/SevaJump-1.0.13-build51-play.aab` SHA-256 rechecked: **`ef5a7a0d4c3a1442f7c93005e8fc0431d4c015870e1cdb23610093b0d9138914`**. The signed/local validation below remains the evidence for this payload. Availability on every device and a fresh Play-delivered update were not independently verified during publication.
+- Added exactly **Play in English, Hindi or Punjabi, with a language choice on Home and in Settings.** as a new paragraph before Four ways to play in the default English full description. Retained all other description text, short description, assets and declarations. Saved and submitted exactly **one full-description change** at approximately **7:28 PM America/New_York**. Console shows **Changes in review / Running quick checks for commonly found issues**, with forwarding for review after successful checks. This is submission, not completed checks, Google approval or publication of the copy; managed publishing will require a separate publication step after approval. Hindi/Punjabi store-copy drafts remain separate and unapproved.
+- Ignored proof/backups: `screenshots/play-production-build51-published/published.png`, `production-release.png`, `description-submitted.png`, and `description-before.txt` / `description-after.txt`. No screenshots or artifacts committed. Physical Play-delivered phone/tablet update/save/reopen/offline checks, Play Store app review-link handoff, sustained natural play and screen-reader review remain unverified. No new pre-launch report or iOS build/submission is claimed. Browser 1.0.11 and iOS 1.0.11 publication statuses are unchanged.
+
+
 
 ## November 1, 2026 — itch.io description and store devlog updated
 
