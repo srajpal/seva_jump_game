@@ -37,7 +37,8 @@ For **1.0.13 / Android 51 / iOS 47 metadata**, Android publication was confirmed
 - [x] Record current game terminology acceptance in `docs/localization-review.md`; retain the agreed fictional premise and welcome to all players.
 - [x] October 31: actual Android HTTPS fallback handoff passed on the API35 QA emulator without a Play Store handler.
 - [ ] Validate the Play Store app handoff on a physical Android device; iOS handoff belongs to the separate iOS update.
-- [ ] Separately review translated Play listing drafts before using them. The binary can be prepared with the existing English listing and English update notes.
+- [x] November 4: complete Codex editorial/meaning/terminology review of Hindi/Punjabi listing copy and prepare UTF-8 field files with verified local limits; see `docs/localization-play-drafts.md`. No independent human language certification is claimed.
+- [ ] Accept the exact localized store prose, verify Hindi hi-IN / Punjabi pa and field rendering/counters in Console, then submit only the requested listing changes. Neither localized listing has been entered/submitted.
 - [x] Verify catalog/placeholder parity, exact extraction counts, English-residue exceptions, device detection (including `pa-Arab` and `pa-PK` exclusion), switching, persistence, old saves, denied storage, and paused-run retention. October 31: localization unit/runtime and exact-artifact Edge checks pass; 343 entries / 2,163 English source words.
 - [ ] Test all modes, warnings, tutorials, badges, Help/Privacy, keyboard/controller/Android Back and accessibility labels in all three languages.
 - [x] Verify offline fonts/catalogs, direct-file opening, phone/tablet clipping and wrapping, and the tall-tablet gap regression against the final payload. October 31: exact ZIP Edge localization/offline checks, 26 Home-fit cases in each language, and 15 Android layout regressions pass; physical-device validation remains separate from owner wording approval.
@@ -136,6 +137,12 @@ For iOS, use a submission-compatible Xcode and SDK (from April 28, 2026: Xcode 2
 - [ ] Obtain owner direction for the final review submission; retain manual release for publication.
 
 For the store, use Android Studio's **Build > Generate Signed Bundle / APK > Android App Bundle** flow. Increment both `versionCode` and the visible version before every upload.
+
+## Google Play account compliance — due February 1, 2027
+
+- [ ] Owner completes the account trader/non-trader declaration in Manage account > Account details > About you by February 1, 2027, based on the actual studio business/commercial activity. A free app alone does not settle this assessment. See [Google's current requirements](https://support.google.com/googleplay/android-developer/answer/17594752?hl=en).
+- [ ] If trader, confirm status per app under Monitor and improve > Policy and programs > App content; complete the required self-certification and contact verification and follow Console's Terms of Service prompts. Individual traders' phone number and address become public; do not commit private verification/contact records. November 4 task advised only, with no declaration changed.
+- [ ] Reassess the separately recorded Apple account/app non-trader status if the studio/app's purpose is commercial. Its October 12 save was based on a non-commercial project assessment and is not automatically valid after circumstances change. See [Apple's trader self-assessment guidance](https://developer.apple.com/help/app-store-connect/manage-compliance-information/manage-european-union-digital-services-act-trader-requirements).
 
 ## Public launch record
 
