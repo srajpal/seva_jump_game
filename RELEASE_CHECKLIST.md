@@ -146,6 +146,11 @@ For the store, use Android Studio's **Build > Generate Signed Bundle / APK > And
 - [ ] Complete and verify trader declarations for the developer account's other apps separately. Account declaration alone does not establish portfolio completion; do not submit unrelated queued changes without owner direction.
 - [ ] Reassess the separately recorded Apple account/app non-trader status if the studio/app's purpose is commercial. Its October 12 save was based on a non-commercial project assessment and is not automatically valid after circumstances change. See [Apple's trader self-assessment guidance](https://developer.apple.com/help/app-store-connect/manage-compliance-information/manage-european-union-digital-services-act-trader-requirements).
 
+### Requested Personal-to-Organization conversion
+
+- [x] November 5: match the developer Website to **https://khalsagamestudio.com/**, approve the matching Play Developer Account association from the existing verified Search Console owner, and confirm **Website verified** plus enabled **Change account type** in Play. No DNS or website-code change was needed.
+- [ ] Prepare the actual organization legal identity, matching D-U-N-S record, organizational payments profile and verified contact/business documents; follow the owner-only [conversion flow](https://support.google.com/googleplay/android-developer/answer/16260648?hl=en). Current account remains Personal / Trader. An organization's verified legal address is public; using a home business address will not hide it. Website verification is complete, not account conversion.
+
 ## Public launch record
 
 October 23, 2026: published all four approved Google Play changes: full production rollout of 1.0.12 / build 50, revised English short description, and both tablet screenshot galleries. Console confirms today's publication and an empty approved-change queue; managed publishing remains enabled. The retained AAB checksum matches the October 17 submission. Store propagation and fresh Play-delivered update checks remain unverified. The 1.0.13 localization candidate remains unpublished pending language review. See `RELEASE_PROGRESS.md` for proof and validation limits.
